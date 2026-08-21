@@ -5,18 +5,18 @@ Working rules: one section or page per session. Hero first on any new page. Chec
 This is a living list. Phases get added or reordered as the build teaches us things; add new phases at the bottom with a dated note.
 
 ## Phase 1: Project setup
-- [ ] Scaffold Next.js (App Router, TypeScript) in this repo; verify `public/fonts/` woff2 files survive
-- [ ] Install dependencies from PROJECT_REQUIREMENTS.md, nothing else
-- [ ] `globals.css`: @font-face rules, palette variables (all four, Graphite default), `@theme inline` mapping, shadcn token bridge (all per STYLE_GUIDE.md)
-- [ ] Root layout: font preloads, metadata defaults (title template, canonical, OG image), trailing-slash redirects
-- [ ] shadcn init; confirm semantic tokens resolve to the palette
-- [ ] `<Logo />` placeholder component (square outline in `--acc`, "logo" inside); never hard-coded elsewhere
-- [ ] Tracking components (Meta Pixel, Google tag, GA4) reading NEXT_PUBLIC_* env vars, values empty, loaded after hydration
-- [ ] Single form server action posting to FORM_WEBHOOK_URL with UTM params + page slug on every submission
-- [ ] `sitemap.ts` and `robots.ts` (noindex rules for /go/, /apply/, /thanks/)
-- [ ] Legal skeletons: /privacy-policy/ and /terms/ (heading, last-updated, section headings, `[PLACEHOLDER: legal copy]`)
-- [ ] Stub routes for /schedule/ and /audit/ so every CTA resolves from day one (real pages in Phase 7)
-- [ ] Organization JSON-LD sitewide
+- [x] Scaffold Next.js (App Router, TypeScript) in this repo; verify `public/fonts/` woff2 files survive
+- [x] Install dependencies from PROJECT_REQUIREMENTS.md, nothing else
+- [x] `globals.css`: @font-face rules, palette variables (all four, Graphite default), `@theme inline` mapping, shadcn token bridge (all per STYLE_GUIDE.md)
+- [x] Root layout: font preloads, metadata defaults (title template, canonical, OG image), trailing-slash redirects
+- [x] shadcn init; confirm semantic tokens resolve to the palette
+- [x] `<Logo />` placeholder component (square outline in `--acc`, "logo" inside); never hard-coded elsewhere
+- [x] Tracking components (Meta Pixel, Google tag, GA4) reading NEXT_PUBLIC_* env vars, values empty, loaded after hydration
+- [x] Single form server action posting to FORM_WEBHOOK_URL with UTM params + page slug on every submission
+- [x] `sitemap.ts` and `robots.ts` (noindex rules for /go/, /apply/, /thanks/)
+- [x] Legal skeletons: /privacy-policy/ and /terms/ (heading, last-updated, section headings, `[PLACEHOLDER: legal copy]`)
+- [x] Stub routes for /schedule/ and /audit/ so every CTA resolves from day one (real pages in Phase 7)
+- [x] Organization JSON-LD sitewide
 
 ## Phase 2: Homepage (sections in spec order)
 Overrides from decisions.md: 3 metrics (three-up), 3 case study cards + "See All Results", 2 testimonials. All values `[PLACEHOLDER]` until real numbers exist.

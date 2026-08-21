@@ -1,0 +1,13 @@
+---
+description: Style guide and copy governance for the BigSquare Marketing site
+globs: ["**/*.tsx", "**/*.ts", "**/*.css", "**/*.mdx", "**/*.md"]
+alwaysApply: true
+---
+
+Read `CLAUDE.md` at the repo root before doing any work. It contains the full rule set.
+
+Short version:
+- `project-guidelines/STYLE_GUIDE.md` is the design system. Follow it. Improve it with a changelog entry. Never drift from it silently.
+- `project-guidelines/copy-rules.md` governs every word. Third to fifth grade reading level. No banned words. No em dashes. No invented numbers, names, or badges.
+- One section per session. Hero first. Check mobile before you call it done.
+- Mark anything uncertain as `[PLACEHOLDER: ...]` instead of guessing.

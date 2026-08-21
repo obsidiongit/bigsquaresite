@@ -1,0 +1,188 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* ------------------------------------------------------------------ */
+/* Palettes (STYLE_GUIDE.md section 1)                                 */
+/* 01 Graphite is the :root default. Alternate palettes are switched   */
+/* by data-palette on <html> and are for landing pages and ad creative */
+/* only. Never mix palettes on one page. No .dark theme: dark panels   */
+/* are accents (bg-darkpanel), not a site mode.                        */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* 01 Graphite (site default) */
+  --paper: #F5F6F8;        /* page background */
+  --surf: #E9ECF1;         /* cards, alternating sections */
+  --mid: #5A6373;          /* secondary text */
+  --ink: #0B0F17;          /* primary text */
+  --acc: #0657F9;          /* logo blue: primary buttons, links, metrics */
+  --acc2: #0A2A73;         /* deep navy, secondary emphasis */
+  --onacc: #FFFFFF;
+  --onacc2: #FFFFFF;
+  --line: rgba(11, 15, 23, .12);
+  --darkpanel: #0B0F17;    /* dark sections: hero overlay, CTA band, footer */
+  --ondark: #E9ECF1;
+  --ondarkmid: #8D97A8;
+}
+
+[data-palette="signal"] {
+  /* 02 Signal: dark */
+  --paper: #080B12; --surf: #131926; --mid: #8A97AC; --ink: #EEF1F6;
+  --acc: #0657F9; --acc2: #23C1E8; --onacc: #FFFFFF; --onacc2: #080B12;
+  --line: rgba(238, 241, 246, .14); --darkpanel: #131926;
+  --ondark: #EEF1F6; --ondarkmid: #8A97AC;
+}
+
+[data-palette="blueprint"] {
+  /* 03 Blueprint: cool light with orange complement */
+  --paper: #EEF2FB; --surf: #DCE5F6; --mid: #4C5C7A; --ink: #0B1220;
+  --acc: #0657F9; --acc2: #FF6B2C; --onacc: #FFFFFF; --onacc2: #0B1220;
+  --line: rgba(11, 18, 32, .14); --darkpanel: #14284B;
+  --ondark: #EEF2FB; --ondarkmid: #93A6C6;
+}
+
+[data-palette="chalk"] {
+  /* 04 Chalk: warm light */
+  --paper: #F4F2ED; --surf: #E7E3D9; --mid: #6B6960; --ink: #15161A;
+  --acc: #0657F9; --acc2: #17715F; --onacc: #FFFFFF; --onacc2: #FFFFFF;
+  --line: rgba(21, 22, 26, .13); --darkpanel: #15161A;
+  --ondark: #F4F2ED; --ondarkmid: #98958B;
+}
+
+/* ------------------------------------------------------------------ */
+/* Fonts (STYLE_GUIDE.md section 3)                                    */
+/* Self-hosted woff2 in public/fonts/, SIL OFL.                        */
+/* ------------------------------------------------------------------ */
+
+@font-face { font-family: 'BluuNext'; font-weight: 700; font-style: normal;
+  font-display: swap; src: url('/fonts/BluuNext-700.woff2') format('woff2'); }
+@font-face { font-family: 'BluuNext'; font-weight: 700; font-style: italic;
+  font-display: swap; src: url('/fonts/BluuNext-700-Italic.woff2') format('woff2'); }
+@font-face { font-family: 'BluuTitling'; font-weight: 400; font-style: normal;
+  font-display: swap; src: url('/fonts/BluuTitling-400.woff2') format('woff2'); }
+@font-face { font-family: 'Apfel'; font-weight: 400; font-style: normal;
+  font-display: swap; src: url('/fonts/Apfel-400.woff2') format('woff2'); }
+@font-face { font-family: 'Apfel'; font-weight: 500; font-style: normal;
+  font-display: swap; src: url('/fonts/Apfel-500.woff2') format('woff2'); }
+@font-face { font-family: 'Apfel'; font-weight: 700; font-style: normal;
+  font-display: swap; src: url('/fonts/Apfel-700.woff2') format('woff2'); }
+@font-face { font-family: 'Apfel'; font-weight: 900; font-style: normal;
+  font-display: swap; src: url('/fonts/Apfel-900.woff2') format('woff2'); }
+
+:root {
+  --d: 'BluuNext', Georgia, serif;
+  --dt: 'BluuTitling', Georgia, serif;
+  --t: 'Apfel', 'Helvetica Neue', Arial, sans-serif;
+  /* --font-plex-mono is injected by next/font (IBM Plex Mono, placeholder mono) */
+  --m: var(--font-plex-mono, 'IBM Plex Mono'), ui-monospace, Menlo, monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/* shadcn/ui token bridge (STYLE_GUIDE.md section 2)                   */
+/* Stock shadcn components inherit the active palette. Use semantic    */
+/* classes like bg-primary only inside shadcn internals; palette       */
+/* utilities (bg-paper, text-ink, ...) everywhere else.                */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surf);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--acc);
+  --primary-foreground: var(--onacc);
+  --secondary: var(--surf);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surf);
+  --muted-foreground: var(--mid);
+  --accent: var(--surf);
+  --accent-foreground: var(--ink);
+  /* Error red for form validation only; shadcn default, brand has not picked one */
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--acc);
+  --radius: 16px; /* aligns shadcn rounded-lg with the 16px card radius */
+}
+
+/* ------------------------------------------------------------------ */
+/* Tailwind v4 theme (CSS-first, no tailwind.config.ts)                */
+/* ------------------------------------------------------------------ */
+
+@theme inline {
+  /* palette utilities: bg-paper, text-ink, border-line, bg-darkpanel... */
+  --color-paper: var(--paper);
+  --color-surf: var(--surf);
+  --color-mid: var(--mid);
+  --color-ink: var(--ink);
+  --color-acc: var(--acc);
+  --color-acc2: var(--acc2);
+  --color-onacc: var(--onacc);
+  --color-onacc2: var(--onacc2);
+  --color-line: var(--line);
+  --color-darkpanel: var(--darkpanel);
+  --color-ondark: var(--ondark);
+  --color-ondarkmid: var(--ondarkmid);
+
+  --font-display: var(--d);
+  --font-titling: var(--dt);
+  --font-sans: var(--t);
+  --font-mono: var(--m);
+  /* shadcn internals that use font-heading get the UI face, not display */
+  --font-heading: var(--t);
+
+  --radius-card: 16px;
+  --radius-popup: 24px;
+
+  /* shadcn semantic tokens resolve through the bridge above */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base styles                                                         */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--t);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Focus style everywhere (STYLE_GUIDE.md section 1) */
+  :focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 3px;
+  }
+}

@@ -21,10 +21,12 @@ Do not install anything not listed here. To add one: list it here first with a o
 | Package | Reason |
 |---|---|
 | next, react, react-dom | Framework |
-| typescript, @types/react, @types/node | Types |
+| typescript, @types/react, @types/react-dom, @types/node | Types (@types/react-dom added: required for react-dom types under strict TS) |
 | tailwindcss, @tailwindcss/postcss | Tailwind v4 CSS-first |
 | class-variance-authority, clsx, tailwind-merge | shadcn/ui component variants and class merging |
 | radix-ui primitives (per component) | Installed automatically by the shadcn CLI as components are added |
+| shadcn | Added by shadcn CLI v4 init; provides the shadcn/tailwind.css variants and keyframes its components rely on |
+| tw-animate-css | Added by shadcn CLI v4 init; animation utilities used by shadcn components |
 | lucide-react | Line icons (nav mega menu, pain points, feature blocks) |
 | framer-motion | Section reveals, staggers, count-ups, hover motion |
 | @next/mdx, @mdx-js/loader, @mdx-js/react | MDX blog posts in the repo |

@@ -101,6 +101,8 @@ shadcn/ui token mapping (so stock components inherit the palette; use semantic c
   --foreground: var(--ink);
   --card: var(--surf);
   --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
   --primary: var(--acc);
   --primary-foreground: var(--onacc);
   --secondary: var(--surf);
@@ -109,11 +111,17 @@ shadcn/ui token mapping (so stock components inherit the palette; use semantic c
   --muted-foreground: var(--mid);
   --accent: var(--surf);
   --accent-foreground: var(--ink);
+  /* Error red for form validation only; shadcn default, brand has not picked one */
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #FFFFFF;
   --border: var(--line);
   --input: var(--line);
   --ring: var(--acc);
+  --radius: 16px; /* aligns shadcn rounded-lg with the 16px card radius */
 }
 ```
+
+The shadcn v4 CLI also adds two imports next to `@import "tailwindcss"` in globals.css: `tw-animate-css` and `shadcn/tailwind.css` (variants and keyframes its components rely on). Keep them. The CLI's own oklch token blocks, `.dark` theme, and Geist font are removed on sight: palettes switch by `data-palette`, never a `.dark` class, and fonts are locked.
 
 ## 3. Typography
 
@@ -283,4 +291,5 @@ Core Web Vitals green on every page: LCP under 2.5s, INP under 200ms, CLS under 
 
 ## Changelog
 
+- **2026-08-20** — Phase 1 build. Extended the shadcn bridge with `--popover`, `--destructive` (shadcn default red, form errors only, until the brand picks one), and `--radius: 16px` so stock components land on the card radius. Added `--font-heading: var(--t)` in `@theme inline` so shadcn internals that use `font-heading` get Apfel, not the display face. Documented the two extra CSS imports the shadcn v4 CLI requires (`tw-animate-css`, `shadcn/tailwind.css`) and that its `.dark` theme and Geist font are always removed.
 - **2026-08-20** — Initial version. Generated from the mood board and brand sheet v6. Fonts extracted from the brand sheet to `public/fonts/` (7 woff2 files). Button shape follows the mood board (pill), not the brand sheet's 3px radius: the sheet is a print-style artifact, the mood board is the site direction. `font-display: swap` chosen over the brand sheet's `block` per seo-requirements.md. Added `--dt` variable for Bluu Titling (footer "Work With Us" mark). Added shadcn semantic token mapping so stock components inherit the palette.
