@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@/components/tracking/Analytics";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { OrganizationJsonLd } from "@/components/shared/OrganizationJsonLd";
 import { UtmCapture } from "@/components/shared/UtmCapture";
 import { SITE_URL } from "@/lib/site";
@@ -52,7 +53,7 @@ export default function RootLayout({
         ))}
       </head>
       <body>
-        {children}
+        <MotionProvider>{children}</MotionProvider>
         <OrganizationJsonLd />
         <UtmCapture />
         <Analytics />

@@ -1,295 +1,489 @@
 # BigSquare Style Guide
 
-The authoritative design system for the BigSquare marketing site. Generated from `project-sections/0.design-moodboard.md` and `project-sections/reference-images/bigsquare-style-sheet-v6.html` (brand sheet, source of truth for color, type, and logo).
+The authoritative design system for the BigSquare marketing site. Generated 2026-08-21 from `project-sections/0.design-moodboard.md` plus the 9 scraped reference analyses in `project-sections/reference-images/*/ANALYSIS.md`.
 
-Governance: follow this file for all design decisions. If an implementation improves on it, keep the better implementation, update this file, and add a changelog entry at the bottom. Never diverge silently. Section-specific choices stay in that section's spec file.
+Governance (from CLAUDE.md):
+- Follow this file for all design decisions when building any section or page.
+- If a design choice is reusable, document it here. Section-specific choices stay in that section's spec.
+- If your implementation looks better than what this file says: keep the better implementation, update this file to match, and add a changelog entry at the bottom. Never silently diverge.
 
-Aesthetic: clean, measured, premium, technical, confident, airy. Not playful, loud, startup-gradient, neon, or glassmorphism. Build quality bar is Framer/Webflow showcase level. Motion feels expensive and calm.
+Conflict order: `copy-rules.md` > moodboard hard rules (one blue `#0657F9`, light page, no em dashes, reduced-motion respect) > the E2VC-anchored decisions in this file > everything else.
+
+Code status: sections 1 to 3 are already implemented in `app/globals.css` (Phase 1). Everything else in this file describes what Phase 2+ builds. The comments in globals.css that say "STYLE_GUIDE.md section N" refer to the numbered sections below.
+
+---
+
+## 0. Design DNA
+
+One sentence: **a measured, engineered light page that a human has marked up in blue pen.**
+
+Two voices, held in tension:
+1. **The instrument.** Visible hairline grid, mono labels, numbered sections, registration marks, tabular numerals, per-section theme tokens. Everything aligned, counted, and accountable. (From e2vc, dropbox-brand, obys-aim, pear-no.)
+2. **The hand.** One rough-drawn blue annotation per viewport at most: a bracket around a CTA, a circle around one word, an underline. The proof that people, not a template, made this. (From e2vc.)
+
+Aesthetic keywords (moodboard): Clean. Measured. Premium. Technical. Confident. Airy.
+Not: playful, loud, startup-gradient, neon, glassmorphism, stock-photo corporate, retro-CRT, art-project loose.
+
+Restraint budgets (site-wide caps that keep the system quiet):
+- Hand-drawn annotations: at most 1 per viewport, at most 3 per page.
+- Full-accent surfaces: exactly 1 per page (the closing CTA band).
+- Velocity-reactive elements: at most 1 per page (the logo marquee).
+- Scroll-scrubbed elements: wayfinding and one editorial moment only. Body copy is never scrubbed.
+- Marquee motion: logos only. Headlines never marquee.
+- Live/looping elements: at most 2 per viewport.
+- WebGL: only where a spec file asks, under 200KB, never hurting LCP.
+
+---
 
 ## 1. Color
 
-`#0657F9` is the logo blue. It never changes. Every palette is built around it. The logo mark is transparent and sits on any ground without a white box.
+### 1.1 Graphite tokens (site default, implemented in globals.css)
 
-Palettes are plain CSS variables switched by a `data-palette` attribute on `<html>`. **01 Graphite is the `:root` default.** Alternate palettes are for landing pages and ad creative only. Never mix palettes on one page.
+| Token | Value | Role |
+|---|---|---|
+| `--paper` | `#F5F6F8` | Page background |
+| `--surf` | `#E9ECF1` | Cards, tinted sections |
+| `--mid` | `#5A6373` | Secondary text |
+| `--ink` | `#0B0F17` | Primary text |
+| `--acc` | `#0657F9` | THE blue: primary buttons, links, metrics, annotations. Never changes. |
+| `--acc2` | `#0A2A73` | Deep navy, secondary emphasis and depth. Not a second accent. |
+| `--onacc` / `--onacc2` | `#FFFFFF` | Text on accent / navy |
+| `--line` | `rgba(11,15,23,.12)` | Hairlines, borders, the visible grid |
+| `--darkpanel` | `#0B0F17` | Dark sections: proof band, footer, hero media ground |
+| `--ondark` / `--ondarkmid` | `#E9ECF1` / `#8D97A8` | Text on dark |
 
-```css
-/* app/globals.css */
-:root {
-  /* 01 Graphite (site default) */
-  --paper: #F5F6F8;        /* page background */
-  --surf: #E9ECF1;         /* cards, alternating sections */
-  --mid: #5A6373;          /* secondary text */
-  --ink: #0B0F17;          /* primary text */
-  --acc: #0657F9;          /* logo blue: primary buttons, links, metrics */
-  --acc2: #0A2A73;         /* deep navy, secondary emphasis */
-  --onacc: #FFFFFF;
-  --onacc2: #FFFFFF;
-  --line: rgba(11,15,23,.12);
-  --darkpanel: #0B0F17;    /* dark sections: hero overlay, CTA band, footer */
-  --ondark: #E9ECF1;
-  --ondarkmid: #8D97A8;
-}
-
-[data-palette="signal"] {
-  /* 02 Signal: dark */
-  --paper: #080B12; --surf: #131926; --mid: #8A97AC; --ink: #EEF1F6;
-  --acc: #0657F9; --acc2: #23C1E8; --onacc: #FFFFFF; --onacc2: #080B12;
-  --line: rgba(238,241,246,.14); --darkpanel: #131926;
-  --ondark: #EEF1F6; --ondarkmid: #8A97AC;
-}
-
-[data-palette="blueprint"] {
-  /* 03 Blueprint: cool light with orange complement */
-  --paper: #EEF2FB; --surf: #DCE5F6; --mid: #4C5C7A; --ink: #0B1220;
-  --acc: #0657F9; --acc2: #FF6B2C; --onacc: #FFFFFF; --onacc2: #0B1220;
-  --line: rgba(11,18,32,.14); --darkpanel: #14284B;
-  --ondark: #EEF2FB; --ondarkmid: #93A6C6;
-}
-
-[data-palette="chalk"] {
-  /* 04 Chalk: warm light */
-  --paper: #F4F2ED; --surf: #E7E3D9; --mid: #6B6960; --ink: #15161A;
-  --acc: #0657F9; --acc2: #17715F; --onacc: #FFFFFF; --onacc2: #FFFFFF;
-  --line: rgba(21,22,26,.13); --darkpanel: #15161A;
-  --ondark: #F4F2ED; --ondarkmid: #98958B;
-}
-```
-
-Rules:
-- Metrics and big numbers always use `--acc` or `--acc2`, never `--ink`.
-- Dark panels (`--darkpanel`) are only for the hero overlay, the closing CTA band, the proof-numbers band, and the footer. The rest of the page is light.
-- One accent color on screen at once (blue). Navy is depth, not a second accent.
-- Focus style everywhere: `outline: 2px solid var(--acc); outline-offset: 3px` on `:focus-visible`.
-
-## 2. Tailwind v4 setup (CSS-first)
-
-No `tailwind.config.ts`. Everything lives in `app/globals.css` with `@theme inline` mapping the palette variables to utility names, so `bg-paper`, `text-ink`, `border-line`, `bg-darkpanel`, `text-ondark`, `font-display` all work and follow the active palette.
-
-```css
-@import "tailwindcss";
-
-/* :root palettes from section 1 go here, before @theme */
-
-@theme inline {
-  --color-paper: var(--paper);
-  --color-surf: var(--surf);
-  --color-mid: var(--mid);
-  --color-ink: var(--ink);
-  --color-acc: var(--acc);
-  --color-acc2: var(--acc2);
-  --color-onacc: var(--onacc);
-  --color-onacc2: var(--onacc2);
-  --color-line: var(--line);
-  --color-darkpanel: var(--darkpanel);
-  --color-ondark: var(--ondark);
-  --color-ondarkmid: var(--ondarkmid);
-
-  --font-display: var(--d);
-  --font-sans: var(--t);
-  --font-mono: var(--m);
-
-  --radius-card: 16px;
-  --radius-popup: 24px;
-}
-```
-
-shadcn/ui token mapping (so stock components inherit the palette; use semantic classes like `bg-primary` only inside shadcn internals, palette utilities everywhere else):
+### 1.2 New tokens this guide adds (build in Phase 2 groundwork)
 
 ```css
 :root {
-  --background: var(--paper);
-  --foreground: var(--ink);
-  --card: var(--surf);
-  --card-foreground: var(--ink);
-  --popover: var(--paper);
-  --popover-foreground: var(--ink);
-  --primary: var(--acc);
-  --primary-foreground: var(--onacc);
-  --secondary: var(--surf);
-  --secondary-foreground: var(--ink);
-  --muted: var(--surf);
-  --muted-foreground: var(--mid);
-  --accent: var(--surf);
-  --accent-foreground: var(--ink);
-  /* Error red for form validation only; shadcn default, brand has not picked one */
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: #FFFFFF;
-  --border: var(--line);
-  --input: var(--line);
-  --ring: var(--acc);
-  --radius: 16px; /* aligns shadcn rounded-lg with the 16px card radius */
+  /* Accent for text and strokes on dark grounds. #0657F9 fails small-text
+     contrast on #0B0F17; e2vc solves this by lightening the accent on dark
+     (their #b8cbff). Ours stays in the logo blue family. */
+  --accondark: #6E9BFF;   /* ~7:1 on --darkpanel */
+
+  /* Hairlines on non-light grounds */
+  --linedark: rgba(233, 236, 241, .14);
+  --lineacc: rgba(255, 255, 255, .28);
+
+  --radius-media: 24px;   /* framed media panels, full-bleed image cards */
 }
+
+::selection { background: var(--acc); color: var(--onacc); }
 ```
 
-The shadcn v4 CLI also adds two imports next to `@import "tailwindcss"` in globals.css: `tw-animate-css` and `shadcn/tailwind.css` (variants and keyframes its components rely on). Keep them. The CLI's own oklch token blocks, `.dark` theme, and Geist font are removed on sight: palettes switch by `data-palette`, never a `.dark` class, and fonts are locked.
+### 1.3 Usage rules
+
+- `#0657F9` never changes and is the only accent. Navy `--acc2` is depth, not a second accent. No more than one accent color on screen at once.
+- On light grounds, accent = `--acc`. On dark grounds, accent = `--accondark`, period (metrics, links, annotations, eyebrow numbers alike). On the accent ground, "accent" = white.
+- Metrics and big numbers always `--acc` or `--acc2`, never `--ink` (moodboard rule). On dark: `--accondark`.
+- Dark surfaces are for: the hero media panel's interior, the proof/stats band, and the footer. The closing CTA band is the one full-`--acc` surface (see section 5). The rest of the page is light.
+- Annotations (brackets, circles, underlines) are always `--acc` (or `--accondark` on dark), never `--acc2`, never `--ink`.
+- The logo mark is transparent and sits on any ground without a white box.
+- Focus style everywhere (implemented): `:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }`.
+- `--destructive` (form validation red) is shadcn's default and appears only in form errors. The brand has not picked an error color.
+- Never introduce a hue outside this table. The rainbow chip/tile palettes on e2vc, dropbox-brand, and readymag are explicitly not taken.
+
+### 1.4 Alternate palettes
+
+02 Signal (dark), 03 Blueprint, 04 Chalk are defined in the moodboard and implemented in globals.css behind `data-palette` on `<html>`. They exist for landing pages and ad creative only. Never mix palettes on one page. All four keep `--acc: #0657F9`.
+
+---
+
+## 2. shadcn/ui token bridge (implemented in globals.css)
+
+- Stock shadcn components inherit the active palette through the semantic bridge (`--primary: var(--acc)`, `--border: var(--line)`, `--radius: 16px`, etc.).
+- Semantic classes (`bg-primary`, `text-muted-foreground`) are for shadcn component internals only. Site code uses palette utilities: `bg-paper`, `bg-surf`, `text-ink`, `text-mid`, `text-acc`, `border-line`, `bg-darkpanel`, `text-ondark`.
+- After every `shadcn init` or `add`, strip preset injections (Geist font, oklch palettes, `.dark` blocks). There is no `.dark` mode: dark panels are section themes, not a site mode.
+- `--font-heading` maps to the UI face (Apfel), not the display serif. Bluu Next is applied deliberately, never through a shadcn default.
+
+---
 
 ## 3. Typography
 
-- Display (H1, H2, big numbers): **Bluu Next Bold**. Italic and Titling cuts for emphasis (Titling: the footer "Work With Us" mark).
-- Everything else: **Apfel Grotezk**. Regular (400) body, Mittel (500) UI and nav, Fett (700) H3 and buttons, Satt (900) rare heavy emphasis.
-- Mono (metric labels, eyebrows): **IBM Plex Mono** as placeholder. The third font is not locked. Never hard-code font names outside the CSS variables; the display font may also change after v1.
+### 3.1 Families (behind CSS variables, implemented)
 
-Font files are extracted from the brand sheet into `public/fonts/` (all woff2, SIL OFL):
+| Var | Family | Files in repo | Jobs |
+|---|---|---|---|
+| `--d` | Bluu Next Bold 700 (+ Italic) | `BluuNext-700.woff2`, `BluuNext-700-Italic.woff2` | H1, H2, statements, big metrics |
+| `--dt` | Bluu Titling 400 | `BluuTitling-400.woff2` | Rare display alternates only |
+| `--t` | Apfel Grotezk 400/500/700/900 | `Apfel-{400,500,700,900}.woff2` | Body 400, UI/nav 500 (Mittel), H3 + buttons 700 (Fett), rare heavy emphasis 900 (Satt) |
+| `--m` | IBM Plex Mono (next/font, placeholder) | injected as `--font-plex-mono` | Eyebrows, Nº labels, chips, counters, meta |
 
-| File | Family | Weight/Style |
-|---|---|---|
-| BluuNext-700.woff2 | BluuNext | 700 |
-| BluuNext-700-Italic.woff2 | BluuNext | 700 italic |
-| BluuTitling-400.woff2 | BluuTitling | 400 |
-| Apfel-400.woff2 | Apfel | 400 (Regular) |
-| Apfel-500.woff2 | Apfel | 500 (Mittel) |
-| Apfel-700.woff2 | Apfel | 700 (Fett) |
-| Apfel-900.woff2 | Apfel | 900 (Satt) |
+Never hard-code font names outside the CSS variables: the display font is not fully locked and the mono is a placeholder (moodboard). Both display and body are SIL OFL, self-hosted.
+
+Weight discipline (every reference agrees: Lusion ships 3 weights total, Metacci 3, Obys 2): each component uses exactly one weight per slot. Do not reach for 500 vs 400 ad hoc; the slots above are the whole vocabulary.
+
+### 3.2 Type scale (fluid, clamp between 390px and 1440px)
+
+Viewport-scaling lives on display classes only. Never scale `html` or `body` font-size (obys-aim and pxpush both do; it breaks user font-size preferences and zoom).
+
+| Token | Value | Face / weight | Line height | Tracking |
+|---|---|---|---|---|
+| `--text-h1` | `clamp(40px, 31px + 2.3vw, 64px)` | Bluu 700 | 1.05 | -0.01em |
+| `--text-h2` | `clamp(32px, 27.5px + 1.15vw, 44px)` | Bluu 700 | 1.1 | -0.01em |
+| `--text-statement` | `clamp(28px, 17.6px + 2.67vw, 56px)` | Bluu 700 | 1.15 | -0.01em |
+| `--text-metric` | `clamp(48px, 39px + 2.3vw, 72px)` | Bluu 700 | 1.0 | -0.01em |
+| `--text-h3` | `clamp(20px, 18.5px + 0.38vw, 24px)` | Apfel 700 | 1.3 | 0 |
+| `--text-lead` | `clamp(20px, 19.3px + 0.19vw, 22px)` | Apfel 400 | 1.5 | 0 |
+| `--text-body` | `clamp(17px, 16.6px + 0.1vw, 18px)` | Apfel 400 | 1.6 | 0 |
+| `--text-small` | `15px` | Apfel 400/500 | 1.5 | 0 |
+| `--text-eyebrow` | `13px` | Plex Mono 400 | 1.2 | 0.08em, uppercase |
+| `--text-mono-sm` | `12px` | Plex Mono 400/500 | 1.2 | 0.06em, uppercase |
+
+Notes:
+- The text-* utilities must be registered as font-size classes in the tailwind-merge config (`lib/utils.ts`), or `cn()` treats them as text colors and silently drops them next to any text-sec-* color class. Keep that list in sync with this scale.
+- The -0.01em display tracking is a starting point. Metacci and Youtech run -0.02em on grotesks; Bluu is a serif and needs less. Test on real headlines before tightening further; never looser than 0.
+- `--text-statement` is the positioning-statement size (obys-aim manifesto pattern): one per page maximum, usually directly under the hero.
+- Body never goes below 17px. The 14px bodies on e2vc and dropbox-brand are explicitly not taken.
+
+### 3.3 Typesetting rules
+
+- One H1 per page. Every H2 on a page is the same size (`--text-h2`); section headers never drift per section (readymag's flat-H2 discipline).
+- Sentence case for headlines, Title Case for nav and button labels, ALL CAPS only for mono eyebrow-family labels (copy-rules).
+- Bluu Next Italic: single-word emphasis inside a display headline, at most once per page. Bluu Titling: reserved; do not use without a spec asking.
+- All mono numerals set `font-variant-numeric: tabular-nums` (counters, metrics, chips) so cycling values never jitter.
+- Counters read "1/6", never "1—6" (no em dashes anywhere, including mono labels). Nº labels read `Nº001 / INTRO` with a slash.
+- Line length: body max ~65ch, support paragraphs in section headers max ~40ch.
+- Big display type may crop at section edges only in the footer wordmark moment (section 6.8), nowhere else.
+
+---
+
+## 4. Spacing, layout, and the hairline grid
+
+### 4.1 Spacing scale and section rhythm
+
+8px base grid. Scale (Tailwind's default steps cover it): 4, 8, 16, 24, 32, 48, 64, 96, 128.
 
 ```css
-@font-face { font-family: 'BluuNext'; font-weight: 700; font-style: normal;
-  font-display: swap; src: url('/fonts/BluuNext-700.woff2') format('woff2'); }
-@font-face { font-family: 'BluuNext'; font-weight: 700; font-style: italic;
-  font-display: swap; src: url('/fonts/BluuNext-700-Italic.woff2') format('woff2'); }
-@font-face { font-family: 'BluuTitling'; font-weight: 400; font-style: normal;
-  font-display: swap; src: url('/fonts/BluuTitling-400.woff2') format('woff2'); }
-@font-face { font-family: 'Apfel'; font-weight: 400; font-style: normal;
-  font-display: swap; src: url('/fonts/Apfel-400.woff2') format('woff2'); }
-@font-face { font-family: 'Apfel'; font-weight: 500; font-style: normal;
-  font-display: swap; src: url('/fonts/Apfel-500.woff2') format('woff2'); }
-@font-face { font-family: 'Apfel'; font-weight: 700; font-style: normal;
-  font-display: swap; src: url('/fonts/Apfel-700.woff2') format('woff2'); }
-@font-face { font-family: 'Apfel'; font-weight: 900; font-style: normal;
-  font-display: swap; src: url('/fonts/Apfel-900.woff2') format('woff2'); }
+--section-y:    clamp(64px, 52px + 3.05vw, 96px);   /* default section padding */
+--section-y-lg: clamp(96px, 84px + 3.05vw, 128px);  /* hero, statement, CTA band */
+--gutter-x:     clamp(20px, 5vw, 72px);             /* page edge padding */
+```
 
-:root {
-  --d: 'BluuNext', Georgia, serif;
-  --dt: 'BluuTitling', Georgia, serif;
-  --t: 'Apfel', 'Helvetica Neue', Arial, sans-serif;
-  --m: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+Whitespace is a feature: whole quiet viewport moments are part of the rhythm (e2vc), but our default stays the moodboard's 96px, not Metacci's half-viewport gaps.
+
+### 4.2 Containers and grid
+
+- Content max width 1200px, centered: `max-w-[1200px] mx-auto px-[var(--gutter-x)]`.
+- Wide moments (framed hero panel, marquee, CTA band, footer) go full bleed; their inner content still aligns to the 1200px container.
+- 12-column grid, 24px gaps desktop, 16px mobile. Bento and mosaic layouts snap every edge to these columns (dropbox-brand discipline: unequal tiles, shared grid lines).
+- Mobile keeps everything. Patterns reflow to one or two columns; nothing is hidden below 390px (every reference survives 390px by stacking only).
+
+### 4.3 The visible hairline system (signature)
+
+The grid is not decoration, it is the layout made visible (dropbox-brand). Four instruments, all 1px, all from the section theme's line token:
+
+1. **Column rails.** Full-height vertical hairlines at the content container's left and right edges, available per section via a `<GridLines />` component (absolutely positioned 1px divs, `pointer-events: none`). Interior rails at the 1/4, 1/2, 3/4 column edges are optional per section; quarters make square-ish cells, on brand. Rails persist across light, dark, and accent sections, recolored by the theme token (e2vc).
+2. **Info bars.** Full-width 13px mono rows sitting on a 1px rule: brand line left, utility links, © right (obys-aim). Used under the hero region and at the top of the footer.
+3. **Separators.** Horizontal 1px rules framing section titles and list rows. They draw in on entry (`<SeparatorIn>`, section 7.3).
+4. **Registration marks.** Small "+" glyphs (12px, 1px stroke, theme line color at full strength) at rail intersections around framed media and full-bleed moments (lusion, pear-no). Marks are `aria-hidden`.
+
+Skip e2vc's bending-line canvas rebuild: a detail nobody consciously sees, at canvas cost.
+
+### 4.4 Radius, borders, shadow
+
+| Token | Value | Used for |
+|---|---|---|
+| `--radius-card` | 16px | Cards, FAQ container, inputs (bridged to shadcn `--radius`) |
+| `--radius-media` | 24px | Framed hero panel, full-bleed image cards, bento panels |
+| `--radius-popup` | 24px | Dialogs, mega menu panel |
+| nested media | 8px | Media inside a 16px card |
+| pills | 999px | Buttons, chips, tags |
+
+- Borders: 1px `--line` (theme-scoped) everywhere. No 2px borders.
+- Shadows: none at rest. A soft shadow (`0 8px 24px rgba(11,15,23,.08)`) appears only on hover of interactive cards, and on floating chrome (mega menu, popup, UI-fragment chips).
+- No gradient fills, no glassmorphism. Backdrop blur is allowed only on the scrolled nav bar.
+
+---
+
+## 5. Per-section theming
+
+Every section declares a theme scope; components written against the `sec-*` tokens work on every ground unchanged. This is the cleanest pattern in the reference set (e2vc's `--section-*`, pxpush's `.section__*`, third-confirmed by metacci) and is how one component system serves light, tint, dark, and accent sections.
+
+```css
+/* Attribute selector, not section[data-theme]: the footer (6.8) and other
+   non-<section> elements carry themes too. :root holds light-value sec-*
+   defaults so sec-* components resolve outside a themed scope. */
+[data-theme] { background: var(--sec-bg); color: var(--sec-ink); }
+
+[data-theme="light"] {
+  --sec-bg: var(--paper);     --sec-ink: var(--ink);
+  --sec-mid: var(--mid);      --sec-line: var(--line);
+  --sec-acc: var(--acc);
+}
+[data-theme="tint"] {
+  --sec-bg: var(--surf);      --sec-ink: var(--ink);
+  --sec-mid: var(--mid);      --sec-line: var(--line);
+  --sec-acc: var(--acc);
+}
+[data-theme="dark"] {
+  --sec-bg: var(--darkpanel); --sec-ink: var(--ondark);
+  --sec-mid: var(--ondarkmid); --sec-line: var(--linedark);
+  --sec-acc: var(--accondark);
+}
+[data-theme="accent"] {
+  --sec-bg: var(--acc);       --sec-ink: var(--onacc);
+  --sec-mid: rgba(255,255,255,.72); --sec-line: var(--lineacc);
+  --sec-acc: var(--onacc);
 }
 ```
 
-Preload `BluuNext-700.woff2`, `Apfel-400.woff2`, and `Apfel-500.woff2` in the root layout (the above-the-fold faces). `font-display: swap` per seo-requirements.md. IBM Plex Mono self-hosted or from Google Fonts, loaded non-blocking; it is below the fold on most pages.
+Expose as Tailwind utilities via `@theme inline` (`--color-sec-bg`, `--color-sec-ink`, `--color-sec-mid`, `--color-sec-line`, `--color-sec-acc`) so components write `bg-sec-bg text-sec-ink border-sec-line`.
 
-### Type scale
+Theme budget per page:
+- `light` is the default; most sections.
+- `tint` for alternating emphasis (cards read as `--paper` on `--surf` there).
+- `dark`: the proof/stats band and the footer. That is the list.
+- `accent`: the closing CTA band only. This is the one place the brand blue goes full bleed (e2vc's accent-footer move, translated). It sits directly above the dark footer.
 
-| Role | Desktop | Mobile | Face | Notes |
+The hero's dark moment is the media panel's interior (a framed object, not a section theme); the hero section itself is `light`.
+
+---
+
+## 6. Components
+
+Format examples below never contain real numbers or clients. Real values come from spec files or render as `[PLACEHOLDER: what is needed]` (copy-rules).
+
+### 6.1 Buttons
+
+Labels: Title Case, 2 to 4 words, from the approved list (Schedule a Call, Get a Free Audit, See the Results, Download the Guide, Book a Meeting). Never Submit, Learn More, Click Here.
+
+1. **Primary pill.** `--acc` bg, `--onacc` text, Apfel 700 at 16px, padding 16px 28px (14px 24px mobile), radius 999. Hover: scale 1.02 + soft shadow, 150ms `--ease-house`. Active: scale 0.98. On `accent` sections it inverts: white pill, `--acc` text.
+2. **Secondary pill.** 1px `--sec-ink` outline, transparent bg, same metrics. Hover: **directional fill** (below), label flips to `--sec-bg`.
+3. **Bracket CTA** (signature, e2vc). Mono uppercase 13px label wrapped by a rough.js-drawn `[ ]` bracket in `--sec-acc`. The editorial secondary CTA: report downloads, case study links, "in-page" asks. Full spec in 7.3 and 8.
+4. **Rule link.** Full-width row on a 1px bottom hairline: label left, `→` or `↗` right (obys, pxpush). Hover: arrow slides 4px right, hairline darkens to `--sec-ink`, 250ms. For quiet in-section links and list rows.
+
+**Directional fill mechanics** (pxpush, ported to pure CSS): a `::before` fill layer scales up from the bottom on hover and exits through the top on leave, because `transform-origin` swaps between states and is not transitionable:
+
+```css
+.btn-fill::before {
+  content: ""; position: absolute; inset: 0; background: var(--sec-ink);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform .3s var(--ease-swoop);
+}
+.btn-fill:hover::before { transform: scaleY(1); transform-origin: bottom; }
+/* label sits above, transitions color 150ms */
+```
+
+Two-CTA repeat pattern (youtech): primary + secondary with identical labels wherever the pair repeats on a page. Repetition with consistency reads as a system, not nagging.
+
+### 6.2 Eyebrows, Nº labels, chips
+
+One mono meta family, four uses:
+
+- **Eyebrow**: 13px mono uppercase 0.08em, `--sec-mid`. Sits above H2s.
+- **Nº section label** (pxpush): `Nº001 / INTRO`. The `Nº001` part in `--sec-acc`, the `/ LABEL` part in `--sec-mid`. Numbered narrative sections on the homepage and long pages get these; utility sections (FAQ, footer) do not. Numbering restarts per page, always three digits.
+- **Bracketed index** (obys): `[01]`, `[02]` prefixes for list items (services, process steps, featured lists), and `1/6` counters. Tabular nums.
+- **Chips**: 12px mono uppercase in a pill. Two styles: outline chip (1px `--sec-line`, transparent) for tags and filters; solid chip (`rgba(11,15,23,.8)` bg, `--ondark` text) for the on-image metric lockup (6.4). Day-range chips on timeline cards are outline chips with the number in `--sec-acc`.
+
+### 6.3 Section header
+
+Slots: eyebrow row (Nº label, with a `<SeparatorIn>` hairline above it), H2 (baseline reveal), and a right column holding either a support paragraph (`--text-small`, `--sec-mid`, max 40ch, top-aligned to the H2) or the two-CTA pair. Huge-left, small-right (lusion). Stacks on mobile: eyebrow, H2, support, CTAs.
+
+### 6.4 Cards
+
+- **Base card**: `--surf` bg on light sections (`--paper` bg on tint), 1px `--sec-line`, radius 16, padding 24/32. Interactive cards hover: translateY(-2px) + soft shadow, 250ms `--ease-house`. Non-link cards do not move.
+- **Case study card** (signature: metacci formula + e2vc lockup): full-bleed image card, radius 24, bottom scrim. Pinned on the image: mono solid chip with the client name top-left, metric chip top-right (format: `+000% [METRIC]`; value from spec files only). Bottom: the outcome IS the headline, number included ("000% more booked calls for [CLIENT]" pattern), Apfel 700 at H3 size, then a rule link "See the Results". Hover: image scales 1.03 over 600ms. Metric chip numbers use count-up on entry.
+- **Testimonial card** (youtech lockup): photo left; quote set at H3 scale as the headline; name + company in `--text-small` `--sec-mid`; "See the Results" rule link; 1px vertical hairline; one oversized metric (`--text-metric`, `--sec-acc`, count-up) with a small mono label right.
+- **Stat tile / metric block**: number at `--text-metric` in `--sec-acc`, mono uppercase label below in `--sec-mid`. Tiles in the dark proof band sit borderless on the panel; on light they are base cards. Count-up once on entry.
+- **Process / timeline card** (metacci): outlined card, no fill. Mono chip holding `01` (digits in `--sec-acc`), one-word or short verb title in Apfel 700, short body, then a checklist with check glyphs in `--sec-acc`. Used for the 90-day timeline with day-range chips (youtech).
+- **Bento panel** (readymag): self-contained rounded-24 panel: H3 corner, short body, one illustration. Widths vary (2/3 + 1/3, 1/2 + 1/2, full) but every edge snaps to the grid. Per bento grid: at most one `dark` panel and at most one `--acc` panel; everything else `--surf`.
+- **UI-fragment illustration** (readymag): real product UI pieces (dashboard cards, report rows, metric chips from Obsidion or ad platforms) rendered as bare rounded cards with soft shadows floating inside panels. Never screenshots in fake browser chrome, never stock imagery.
+- **Logo tile** (metacci + moodboard): grayscale logo inside a bordered `--surf` tile, radius 16. Full color on hover. Lives in the trust marquee.
+
+### 6.5 Nav
+
+- 72px bar. Logo left, links Apfel 500 Title Case, "Get Started" primary pill right (small: 12px 20px padding).
+- Over the page top: transparent, no border. After 40px scroll: `--paper` at 85% + backdrop blur + 1px `--line` bottom border (moodboard).
+- Mega menu: light `--paper` panel, radius 24, soft shadow, three clean columns with small lucide icons (youtech reference crops). Mobile: shadcn Sheet.
+- Active link marker: a static hand-drawn underline in `--acc` (annotation system, no boil in the nav). If it reads busy in build, fall back to a plain 2px `--acc` underline and note it here.
+- Luminance-sensing nav (pear-no) is catalogued in 7.4 for pages with full-bleed media heroes (VSL templates); the homepage's framed hero does not need it.
+
+### 6.6 Info bar
+
+13px mono row on a 1px top rule spanning the container: brand line left ("BigSquare Marketing"), bracketed utility links center-right ("[Results]"), © right. One under the hero region, one opening the footer. No JS.
+
+### 6.7 FAQ
+
+Metacci's "Before you book" objection pattern: eyebrow + H2, then one bordered container (radius 16, `divide-y` hairlines) of shadcn Accordion items. Question: Apfel 700 18px left, chevron right. Answer: body in `--sec-mid`. 5 to 7 questions, one honest "when we are not the right fit" style question if the spec's copy provides it. Emit FAQPage JSON-LD from the same data array.
+
+### 6.8 Footer
+
+Theme `dark`. Anatomy top to bottom:
+1. Info bar (mono, `--linedark` rule).
+2. Four link columns mirroring the services IA exactly (Company, Organic Marketing, Paid Advertising, Design & Development), as ruled mono link tables: each link a full-width rule row with `↗` (pxpush). Mobile: accordion columns.
+3. Locations / Socials / Contact row. Locations get a mono two-office clock lockup: `DEN 09:41 / TPA 11:41` (live, minutes precision). Badge slot renders nothing until a badge is earned.
+4. Set piece: the BigSquare wordmark at viewport scale in Bluu Next, cropped by the page bottom edge (obys), `--ondark` at low opacity or outlined. One quiet scroll-settle on arrival (7.3 `<Reveal>`), not pxpush's triple echo.
+5. Legal line: mono 12px, © year, privacy/terms links.
+
+The accent CTA band (shared component) sits directly above the footer on every page that uses it; together they are the closing brand moment.
+
+### 6.9 Ad credit popup
+
+Scorpion structure per moodboard: logo, one offer, one deadline, one button. shadcn Dialog, radius 24, `--paper` ground, primary pill, mono deadline line driven by `POPUP_DEADLINE`. Exit intent + mobile trigger, 14-day localStorage, route exclusions per spec.
+
+---
+
+## 7. Motion
+
+### 7.1 Principles and stack posture
+
+- Expensive and calm. Motion confirms structure; it never performs. No bounce easings anywhere, ever.
+- **Native scroll is locked.** No Lenis, no scroll hijack, no virtual scroller (every analysis reached this conclusion; SEO, accessibility, LCP). Reveals fire once (`whileInView`, `once: true`); the pxpush pattern of scrub-reversible body text is explicitly not taken.
+- Framer Motion is the engine for everything in this section; each catalog entry below is the Framer Motion port of a reverse-engineered reference effect, with tested starting values.
+- Stack tripwire: the analyses confirm Framer Motion + native scroll + rough.js reproduces every chosen pattern. If a future spec demands something it cannot do well (SplitText-grade type work, scrubbed slat wipes at pxpush fidelity), the path is: add `gsap` (and only then `lenis`) to PROJECT_REQUIREMENTS.md with a one-line reason first, per CLAUDE.md. Do not reach for it before that spec exists.
+- rough.js (~9KB) is the one motion dependency beyond Framer Motion, for the annotation system. It is listed in PROJECT_REQUIREMENTS.md.
+
+### 7.2 Eases and durations (tokens)
+
+```css
+:root {
+  --ease-house: cubic-bezier(.22, 1, .36, 1);  /* THE ease: reveals, UI, hovers (pear-no; metacci agrees) */
+  --ease-soft:  cubic-bezier(.4, 0, .1, 1);    /* layout moves, panel slides, morphs (lusion; dropbox agrees) */
+  --ease-swoop: cubic-bezier(.6, 0, 0, 1);     /* decisive arrivals: wipes, fills, tile assembly (dropbox) */
+
+  --dur-fast: 150ms;   /* hovers, micro */
+  --dur-base: 250ms;   /* UI state */
+  --dur-slow: 400ms;   /* cards, panels */
+  --dur-reveal: 700ms; /* text reveals (e2vc/pear) */
+}
+```
+
+Framer Motion arrays: house `[0.22, 1, 0.36, 1]`, soft `[0.4, 0, 0.1, 1]`, swoop `[0.6, 0, 0, 1]`. Scrubbed values use no ease (linear); the scroll is the easing (pxpush lesson). Wipes and fills run 600ms swoop. Count-ups run 1.4s house.
+
+### 7.3 Reveal catalog (one-shot, on entry)
+
+Build as reusable components in `components/motion/`. All fire once at ~85% viewport, all respect reduced motion (7.8).
+
+| Component | Recipe (Framer Motion) | Values | Use | Source |
 |---|---|---|---|---|
-| H1 | 64px | 40px | Bluu Next Bold | line-height 1.05, letter-spacing -0.015em |
-| H2 | 44px | 32px | Bluu Next Bold | line-height 1.1 |
-| H3 | 24px | 20px | Apfel Fett | line-height 1.2 |
-| Body | 18px | 17px | Apfel Regular | line-height 1.6, `--ink`; secondary body `--mid` |
-| UI / nav | 16px | 16px | Apfel Mittel | Title Case for nav and button labels |
-| Eyebrow | 13px | 13px | Mono | uppercase, letter-spacing 0.08em, `--mid` |
-| Big metric | 72px | 48px | Bluu Next Bold | `--acc` or `--acc2`, tabular-nums |
-| Fine print | 12px | 12px | Apfel Regular | `--mid` |
+| `<Reveal>` | fade-up: `y: 16 → 0`, `opacity: 0 → 1`, stagger children | 500ms, house, stagger 60ms | Default for cards, blocks, media | moodboard |
+| `<BaselineReveal>` | line-split headline, each line `y: 110% → 0` inside `overflow: hidden` wrapper | 700ms, house, stagger 115ms/line | H1, H2, statements | lusion, pear |
+| `<WordReveal>` | word-split, pure `y: 0.6em → 0` per word, no mask, no opacity | 700ms, house, stagger 45ms/word | Hero H1 alternative, short lines | e2vc |
+| `<CountUp>` | animate number to value, tabular-nums | 1.4s, house, once | Metrics, stat tiles | moodboard, youtech |
+| `<SeparatorIn>` | hairline `clip-path: inset(0 100% 0 0) → inset(0)` | 600ms, house | Rules above eyebrows, info bars, list rows | pxpush |
+| `<ClipReveal>` | media frame `clip-path: inset(0 35% 0 35% round 24px) → inset(0 round 24px)`, inner image counter-scales 1.15 → 1 | 800ms, soft | Framed hero panel, featured media | pxpush |
+| `<SectionWipe>` | 4 to 6 grid-aligned column blocks rise `y: 100% → 0` staggered over the incoming section | 600ms, swoop, stagger 40ms/column | Entering the dark proof band only | e2vc (stepped columns), pxpush (overlayIn) |
+| `<TitleAssemble>` | per-word `opacity 0 → 1` in random order | 300ms, stagger 30ms, `from: "random"` | Mono eyebrows only, at most one per page | pxpush |
+| `<TypeOn>` | per-character opacity stagger, telegraph feel | 20ms/char | Mono chips and annotation labels only, never body | pear, pxpush |
+| `<RoughAnnotation>` | rough.js paths drawn via `pathLength: 0 → 1`, then 3-frame boil on an interval | draw 1.2s (circle 2s), house | Brackets, circles, underlines | e2vc |
 
-Copy rules live in `project-guidelines/copy-rules.md`: sentence case headlines, Title Case only for nav and buttons, no em dashes, numerals for numbers, body text max width around 60ch.
+`<RoughAnnotation>` implementation contract (from the e2vc probe): fixed seeds so shapes are stable; `strokeWidth` 3, roughness ~1.6 to 2.8 by variant; stroke from `var(--sec-acc)` read at draw time; 3 pre-rendered boil frames cycled by visibility toggle; the hero circle draws only after its headline reveal completes; after any masked reveal finishes, flip the line wrapper to `overflow: visible` so annotations can overflow the line box; redraw only on viewport WIDTH change (iOS Safari fires height-only resizes while scrolling).
 
-## 4. Spacing and layout
+Hero exception: hero text animates on mount, not on view, and must not delay the LCP element (the hero media poster). Total hero choreography under 1s.
 
-- Max content width **1200px**, centered, side padding `clamp(20px, 4vw, 48px)`.
-- Wide sections (hero, logo marquee, CTA band, footer) go full bleed; their content still aligns to the 1200px container.
-- Section padding: **96px** top and bottom desktop, **64px** mobile. Trust marquee is the exception: 48px.
-- **8px base grid** for all spacing. Tailwind's default 4px scale is fine; land on multiples of 8 for layout gaps.
-- Alternate section backgrounds down the page: `--paper`, then `--surf` to separate adjacent sections when both are light.
-- One clear primary CTA above the fold on every page.
+### 7.4 Scroll-linked catalog (progress-driven, no hijack)
 
-## 5. Responsive breakpoints
+The architecture is pear-no's fraction table done with Framer Motion: per section, `useScroll({ target, offset })` + `useTransform`, every effect a pure function of progress. Scrubbed transforms use linear mapping, no ease.
 
-Tailwind v4 defaults, mobile first:
+- **Hero exit** (pear): as the hero leaves, headline lines drift up with per-line lag and 0 → 4px blur. Hero only.
+- **Chapter rail** (pear): fixed mono label + tick marks drawn by `pathLength` against page progress. For the method page and long industry pages. v2, not homepage.
+- **Manifesto darkening** (e2vc talent page): statement paragraph's words scrub `--mid` → `--ink` over the section. About page only, one instance site-wide.
+- **Marquee velocity coupling**: see 7.5.
+- **Luminance-sensing nav** (pear): 8x5 offscreen canvas samples the media behind the header every ~160ms while a media section intersects; hysteresis thresholds toggle a `data-on-light` attribute consumed by nav CSS. Only for full-bleed media pages (VSL template).
+- **Scroll-scrubbed frame sequence** (pear): WebP sequence + manifest + nearest-loaded-frame + max one decode per frame. Reserved for the Obsidion portal section IF its spec asks; cheaper and more robust than Three.js for one wow moment.
 
-| Token | Width | Use |
+### 7.5 Marquee and velocity rules
+
+- Logo marquee: CSS keyframe track at ~50px/s desktop, 35px/s mobile. Pauses on hover; logo tiles go grayscale → color on hover (moodboard). Duplicate the track for the seamless loop; `aria-hidden` the duplicate.
+- Velocity boost (pxpush, optional polish): add scroll velocity × ~0.5 to the track speed, clamped to ±3× base, decayed by 0.9/frame. The logo marquee is the page's ONE velocity-reactive element.
+- Headlines never marquee. Section titles sit still (pxpush's 12vw marquee H1s are not taken).
+- Reduced motion: marquee renders as a static wrapped grid of logo tiles.
+
+### 7.6 The pixel cursor (signature, translated)
+
+`<PixelTrail>`: pxpush's square-pixel trail, made quiet and blue.
+
+- Fixed full-viewport `pointer-events: none` layer holding a 24-column grid of square cells (`100vw / 24`).
+- On pointer move, the cell under the pointer sets `opacity: 1` and fades back to 0 over 250ms (CSS transition). Fill: `--acc` at 8% opacity (tuning range 6 to 12%; it should be felt, not watched).
+- No blend modes, no gooey filter, no cursor replacement: the native cursor stays.
+- Desktop pointer-fine only, min-width 1024px; initialized via `requestIdleCallback`; disabled entirely under reduced motion; suppressed over `[data-cursor-quiet]` zones (nav, forms, mega menu).
+- Budget: ~40 lines, zero canvas.
+
+### 7.7 Hover micro-interactions
+
+- Primary pill: scale 1.02 + soft shadow, 150ms (moodboard).
+- Secondary pill and full-width rows: directional fill (6.1), 300ms swoop.
+- Cards: translateY(-2px) + soft shadow, 250ms house. Card images: scale 1.03, 600ms house.
+- Rule links: arrow +4px, hairline darkens, 250ms.
+- Logo tiles: grayscale → color, 250ms.
+- Everything interactive has a hover state (moodboard bar) and the focus-visible ring.
+- Not taken: text scramble on hover, image-trail menus, letter-swap title hovers. Too loud for the brief.
+
+### 7.8 Reduced motion (hard rule)
+
+Wrap the app in `<MotionConfig reducedMotion="user">` and verify per component:
+
+| Pattern | `prefers-reduced-motion` behavior |
+|---|---|
+| Reveal / BaselineReveal / WordReveal | Instant, fully visible; no transforms |
+| CountUp | Renders final value immediately |
+| Marquee | Static wrapped grid |
+| SectionWipe / ClipReveal / SeparatorIn | Content renders settled |
+| RoughAnnotation | Renders drawn, no draw-on, no boil |
+| PixelTrail | Off |
+| TypeOn / TitleAssemble | Full text immediately |
+| Hero video | Poster frame; play only on user action |
+| Hover motion | Color/opacity changes only, no transforms |
+
+### 7.9 Performance rules
+
+- Animate `transform` and `opacity` only. Never top/left/width/height.
+- Any canvas (if a spec ships one): pause via IntersectionObserver when offscreen; max one texture upload per rAF; DPR watchdog stepping devicePixelRatio down after sustained slow frames (pear's two rules, ported verbatim); dispose everything on unmount.
+- Three.js: only where a spec asks, under 200KB gzipped total, lazy-loaded, never the LCP element. The chrome-object recipe if a portal moment ships: `MeshPhysicalMaterial` metalness .92 / roughness .05 / clearcoat 1 + `RoomEnvironment` env map, duotoned to graphite/navy (pxpush).
+- Hero choreography completes under 1s; LCP element is the hero media poster; CWV green on every page (LCP < 2.5s, INP < 200ms, CLS < 0.1).
+- Reveal wrappers must reserve layout (no CLS from split text).
+
+---
+
+## 8. Signature moves
+
+The BigSquare identity kit. Each move names its source; together they are what makes the site ours. Anything on this list appears deliberately and within its budget; nothing else gets invented mid-build without updating this file.
+
+1. **Hand-drawn annotation system** (e2vc, the anchor). One `<RoughAnnotation>` primitive with three variants: bracket (the Bracket CTA), circle (one word in the hero H1), underline (key links, nav active state). Always accent-colored, fixed seeds, draw-on entry, gentle boil. Budget: 1 per viewport, 3 per page.
+2. **Visible hairline grid + registration marks** (e2vc, dropbox-brand, pear, lusion). Column rails, info bars, drawn-in separators, "+" marks around framed media. The instrument half of the DNA.
+3. **Framed hero panel** (lusion). The hero media lives in a rounded-24 dark panel inset from the page edges with calm typography on the light page around it, not a full-bleed takeover. Works with video day one, 3D later.
+4. **Nº section labels + per-section themes** (pxpush, e2vc). `Nº001 / INTRO` mono labels on numbered narrative sections; every section a `data-theme` scope.
+5. **Tag-chip metric lockups + outcome-first case headlines** (e2vc + metacci). Client chip left, metric chip right, pinned on the image; the result with its number IS the card headline.
+6. **Directional button fills** (pxpush). Secondary pills and rule rows fill from the bottom and exit through the top.
+7. **Baseline and word reveals with the house ease** (lusion, pear, e2vc). Headlines rise from their baselines; `cubic-bezier(.22, 1, .36, 1)` everywhere.
+8. **The quiet pixel cursor** (pxpush, translated). A sparse blue square trail on desktop: the company name, drawn by the pointer.
+9. **Editorial mono meta** (obys-aim). Bracketed indexes, 1/6 counters, footnote-style qualifications on claims (mono markers resolved in a hairline row; only for claims with real sources).
+10. **The closing set piece** (e2vc, obys, pxpush, youtech). Accent CTA band, then the dark footer: ruled mono link tables, office clocks, cropped viewport-scale wordmark.
+
+## 9. Homepage effect map
+
+Sequencing aid for Phase 2 (sections from `project-sections/home/`, spec order wins):
+
+| Section | Theme | Patterns |
 |---|---|---|
-| (base) | < 640px | Single column, stacked everything |
-| `sm` | 640px | — |
-| `md` | 768px | 2-column grids, tablet nav still in Sheet |
-| `lg` | 1024px | Full desktop nav with mega menu, 3-column grids |
-| `xl` | 1280px | Full 1200px container |
-| `2xl` | 1536px | No new layout, just breathing room |
+| 1. Nav | n/a | Scroll solidify, mega menu, annotation active state |
+| 2. Hero | light | Framed media panel + ClipReveal, WordReveal H1 + circled word, registration marks, two-CTA pair |
+| 3. Trust marquee | light | Logo tiles, marquee rules (7.5) |
+| 4. Problem | light | SectionHeader, Reveal, x-glyphs in `--mid` (not red) |
+| 5. Solution | tint | SectionHeader, base cards, Reveal stagger |
+| 6. Services | light | Bracketed indexes, rule links, Reveal |
+| 7. Proof numbers | dark | SectionWipe entry, stat tiles, CountUp |
+| 8. Case studies | light | Case study cards, chips, CountUp |
+| 9. Obsidion portal | tint | UI-fragment illustrations, ClipReveal; 3D/sequence only if spec asks |
+| 10. How it works | light | Timeline cards, SeparatorIn line draw, day-range chips |
+| 11. Testimonials | tint | Testimonial lockup, CountUp metric |
+| 12. FAQ | light | Accordion container, FAQPage JSON-LD |
+| 13. Final CTA | accent | The one accent surface; Bracket CTA as secondary |
+| Footer | dark | Info bar, mono link tables, clocks, cropped wordmark |
 
-Check every section at **375 / 768 / 1280 / 1536** before calling it done. No horizontal scroll at any width. Most paid traffic is mobile: design mobile first.
+## 10. Accessibility and quality bar
 
-## 6. Component patterns
-
-### Buttons
-- Pill shape (`rounded-full`), padding 16px 28px, Apfel Fett, 16px label.
-- Primary: `--acc` fill, `--onacc` text. Secondary: transparent, 1px border, `--ink` text on light, `--ondark` on dark. Tertiary (rare, brand sheet): `--acc2` fill.
-- Both buttons in a pair are the same height. Labels say what happens next in 2 to 4 words, Title Case ("Schedule a Call", "Get a Free Audit"). Never Submit, Learn More, or Click Here.
-- Hover: scale 1.02 + soft shadow, 150ms ease. No gradient buttons, ever.
-
-### Cards
-- `--surf` background on `--paper` sections; `--paper` background on `--surf` sections. Always 1px `--line` border, **16px radius**.
-- No resting shadow. On hover: soft shadow + 4px lift, 200ms.
-- Padding 24px to 32px.
-
-### Nav
-- Height 72px desktop, 64px mobile. Left: logo mark + "BigSquare" wordmark (Bluu Next Bold). Center: links, Apfel Mittel, Title Case. Right: Login (icon + text link, never a button) and Schedule a Call (the only button in the nav).
-- Transparent over the hero (`--ondark` links). After 40px scroll: `--paper` background, 1px `--line` bottom border, 12px backdrop blur, `--ink` links. Transition 200ms.
-- Mega menu panel: `--paper`, 16px radius, soft shadow, fade + 8px slide down, 180ms. Three columns with small line icons; column headers 13px Apfel Mittel `--mid`; items 16px `--ink`. Footer strip inside the panel: "Ready to grow? Schedule a Call" with arrow, `--acc`.
-- Active link: 2px `--acc` underline.
-- Mobile: shadcn Sheet from the right, accordion groups for Services and Industries, Schedule a Call pinned to the bottom.
-
-### Eyebrow labels
-- Mono, 13px, uppercase, letter-spacing 0.08em.
-- `--mid` on light backgrounds. On dark panels or video: `--acc` at 90% opacity (navy is too dark on video).
-- Sits 12px to 16px above its headline. ALL CAPS is allowed here only.
-
-### Metric blocks
-- Number: Bluu Next Bold, 72px desktop / 48px mobile, `--acc` (alternate `--acc2` for variety in a row), `font-variant-numeric: tabular-nums`.
-- Label: one line under the number, Apfel Regular, `--mid` on light, `--ondarkmid` on dark.
-- Count up on scroll entry, 1.2s ease-out; static under reduced motion.
-- Values come from a single `metrics` array in code. No number ships without a source in a spec file.
-
-### CTA band
-- Shared component at the bottom of every marketing page above the footer. Full bleed `--darkpanel`, centered text, H2 in `--ondark`, padding 120px desktop / 80px mobile.
-- Optional looping video background at 20% opacity behind a dark overlay.
-- Default copy and buttons per `project-sections/shared/cta-band.md`.
-
-### Popup (ad credit)
-- shadcn Dialog. `--paper` background, **24px radius**, max width 720px, generous white space.
-- Logo large and centered, headline Bluu Next Bold 32px, one `--acc` pill button, fine print 12px `--mid`.
-- Behavior (triggers, frequency, excluded routes) per `project-sections/shared/popup-ad-credit.md`.
-
-### Logo placeholder
-- One shared `<Logo />` component: a square outline in `--acc` with the word "logo" inside (or a standard broken-image icon). Real file drops in later; never hard-code the placeholder outside this component.
-- The real mark is transparent and sits on any ground: `--paper`, `--surf`, `--acc` (reversed), and `--darkpanel` all work without a white box.
-
-## 7. Visual effects and motion
-
-Framer Motion for everything below unless noted. Motion is smooth, purposeful, never busy.
-
-- **Section entry:** fade-up, 0.5s, 16px travel, children stagger 60ms. Trigger once per section on scroll entry.
-- **Hero:** full-bleed video, muted, autoplay, loop, `playsinline`, poster image, loaded after first paint. `--darkpanel` overlay at 55 to 65%. Headline words fade up with 40ms stagger on load; buttons fade in 200ms after. Slow Ken Burns on the poster if video fails.
-- **Logo marquee:** continuous horizontal scroll via CSS animation (two duplicated tracks), 40s per loop, pauses on hover. Logos grayscale, full color on hover. Soft fade masks at both edges.
-- **Count-ups:** 1.2s ease-out on entry.
-- **Buttons:** scale 1.02 + shadow, 150ms. Cards: 4px lift + soft shadow, 200ms.
-- **Nav:** background/border/blur transition at 40px scroll, 200ms.
-- **Accordion (FAQ):** smooth height transition.
-- **Carousel (testimonials):** 400ms crossfade, auto-advance 8s, pauses on hover.
-- **Three.js:** optional only. One light element max per page (wireframe square or grid), under 200KB, never hurts LCP. Skip if in doubt.
-
-### Reduced motion
-`prefers-reduced-motion: reduce` disables: marquee movement (render a static centered grid), count-ups (show final values), Ken Burns, auto-advancing carousel, and Three.js elements. Entry animations become instant fades (opacity only, no travel). Hover color changes stay.
-
-### Performance floor
-Core Web Vitals green on every page: LCP under 2.5s, INP under 200ms, CLS under 0.1. Everything above the fold loads in under 2.5s. Analytics after hydration. Animations use `transform` and `opacity` only.
-
-## 8. Imagery
-
-- No stock photos of people shaking hands. Real team, real clients, or abstract brand shapes only.
-- Next Image everywhere, WebP or AVIF, descriptive alt text, lazy loaded below the fold.
-- Portal screenshots: real Obsidion UI only. Until it exists, a blurred frame with a "Portal preview" tag. Never a fake UI with fake numbers.
-
-## 9. Do not
-
-- No gradient buttons.
-- No glassmorphism cards as a default pattern.
-- No more than one accent color on screen at once.
-- No heavy resting shadows.
-- No condensed all-caps type, badge walls, or dense paragraphs (the Ignite look).
-- No partner badges until earned. The trust row label is "Some of the partners we work with."
-- No dark theme as the site default. Dark panels are accents, not the ground.
+- Semantic HTML, one H1, landmarks, alt text; decorative SVG/canvas `aria-hidden`; marquee duplicates hidden from AT.
+- Contrast: AA minimum everywhere; `--accondark` exists so accent text on dark passes; `--mid` on `--surf` passes for `--text-small` and up, verify anything smaller.
+- Keyboard: everything reachable, focus-visible ring (section 1), menus focus-trapped with Escape.
+- Reduced motion table (7.8) is a ship gate, not a suggestion.
+- Check 375 / 768 / 1280 / 1536 before any section is done; no horizontal scroll at any width.
+- Copy renders server-side. No copy lives behind JS-only rendering or canvas.
 
 ---
 
 ## Changelog
 
-- **2026-08-20** — Phase 1 build. Extended the shadcn bridge with `--popover`, `--destructive` (shadcn default red, form errors only, until the brand picks one), and `--radius: 16px` so stock components land on the card radius. Added `--font-heading: var(--t)` in `@theme inline` so shadcn internals that use `font-heading` get Apfel, not the display face. Documented the two extra CSS imports the shadcn v4 CLI requires (`tw-animate-css`, `shadcn/tailwind.css`) and that its `.dark` theme and Geist font are always removed.
-- **2026-08-20** — Initial version. Generated from the mood board and brand sheet v6. Fonts extracted from the brand sheet to `public/fonts/` (7 woff2 files). Button shape follows the mood board (pill), not the brand sheet's 3px radius: the sheet is a print-style artifact, the mood board is the site direction. `font-display: swap` chosen over the brand sheet's `block` per seo-requirements.md. Added `--dt` variable for Bluu Titling (footer "Work With Us" mark). Added shadcn semantic token mapping so stock components inherit the palette.
+- **2026-08-21 (groundwork build)**: Section 5 selectors changed from `section[data-theme]` to `[data-theme]` so themed non-`<section>` elements (the dark footer) work with one component; `:root` now carries light-value `sec-*` defaults so sec-* components resolve outside a themed scope. Section 3.2 gained the tailwind-merge note: without registering the custom text-* utilities as font-size classes, `cn()` classed them as text colors and dropped them (found when H2s rendered at body size). Implementation notes: reduced-motion branches use a hydration-safe hook (`useReducedMotionSafe`) because reading the media query on first client render breaks hydration; the annotation boil runs 3 frames at 200ms.
+- **2026-08-21**: Initial version. Generated from `0.design-moodboard.md` plus the nine reference analyses (e2vc as primary identity anchor; lusion, pear-no, pxpush, obys-aim, dropbox-brand, youtech-agency, readymag, metacci contributing the specific elements credited inline). Direction changes vs the moodboard, agreed in the synthesis session: framed hero panel replaces the full-bleed video hero; the closing CTA band becomes the single full-accent surface (footer stays dark); named ease trio replaces the single fade-up spec (fade-up remains the block default); added `--accondark`, `--linedark`, `--lineacc`, `--radius-media`, selection color, per-section `data-theme` scopes, and the signature kit (annotations, hairline system, Nº labels, pixel cursor, directional fills).

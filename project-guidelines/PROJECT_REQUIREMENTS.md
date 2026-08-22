@@ -29,6 +29,7 @@ Do not install anything not listed here. To add one: list it here first with a o
 | tw-animate-css | Added by shadcn CLI v4 init; animation utilities used by shadcn components |
 | lucide-react | Line icons (nav mega menu, pain points, feature blocks) |
 | framer-motion | Section reveals, staggers, count-ups, hover motion |
+| roughjs | Hand-drawn annotation system (bracket CTA, circled word, underlines), a STYLE_GUIDE.md signature move; ~9KB |
 | @next/mdx, @mdx-js/loader, @mdx-js/react | MDX blog posts in the repo |
 | zod | Validate the single form server action payload |
 | three, @react-three/fiber, @react-three/drei | Optional; only if a spec's 3D element ships |

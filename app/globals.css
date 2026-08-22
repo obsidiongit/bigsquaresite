@@ -165,6 +165,154 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Phase 2 groundwork tokens (STYLE_GUIDE.md 1.2)                      */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* Accent for text and strokes on dark grounds. #0657F9 fails small-text
+     contrast on #0B0F17; lightened within the logo blue family. */
+  --accondark: #6E9BFF; /* ~7:1 on --darkpanel */
+
+  /* Hairlines on non-light grounds */
+  --linedark: rgba(233, 236, 241, .14);
+  --lineacc: rgba(255, 255, 255, .28);
+
+  --radius-media: 24px; /* framed media panels, full-bleed image cards */
+}
+
+::selection {
+  background: var(--acc);
+  color: var(--onacc);
+}
+
+/* ------------------------------------------------------------------ */
+/* Type scale (STYLE_GUIDE.md 3.2)                                     */
+/* @theme static: emitted as :root vars AND text-* utilities           */
+/* (text-h1, text-metric, text-eyebrow, ...). Faces are applied per    */
+/* component via font-display / font-sans / font-mono; ALL CAPS and    */
+/* tabular-nums are applied per component too.                         */
+/* ------------------------------------------------------------------ */
+
+@theme static {
+  --text-h1: clamp(40px, 31px + 2.3vw, 64px);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.01em;
+
+  --text-h2: clamp(32px, 27.5px + 1.15vw, 44px);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-statement: clamp(28px, 17.6px + 2.67vw, 56px);
+  --text-statement--line-height: 1.15;
+  --text-statement--letter-spacing: -0.01em;
+
+  --text-metric: clamp(48px, 39px + 2.3vw, 72px);
+  --text-metric--line-height: 1;
+  --text-metric--letter-spacing: -0.01em;
+
+  --text-h3: clamp(20px, 18.5px + 0.38vw, 24px);
+  --text-h3--line-height: 1.3;
+
+  --text-lead: clamp(20px, 19.3px + 0.19vw, 22px);
+  --text-lead--line-height: 1.5;
+
+  --text-body: clamp(17px, 16.6px + 0.1vw, 18px);
+  --text-body--line-height: 1.6;
+
+  --text-small: 15px;
+  --text-small--line-height: 1.5;
+
+  --text-eyebrow: 13px;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.08em;
+
+  --text-mono-sm: 12px;
+  --text-mono-sm--line-height: 1.2;
+  --text-mono-sm--letter-spacing: 0.06em;
+
+  /* Eases (STYLE_GUIDE.md 7.2); also usable as ease-house etc. */
+  --ease-house: cubic-bezier(.22, 1, .36, 1);
+  --ease-soft: cubic-bezier(.4, 0, .1, 1);
+  --ease-swoop: cubic-bezier(.6, 0, 0, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Section rhythm (STYLE_GUIDE.md 4.1) and durations (7.2)             */
+/* lib/motion.ts mirrors the eases and durations for Framer Motion;    */
+/* change both together.                                               */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --section-y: clamp(64px, 52px + 3.05vw, 96px);      /* default section padding */
+  --section-y-lg: clamp(96px, 84px + 3.05vw, 128px);  /* hero, statement, CTA band */
+  --gutter-x: clamp(20px, 5vw, 72px);                 /* page edge padding */
+
+  --dur-fast: 150ms;   /* hovers, micro */
+  --dur-base: 250ms;   /* UI state */
+  --dur-slow: 400ms;   /* cards, panels */
+  --dur-reveal: 700ms; /* text reveals */
+}
+
+/* ------------------------------------------------------------------ */
+/* Per-section theming (STYLE_GUIDE.md 5)                              */
+/* Attribute selector (not section[data-theme]) so <footer> and other  */
+/* elements can carry a theme. :root carries light-theme defaults so   */
+/* sec-* components still resolve outside a themed scope.              */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --sec-bg: var(--paper);
+  --sec-ink: var(--ink);
+  --sec-mid: var(--mid);
+  --sec-line: var(--line);
+  --sec-acc: var(--acc);
+}
+
+[data-theme] {
+  background: var(--sec-bg);
+  color: var(--sec-ink);
+}
+
+[data-theme="light"] {
+  --sec-bg: var(--paper);     --sec-ink: var(--ink);
+  --sec-mid: var(--mid);      --sec-line: var(--line);
+  --sec-acc: var(--acc);
+}
+
+[data-theme="tint"] {
+  --sec-bg: var(--surf);      --sec-ink: var(--ink);
+  --sec-mid: var(--mid);      --sec-line: var(--line);
+  --sec-acc: var(--acc);
+}
+
+[data-theme="dark"] {
+  --sec-bg: var(--darkpanel); --sec-ink: var(--ondark);
+  --sec-mid: var(--ondarkmid); --sec-line: var(--linedark);
+  --sec-acc: var(--accondark);
+}
+
+[data-theme="accent"] {
+  --sec-bg: var(--acc);       --sec-ink: var(--onacc);
+  --sec-mid: rgba(255, 255, 255, .72); --sec-line: var(--lineacc);
+  --sec-acc: var(--onacc);
+}
+
+@theme inline {
+  /* sec-* utilities: bg-sec-bg, text-sec-ink, text-sec-mid,
+     border-sec-line, text-sec-acc */
+  --color-sec-bg: var(--sec-bg);
+  --color-sec-ink: var(--sec-ink);
+  --color-sec-mid: var(--sec-mid);
+  --color-sec-line: var(--sec-line);
+  --color-sec-acc: var(--sec-acc);
+
+  /* rhythm utilities: py-section-y, py-section-y-lg, px-gutter-x */
+  --spacing-section-y: var(--section-y);
+  --spacing-section-y-lg: var(--section-y-lg);
+  --spacing-gutter-x: var(--gutter-x);
+}
+
+/* ------------------------------------------------------------------ */
 /* Base styles                                                         */
 /* ------------------------------------------------------------------ */
 
