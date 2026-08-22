@@ -1,0 +1,495 @@
+{
+  "url": "https://e2.vc/impact",
+  "svgs": [
+    {
+      "parentClass": "w-embed",
+      "parentTag": "DIV",
+      "viewBox": null,
+      "w": 0,
+      "h": 0,
+      "pathCount": 0,
+      "firstPathD": "",
+      "stroke": "",
+      "strokeWidth": "",
+      "classes": ""
+    },
+    {
+      "parentClass": "w-embed",
+      "parentTag": "DIV",
+      "viewBox": null,
+      "w": 0,
+      "h": 0,
+      "pathCount": 0,
+      "firstPathD": "",
+      "stroke": "",
+      "strokeWidth": "",
+      "classes": "chromatic-svg-defs"
+    },
+    {
+      "parentClass": "bold-nav-full__logo _w-inline-block w-inline-block",
+      "parentTag": "A",
+      "viewBox": "0 0 84 24",
+      "w": 84,
+      "h": 24,
+      "pathCount": 3,
+      "firstPathD": "M24.0214 19.7005C25.9701 18.234 27.919 16.7676 29.8678 15.3013L24.0214 19.7005Z",
+      "stroke": "none",
+      "strokeWidth": "1px",
+      "classes": ""
+    },
+    {
+      "parentClass": "bold-nav-full__hamburger",
+      "parentTag": "BUTTON",
+      "viewBox": "0 0 64 64",
+      "w": 28,
+      "h": 28,
+      "pathCount": 24,
+      "firstPathD": "M56.22888496406377 34.50610032193363 C44.36844225227833 35.25608423345536, 34.94328281991184 27.733410018615427, 7.936653893068433 33.020072306320074 M52.313469535671175 32.68795638326556 C45.403093370236455 34.60950140967965, 34.74565356802195 33.12835261240602, 8.49102685507387 33.957321270741524",
+      "stroke": "rgb(28, 33, 33)",
+      "strokeWidth": "3.2px",
+      "classes": "bold-nav-full__menu-dot"
+    },
+    {
+      "parentClass": "page-shell__grid w-embed",
+      "parentTag": "DIV",
+      "viewBox": "0 0 1440 900",
+      "w": 1440,
+      "h": 900,
+      "pathCount": 5,
+      "firstPathD": "M 64.00 0.00 Q 64.00 25.71 64.00 38.57 Q 64.00 51.43 64.00 64.29 Q 64.00 77.14 64.00 90.00 Q 64.00 102.86 64.00 115.71 Q 64.00 128.57 64.00 141.43 Q 64.00 154.29 64.00 167.14 Q 64.00 180.00 64.00 192.86 Q 64.00 205.71 64.00 218.57 Q 64.00 231.43 64.00 244.29 Q 64.00 257.14 64.00 270.00 Q 64.00 282.8",
+      "stroke": "rgba(28, 33, 33, 0.15)",
+      "strokeWidth": "1px",
+      "classes": ""
+    },
+    {
+      "parentClass": "founder-cta__bracket",
+      "parentTag": "SPAN",
+      "viewBox": "0 0 389.0625 44.1875",
+      "w": 389,
+      "h": 44,
+      "pathCount": 48,
+      "firstPathD": "M12.857432274520397 3.532073374092579 C11.232455955259502 4.107636110633612, 8.655433432385326 3.5636291430890563, 5.295372824370861 5.360355205833912 M14.043202648311853 5.053786661475897 C10.814129347540439 4.6588522556424135, 8.926228074356914 4.891637981235981, 4.207101712375879 4.62550809606909",
+      "stroke": "rgb(52, 81, 245)",
+      "strokeWidth": "3px",
+      "classes": ""
+    },
+    {
+      "parentClass": "impact-docs__linegrid w-embed",
+      "parentTag": "DIV",
+      "viewBox": null,
+      "w": 1440,
+      "h": 1184,
+      "pathCount": 5,
+      "firstPathD": "M 0 0",
+      "stroke": "rgba(28, 33, 33, 0.15)",
+      "strokeWidth": "1px",
+      "classes": ""
+    },
+    {
+      "parentClass": "impact-card__cover",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 34,
+      "h": 34,
+      "pathCount": 24,
+      "firstPathD": "M15.628800550661982 51.831381004489955 C21.160305186178537 44.871246552739294, 27.903764300238343 32.17374586229399, 48.49217015262693 14.745437454618514 M12.76753542991355 50.50273735700175 C22.959775204733013 43.28206727974117, 30.257628901451827 34.231021205931896, 48.897288855630904 15.430350159",
+      "stroke": "rgb(28, 33, 33)",
+      "strokeWidth": "3px",
+      "classes": "impact-card__arrow"
+    },
+    {
+      "parentClass": "impact-card__cover",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 34,
+      "h": 34,
+      "pathCount": 24,
+      "firstPathD": "M15.628800550661982 51.831381004489955 C21.160305186178537 44.871246552739294, 27.903764300238343 32.17374586229399, 48.49217015262693 14.745437454618514 M12.76753542991355 50.50273735700175 C22.959775204733013 43.28206727974117, 30.257628901451827 34.231021205931896, 48.897288855630904 15.430350159",
+      "stroke": "rgb(28, 33, 33)",
+      "strokeWidth": "3px",
+      "classes": "impact-card__arrow"
+    },
+    {
+      "parentClass": "impact-card__cover",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 34,
+      "h": 34,
+      "pathCount": 24,
+      "firstPathD": "M15.628800550661982 51.831381004489955 C21.160305186178537 44.871246552739294, 27.903764300238343 32.17374586229399, 48.49217015262693 14.745437454618514 M12.76753542991355 50.50273735700175 C22.959775204733013 43.28206727974117, 30.257628901451827 34.231021205931896, 48.897288855630904 15.430350159",
+      "stroke": "rgb(28, 33, 33)",
+      "strokeWidth": "3px",
+      "classes": "impact-card__arrow"
+    },
+    {
+      "parentClass": "impact-card__cover",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 34,
+      "h": 34,
+      "pathCount": 24,
+      "firstPathD": "M15.628800550661982 51.831381004489955 C21.160305186178537 44.871246552739294, 27.903764300238343 32.17374586229399, 48.49217015262693 14.745437454618514 M12.76753542991355 50.50273735700175 C22.959775204733013 43.28206727974117, 30.257628901451827 34.231021205931896, 48.897288855630904 15.430350159",
+      "stroke": "rgb(28, 33, 33)",
+      "strokeWidth": "3px",
+      "classes": "impact-card__arrow"
+    },
+    {
+      "parentClass": "impact-card__cover",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 34,
+      "h": 34,
+      "pathCount": 24,
+      "firstPathD": "M15.628800550661982 51.831381004489955 C21.160305186178537 44.871246552739294, 27.903764300238343 32.17374586229399, 48.49217015262693 14.745437454618514 M12.76753542991355 50.50273735700175 C22.959775204733013 43.28206727974117, 30.257628901451827 34.231021205931896, 48.897288855630904 15.430350159",
+      "stroke": "rgb(28, 33, 33)",
+      "strokeWidth": "3px",
+      "classes": "impact-card__arrow"
+    },
+    {
+      "parentClass": "site-footer__grid w-embed",
+      "parentTag": "DIV",
+      "viewBox": "0 0 1440.015625 900",
+      "w": 1440,
+      "h": 900,
+      "pathCount": 5,
+      "firstPathD": "M 64.00 0.00 Q 64.00 25.71 64.00 38.57 Q 64.00 51.43 64.00 64.29 Q 64.00 77.14 64.00 90.00 Q 64.00 102.86 64.00 115.71 Q 64.00 128.57 64.00 141.43 Q 64.00 154.29 64.00 167.14 Q 64.00 180.00 64.00 192.86 Q 64.00 205.71 64.00 218.57 Q 64.00 231.43 64.00 244.29 Q 64.00 257.14 64.00 270.00 Q 64.00 282.8",
+      "stroke": "rgba(255, 255, 255, 0.15)",
+      "strokeWidth": "1px",
+      "classes": ""
+    },
+    {
+      "parentClass": "site-footer__meta-row w-embed",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 28,
+      "h": 28,
+      "pathCount": 24,
+      "firstPathD": "M56.22888496406377 34.50610032193363 C44.36844225227833 35.25608423345536, 34.94328281991184 27.733410018615427, 7.936653893068433 33.020072306320074 M52.313469535671175 32.68795638326556 C45.403093370236455 34.60950140967965, 34.74565356802195 33.12835261240602, 8.49102685507387 33.957321270741524",
+      "stroke": "rgb(252, 247, 240)",
+      "strokeWidth": "3.2px",
+      "classes": "site-footer__dot"
+    },
+    {
+      "parentClass": "site-footer__meta-row w-embed",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 28,
+      "h": 28,
+      "pathCount": 24,
+      "firstPathD": "M56.22888496406377 34.50610032193363 C44.36844225227833 35.25608423345536, 34.94328281991184 27.733410018615427, 7.936653893068433 33.020072306320074 M52.313469535671175 32.68795638326556 C45.403093370236455 34.60950140967965, 34.74565356802195 33.12835261240602, 8.49102685507387 33.957321270741524",
+      "stroke": "rgb(252, 247, 240)",
+      "strokeWidth": "3.2px",
+      "classes": "site-footer__dot"
+    },
+    {
+      "parentClass": "site-footer__meta-row w-embed",
+      "parentTag": "DIV",
+      "viewBox": "0 0 64 64",
+      "w": 28,
+      "h": 28,
+      "pathCount": 24,
+      "firstPathD": "M56.22888496406377 34.50610032193363 C44.36844225227833 35.25608423345536, 34.94328281991184 27.733410018615427, 7.936653893068433 33.020072306320074 M52.313469535671175 32.68795638326556 C45.403093370236455 34.60950140967965, 34.74565356802195 33.12835261240602, 8.49102685507387 33.957321270741524",
+      "stroke": "rgb(252, 247, 240)",
+      "strokeWidth": "3.2px",
+      "classes": "site-footer__dot"
+    },
+    {
+      "parentClass": "site-footer__clock w-embed",
+      "parentTag": "DIV",
+      "viewBox": "0 0 100 100",
+      "w": 352,
+      "h": 352,
+      "pathCount": 0,
+      "firstPathD": "",
+      "stroke": "",
+      "strokeWidth": "",
+      "classes": ""
+    }
+  ],
+  "ctas": [
+    {
+      "tag": "A",
+      "text": "Download Impact Report 2025",
+      "class": "nextgen-cta",
+      "outerHTML": "<a class=\"nextgen-cta\" href=\"https://docsend.com/view/vicve2pvvg825bic\" target=\"_blank\" rel=\"noopener noreferrer\" data-cta-bracket-link=\"\">\n    <span class=\"founder-cta__text\"><span class=\"founder-cta__text-inner\">Download Impact Report 2025</span></span>\n    <span data-cta-bracket=\"\" aria-hidden=\"true\" class=\"founder-cta__bracket\"><svg viewBox=\"0 0 389.0625 44.1875\" preserveAspectRatio=\"none\"><g filter=\"url(#ink-texture)\" style=\"display: none;\"><g><path d=\"M12.857432274520397 3.532073374092579 C11.232455955259502 4.107636110633612, 8.655433432385326 3.5636291430890563, 5.295372824370861 5.360355205833912 M14.043202648311853 5.053786661475897 C10.814129347540439 4.6588522556424135, 8.926228074356914 4.891637981235981, 4.207101712375879 4.6255080960690975\" stroke=\"#3451f5\" stroke-width=\"3\" fill=\"none\" style=\"stroke-dasharray: 17.6862, 18.6862; stroke-dashoffset: 0;\"></path></g><g><path d=\"M4.629897924885154 6.221482131257654 C0.3663052912388922 15.484428451587444, 6.522236871305574 17.128524445379153, 4.070458778366446 44.08444052673876 M5.664678804762661 2.9293346984311937 C5.101689892911445 15.41339088934939, 5.618027520083915 24.39093901599757, 2.0158828483894466 39.249724606983364\" stroke=\"#3451f5\" stroke-width=\"3\" fill=\"none\" style=\"stroke-dasharray: 74.7936, 75.7936; stroke-dashoffset: 0;\"></path></g><g><path d=\"M2.40067530721426 38.766504539549345 C7.409693277813494 39.97553385034203, 8.063936773315072 39.7728509260714, 12.755869923532009 38.76582881361246 M3.5674728460609915 39.650502210110425 C6.755566669814288 39.68194529950618, 11.473061891272664 39.691778659224504, 13.949903995543718 39.18451889082789\" stroke=\"#3451f5\" stroke-width=\"3\" fill=\"none\" style=\"stroke-dasharray: 20.9177, 21.9177; stroke-dashoffset: 0;\"></path></g><g><path d=\"M376.2064183399081 3.3009357050061228 C377.44916086513547 5.017981764823199, 380.5344006437808 5.156622883826495, 384.4788670226932 4.671302421391011 M375.7542430438101 5.147217758744955 C378.07839048113675 5.0594854706525805, 380.5201686862856 4.846366464495659, 384.75520627871157 4.643529685586691\" stroke=\"#3451f5\" stroke-width=\"3\" fill=\"none\" style=\"stroke-dasharray: 17.7473, 18.7473; stroke-dashoffset: 0;\"></path></g><g><path d=\"M383.1802346047014 5.585853541269898 C384.10381375722113 9.55751397412736, 386.0292358653945 21.8801635579858, 388.7656928237528 42.18954536952078 M384.11066489238294 3.186270215921104 C383.6782537215698 15.502816312308422, 382.3807315522182 22.222441441593688, 386.0637954058126 39.2992"
+    },
+    {
+      "tag": "A",
+      "text": "perkhub ↗",
+      "class": "w-inline-block",
+      "outerHTML": "<a data-draw-line=\"\" href=\"https://e2.vc/perkhub\" class=\"w-inline-block\"><span class=\"site-footer__link-text\">perkhub ↗</span><div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div></a>"
+    }
+  ],
+  "annotated": [
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__bracket",
+      "text": "",
+      "html": "<div data-nav-bracket=\"\" class=\"bold-nav-full__bracket\"></div>"
+    },
+    {
+      "tag": "SPAN",
+      "class": "founder-cta__bracket",
+      "text": "",
+      "html": "<span data-cta-bracket=\"\" aria-hidden=\"true\" class=\"founder-cta__bracket\"><svg viewBox=\"0 0 389.0625 44.1875\" preserveAspectRatio=\"none\"><g filter=\"url(#ink-texture)\" style=\"display: none;\"><g><path d=\"M12.857432274520397 3.532073374092579 C11.232455955259502 4.107636110633612, 8.655433432385326 3.5636291430890563, 5.295372824370861 5.360355205833912 M14.043202648311853 5.053786661475897 C10.814129347540439 4.6588522556424135, 8.926228074356914 4.891637981235981, 4.207101712375879 4.6255080960690975\" stroke=\"#3451f5\" stroke-width=\"3\" fill=\"none\" style=\"stroke-dasharray: 17.6862, 18.6862; stroke-dashoffset: 0;\"></path></g><g><path d=\"M4.629897924885154 6.221482131257654 C0.3663052912388922 15.484428451587444, 6.522236871305574 17.128524445379153, 4.070458778366446 44.08444052673876 M5.664678804762661 2.9293346984311937 C5.101689892911445 15.41339088934939, 5.618027520083915 24.39093901599757, 2.0158828483894466 39.249724606983364\" stroke=\"#3451f5\" stroke-width=\"3\" fill=\"none\" style=\"stroke-dasharray: 74.7936, 75.7936; stroke-dashoffset: 0;\"></path></g><g><path d=\"M2.40067530721426 38.766504539549345 C7.409693277813494 39.97553385034203, 8.063936773315072 39.7728509260714, 12.7558699"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    },
+    {
+      "tag": "DIV",
+      "class": "bold-nav-full__draw-box",
+      "text": "",
+      "html": "<div data-draw-line-box=\"\" class=\"bold-nav-full__draw-box\"></div>"
+    }
+  ],
+  "inlineScriptSnippets": [
+    "\n  /* iOS Safari fires window \"resize\" while scrolling because the URL bar\n       collapse/expand changes the viewport height. Anything that redraws on\n       resize (rough.js doodles especially) flickers on every scroll there.\n       Doodle redraws must go through this helper: it only fires the handler\n       when the viewport WIDTH actually changes (rotation / real resize). */\n  function onWidthResize(handler) {\n    let lastW = window.innerWidth;\n    window.addEventListener('resize', () => {\n      if (Math.abs(window.innerWidth - lastW) < 2) return;\n      lastW = window.innerWidth;\n      handler();\n    });\n  }\n\n  // Same problem at the ScrollTrigger level: toolbar height shifts trigger\n  // ScrollTrigger.refresh(), which re-runs refresh listeners mid-scro",
+    "\n  /* iOS Safari fires window \"resize\" while scrolling because the URL bar\n       collapse/expand changes the viewport height. Anything that redraws on\n       resize (rough.js doodles especially) flickers on every scroll there.\n       Doodle redraws must go through this helper: it only fires the handler\n       when the viewport WIDTH actually changes (rotation / real resize). */\n  function onWidthResize(handler) {\n    let lastW = window.innerWidth;\n    window.addEventListener('resize', () => {\n      if (Math.abs(window.innerWidth - lastW) < 2) return;\n      lastW = window.innerWidth;\n      handler();\n    });\n  }\n\n  // Same problem at the ScrollTrigger level: toolbar height shifts trigger\n  // ScrollTrigger.refresh(), which re-runs refresh listeners mid-scroll.\n  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {\n    gsap.reg",
+    "LineStates.length);\n      }\n\n      if (curtainSvg && curtainEl) {\n        const cH = curtainEl.clientHeight || H;\n        const cW = curtainSvg.getBoundingClientRect().width || W;\n        curtainSvg.setAttribute('viewBox', `0 0 ${cW} ${cH}`);\n        curtainLineStates = makeLineStates(cH);\n        clearStalePaths(curtainPaths, curtainLineStates.length);\n      }\n    }\n\n    // Build a smooth path through displaced points using quadratic Beziers\n    // with midpoint smoothing - cheaper than cubic, still curvy. Returns a d string.\n    function buildPath(baseX, samples, disp) {\n      const n = samples.length;\n      if (n < 2) return `M ${baseX} 0`;\n      let d = `M ${(baseX + disp[0]).toFixed(2)} ${samples[0].y.toFixed(2)}`;\n      for (let i = 1; i < n - 1; i++) {\n        const x0 = baseX + disp[i];\n        const y0 = samples[i].y;\n        const x1 = baseX + disp[i + 1];\n        const y1 = samples[i + 1].y;\n        const mx = (x0 + x1) * 0.5;\n        const my = (y0 + y1) * 0.5;\n        d +=",
+    "\n  function initBoldFullScreenNavigation() {\n    // Rough.js bracket doodle around the active nav link. Uses the same\n    // 8-frame \"boiling\" pattern as the doodle showcase so the stroke has a\n    // living, hand-drawn feel.\n    const reducedMotionNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\n    const drawNavBracket = () => {\n      const host = document.querySelector('.bold-nav-full__link.is--current [data-nav-bracket]');\n      if (!host || typeof rough === 'undefined') return;\n      const linkEl = host.closest('.bold-nav-full__link');\n      if (!linkEl) return;\n      const w = linkEl.offsetWidth;\n      const h = linkE",
+    "\n  function initBoldFullScreenNavigation() {\n    // Rough.js bracket doodle around the active nav link. Uses the same\n    // 8-frame \"boiling\" pattern as the doodle showcase so the stroke has a\n    // living, hand-drawn feel.\n    const reducedMotionNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\n    const drawNavBracket = () => {\n      const host = document.querySelector('.bold-nav-full__link.is--current [data-nav-bracket]');\n      if (!host || typeof rough === 'undefined') return;\n      const linkEl = host.closest('.bold-nav-full__link');\n      if (!linkEl) return;\n      const w = linkEl.offsetWidth;\n      const h = linkEl.offsetH",
+    "\n  function initBoldFullScreenNavigation() {\n    // Rough.js bracket doodle around the active nav link. Uses the same\n    // 8-frame \"boiling\" pattern as the doodle showcase so the stroke has a\n    // living, hand-drawn feel.\n    const reducedMotionNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\n    const drawNavBracket = () => {\n      const host = document.querySelector('.bold-nav-full__link.is--current [data-nav-bracket]');\n      if (!host || typeof rough === 'undefined') return;\n      const linkEl = host.closest('.bold-nav-full__link');\n      if (!linkEl) return;\n      const w = linkEl.offsetWidth;\n      const h = linkEl.offsetHeight;\n      if (!w || !h) return;\n      host.innerHTML = '';\n      const svgNS = 'http://www.w3.org/2000/svg';\n      const svg = document.createElementNS(svgNS, 'svg');\n      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);\n      svg.setAttribute('preserveAspectRatio', 'none')",
+    "() {\n    // Rough.js bracket doodle around the active nav link. Uses the same\n    // 8-frame \"boiling\" pattern as the doodle showcase so the stroke has a\n    // living, hand-drawn feel.\n    const reducedMotionNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\n    const drawNavBracket = () => {\n      const host = document.querySelector('.bold-nav-full__link.is--current [data-nav-bracket]');\n      if (!host || typeof rough === 'undefined') return;\n      const linkEl = host.closest('.bold-nav-full__link');\n      if (!linkEl) return;\n      const w = linkEl.offsetWidth;\n      const h = linkEl.offsetHeight;\n      if (!w || !h) return;\n      host.innerHTML = '';\n      const svgNS = 'http://www.w3.org/2000/svg';\n      const svg = document.createElementNS(svgNS, 'svg');\n      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);\n      svg.setAttribute('preserveAspectRatio', 'none');\n      host.appendChild(svg);\n\n      const rc = rough.svg(svg);\n      const accent = getComputedStyle(d",
+    "ound the active nav link. Uses the same\n    // 8-frame \"boiling\" pattern as the doodle showcase so the stroke has a\n    // living, hand-drawn feel.\n    const reducedMotionNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\n    const drawNavBracket = () => {\n      const host = document.querySelector('.bold-nav-full__link.is--current [data-nav-bracket]');\n      if (!host || typeof rough === 'undefined') return;\n      const linkEl = host.closest('.bold-nav-full__link');\n      if (!linkEl) return;\n      const w = linkEl.offsetWidth;\n      const h = linkEl.offsetHeight;\n      if (!w || !h) return;\n      host.innerHTML = '';\n      const svgNS = 'http://www.w3.org/2000/svg';\n      const svg = document.createElementNS(svgNS, 'svg');\n      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);\n      svg.setAttribute('preserveAspectRatio', 'none');\n      host.appendChild(svg);\n\n      const rc = rough.svg(svg);\n      const accent = getComputedStyle(document.documentElement).getPropertyVa",
+    ") return;\n      const w = linkEl.offsetWidth;\n      const h = linkEl.offsetHeight;\n      if (!w || !h) return;\n      host.innerHTML = '';\n      const svgNS = 'http://www.w3.org/2000/svg';\n      const svg = document.createElementNS(svgNS, 'svg');\n      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);\n      svg.setAttribute('preserveAspectRatio', 'none');\n      host.appendChild(svg);\n\n      const rc = rough.svg(svg);\n      const accent = getComputedStyle(document.documentElement).getPropertyValue('--e2vc-accent').trim() || '#3451f5';\n      const makeBase = (frame) => (extra) => {\n        const s = extra && extra.seed !== undefined ? extra.seed : 4;\n        return Object.assign(\n          {\n            roughness: 2.8,\n            strokeWidth: 3,\n            stroke: accent,\n            fill: 'none',\n          },\n          extra,\n          { seed: s + frame * 17 },\n        );\n      };\n      const inset = Math.max(6, Math.min(w, h) * 0.04);\n      const tipLen = Math.max(14, h * 0.12);\n      con",
+    "g.setAttribute('preserveAspectRatio', 'none');\n      host.appendChild(svg);\n\n      const rc = rough.svg(svg);\n      const accent = getComputedStyle(document.documentElement).getPropertyValue('--e2vc-accent').trim() || '#3451f5';\n      const makeBase = (frame) => (extra) => {\n        const s = extra && extra.seed !== undefined ? extra.seed : 4;\n        return Object.assign(\n          {\n            roughness: 2.8,\n            strokeWidth: 3,\n            stroke: accent,\n            fill: 'none',\n          },\n          extra,\n          { seed: s + frame * 17 },\n        );\n      };\n      const inset = Math.max(6, Math.min(w, h) * 0.04);\n      const tipLen = Math.max(14, h * 0.12);\n      const top = Math.max(4, h * 0.12);\n      const bot = h - Math.max(4, h * 0.12);\n      const left = inset;\n      const right = w - inset;\n      const drawBracket = (rc, b) => [rc.line(left + tipLen, top, left, top, b({ seed: 3, roughness: 1.6 })), rc.line(left, top, left, bot, b({ seed: 5, roughness: 2.2 })),",
+    "            stroke: accent,\n            fill: 'none',\n          },\n          extra,\n          { seed: s + frame * 17 },\n        );\n      };\n      const inset = Math.max(6, Math.min(w, h) * 0.04);\n      const tipLen = Math.max(14, h * 0.12);\n      const top = Math.max(4, h * 0.12);\n      const bot = h - Math.max(4, h * 0.12);\n      const left = inset;\n      const right = w - inset;\n      const drawBracket = (rc, b) => [rc.line(left + tipLen, top, left, top, b({ seed: 3, roughness: 1.6 })), rc.line(left, top, left, bot, b({ seed: 5, roughness: 2.2 })), rc.line(left, bot, left + tipLen, bot, b({ seed: 7, roughness: 1.6 })), rc.line(right - tipLen, top, right, top, b({ seed: 11, roughness: 1.6 })), rc.line(right, top, right, bot, b({ seed: 13, roughness: 2.2 })), rc.line(right, bot, right - tipLen, bot, b({ seed: 17, roughness: 1.6 }))];\n\n      const frames = [];\n      const firstPaths = [];\n      for (let f = 0; f < 8; f++) {\n        const frameG = document.createElementNS(svgNS, 'g');\n  ",
+    "\n  /* ---------- Text Reveal (word-by-word Y translate) ----------\n Applies to every [data-text-reveal] element.\n   - data-text-reveal=\"hero\"   → plays after loader ready (e2vc:ready).\n   - data-text-reveal=\"scroll\" → plays once the element scrolls into\n     view (ScrollTrigger at top 85%, once).\n Pure Y movement, no mask, no opacity. Snappy stagger. */\n  function drawHeadlineTasteScribble(heading) {\n    const tasteEl = heading.querySelector('.headline__friends');\n    if (!tasteEl || typeof rough === 'undefined') return;\n    if (tasteEl.__scribbled) return;\n    tasteEl.__scribbled = true;\n\n    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    let svg, rc;\n    const frames = [];\n\n    // Recomputes size/position and regenerates the ellipse paths in place,\n    // without removing or recreating the svg/group elements.\n    const renderFrames = () => {\n      const w = tasteEl.offsetWidth;\n      const h = tasteEl.offsetHeight;\n      const",
+    "reveal] element.\n   - data-text-reveal=\"hero\"   → plays after loader ready (e2vc:ready).\n   - data-text-reveal=\"scroll\" → plays once the element scrolls into\n     view (ScrollTrigger at top 85%, once).\n Pure Y movement, no mask, no opacity. Snappy stagger. */\n  function drawHeadlineTasteScribble(heading) {\n    const tasteEl = heading.querySelector('.headline__friends');\n    if (!tasteEl || typeof rough === 'undefined') return;\n    if (tasteEl.__scribbled) return;\n    tasteEl.__scribbled = true;\n\n    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    let svg, rc;\n    const frames = [];\n\n    // Recomputes size/position and regenerates the ellipse paths in place,\n    // without removing or recreating the svg/group elements.\n    const renderFrames = () => {\n      const w = tasteEl.offsetWidth;\n      const h = tasteEl.offsetHeight;\n      const padX = w * 0.18;\n      const padY = h * 0.32;\n      const svgW = w + padX * 2;\n      const svgH = h + padY * 2;",
+    " plays after loader ready (e2vc:ready).\n   - data-text-reveal=\"scroll\" → plays once the element scrolls into\n     view (ScrollTrigger at top 85%, once).\n Pure Y movement, no mask, no opacity. Snappy stagger. */\n  function drawHeadlineTasteScribble(heading) {\n    const tasteEl = heading.querySelector('.headline__friends');\n    if (!tasteEl || typeof rough === 'undefined') return;\n    if (tasteEl.__scribbled) return;\n    tasteEl.__scribbled = true;\n\n    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    let svg, rc;\n    const frames = [];\n\n    // Recomputes size/position and regenerates the ellipse paths in place,\n    // without removing or recreating the svg/group elements.\n    const renderFrames = () => {\n      const w = tasteEl.offsetWidth;\n      const h = tasteEl.offsetHeight;\n      const padX = w * 0.18;\n      const padY = h * 0.32;\n      const svgW = w + padX * 2;\n      const svgH = h + padY * 2;\n\n      svg.setAttribute('viewBox', `0 0 ${svgW} ",
+    "eady).\n   - data-text-reveal=\"scroll\" → plays once the element scrolls into\n     view (ScrollTrigger at top 85%, once).\n Pure Y movement, no mask, no opacity. Snappy stagger. */\n  function drawHeadlineTasteScribble(heading) {\n    const tasteEl = heading.querySelector('.headline__friends');\n    if (!tasteEl || typeof rough === 'undefined') return;\n    if (tasteEl.__scribbled) return;\n    tasteEl.__scribbled = true;\n\n    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    let svg, rc;\n    const frames = [];\n\n    // Recomputes size/position and regenerates the ellipse paths in place,\n    // without removing or recreating the svg/group elements.\n    const renderFrames = () => {\n      const w = tasteEl.offsetWidth;\n      const h = tasteEl.offsetHeight;\n      const padX = w * 0.18;\n      const padY = h * 0.32;\n      const svgW = w + padX * 2;\n      const svgH = h + padY * 2;\n\n      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);\n      svg.style.left =",
+    "    const svgW = w + padX * 2;\n      const svgH = h + padY * 2;\n\n      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);\n      svg.style.left = `${-padX}px`;\n      svg.style.top = `${-padY}px`;\n      svg.style.width = `${svgW}px`;\n      svg.style.height = `${svgH}px`;\n\n      frames.forEach((frameG, f) => {\n        const shape = rc.ellipse(svgW / 2, svgH / 2, svgW * 0.9, svgH * 0.82, {\n          roughness: 2.8,\n          strokeWidth: 3.5,\n          stroke: '#3451f5',\n          fill: 'none',\n          seed: 4 + f * 17,\n        });\n        frameG.replaceChildren(shape);\n      });\n    };\n\n    const drawRoughCircle = () => {\n      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\n      svg.setAttribute('class', 'taste-rough-circle');\n      svg.setAttribute('aria-hidden', 'true');\n      rc = rough.svg(svg);\n\n      for (let f = 0; f < 8; f++) {\n        const frameG = document.createElementNS('http://www.w3.org/2000/svg', 'g');\n        frameG.setAttribute('filter', 'url(#i",
+    "yle.width = `${svgW}px`;\n      svg.style.height = `${svgH}px`;\n\n      frames.forEach((frameG, f) => {\n        const shape = rc.ellipse(svgW / 2, svgH / 2, svgW * 0.9, svgH * 0.82, {\n          roughness: 2.8,\n          strokeWidth: 3.5,\n          stroke: '#3451f5',\n          fill: 'none',\n          seed: 4 + f * 17,\n        });\n        frameG.replaceChildren(shape);\n      });\n    };\n\n    const drawRoughCircle = () => {\n      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\n      svg.setAttribute('class', 'taste-rough-circle');\n      svg.setAttribute('aria-hidden', 'true');\n      rc = rough.svg(svg);\n\n      for (let f = 0; f < 8; f++) {\n        const frameG = document.createElementNS('http://www.w3.org/2000/svg', 'g');\n        frameG.setAttribute('filter', 'url(#ink-texture)');\n        if (f > 0) frameG.style.display = 'none';\n        svg.appendChild(frameG);\n        frames.push(frameG);\n      }\n\n      tasteEl.appendChild(svg);\n      renderFrames();\n\n      if (!reduce",
+    "vgW / 2, svgH / 2, svgW * 0.9, svgH * 0.82, {\n          roughness: 2.8,\n          strokeWidth: 3.5,\n          stroke: '#3451f5',\n          fill: 'none',\n          seed: 4 + f * 17,\n        });\n        frameG.replaceChildren(shape);\n      });\n    };\n\n    const drawRoughCircle = () => {\n      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\n      svg.setAttribute('class', 'taste-rough-circle');\n      svg.setAttribute('aria-hidden', 'true');\n      rc = rough.svg(svg);\n\n      for (let f = 0; f < 8; f++) {\n        const frameG = document.createElementNS('http://www.w3.org/2000/svg', 'g');\n        frameG.setAttribute('filter', 'url(#ink-texture)');\n        if (f > 0) frameG.style.display = 'none';\n        svg.appendChild(frameG);\n        frames.push(frameG);\n      }\n\n      tasteEl.appendChild(svg);\n      renderFrames();\n\n      if (!reducedMotion) {\n        gsap.registerPlugin(DrawSVGPlugin);\n        const paths = frames[0].querySelectorAll('path');\n        gsap.from(paths",
+    "        strokeWidth: 3.5,\n          stroke: '#3451f5',\n          fill: 'none',\n          seed: 4 + f * 17,\n        });\n        frameG.replaceChildren(shape);\n      });\n    };\n\n    const drawRoughCircle = () => {\n      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\n      svg.setAttribute('class', 'taste-rough-circle');\n      svg.setAttribute('aria-hidden', 'true');\n      rc = rough.svg(svg);\n\n      for (let f = 0; f < 8; f++) {\n        const frameG = document.createElementNS('http://www.w3.org/2000/svg', 'g');\n        frameG.setAttribute('filter', 'url(#ink-texture)');\n        if (f > 0) frameG.style.display = 'none';\n        svg.appendChild(frameG);\n        frames.push(frameG);\n      }\n\n      tasteEl.appendChild(svg);\n      renderFrames();\n\n      if (!reducedMotion) {\n        gsap.registerPlugin(DrawSVGPlugin);\n        const paths = frames[0].querySelectorAll('path');\n        gsap.from(paths, {\n          drawSVG: '0%',\n          duration: 2.0,\n          stagger: 0",
+    " 0,\n            duration: 0.7,\n            stagger: 0.045,\n            ease: 'power4.out',\n            paused: true,\n            onStart: () => {\n              gsap.set(el, { visibility: 'visible' });\n            },\n            onComplete: () => {\n              // Clear the line-mask clip once words have landed so\n              // absolutely-positioned decorations (e.g. the taste\n              // scribble) can overflow the line box.\n              el.querySelectorAll('.text-reveal-line, .text-reveal-line *').forEach((node) => {\n                const ov = node.style.overflow;\n                if (ov === 'clip' || ov === 'hidden' || node.classList.contains('text-reveal-line')) {\n                  node.style.overflow = 'visible';\n                }\n              });\n              el.classList.add('is-revealed');\n              if (el.querySelector('.headline__friends')) {\n                drawHeadlineTasteScribble(el);\n              }\n            },\n          });\n\n          if (mode === 'hero'"
+  ],
+  "headings": [
+    {
+      "tag": "H1",
+      "text": "Impact",
+      "fontSize": "135.36px",
+      "fontWeight": "600",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H2",
+      "text": "Impact Report celebrates the game changing successes of portfolio companies",
+      "fontSize": "64px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "01",
+      "fontSize": "64px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "Screening",
+      "fontSize": "32px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "02",
+      "fontSize": "64px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "Assesment",
+      "fontSize": "32px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "03",
+      "fontSize": "64px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "Categorization",
+      "fontSize": "32px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "04",
+      "fontSize": "64px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    },
+    {
+      "tag": "H3",
+      "text": "Reporting",
+      "fontSize": "32px",
+      "fontWeight": "700",
+      "transform": "lowercase"
+    }
+  ],
+  "bodyBg": "rgb(252, 247, 240)",
+  "textDump": "MENU\nfriends\ntribe\ntalent\nchill\ncontent\nimpact\nteam\nnextgen\n\nFOUNDERS BUILD A BETTER TOMORROW\n\nimpact\n\nour reports, disclosures, and policies\n\nthe record of how we invest and the standards we hold ourselves to\n\nDOWNLOAD IMPACT REPORT 2025\nimpact report celebrates the game changing successes of portfolio companies\n\ncreated e2.vc esg policy to guide our investment decisions in 4 steps\n\n01\nscreening\n\ninitial screening to highlight the key opportunities and risks of the investment\n\n02\nassesment\n\nesg questionnaire to  assess the current stage and future changes within the company\n\n03\ncategorization\n\ncategorizing companies into 3 groups based on their size and alignment with  un sdgs: starter, qualifier, and highlight\n\n04\nreporting\n\npost-investment evaluations and annual reports to support accountable companies\n\n22%\nwomen founders\nacross the portfolio with 56% of them having additional women leaders in executive positions\n16%\nimpact policies\nin place within portfolio, showing strong motivations towards constant value creation\n5756\njobs created\nin total of 9 years, contributing further to equitable institution-building\nfrom portfolio companies\nplum\n\nan app that empowers you to get your money motivated, letting you save, spend, earn and invest in one app with ease\n\nRead More\ncarbon health\n\na human-centered, tech-enabled healthcare company on a mission to remove traditional boundaries in healthcare and make high-quality, personalized care accessible to everyone\n\nRead More\nfazla\n\na technology-based, holistic waste management solution that prevents waste generation at its source\n\nRead More\ndiscover esg policy\nREPORT\n\n2025\n\nREPORT\n2025 Impact Report\nREPORT\n\n2024\n\nREPORT\n2024 Impact Report\nDISCLOSURE\n\nsfdr\n\nDISCLOSURE\nSFDR Disclosure\nPOLICY\n\nesg\n\nPOLICY\nESG Policy\nDOCUMENT\n\ngrievance\n\nPOLICY\nExternal Grievance Document\nSAN FRANCISCO\n3:45 PM\nLONDON\n11:45 PM\nISTANBUL\n1:45 AM\nFRIENDS\nTRIBE\nTALENT\nCHILL\nCONTENT\nIMPACT\nTEAM\nNEXTGEN\nDISCLAIMER\nLINKEDIN ↗\nEMAIL ↗\nPERKHUB ↗\n© 2026 E2VC\nR TO RESET · HOLD SPACE FOR SPACEJUMP\nFOUNDER\nCOMPANY"
+}

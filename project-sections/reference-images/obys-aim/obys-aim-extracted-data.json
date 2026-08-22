@@ -1,0 +1,163 @@
+{
+  "url": "https://aim.obys.agency/",
+  "title": "AIM— AI Modernism Of Kharkiv",
+  "meta": {
+    "description": "This AI experiment delves into a contemporary reimagining of the Kharkiv Modernism  movement from 1910 to 1930. Drawing inspiration from the avant-garde artists and intellectuals of that era, we employs cutting-edge artificial intelligence techniques to reinterpret and revive their visionary ideas. By leveraging modern technology, we aim to uncover new perspectives on the artistic, architectural, and cultural legacy of Kharkiv Modernism.",
+    "og:title": "AIM— AI Modernism Of Kharkiv",
+    "og:description": "This AI experiment delves into a contemporary reimagining of the Kharkiv Modernism  movement from 1910 to 1930. Drawing inspiration from the avant-garde artists and intellectuals of that era, we employs cutting-edge artificial intelligence techniques to reinterpret and revive their visionary ideas. By leveraging modern technology, we aim to uncover new perspectives on the artistic, architectural, and cultural legacy of Kharkiv Modernism.",
+    "og:image": "https://cdn.prod.website-files.com/6543bb275c1f9a259661c7c8/6565e20dd972e9657cc90650_AIM.webp",
+    "twitter:description": "This AI experiment delves into a contemporary reimagining of the Kharkiv Modernism  movement from 1910 to 1930. Drawing inspiration from the avant-garde artists and intellectuals of that era, we employs cutting-edge artificial intelligence techniques to reinterpret and revive their visionary ideas. By leveraging modern technology, we aim to uncover new perspectives on the artistic, architectural, and cultural legacy of Kharkiv Modernism.",
+    "og:type": "website"
+  },
+  "fonts": [
+    "webflow-icons normal normal",
+    "Khtekatrial 500 normal",
+    "Khtekatrial 400 normal"
+  ],
+  "colors": [],
+  "easings": [],
+  "cssVariables": {},
+  "bodyStyle": {
+    "fontFamily": "Khtekatrial, sans-serif",
+    "fontSize": "14.4px",
+    "background": "rgb(231, 228, 223)",
+    "color": "rgb(20, 20, 20)"
+  },
+  "headings": [
+    {
+      "tag": "H3",
+      "text": "[Close]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "Gallery:",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[01]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[02]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[03]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[04]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[01]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[05]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[06]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[07]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[08]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    },
+    {
+      "tag": "H3",
+      "text": "[09]",
+      "fontFamily": "Khtekatrial",
+      "fontSize": "13.68px",
+      "fontWeight": "400",
+      "lineHeight": "12.7029px",
+      "letterSpacing": "normal",
+      "textTransform": "none"
+    }
+  ],
+  "links": [
+    "/experiment",
+    "/about"
+  ],
+  "scripts": [
+    "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6543bb275c1f9a259661c7c8",
+    "https://cdn.prod.website-files.com/6543bb275c1f9a259661c7c8/js/webflow.schunk.36b8fb49256177c8.js",
+    "https://cdn.prod.website-files.com/6543bb275c1f9a259661c7c8/js/webflow.schunk.82f44582d86d1ea9.js",
+    "https://cdn.prod.website-files.com/6543bb275c1f9a259661c7c8/js/webflow.schunk.1516315476b8a910.js",
+    "https://cdn.prod.website-files.com/6543bb275c1f9a259661c7c8/js/webflow.8d0485b5.bd041a80ca53dd88.js",
+    "https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.27/bundled/lenis.min.js",
+    "https://www.googletagmanager.com/gtag/js?id=G-LF0875R9PJ"
+  ],
+  "canvasCount": 0,
+  "textDump": "AI Modernism of Kharkiv [Ukraine]\nIndex\n/\nExperiment\n/\nAbout\n[Gallery]\nObys Agency ©2025\nAI Modernism of Kharkiv [Ukraine]\nIndex\n/\nExperiment\n/\nAbout\n[Gallery]\nObys Agency ©2025\nModernists:\nE01: Anatol Petrytskiy\nE02: Vasyl Ermilov\nE03: Oleksandr Khvostenko-Khvostov\nE04: Borys Kosarev\nE05: Vadym Meller\nAIM—\nAI Modernism\nOf Kharkiv\nScroll to Explore\nThis AI experiment delves into a\ncontemporary reimagining of the Kharkiv\nModernism[*] movement from 1910 to\n1930. Drawing inspiration from the avant-\ngarde artists and intellectuals of that era,\nwe employ cutting-edge artificial[**]\nintelligence techniques to reinterpret and\ngarde artists and intellectuals of that era,\nrevive their visionary ideas.\nBy leveraging modern technology, we[***]\naim to uncover new perspectives on the\nartistic, architectural, and cultural legacy\nof Kharkiv Modernism.\n[*] — Collective name 1910-30 Kharkiv’s artists\n[**] — Main visual AI tool is\nMidjourney\n[***] — Experiment produced by\nObys\nExplore\nExperiment\nLearn More\nKharkiv Modernism × Obys × AI\n1\n2\n3\n4\n5\n6\n—\n6\n[06] Featured:\nName:\nSuprematista\nBuntesglas\nVierensee\nFormen\nSesselbaa\nSalzfeld\n©2025\nAn AI Experiment Based on the Kharkiv Modernism\nObys Agency ©2023"
+}
