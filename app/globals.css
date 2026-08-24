@@ -194,6 +194,16 @@
 /* ------------------------------------------------------------------ */
 
 @theme static {
+  /* Viewport-scale display for the homepage hero and overlay menu
+     (added 2026-08-23, direction pivot: lusion/e2vc hero scale) */
+  --text-display: clamp(52px, 34px + 6.2vw, 124px);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.015em;
+
+  --text-menu: clamp(36px, 24px + 2.6vw, 64px);
+  --text-menu--line-height: 1.1;
+  --text-menu--letter-spacing: -0.01em;
+
   --text-h1: clamp(40px, 31px + 2.3vw, 64px);
   --text-h1--line-height: 1.05;
   --text-h1--letter-spacing: -0.01em;
@@ -310,6 +320,101 @@
   --spacing-section-y: var(--section-y);
   --spacing-section-y-lg: var(--section-y-lg);
   --spacing-gutter-x: var(--gutter-x);
+}
+
+/* ------------------------------------------------------------------ */
+/* Pill buttons and directional fill (STYLE_GUIDE.md 6.1)              */
+/* ------------------------------------------------------------------ */
+
+@layer components {
+  .pill {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 14px 24px;
+    font-family: var(--t);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 768px) {
+    .pill { padding: 16px 28px; }
+  }
+
+  .pill-sm,
+  .pill.pill-sm { padding: 12px 20px; }
+
+  .pill-primary {
+    background: var(--acc);
+    color: var(--onacc);
+    transition:
+      transform var(--dur-fast) var(--ease-house),
+      box-shadow var(--dur-fast) var(--ease-house);
+  }
+  .pill-primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(11, 15, 23, .08);
+  }
+  .pill-primary:active { transform: scale(.98); }
+  /* The one full-accent surface inverts the primary pill (6.1) */
+  [data-theme="accent"] .pill-primary {
+    background: var(--onacc);
+    color: var(--acc);
+  }
+
+  /* Directional fill (pxpush, 6.1): ::before scales up from the bottom
+     on hover and exits through the top on leave; transform-origin swaps
+     between states because it is not transitionable. */
+  .pill-secondary {
+    border: 1px solid var(--sec-ink);
+    color: var(--sec-ink);
+    transition: color var(--dur-fast) var(--ease-house);
+  }
+  .pill-secondary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--sec-ink);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .3s var(--ease-swoop);
+  }
+  .pill-secondary:hover {
+    color: var(--sec-bg);
+  }
+  .pill-secondary:hover::before {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+
+  /* Reduced motion (7.8): hover feedback is color/opacity only */
+  @media (prefers-reduced-motion: reduce) {
+    .pill-primary:hover,
+    .pill-primary:active { transform: none; }
+    .pill-primary:hover { opacity: .9; }
+    .pill-secondary::before { transition: none; }
+  }
+}
+
+/* Reduced motion for shadcn floating chrome (STYLE_GUIDE.md 7.8): panels
+   and sheets appear settled, no slide or fade choreography. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="navigation-menu-content"],
+  [data-slot="navigation-menu-viewport"],
+  [data-slot="sheet-content"],
+  [data-slot="sheet-overlay"],
+  [data-slot="menu-overlay"],
+  [data-slot="accordion-content"] {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------ */

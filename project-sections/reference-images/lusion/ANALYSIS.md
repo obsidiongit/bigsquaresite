@@ -8,6 +8,10 @@ Status: creative ceiling reference. Lusion is a 3D/interactive studio showing of
 
 Their base palette is nearly ours already: light cool lavender-gray page (`#EFEFF6` range), near-black ink, one electric blue (`#2242F5` range vs our `#0657F9`), white and dark pills for UI. They prove the exact BigSquare palette can feel world-class with zero extra colors. Everything below transfers without any color translation.
 
+## Live scroll capture (added 2026-08-23)
+
+`live-scroll-capture/` holds 15 wheel-driven frames of the live site (their scroll is hijacked, so window.scrollTo does nothing; drive it with mouse.wheel and ~850ms settle per step) plus `dom-notes.json`. Frames 03 to 09 are the money sequence for the hero rework: the rope arcs in from top-left and its tip leads to the emerging media (05), the reel enters as a bent tilted plane under the looping rope (07), and it settles into a crisp near-full-bleed frame with registration marks (09). DOM notes confirm one fixed full-viewport WebGL canvas renders rope + reel; the DOM carries only type and pills.
+
 ## Screenshot index
 
 | File | What it shows |

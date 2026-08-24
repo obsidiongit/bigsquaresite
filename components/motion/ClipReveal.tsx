@@ -14,6 +14,8 @@ type Props = {
   children: React.ReactNode;
   className?: string;
   radius?: string;
+  /** Hero exception (7.3): animate on mount instead of on view */
+  onMount?: boolean;
 };
 
 const frameVariants = (radius: string): Variants => ({
@@ -29,7 +31,12 @@ const mediaVariants: Variants = {
   show: { scale: 1, transition: { duration: 0.8, ease: EASE.soft } },
 };
 
-export function ClipReveal({ children, className, radius = "24px" }: Props) {
+export function ClipReveal({
+  children,
+  className,
+  radius = "24px",
+  onMount = false,
+}: Props) {
   const reduced = useReducedMotionSafe();
 
   if (reduced) {
@@ -46,8 +53,9 @@ export function ClipReveal({ children, className, radius = "24px" }: Props) {
       style={{ borderRadius: radius }}
       variants={frameVariants(radius)}
       initial="hidden"
-      whileInView="show"
-      viewport={VIEWPORT_ONCE}
+      {...(onMount
+        ? { animate: "show" }
+        : { whileInView: "show", viewport: VIEWPORT_ONCE })}
     >
       <motion.div variants={mediaVariants}>{children}</motion.div>
     </motion.div>

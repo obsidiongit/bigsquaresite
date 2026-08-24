@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 // in Phase 7 (spec: project-sections/conversion/audit.md).
 export default function AuditPage() {
   return (
-    <main className="mx-auto max-w-[720px] px-[clamp(20px,4vw,48px)] py-16 text-center md:py-24">
+    <main className="mx-auto max-w-[720px] px-[clamp(20px,4vw,48px)] pt-32 pb-16 text-center md:pt-40 md:pb-24">
       <h1 className="font-display text-[40px] leading-[1.05] tracking-[-0.015em] text-ink md:text-[64px]">
         Get a free marketing audit
       </h1>

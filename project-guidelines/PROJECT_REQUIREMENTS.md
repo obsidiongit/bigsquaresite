@@ -32,7 +32,8 @@ Do not install anything not listed here. To add one: list it here first with a o
 | roughjs | Hand-drawn annotation system (bracket CTA, circled word, underlines), a STYLE_GUIDE.md signature move; ~9KB |
 | @next/mdx, @mdx-js/loader, @mdx-js/react | MDX blog posts in the repo |
 | zod | Validate the single form server action payload |
-| three, @react-three/fiber, @react-three/drei | Optional; only if a spec's 3D element ships |
+| three, @react-three/fiber (+ @types/three dev) | Hero v5 WebGL film sheet (2.hero.md); lazy-loaded, under 200KB gz, never LCP per STYLE_GUIDE 7.9 |
+| @react-three/drei | Sanctioned but NOT installed; add only when a spec needs one of its helpers (keeps the 3D chunk lean) |
 
 ## Environment variables (from decisions.md)
 | Var | Use |

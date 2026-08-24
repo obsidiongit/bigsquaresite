@@ -89,6 +89,9 @@ type Props = {
       Leave undefined to draw once when the element enters the viewport. */
   active?: boolean;
   delay?: number;
+  /** Render pre-drawn: no draw-on, no boil (nav active-link underline,
+      1.nav.md). Same output as the reduced-motion branch. */
+  staticRender?: boolean;
 };
 
 export function RoughAnnotation({
@@ -97,8 +100,10 @@ export function RoughAnnotation({
   className,
   active,
   delay = 0,
+  staticRender = false,
 }: Props) {
-  const reduced = useReducedMotion();
+  const reducedPref = useReducedMotion();
+  const reduced = reducedPref || staticRender;
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { margin: IN_VIEW_MARGIN });
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
