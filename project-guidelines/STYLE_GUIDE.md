@@ -293,7 +293,7 @@ Slots: eyebrow row (Nº label, with a `<SeparatorIn>` hairline above it), H2 (ba
 
 ### 6.5 Nav
 
-- 72px bar. Logo left, links Apfel 500 Title Case, "Get Started" primary pill right (small: 12px 20px padding).
+- 72px bar. Logo left, links Apfel 500 Title Case, "Schedule a Call" primary pill right (small: 12px 20px padding). (Was "Get Started"; changed 2026-08-23 for two-CTA label consistency across the page.)
 - Over the page top: transparent, no border. After 40px scroll: `--paper` at 85% + backdrop blur + 1px `--line` bottom border (moodboard).
 - Mega menu: light `--paper` panel, radius 24, soft shadow, three clean columns with small lucide icons (youtech reference crops). Mobile: shadcn Sheet.
 - Active link marker: a static hand-drawn underline in `--acc` (annotation system, no boil in the nav). If it reads busy in build, fall back to a plain 2px `--acc` underline and note it here.
@@ -321,6 +321,16 @@ The accent CTA band (shared component) sits directly above the footer on every p
 ### 6.9 Ad credit popup
 
 Scorpion structure per moodboard: logo, one offer, one deadline, one button. shadcn Dialog, radius 24, `--paper` ground, primary pill, mono deadline line driven by `POPUP_DEADLINE`. Exit intent + mobile trigger, 14-day localStorage, route exclusions per spec.
+
+### 6.10 Numbered ruled list
+
+The editorial list pattern (e2vc impact 01-04 rows + pxpush benefits rows + obys rule discipline). A stack of full-width rows, each on a 1px `--sec-line` top hairline, with a closing hairline under the last row:
+
+- Left: `[01]` bracketed mono index in `--sec-acc`, tabular nums (6.2 family).
+- Then: the row's text in Apfel 700 (`--text-h3` scale for major lists, 18px for compact lists), optional one-liner in `--sec-mid` below, optional 16px lucide icon between index and text.
+- Entry: each row's hairline draws via `<SeparatorIn>`, text uses `<Reveal>`, 80ms stagger between rows. Rows that link get the rule-link hover (arrow +4px, hairline darkens).
+
+Uses: homepage problem pain points and portal feature rows (built in Phase 2); service-page deliverable lists and industry-page sections later. Works on every ground via `sec-*` tokens. This pattern replaces icon-grid and card-row layouts for enumerations; reach for cards only when the content is truly card-shaped (media, metrics, self-contained compositions).
 
 ---
 
@@ -457,20 +467,22 @@ Sequencing aid for Phase 2 (sections from `project-sections/home/`, spec order w
 
 | Section | Theme | Patterns |
 |---|---|---|
-| 1. Nav | n/a | Scroll solidify, mega menu, annotation active state |
-| 2. Hero | light | Framed media panel + ClipReveal, WordReveal H1 + circled word, registration marks, two-CTA pair |
-| 3. Trust marquee | light | Logo tiles, marquee rules (7.5) |
-| 4. Problem | light | SectionHeader, Reveal, x-glyphs in `--mid` (not red) |
-| 5. Solution | tint | SectionHeader, base cards, Reveal stagger |
-| 6. Services | light | Bracketed indexes, rule links, Reveal |
-| 7. Proof numbers | dark | SectionWipe entry, stat tiles, CountUp |
-| 8. Case studies | light | Case study cards, chips, CountUp |
-| 9. Obsidion portal | tint | UI-fragment illustrations, ClipReveal; 3D/sequence only if spec asks |
-| 10. How it works | light | Timeline cards, SeparatorIn line draw, day-range chips |
-| 11. Testimonials | tint | Testimonial lockup, CountUp metric |
+| 1. Nav | n/a | Ink-on-paper from frame one, scroll solidify, mega menu, static annotation active state |
+| 2. Hero | light | Statement over panel: type on paper (TitleAssemble eyebrow, WordReveal H1 + circled word), then the framed media panel (ClipReveal, registration marks), two-CTA pair, info bar closes the region |
+| 3. Trust marquee | light | Bordered logo tiles, marquee rules (7.5), the page's one velocity element |
+| 4. Problem | light | The page's one `--text-statement` headline (BaselineReveal), numbered ruled list (6.10) |
+| 5. Solution | tint | SectionHeader, unequal bento panels (one dark, zero accent), UI-fragment chips with no fake numbers |
+| 6. Services | light | Ruled index tables (RuledLinkTable), directional fills, rule links |
+| 7. Proof numbers | dark | SectionWipe entry, borderless stat tiles in `--accondark`, CountUp |
+| 8. Case studies | light | Case study cards (chip lockup + outcome-first headline), CountUp |
+| 9. Obsidion portal | tint | FramedMediaPanel preview with "PORTAL PREVIEW" chip, numbered ruled list features; scrubbed set piece deferred until real assets |
+| 10. How it works | light | Outlined process cards, day-range chips, connecting SeparatorIn rule |
+| 11. Testimonials | tint | Testimonial lockup, CountUp metric, mono 1/2 counter |
 | 12. FAQ | light | Accordion container, FAQPage JSON-LD |
-| 13. Final CTA | accent | The one accent surface; Bracket CTA as secondary |
-| Footer | dark | Info bar, mono link tables, clocks, cropped wordmark |
+| 13. Final CTA | accent | The one accent surface; inverted primary pill, Bracket CTA secondary, `--lineacc` rails |
+| Footer | dark | Info bar, ruled mono link tables, DEN/TPA clocks, cropped wordmark |
+
+Homepage annotation map (the 3-per-page budget, instantiated): the hero circle on "each one", the nav's static active-link underline, and the CTA band's bracket. Nothing else on the homepage is hand-drawn. Nº labels run 001 INTRO through 008 PROCESS (hero, problem, solution, services, proof, results, portal, process); trust, testimonials, FAQ, CTA band, and footer carry none.
 
 ## 10. Accessibility and quality bar
 
@@ -485,5 +497,6 @@ Sequencing aid for Phase 2 (sections from `project-sections/home/`, spec order w
 
 ## Changelog
 
+- **2026-08-23 (Phase 2 direction lock)**: The 13 home specs and the shared CTA band and footer specs were rewritten into reference-grounded design briefs after Brad flagged them as generic; the old specs pre-dated the scrape and three contradicted this guide (full-bleed hero, dark CTA band, over-video nav rules). Decisions locked with Brad: hero composition is statement-over-panel (lusion structure, type on paper above the framed panel); problem uses the page's single `--text-statement` headline plus the new numbered ruled list; solution is an unequal bento (one dark panel, zero accent); services are ruled index tables mirroring the footer treatment; the one scroll-scrubbed set piece stays unspent until real Obsidion assets exist. Added 6.10 (numbered ruled list). Updated the section 9 effect map to match the briefs and added the homepage annotation map and Nº numbering. Nav pill label changed from "Get Started" to "Schedule a Call" in 6.5 for two-CTA consistency. Build order restructured in tasks.md into phases 2A to 2J, one session each, brief first.
 - **2026-08-21 (groundwork build)**: Section 5 selectors changed from `section[data-theme]` to `[data-theme]` so themed non-`<section>` elements (the dark footer) work with one component; `:root` now carries light-value `sec-*` defaults so sec-* components resolve outside a themed scope. Section 3.2 gained the tailwind-merge note: without registering the custom text-* utilities as font-size classes, `cn()` classed them as text colors and dropped them (found when H2s rendered at body size). Implementation notes: reduced-motion branches use a hydration-safe hook (`useReducedMotionSafe`) because reading the media query on first client render breaks hydration; the annotation boil runs 3 frames at 200ms.
 - **2026-08-21**: Initial version. Generated from `0.design-moodboard.md` plus the nine reference analyses (e2vc as primary identity anchor; lusion, pear-no, pxpush, obys-aim, dropbox-brand, youtech-agency, readymag, metacci contributing the specific elements credited inline). Direction changes vs the moodboard, agreed in the synthesis session: framed hero panel replaces the full-bleed video hero; the closing CTA band becomes the single full-accent surface (footer stays dark); named ease trio replaces the single fade-up spec (fade-up remains the block default); added `--accondark`, `--linedark`, `--lineacc`, `--radius-media`, selection color, per-section `data-theme` scopes, and the signature kit (annotations, hairline system, Nº labels, pixel cursor, directional fills).

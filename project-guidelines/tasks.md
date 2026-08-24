@@ -35,32 +35,27 @@ Groundwork: build these with the first section that needs them (the hero needs a
 
 Groundwork notes (2026-08-21): dev-only test bed at `app/dev/styleguide/page.tsx` (404s outside development, not in sitemap.ts) renders every primitive on all four theme grounds; verified 375/768/1280/1536 plus reduced motion, no horizontal overflow, no hydration errors. Site favicon is still missing (404s); needs a real icon asset in a later session.
 
-Sections:
-- [ ] 1. Nav (desktop mega menu + mobile Sheet, scroll behavior, annotation active-link marker)
-- [ ] 2. Hero (framed media panel per STYLE_GUIDE.md: rounded-24 inset panel, dark abstract placeholder loop with swappable video file, ClipReveal entry, WordReveal headline with one circled word, registration marks, two-CTA pair)
-- [ ] 3. Trust logo marquee (CSS animation, grayscale hover, reduced-motion grid)
-- [ ] 4. Problem (two-column, four pain points)
-- [ ] 5. Solution (headline block + three differentiator cards)
-- [ ] 6. Services overview (three linked columns)
-- [ ] 7. Proof numbers (dark band via `data-theme="dark"`, SectionWipe stepped-column entrance, 3 metrics, count-up, `metrics` array)
-- [ ] 8. Case studies (3 cards at launch, grid supports 6, uses shared card)
-- [ ] 9. Obsidion portal (blurred "Portal preview" frame + five feature blocks)
-- [ ] 10. How it works (90-day timeline, line draw on scroll)
-- [ ] 11. Testimonials (carousel, 2 at launch, uses shared card)
-- [ ] 12. FAQ (accordion + FAQPage JSON-LD from one data array)
-- [ ] 13. Final CTA band (build as the shared component; `data-theme="accent"`, the page's one full-blue surface, Bracket CTA as secondary)
-- [ ] Footer (build as the shared component; homepage ships with it)
-- [ ] Homepage metadata, OG image, Lighthouse pass (CWV green)
+Restructured 2026-08-23 with Brad: the old flat section list risked a one-shot generic build. Every home spec in `project-sections/home/` was rewritten into a reference-grounded design brief v2 (the old specs pre-dated the scrape and cited only Youtech/Scorpion; three contradicted STYLE_GUIDE.md). Locked decisions from that session: hero is statement-over-panel; problem/solution/services go editorial + bento (statement + numbered ruled rows, unequal bento, ruled index tables); motion is the specced system only with the scrubbed portal set piece deferred until real assets; build runs in the paired phases below, one phase per session, hero first.
+
+Per-phase loop: read the brief and open its "Steal from" reference frames, build, screenshot 375/768/1280/1536 plus reduced motion, review with Brad, 1 to 2 focused iteration rounds, then check off.
+
+- [ ] 2A. Hero (`2.hero.md`; also builds FramedMediaPanel and TitleAssemble)
+- [ ] 2B. Nav (`1.nav.md`; ink-on-paper bar, mega menu, Sheet, static annotation active marker)
+- [ ] 2C. Trust marquee + Problem (`3.trust.md`, `4.problem.md`; also builds the numbered ruled list, STYLE_GUIDE 6.10)
+- [ ] 2D. Solution + Services (`5.solution.md`, `6.services.md`; also builds BentoPanel, RuleLink, RuledLinkTable)
+- [ ] 2E. Proof band + Case studies (`7.proof-numbers.md`, `8.case-studies.md`; also builds SectionWipe, MetricBlock, CaseStudyCard)
+- [ ] 2F. Obsidion portal (`9.portal.md`; reuses FramedMediaPanel and the numbered ruled list)
+- [ ] 2G. How it works + Testimonials (`10.how-it-works.md`, `11.testimonials.md`; also builds ProcessCard, TestimonialCard)
+- [ ] 2H. FAQ + Final CTA band (`12.faq.md`, `13.final-cta.md`; builds the shared CtaBand, the page's one accent surface)
+- [ ] 2I. Footer (`shared/footer.md`; builds Footer and OfficeClocks)
+- [ ] 2J. Homepage metadata, OG image, real favicon asset (404s today), Lighthouse pass (CWV green)
 
 ## Phase 3: Shared components (whatever Phase 2 did not already produce)
-- [ ] CTA band: extract/finalize as shared, props per spec
-- [ ] Footer: finalize (accordion columns on mobile, badge slot renders nothing until earned; set piece per STYLE_GUIDE.md 6.8: ruled mono link tables, DEN/TPA clocks, cropped wordmark)
+Trimmed 2026-08-23: CTA band, footer, case study card, testimonial card, metric block, and TitleAssemble now ship inside build phases 2A to 2I above.
 - [ ] PixelTrail cursor (quiet blue square trail, desktop pointer-fine only, off under reduced motion; STYLE_GUIDE.md 7.6)
-- [ ] Effect library v2 as section specs demand: TitleAssemble, TypeOn, StickyShowcase, chapter rail, manifesto darkening (STYLE_GUIDE.md 7.3, 7.4)
+- [ ] Effect library v2 as section specs demand: TypeOn, StickyShowcase, chapter rail, manifesto darkening (STYLE_GUIDE.md 7.3, 7.4)
 - [ ] Ad credit popup (Dialog, exit intent + mobile triggers, 14-day localStorage, route exclusions, POPUP_DEADLINE)
-- [ ] Case study card (props per spec, count-up metric)
-- [ ] Testimonial card (props per spec)
-- [ ] Metric block (shared count-up number + label)
+- [ ] Portal scroll set piece once real Obsidion assets exist (deferred 2026-08-23; STYLE_GUIDE 7.4 frame sequence or fragment assembly)
 
 ## Phase 4: Service, industry, and location pages
 Create the spec from the template before building each page; order matches sitemap.md.
