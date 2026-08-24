@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { FeaturedWork } from "@/components/sections/home/FeaturedWork";
 import { Hero } from "@/components/sections/home/Hero";
 import { HomeStage } from "@/components/sections/home/HomeStage";
-import { Problem } from "@/components/sections/home/Problem";
+import { ProblemStrip } from "@/components/sections/home/ProblemStrip";
 import { Services } from "@/components/sections/home/Services";
 import { Solution } from "@/components/sections/home/Solution";
 import { TrustMarquee } from "@/components/sections/home/TrustMarquee";
@@ -26,7 +26,7 @@ export default function HomePage() {
       <HomeStage>
         <Hero />
         <FeaturedWork />
-        <Problem />
+        <ProblemStrip />
         <Solution />
         <Services />
         <TrustMarquee />
