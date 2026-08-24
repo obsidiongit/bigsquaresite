@@ -35,13 +35,16 @@ import { EASE } from "@/lib/motion";
    these, useScrollCheckpoints glides the page to the boundary the
    gesture was heading for, so no beat (headline exit, balloon,
    reform) can be left parked half-played. The K-clock factors mirror
-   the scrub timeline: 0.60 sits inside the held-card beat (flatten
-   and gate done, side text fully in, balloon not started) and 0.98
-   is the settled panel with its meta in, just before the reform. */
+   the scrub timeline: 0.60 sits inside the fully-held card beat
+   (side text and the v6.1 card-beat headline both in by 0.58, balloon
+   not started until 0.62). The settled-panel rest sits at exactly
+   HERO_K, the frame where the reform takes over: parking it earlier
+   (the old 0.98K) left a dead zone ahead of the reform band that made
+   its boundary feel sticky (Brad, 2026-08-24 review). */
 const CHECKPOINTS = [
   0, /* the statement */
-  0.6 * HERO_K, /* the held film card + side text */
-  0.98 * HERO_K, /* the settled framed panel */
+  0.6 * HERO_K, /* the held film card: side text + card-beat headline */
+  HERO_K, /* the settled framed panel, reform's doorstep */
   1, /* reform complete, the cube released as companion */
 ];
 

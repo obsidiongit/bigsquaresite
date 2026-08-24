@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { getLenis } from "@/components/motion/SmoothScroll";
 
 /* useScrollCheckpoints (STYLE_GUIDE 7.4, scroll checkpoints): idle-
    settle for a pinned scrub wrapper. Native scroll stays locked:
@@ -24,13 +25,26 @@ type Options = {
 };
 
 /* quiet time after the last scroll event before we consider settling;
-   long enough to outlast trackpad/momentum event gaps */
-const IDLE_MS = 160;
+   long enough to outlast trackpad/momentum event gaps. This is the
+   FALLBACK trigger: with Lenis mounted, the settle fires earlier, as
+   soon as its velocity decays under VELOCITY_EPS (waiting for full
+   event silence meant waiting out the whole lerp tail, which read as
+   a long hang at each beat's cusp: Brad's 2026-08-24 round 3) */
+const IDLE_MS = 100;
+
+/* Lenis velocity (px/frame, smoothed) below which the gesture counts
+   as over even though the lerp tail is still creeping */
+const VELOCITY_EPS = 2;
+
+/* the settle never fires within this window after real user input */
+const INPUT_QUIET_MS = 120;
 
 /* how far into a beat the stop must be to commit FORWARD (in the
-   direction of travel); anything shorter settles back to the rest the
-   gesture came from, so a stray nudge never plays a whole beat */
-const COMMIT = 0.22;
+   direction of travel). Kept tiny on purpose: any deliberate gesture
+   should tip the beat over and play it through; only a stray last
+   wheel notch settles back (Brad's 2026-08-24 review: the old 15%
+   read as a hurdle you had to out-scroll in one go) */
+const COMMIT = 0.06;
 
 /* below this distance a glide is imperceptible; skip it */
 const MIN_GLIDE_PX = 4;
@@ -53,6 +67,7 @@ export function useScrollCheckpoints(
     let pointerHeld = false; /* mouse down: could be a scrollbar drag */
     let touching = false;
     let lastY = window.scrollY;
+    let lastInput = 0; /* timestamp of the last real user input */
     let dir = 1;
 
     const cancelGlide = () => {
@@ -61,19 +76,29 @@ export function useScrollCheckpoints(
       animating = false;
     };
 
+    /* every glide write goes through Lenis when it is mounted, so its
+       internal target stays in sync and the next wheel input continues
+       from where the glide left off instead of lurching */
+    const write = (y: number) => {
+      const l = getLenis();
+      if (l) l.scrollTo(y, { immediate: true });
+      else window.scrollTo(0, y);
+    };
+
     const glideTo = (destY: number) => {
       const fromY = window.scrollY;
       const dist = Math.abs(destY - fromY);
       if (dist < MIN_GLIDE_PX) return;
-      /* duration scales with distance so short settles feel snappy and
-         long ones stay legible under the canvas's damped follower */
-      const dur = Math.min(1100, Math.max(450, (dist / window.innerHeight) * 380));
+      /* duration scales with distance: ~450ms per viewport, clamped
+         450-1500ms (the 550/2200 tune read as sluggish once the settle
+         started firing at the cusp instead of after the lerp tail) */
+      const dur = Math.min(1500, Math.max(450, (dist / window.innerHeight) * 450));
       const t0 = performance.now();
       animating = true;
       const step = (now: number) => {
         if (!animating) return;
         const t = Math.min(1, (now - t0) / dur);
-        window.scrollTo(0, fromY + (destY - fromY) * easeInOutCubic(t));
+        write(fromY + (destY - fromY) * easeInOutCubic(t));
         if (t < 1) raf = requestAnimationFrame(step);
         else cancelGlide();
       };
@@ -111,13 +136,27 @@ export function useScrollCheckpoints(
       const y = window.scrollY;
       if (!animating) {
         if (y !== lastY) dir = y > lastY ? 1 : -1;
-        armIdle();
+        /* fast path: Lenis is easing out and the hand is off the
+           wheel; the beat's cusp is exactly where we should take over
+           rather than waiting for its tail to fall fully silent */
+        const l = getLenis();
+        if (
+          l &&
+          performance.now() - lastInput > INPUT_QUIET_MS &&
+          Math.abs(l.velocity) < VELOCITY_EPS
+        ) {
+          clearTimeout(idleTimer);
+          settle();
+        } else {
+          armIdle();
+        }
       }
       lastY = y;
     };
 
     /* the user speaks: whatever we were doing, stop immediately */
     const interrupt = () => {
+      lastInput = performance.now();
       cancelGlide();
       armIdle();
     };
@@ -130,6 +169,7 @@ export function useScrollCheckpoints(
     };
     const onPointerDown = () => {
       pointerHeld = true;
+      lastInput = performance.now();
       cancelGlide();
     };
     const onPointerUp = () => {
@@ -138,6 +178,7 @@ export function useScrollCheckpoints(
     };
     const onTouchStart = () => {
       touching = true;
+      lastInput = performance.now();
       cancelGlide();
     };
     const onTouchEnd = () => {

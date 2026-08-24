@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Dialog } from "radix-ui";
 import { motion, type Variants } from "framer-motion";
 import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
+import { getLenis } from "@/components/motion/SmoothScroll";
 import { GridLines } from "@/components/shared/GridLines";
 import { Logo } from "@/components/shared/Logo";
 import { Pill } from "@/components/shared/Pill";
@@ -179,6 +180,15 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* the overlay pauses the smooth scroll instrument; its own scroll
+     area carries data-lenis-prevent so it keeps scrolling meanwhile */
+  useEffect(() => {
+    if (!open) return;
+    const lenis = getLenis();
+    lenis?.stop();
+    return () => lenis?.start();
+  }, [open]);
+
   const isCurrent = (match: string[]) =>
     match.some((m) => pathname === m || pathname.startsWith(m));
   const close = () => setOpen(false);
@@ -213,6 +223,7 @@ export function Nav() {
               <Dialog.Portal>
                 <Dialog.Content
                   data-slot="menu-overlay"
+                  data-lenis-prevent
                   className="fixed inset-0 z-[70] flex flex-col bg-paper text-ink outline-none duration-[250ms] ease-house data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-top-4 data-closed:animate-out data-closed:fade-out-0"
                 >
                   <Dialog.Title className="sr-only">Menu</Dialog.Title>
