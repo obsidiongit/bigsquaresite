@@ -5,12 +5,15 @@ import { ClipReveal } from "@/components/motion/ClipReveal";
 import { CountUp } from "@/components/motion/CountUp";
 import { Reveal, RevealItem } from "@/components/motion/Reveal";
 import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
-import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { WordReveal } from "@/components/motion/WordReveal";
+import { BentoPanel } from "@/components/shared/BentoPanel";
 import { BracketCta } from "@/components/shared/BracketCta";
 import { Container } from "@/components/shared/Container";
 import { GridLines } from "@/components/shared/GridLines";
 import { InfoBar } from "@/components/shared/InfoBar";
+import { NumberedRuledList } from "@/components/shared/NumberedRuledList";
+import { RuleLink } from "@/components/shared/RuleLink";
+import { RuledLinkTable } from "@/components/shared/RuledLinkTable";
 import { BracketIndex, Chip, Counter, Eyebrow, NoLabel } from "@/components/shared/mono";
 import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { Section } from "@/components/shared/Section";
@@ -131,25 +134,46 @@ function ThemeShowcase({
           <RegistrationMarks />
         </div>
 
-        {/* standalone SeparatorIn rule rows (4.3) */}
-        <div className="mt-16">
-          {["Organic Marketing", "Paid Advertising", "Design & Development"].map(
-            (label, i) => (
-              <div key={label}>
-                <SeparatorIn />
-                <div className="flex items-center justify-between py-4">
-                  <span className="text-body text-sec-ink">
-                    <BracketIndex n={i + 1} className="mr-3" />
-                    {label}
-                  </span>
-                  <span aria-hidden className="text-sec-mid">
-                    →
-                  </span>
-                </div>
-              </div>
-            ),
-          )}
-          <SeparatorIn />
+        {/* numbered ruled list (6.10) */}
+        <NumberedRuledList
+          className="mt-16"
+          items={[
+            { text: "Locations get different results and nobody knows why." },
+            { text: "Reports come late, and they hide more than they show." },
+          ]}
+        />
+
+        {/* ruled link table + rule link (6.1, phases 2C/2D) */}
+        <RuledLinkTable
+          className="mt-16"
+          index={1}
+          title="Organic Marketing"
+          href="/services/#organic-marketing"
+          items={[
+            { label: "Search Engine Optimization (SEO)", href: "/services/seo/" },
+            { label: "Social Media", href: "/services/social-media/" },
+          ]}
+        />
+        <div className="mt-8 md:flex md:justify-end">
+          <RuleLink href="/audit/" className="md:w-[38%]">
+            Not sure where to start? Get a Free Audit
+          </RuleLink>
+        </div>
+
+        {/* bento panels (6.4): at most one dark per grid */}
+        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+          <BentoPanel className="md:col-span-8">
+            <h3 className="text-h3 font-bold text-sec-ink">Bento panel</h3>
+            <p className="mt-2 max-w-[44ch] text-body text-sec-mid">
+              Rounded 24, theme-scoped, snapped to the 12-column grid.
+            </p>
+          </BentoPanel>
+          <BentoPanel theme="dark" className="md:col-span-4">
+            <h3 className="text-h3 font-bold text-sec-ink">The dark panel</h3>
+            <p className="mt-2 text-body text-sec-mid">
+              Panel-scoped theme, not a section theme.
+            </p>
+          </BentoPanel>
         </div>
       </Container>
 

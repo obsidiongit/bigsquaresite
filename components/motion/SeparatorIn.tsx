@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
    left to right on entry via clip-path, 600ms house, one-shot. Sized by
    its container; color defaults to the section line token. */
 
-type Props = { className?: string };
+type Props = { className?: string; delay?: number };
 
-export function SeparatorIn({ className }: Props) {
+export function SeparatorIn({ className, delay = 0 }: Props) {
   const reduced = useReducedMotionSafe();
   const classes = cn("h-px w-full bg-sec-line", className);
 
@@ -24,7 +24,7 @@ export function SeparatorIn({ className }: Props) {
       initial={{ clipPath: "inset(0 100% 0 0)" }}
       whileInView={{ clipPath: "inset(0 0% 0 0)" }}
       viewport={VIEWPORT_ONCE}
-      transition={{ duration: 0.6, ease: EASE.house }}
+      transition={{ duration: 0.6, ease: EASE.house, delay }}
     />
   );
 }

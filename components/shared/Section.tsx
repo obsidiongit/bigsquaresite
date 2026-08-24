@@ -14,6 +14,9 @@ type Props = {
   as?: "section" | "footer" | "header" | "div";
   size?: "base" | "lg" | "none";
   id?: string;
+  /** data-cube-anchor hook for the homepage companion canvas
+      (HomeCanvas waypoint journey); harmless elsewhere */
+  anchor?: string;
   className?: string;
   children: React.ReactNode;
 };
@@ -23,6 +26,7 @@ export function Section({
   as: Tag = "section",
   size = "base",
   id,
+  anchor,
   className,
   children,
 }: Props) {
@@ -30,6 +34,7 @@ export function Section({
     <Tag
       id={id}
       data-theme={theme}
+      data-cube-anchor={anchor}
       className={cn(
         "relative",
         size === "base" && "py-section-y",

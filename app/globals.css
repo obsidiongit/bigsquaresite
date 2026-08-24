@@ -394,12 +394,40 @@
     transform-origin: bottom;
   }
 
+  /* Directional fill for full-width rule rows (STYLE_GUIDE.md 6.1,
+     ruled index tables and footer link tables): same mechanics as the
+     secondary pill, squared off. The label flips to the section
+     ground; the focus ring stays outside and untouched. */
+  .row-fill {
+    position: relative;
+    isolation: isolate;
+    transition: color var(--dur-fast) var(--ease-house);
+  }
+  .row-fill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--sec-ink);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .3s var(--ease-swoop);
+  }
+  .row-fill:hover {
+    color: var(--sec-bg);
+  }
+  .row-fill:hover::before {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+
   /* Reduced motion (7.8): hover feedback is color/opacity only */
   @media (prefers-reduced-motion: reduce) {
     .pill-primary:hover,
     .pill-primary:active { transform: none; }
     .pill-primary:hover { opacity: .9; }
-    .pill-secondary::before { transition: none; }
+    .pill-secondary::before,
+    .row-fill::before { transition: none; }
   }
 }
 

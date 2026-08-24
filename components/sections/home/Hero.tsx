@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import {
   motion,
   useMotionTemplate,
@@ -14,27 +13,21 @@ import { Container } from "@/components/shared/Container";
 import { InfoBar } from "@/components/shared/InfoBar";
 import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { useWebGLSupport } from "@/components/motion/useWebGLSupport";
+import { HERO_K, HERO_POSTER, HERO_VIDEO } from "@/components/sections/home/media";
 import { EASE } from "@/lib/motion";
 
-/* Hero (2.hero.md v5): the glass square becomes the film.
-   One viewport of huge type on open paper (no rails), with the
-   BigSquare mark floating as a glass cube with a solid accent core in
-   the open area above the copy (ambient drift + damped pointer tilt
-   at rest). On scroll the cube swoops down BEHIND the exiting
-   headline (the canvas sits under the text layer), flattens into a
-   small rounded pane at the lower left, the film develops inside that
-   footprint as the glass clears, and the card balloons out with a
-   cloth bend into a framed near-viewport panel (4vw margins, radius
-   24: media as an object, not full bleed), then holds. All of it on
-   one lazy WebGL canvas easing toward native scroll progress: no
-   hijack, and never the LCP element (LCP stays this SSR headline). */
+/* Hero (2.hero.md v6): the glass square becomes the film, and then the
+   square again. The WebGL set piece itself moved to the page-level
+   HomeCanvas (fixed, z-5, behind this section's z-10 ink): this file
+   owns the DOM half: the statement, the exiting headline, the card
+   beat side text, the settled panel's meta and marks, and the
+   no-WebGL / reduced-motion fallbacks.
 
-/* The brand film (decisions.md): swap in the real 4K commercial by
-   changing this one line when it is delivered. */
-const HERO_VIDEO: string | null = "/media/hero-loop.mp4";
-const HERO_POSTER = "/media/hero-poster.jpg";
-
-const HeroCanvas = dynamic(() => import("./HeroCanvas"), { ssr: false });
+   The wrapper grew by 7/6 (374/560vh) so the film panel can un-balloon
+   back into the cube in the last 1/7 while still pinned. All v5.1 DOM
+   scrubs are remapped by HERO_K so their choreography is unchanged;
+   the panel meta additionally fades OUT as the reform begins. */
 
 const H1_LINE1 = ["More", "locations."];
 const H1_LINE2 = ["More", "revenue", "from"];
@@ -157,38 +150,11 @@ function HeroStatic() {
   );
 }
 
-/* WebGL availability, checked once on the client */
-function useWebGLSupport() {
-  const [ok, setOk] = useState<boolean | null>(null);
-  useEffect(() => {
-    try {
-      const c = document.createElement("canvas");
-      setOk(!!(c.getContext("webgl2") || c.getContext("webgl")));
-    } catch {
-      setOk(false);
-    }
-  }, []);
-  return ok;
-}
-
 export function Hero() {
   const reduced = useReducedMotionSafe();
   const [h1Done, setH1Done] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const webgl = useWebGLSupport();
-
-  /* canvas runs only while the hero region intersects the viewport */
-  const [onScreen, setOnScreen] = useState(true);
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setOnScreen(entry.isIntersecting),
-      { rootMargin: "100px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   const { scrollYProgress: p } = useScroll({
     target: wrapRef,
@@ -196,30 +162,38 @@ export function Hero() {
   });
 
   /* All scrub bindings use the explicit callback form with a manual
-     clamp (`seg` below): linear inside [a, b], held flat outside it. */
+     clamp (`seg` below): linear inside [a, b], held flat outside it.
+     `segK` runs in the v5.1 clock (the first HERO_K of the wrapper);
+     raw `seg` addresses the reform beat at the end. */
   const seg = (v: number, a: number, b: number) =>
     Math.min(1, Math.max(0, (v - a) / (b - a)));
+  const segK = (v: number, a: number, b: number) =>
+    seg(Math.min(1, v / HERO_K), a, b);
   const lerp = (t: number, from: number, to: number) => from + (to - from) * t;
 
   /* Headline exit: lines drift up with per-line lag + blur while the
      glass cube swoops past behind them. */
-  const line1Y = useTransform(p, (v) => `${lerp(seg(v, 0.06, 0.4), 0, -32)}svh`);
-  const line2Y = useTransform(p, (v) => `${lerp(seg(v, 0.04, 0.38), 0, -24)}svh`);
-  const stmtBlur = useTransform(p, (v) => lerp(seg(v, 0.1, 0.36), 0, 4));
+  const line1Y = useTransform(p, (v) => `${lerp(segK(v, 0.06, 0.4), 0, -32)}svh`);
+  const line2Y = useTransform(p, (v) => `${lerp(segK(v, 0.04, 0.38), 0, -24)}svh`);
+  const stmtBlur = useTransform(p, (v) => lerp(segK(v, 0.1, 0.36), 0, 4));
   const stmtFilter = useMotionTemplate`blur(${stmtBlur}px)`;
-  const stmtOpacity = useTransform(p, (v) => lerp(seg(v, 0.24, 0.42), 1, 0));
-  const subY = useTransform(p, (v) => `${lerp(seg(v, 0.04, 0.38), 0, -16)}svh`);
-  const stripOpacity = useTransform(p, (v) => lerp(seg(v, 0.03, 0.15), 1, 0));
+  const stmtOpacity = useTransform(p, (v) => lerp(segK(v, 0.24, 0.42), 1, 0));
+  const subY = useTransform(p, (v) => `${lerp(segK(v, 0.04, 0.38), 0, -16)}svh`);
+  const stripOpacity = useTransform(p, (v) => lerp(segK(v, 0.03, 0.15), 1, 0));
 
-  /* Film meta + registration marks on the settled panel (DOM) */
-  const metaOpacity = useTransform(p, (v) => lerp(seg(v, 0.92, 0.98), 0, 1));
-  const metaY = useTransform(p, (v) => lerp(seg(v, 0.92, 0.98), 10, 0));
+  /* Film meta + registration marks on the settled panel (DOM): in with
+     the settle, out again the moment the reform starts pulling the
+     panel back into the cube. */
+  const metaIn = (v: number) => segK(v, 0.92, 0.98);
+  const metaOut = (v: number) => seg(v, HERO_K + 0.01, HERO_K + 0.05);
+  const metaOpacity = useTransform(p, (v) => metaIn(v) * (1 - metaOut(v)));
+  const metaY = useTransform(p, (v) => lerp(metaIn(v), 10, 0));
 
   /* The card-beat side text (lusion's card + paragraph screen): slides
      in from the right while the film card holds, slides away as the
      balloon takes the frame. Copy is DRAFT pending Brad. */
-  const sideIn = (v: number) => seg(v, 0.46, 0.54);
-  const sideOut = (v: number) => seg(v, 0.66, 0.72);
+  const sideIn = (v: number) => segK(v, 0.46, 0.54);
+  const sideOut = (v: number) => segK(v, 0.66, 0.72);
   const sideOpacity = useTransform(p, (v) => sideIn(v) * (1 - sideOut(v)));
   const sideX = useTransform(
     p,
@@ -229,11 +203,12 @@ export function Hero() {
     sideIn(v) > 0.5 && sideOut(v) < 0.5 ? "auto" : "none",
   );
 
-  /* No-WebGL fallback: an honest simple rise into the framed panel */
-  const fbOpacity = useTransform(p, (v) => lerp(seg(v, 0.5, 0.58), 0, 1));
-  const fbY = useTransform(p, (v) => `${lerp(seg(v, 0.52, 0.9), 40, 0)}%`);
+  /* No-WebGL fallback: an honest simple rise into the framed panel,
+     which then simply holds (no cube, so no reform beat). */
+  const fbOpacity = useTransform(p, (v) => lerp(segK(v, 0.5, 0.58), 0, 1));
+  const fbY = useTransform(p, (v) => `${lerp(segK(v, 0.52, 0.9), 40, 0)}%`);
   const fbClip = useTransform(p, (v) => {
-    const t = seg(v, 0.62, 0.92);
+    const t = segK(v, 0.62, 0.92);
     return `inset(${lerp(t, 20, 4)}vw ${lerp(t, 20, 4)}vw round 24px)`;
   });
 
@@ -241,22 +216,18 @@ export function Hero() {
 
   return (
     <section data-theme="light" className="relative">
-      <div ref={wrapRef} className="relative h-[320vh] md:h-[480vh]">
-        <div className="sticky top-0 h-svh overflow-hidden">
-          {/* The set piece: glass cube -> media card -> framed panel.
-              First in the stage so the statement paints ABOVE it: the
-              cube passes behind the text. */}
-          {webgl !== false ? (
-            <div aria-hidden className="absolute inset-0">
-              <HeroCanvas
-                progress={p}
-                poster={HERO_POSTER}
-                video={HERO_VIDEO}
-                active={onScreen}
-              />
-            </div>
-          ) : (
-            /* No WebGL: simple rise, no cube */
+      <div
+        ref={wrapRef}
+        data-cube-anchor="hero"
+        className="relative h-[374vh] md:h-[560vh]"
+      >
+        {/* The sticky stage carries z-10 so ALL of its ink paints above
+            the page-level fixed canvas (z-5): the cube and film play
+            behind the text. position:sticky makes this a stacking
+            context, so the z must live here, not on the children. */}
+        <div className="sticky top-0 z-10 h-svh overflow-hidden">
+          {webgl === false && (
+            /* No WebGL: simple rise, no cube (the page canvas is absent) */
             <motion.div
               aria-hidden
               style={{ opacity: fbOpacity, y: fbY }}
@@ -395,7 +366,10 @@ export function Hero() {
       </div>
 
       {/* The info bar grounds the region back on paper */}
-      <InfoBar className="relative pt-2" links={[{ label: "Results", href: "/results/" }]} />
+      <InfoBar
+        className="relative z-10 pt-2"
+        links={[{ label: "Results", href: "/results/" }]}
+      />
     </section>
   );
 }
