@@ -120,10 +120,19 @@ const WHITE = new THREE.Color("#FFFFFF");
    passage of an anchor section through the viewport (frac 0 = its top
    enters the bottom edge, 1 = its bottom leaves the top edge). scale
    is relative to the hero cube's rest scale; spin accumulates on top
-   of the idle turn; ease "steps4" quantizes the spin into the four
-   quarter-turn ticks (the problem section's row counter). */
+   of the idle turn; ease "steps4" quantizes the spin into four
+   quarter-turn ticks (currently untagged: the numbered problem rows it
+   was keyed to are retired; the ease stays for Brad's 2K retune). */
 
-type AnchorName = "heroEnd" | "work" | "trust" | "problem" | "solution" | "services";
+type AnchorName =
+  | "heroEnd"
+  | "work"
+  | "problem"
+  | "solution"
+  | "search"
+  | "services"
+  | "proof"
+  | "trust";
 
 type Waypoint = {
   anchor: AnchorName;
@@ -136,8 +145,6 @@ type Waypoint = {
   ease?: "smooth" | "steps4";
 };
 
-const HALF_TURNS = Math.PI * 2; /* four quarter-turn ticks */
-
 const WAYPOINTS: Waypoint[] = [
   /* heroEnd mirrors REFORM_END + REFORM_SETTLE_SCALE exactly (round
      4): the reform now shrinks the panel to the right and forms the
@@ -147,17 +154,26 @@ const WAYPOINTS: Waypoint[] = [
      hero's release beat, so companion control begins ~0.15 into it.
      Hang right of the header, slip down the grid's center seam (small,
      behind the ink, peeking through the gutter cross), drift right to
-     hand off to trust. */
+     hand off to the open region. */
   { anchor: "work", frac: 0.2, x: 0.28, y: -0.05, scale: 0.5, spin: 0.25, fade: 1 },
   { anchor: "work", frac: 0.55, x: 0, y: 0, scale: 0.34, spin: 0.45, fade: 1 },
   { anchor: "work", frac: 0.9, x: 0.3, y: 0.02, scale: 0.55, spin: 0.6, fade: 1 },
-  { anchor: "trust", frac: 0.55, x: 0.3, y: 0.04, scale: 0.62, spin: 0.7, fade: 1 },
-  { anchor: "problem", frac: 0.2, x: 0.31, y: 0.07, scale: 0.55, spin: 1.0, fade: 1 },
-  { anchor: "problem", frac: 0.78, x: 0.3, y: -0.08, scale: 0.5, spin: 1.0 + HALF_TURNS, fade: 1, ease: "steps4" },
-  { anchor: "solution", frac: 0.32, x: 0.38, y: -0.33, scale: 0.42, spin: 1.6 + HALF_TURNS, fade: 1 },
-  { anchor: "solution", frac: 0.85, x: -0.31, y: -0.31, scale: 0.46, spin: 2.4 + HALF_TURNS, fade: 1 },
-  { anchor: "services", frac: 0.42, x: -0.34, y: -0.02, scale: 0.46, spin: 3.0 + HALF_TURNS, fade: 1 },
-  { anchor: "services", frac: 0.88, x: -0.34, y: 0.3, scale: 0.22, spin: 5.4 + HALF_TURNS, fade: 0 },
+  /* The open region (region pivot 2026-08-24): a minimal keep-it-working
+     remap in the new document order (problem, solution, search,
+     services, proof, trust). Brad retunes the journey himself in 2K.
+     The problem panel is a filled surf strip now, so the cube passes
+     BEHIND it on the right (accepted; no whitespace hold anymore).
+     search and proof anchors exist once those sections build; the
+     Tracker filters missing anchors, so listing them early is safe. */
+  { anchor: "problem", frac: 0.35, x: 0.3, y: 0.04, scale: 0.55, spin: 1.0, fade: 1 },
+  { anchor: "problem", frac: 0.85, x: 0.26, y: -0.02, scale: 0.5, spin: 1.35, fade: 1 },
+  { anchor: "solution", frac: 0.3, x: 0.34, y: -0.18, scale: 0.46, spin: 1.9, fade: 1 },
+  { anchor: "solution", frac: 0.85, x: -0.3, y: -0.24, scale: 0.44, spin: 2.5, fade: 1 },
+  { anchor: "search", frac: 0.5, x: -0.32, y: 0, scale: 0.5, spin: 2.9, fade: 1 },
+  { anchor: "services", frac: 0.4, x: -0.34, y: -0.02, scale: 0.46, spin: 3.3, fade: 1 },
+  { anchor: "services", frac: 0.85, x: -0.3, y: 0.1, scale: 0.42, spin: 3.7, fade: 1 },
+  { anchor: "proof", frac: 0.5, x: 0.3, y: 0, scale: 0.46, spin: 4.1, fade: 1 },
+  { anchor: "trust", frac: 0.75, x: 0.32, y: 0.28, scale: 0.22, spin: 6.2, fade: 0 },
 ];
 
 /* Mobile: no whitespace to live in; one graceful exit over the top of
@@ -196,7 +212,15 @@ const createStage = (): StageState => ({
   els: {},
 });
 
-const ANCHOR_NAMES: AnchorName[] = ["work", "trust", "problem", "solution", "services"];
+const ANCHOR_NAMES: AnchorName[] = [
+  "work",
+  "problem",
+  "solution",
+  "search",
+  "services",
+  "proof",
+  "trust",
+];
 
 /* Reads the DOM once per frame (reads only, during rAF: no thrash),
    updates raw/damped hero progress and the companion waypoint target.

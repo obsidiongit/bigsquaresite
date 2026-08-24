@@ -11,24 +11,31 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Homepage sections build in Phase 2, one phase per session, in spec
-// order (project-sections/home/). HomeStage hosts the page-level fixed
-// WebGL canvas: the hero's glass cube reforms after the film beat and
-// travels the sections below as a companion object (2.hero.md v6).
+// Homepage sections build in Phase 2, one phase per session. Below
+// FeaturedWork the page runs the Youtech open layout in the region
+// order locked 2026-08-24 (tasks.md region pivot): ProblemStrip,
+// Solution, Search, Services, Testimonial, ProofBand, TrustMarquee.
+// Unbuilt sections keep their old components until their session
+// replaces them (Services is the rejected 2D build; accepted for now).
+// HomeStage hosts the page-level fixed WebGL canvas: the hero's glass
+// cube reforms after the film beat and travels the sections below as a
+// companion object (2.hero.md v6).
 export default function HomePage() {
   return (
     <main>
       <HomeStage>
         <Hero />
         <FeaturedWork />
-        <TrustMarquee />
         <Problem />
         <Solution />
         <Services />
+        <TrustMarquee />
       </HomeStage>
       <section className="py-section-y">
         <p className="mx-auto max-w-[1200px] px-gutter-x text-body text-mid">
-          [PLACEHOLDER: sections 7 to 13 build in phases 2E to 2H]
+          [PLACEHOLDER: search, testimonial, and proof band sections build
+          in the next region sessions (2D-R part 2, 2E-R); portal, process,
+          FAQ, and CTA band follow in 2F to 2H]
         </p>
       </section>
     </main>

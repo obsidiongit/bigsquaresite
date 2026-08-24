@@ -446,6 +446,116 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Widget vignette loops (STYLE_GUIDE.md 7.10; 5.solution.md v3)       */
+/* The project's first @keyframes: sanctioned for ambient product-UI   */
+/* loops only. Transform/opacity only, one shared duration per widget, */
+/* percentage keyframes (+ delays for stagger) so each card is one     */
+/* synchronized timeline with a seamless repeat. Widget roots carry    */
+/* .wgt and play only while data-play is set (Framer useInView         */
+/* toggles it; absent in SSR HTML, so the first frame is always the    */
+/* deterministic keyframe-0 composition). Reduced motion kills every   */
+/* loop here AND the components render the settled end frame (the      */
+/* two-layer rule, STYLE_GUIDE 7.8).                                   */
+/* ------------------------------------------------------------------ */
+
+.wgt:not([data-play]) * {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wgt * {
+    animation: none !important;
+  }
+}
+
+/* Calendar (4.5s, 3 beats of 1.5s). Three stacked faces cross-fade
+   300ms at each beat boundary (the measured Youtech move: the whole
+   strip fades, nothing slides). Linear fades so the identical chrome
+   pixels sum to a constant during the cross. Face 1 doubles as the
+   settled frame: it is the only face visible at keyframe 0 and under
+   the reduced-motion kill (faces 2/3 carry base opacity-0). */
+@keyframes wgt-cal-1 {
+  0%, 26.7% { opacity: 1; }
+  33.3%, 93.3% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes wgt-cal-2 {
+  0%, 26.7% { opacity: 0; }
+  33.3%, 60% { opacity: 1; }
+  66.7%, 100% { opacity: 0; }
+}
+@keyframes wgt-cal-3 {
+  0%, 60% { opacity: 0; }
+  66.7%, 93.3% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.wgt-cal-l1 { animation: wgt-cal-1 4.5s linear infinite; }
+.wgt-cal-l2 { animation: wgt-cal-2 4.5s linear infinite; }
+.wgt-cal-l3 { animation: wgt-cal-3 4.5s linear infinite; }
+
+/* Task list (5s). Row 2 checks at 1.5s (30%), row 1 at 3s (60%):
+   check disc scales in 200ms, strike draws left-to-right 250ms, the
+   row's text column dims to 45%. The reset is ONE quick fade: the
+   rows wrapper dips to 0 around 93% while every element snaps back to
+   its unchecked state under cover, then rises fresh. */
+@keyframes wgt-task-reset {
+  0%, 90% { opacity: 1; }
+  93% { opacity: 0; }
+  96%, 100% { opacity: 1; }
+}
+@keyframes wgt-task-check-1 {
+  0%, 59.9% { opacity: 0; transform: scale(.5); }
+  64%, 92.9% { opacity: 1; transform: scale(1); }
+  93%, 100% { opacity: 0; transform: scale(.5); }
+}
+@keyframes wgt-task-strike-1 {
+  0%, 59.9% { transform: scaleX(0); }
+  64.9%, 92.9% { transform: scaleX(1); }
+  93%, 100% { transform: scaleX(0); }
+}
+@keyframes wgt-task-dim-1 {
+  0%, 59.9% { opacity: 1; }
+  64.9%, 92.9% { opacity: .45; }
+  93%, 100% { opacity: 1; }
+}
+@keyframes wgt-task-check-2 {
+  0%, 29.9% { opacity: 0; transform: scale(.5); }
+  34%, 92.9% { opacity: 1; transform: scale(1); }
+  93%, 100% { opacity: 0; transform: scale(.5); }
+}
+@keyframes wgt-task-strike-2 {
+  0%, 29.9% { transform: scaleX(0); }
+  34.9%, 92.9% { transform: scaleX(1); }
+  93%, 100% { transform: scaleX(0); }
+}
+@keyframes wgt-task-dim-2 {
+  0%, 29.9% { opacity: 1; }
+  34.9%, 92.9% { opacity: .45; }
+  93%, 100% { opacity: 1; }
+}
+.wgt-task-reset { animation: wgt-task-reset 5s linear infinite; }
+.wgt-task-check-1 { animation: wgt-task-check-1 5s var(--ease-house) infinite; }
+.wgt-task-strike-1 { animation: wgt-task-strike-1 5s var(--ease-house) infinite; }
+.wgt-task-dim-1 { animation: wgt-task-dim-1 5s linear infinite; }
+.wgt-task-check-2 { animation: wgt-task-check-2 5s var(--ease-house) infinite; }
+.wgt-task-strike-2 { animation: wgt-task-strike-2 5s var(--ease-house) infinite; }
+.wgt-task-dim-2 { animation: wgt-task-dim-2 5s linear infinite; }
+
+/* Channel bars (5.5s). 0.5s axes only, then each bar grows scaleX
+   600ms swoop to its fixed width, holds, and retracts 300ms at the
+   loop tail. The 120ms stagger rides on animation-delay (fill-mode
+   backwards keeps delayed bars at scaleX(0) for the first frame).
+   Base transform is scaleX(1): the reduced-motion kill lands on grown
+   bars, the settled frame. */
+@keyframes wgt-bar-grow {
+  0%, 9.1% { transform: scaleX(0); }
+  20%, 94.5% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+.wgt-bar { animation: wgt-bar-grow 5.5s var(--ease-swoop) infinite backwards; }
+.wgt-bar-d2 { animation-delay: .12s; }
+.wgt-bar-d3 { animation-delay: .24s; }
+
+/* ------------------------------------------------------------------ */
 /* Smooth scroll (STYLE_GUIDE.md 7.1, revised 2026-08-24)              */
 /* Lenis's required rules plus: the native scrollbar hides ONLY while  */
 /* Lenis is active (html.lenis, which never appears under reduced      */

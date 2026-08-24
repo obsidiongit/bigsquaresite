@@ -30,7 +30,7 @@ Restraint budgets (site-wide caps that keep the system quiet):
 - Velocity-reactive elements: at most 1 per page (the logo marquee).
 - Scroll-scrubbed elements: the homepage hero film takeover (7.4), wayfinding, and one editorial moment. Body copy is never scrubbed.
 - Marquee motion: logos only. Headlines never marquee.
-- Live/looping elements: at most 2 per viewport.
+- Live/looping elements: at most 2 per viewport (one sanctioned exception: the solution widget row's three quiet loops read as one moment, 7.10).
 - WebGL: only where a spec file asks, under 200KB, never hurting LCP.
 
 ---
@@ -196,6 +196,15 @@ Skip e2vc's bending-line canvas rebuild: a detail nobody consciously sees, at ca
 - Shadows: none at rest. A soft shadow (`0 8px 24px rgba(11,15,23,.08)`) appears only on hover of interactive cards, and on floating chrome (mega menu, popup, UI-fragment chips).
 - No gradient fills, no glassmorphism. Backdrop blur is allowed only on the scrolled nav bar.
 
+### 4.5 The open region (homepage below the hero, 2026-08-24)
+
+The region pivot (tasks.md, Brad's call after the 2D rejection): everything on the homepage from FeaturedWork down runs Youtech's open flow instead of the instrument grid.
+
+- Edges: `EDGE` from `lib/layout.ts` (`px-[max(5vw,40px)]`, the width FeaturedWork introduced). No 1200px Container.
+- No GridLines rails, no Nº labels, no numbered or ruled rows, no SeparatorIn framing. Structure comes from soft panels (`bg-surf rounded-[24px]`), display type, and whitespace.
+- Content wrappers keep `relative z-10` (HomeStage layering contract). The cube companion passes BEHIND filled panels now, not through reserved whitespace.
+- Scope: the homepage lower region only. Interior pages, the nav, and the footer keep the 1200px + hairline system (4.2, 4.3); the instrument layer stays the site default everywhere else.
+
 ---
 
 ## 5. Per-section theming
@@ -334,7 +343,16 @@ The editorial list pattern (e2vc impact 01-04 rows + pxpush benefits rows + obys
 - Then: the row's text in Apfel 700 (`--text-h3` scale for major lists, 18px for compact lists), optional one-liner in `--sec-mid` below, optional 16px lucide icon between index and text.
 - Entry: each row's hairline draws via `<SeparatorIn>`, text uses `<Reveal>`, 80ms stagger between rows. Rows that link get the rule-link hover (arrow +4px, hairline darkens).
 
-Uses: homepage problem pain points and portal feature rows (built in Phase 2); service-page deliverable lists and industry-page sections later. Works on every ground via `sec-*` tokens. This pattern replaces icon-grid and card-row layouts for enumerations; reach for cards only when the content is truly card-shaped (media, metrics, self-contained compositions).
+Uses: portal feature rows, service-page deliverable lists, and industry-page sections (the homepage problem section used this until the 2026-08-24 region pivot moved it to the open layout). Works on every ground via `sec-*` tokens. This pattern replaces icon-grid and card-row layouts for enumerations; reach for cards only when the content is truly card-shaped (media, metrics, self-contained compositions).
+
+### 6.11 Widget card (solution pattern, 2026-08-24)
+
+The Youtech "That's Where We Come In" card, rebuilt token-native: a 3-up equal grid of quiet cards, each topped by a looping product-UI vignette (7.10).
+
+- Card: `bg-surf rounded-[24px] border border-sec-line p-6 md:p-8`, equal heights across the row. Cards never hover (they are not links).
+- Vignette inset: `bg-paper rounded-[16px]` with a fixed min-height so the three title rows align; inner UI elements radius 8. The inset carries the one sanctioned soft RESTING shadow outside floating chrome (it is a UI-fragment illustration, 6.4 family). The inset is `aria-hidden`; the title and one-liner below carry the meaning.
+- Below the inset: title at `--text-h3` Apfel 700, one-liner at `--text-body` in `--sec-mid`.
+- Vignette content obeys copy-rules claims: no fake numbers, names, dates, or axis values, ever. Blurred value-bars and unlabeled ticks stand in for data; real month names and day numbers 1 to 5 are calendar furniture, not claims.
 
 ---
 
@@ -441,6 +459,7 @@ Wrap the app in `<MotionConfig reducedMotion="user">` and verify per component:
 | TypeOn / TitleAssemble | Full text immediately |
 | Hero video | Poster frame; play only on user action |
 | SquareField | Static seed composition; no loop, no parallax, no spin |
+| Widget loops (7.10) | Settled end frame (rows checked, bars grown, static month); zero looping |
 | Hover motion | Color/opacity changes only, no transforms |
 | Smooth scroll + scrollbar instrument | Never mounts; plain native scroll, browser scrollbar back |
 | Scroll checkpoints (idle-settle) | Off; no automatic scrolling of any kind |
@@ -452,6 +471,17 @@ Wrap the app in `<MotionConfig reducedMotion="user">` and verify per component:
 - Three.js: only where a spec asks, under 200KB gzipped total, lazy-loaded, never the LCP element. The chrome-object recipe if a portal moment ships: `MeshPhysicalMaterial` metalness .92 / roughness .05 / clearcoat 1 + `RoomEnvironment` env map, duotoned to graphite/navy (pxpush).
 - Hero choreography completes under 1s; LCP element is the hero media poster; CWV green on every page (LCP < 2.5s, INP < 200ms, CLS < 0.1).
 - Reveal wrappers must reserve layout (no CLS from split text).
+
+### 7.10 Looping widget vignettes (2026-08-24)
+
+CSS `@keyframes` enter the stack for exactly one job: ambient product-UI loops (the solution widget cards; Youtech ships these as MP4s, ours are markup, a strict upgrade: crisp at any DPI, theme-aware, a few KB, pausable). Sanctioned pattern, binding for any future loop:
+
+- Transform and opacity only, house/swoop eases, no bounce.
+- One shared duration per widget. Every element sequences via percentage keyframes plus `animation-delay` for stagger, so the widget is a single synchronized timeline with a seamless repeat and a deterministic keyframe-0 first frame (SSR-safe, no random seeds).
+- All keyframes and applying classes live in the `wgt-*` block in globals.css. Widget roots carry `.wgt` and play only while `data-play` is set (toggled by Framer `useInView`), so loops pause offscreen and the SSR frame is always static.
+- Reduced motion is TWO layers, both required: the CSS kill (`.wgt * { animation: none !important }`) and the component rendering the settled end frame via `useReducedMotionSafe()`.
+- No fake numbers, names, or dates inside a vignette, ever (copy-rules claims discipline).
+- Budget: loops count against section 0's live-element line. The solution row's three quiet loops on one row read as one moment and are the region's whole live budget (sanctioned exception to the 2-per-viewport cap, Brad's brief).
 
 ---
 
@@ -472,27 +502,27 @@ The BigSquare identity kit. Each move names its source; together they are what m
 
 ## 9. Homepage effect map
 
-Sequencing aid for Phase 2 (sections from `project-sections/home/`, spec order wins):
+Sequencing aid for Phase 2, rewritten 2026-08-24 to the region-pivot order (below FeaturedWork the page runs the open region, 4.5):
 
 | Section | Theme | Patterns |
 |---|---|---|
 | 1. Nav | n/a | Two-pill instrument bar, scroll solidify, full-screen overlay index menu, static annotation active state |
-| 2. Hero | light | The film takeover (7.4): display-scale H1 + circled word on mount, instrument strip on the fold, scrubbed ink line pulling the tilted film sheet in from bottom-left to full viewport, mono film meta. No CTAs, no rails, no closing info bar (featured work rises into the release beat) |
-| 2b. Featured work | light | The portfolio moment (2b.featured-work.md): display-scale headline rising into the hero's release rest beat, lusion-scale 2-col work grid at max(5vw,40px) edges, 3:2 darkpanel media cards, `--text-menu` titles with the arrow-leads-title hover. UNNUMBERED, no rails, no hairlines, no mono instrument row (Brad's call) |
-| 3. Trust marquee | light | Bordered logo tiles, marquee rules (7.5), the page's one velocity element |
-| 4. Problem | light | The page's one `--text-statement` headline (BaselineReveal), numbered ruled list (6.10) |
-| 5. Solution | tint | SectionHeader, unequal bento panels (one dark, zero accent), UI-fragment chips with no fake numbers |
-| 6. Services | light | Ruled index tables (RuledLinkTable), directional fills, rule links |
-| 7. Proof numbers | dark | SectionWipe entry, borderless stat tiles in `--accondark`, CountUp |
-| 8. Case studies | light | Case study cards (chip lockup + outcome-first headline), CountUp |
-| 9. Obsidion portal | tint | FramedMediaPanel preview with "PORTAL PREVIEW" chip, numbered ruled list features; scrubbed set piece deferred until real assets |
-| 10. How it works | light | Outlined process cards, day-range chips, connecting SeparatorIn rule |
-| 11. Testimonials | tint | Testimonial lockup, CountUp metric, mono 1/2 counter |
+| 2. Hero | light | The film takeover (7.4): display-scale H1 + circled word on mount, instrument strip on the fold, glass-cube set piece, mono film meta. No CTAs, no rails, no closing info bar (featured work rises into the release beat) |
+| 2b. Featured work | light | The portfolio moment (2b.featured-work.md): display-scale headline rising into the hero's release rest beat, lusion-scale 2-col work grid at EDGE, 3:2 darkpanel media cards, `--text-menu` titles with the arrow-leads-title hover. Unnumbered, no rails |
+| 3. ProblemStrip | light | Open region: one soft `--surf` panel, claim left, four x-marked lines right (x-glyphs `--sec-mid`, never red). Compact and quiet on purpose; one Reveal stagger |
+| 4. Solution | light | Open region: the page's one `--text-statement` headline (BaselineReveal), intro + CTA pair, 3 widget cards (6.11) with looping vignettes (7.10) |
+| 5. Search | light | Open region: composer typing mockup loop (5b.search.md; builds in 2D-R part 2) |
+| 6. Services | light | Open region: 3 pillar cards (6.services.md v3; the ruled-table build is superseded and stays in place until its session) |
+| 7. Testimonial | tint | Testimonial lockup, CountUp metric (11.testimonials.md v3; builds in 2E-R) |
+| 8. Proof numbers | dark | Borderless stat tiles in `--accondark`, CountUp (7.proof-numbers.md v3; SectionWipe deferred) |
+| 9. Trust marquee | light | Bordered logo tiles, marquee rules (7.5), the page's one velocity element; moved to the region bottom (3.trust.md v2.1) |
+| 10. Obsidion portal | tint | FramedMediaPanel preview with "PORTAL PREVIEW" chip; scrubbed set piece deferred until real assets |
+| 11. How it works | light | Outlined process cards, day-range chips, connecting SeparatorIn rule |
 | 12. FAQ | light | Accordion container, FAQPage JSON-LD |
 | 13. Final CTA | accent | The one accent surface; inverted primary pill, Bracket CTA secondary, `--lineacc` rails |
 | Footer | dark | Info bar, ruled mono link tables, DEN/TPA clocks, cropped wordmark |
 
-Homepage annotation map (the 3-per-page budget, instantiated): the hero circle on "each one", the nav's static active-link underline, and the CTA band's bracket. Nothing else on the homepage is hand-drawn. Nº labels run 001 INTRO through 007 PROCESS (hero, problem, solution, services, proof, portal, process); featured work, trust, testimonials, FAQ, CTA band, and footer carry none (featured work is deliberately un-instrumented, and the old numbered RESULTS section is superseded by it; later labels shift down one).
+Homepage annotation map (the 3-per-page budget, instantiated): the hero circle on "each one", the nav's static active-link underline, and the CTA band's bracket. Nothing else on the homepage is hand-drawn. The Nº narrative now ENDS at the hero: the hero keeps its 001 INTRO mono meta, and no section below it carries a Nº label (the numbered-section instrument retired from the homepage with the region pivot; interior pages may still number long narratives per 6.2).
 
 ## 10. Accessibility and quality bar
 
@@ -507,6 +537,7 @@ Homepage annotation map (the 3-per-page budget, instantiated): the hero circle o
 
 ## Changelog
 
+- **2026-08-24 (region pivot groundwork: the open region)**: Brad's call after the 2D rejection, locked in the pivot session: everything below FeaturedWork moves to Youtech's open flow (MORE Youtech, not less; his earlier dial-back read inverted). New 4.5 (open-region pattern: shared `EDGE` from `lib/layout.ts`, no rails, Container, Nº labels, or ruled rows below the hero on the homepage; the 1200px + hairline system remains the default for interior pages, nav, and footer), 6.11 (widget card), and 7.10 (looping widget vignettes: the project's first CSS `@keyframes`, sanctioned for ambient product-UI loops only; transform/opacity, one shared timeline per widget, offscreen pause via `data-play`, reduced motion = CSS kill AND settled frame; the solution row's three quiet loops are the region's whole live budget, a sanctioned exception to the 2-per-viewport line in section 0). §9 rewritten to the new region order (ProblemStrip, Solution, Search, Services, Testimonial, ProofBand, TrustMarquee at region bottom); the Nº narrative now ends at the hero. The page's statement-scale moment moved from the retired problem headline to the Solution headline. Companion waypoints re-mapped minimally to the new document order in HomeCanvas (Brad retunes the journey in 2K; the steps4 spin ease is untagged but kept).
 - **2026-08-24 (featured work round 4: seamless hero handoff)**: Brad's transition notes on the release beat. The settled film panel's margin is now `max(6vw, 96px)` (was 4vw, which ran under the 72px nav bar; 7.4 updated). The reform no longer shrinks back to CARD_CENTER: its target slides right to REFORM_END where the cube forms at its companion settle scale, and the heroEnd waypoint mirrors it exactly, killing the left-then-right dogleg. New motion rule from this: when a set piece hands an object to the companion journey, the set piece must END where the first waypoint BEGINS; never let the follower fix a mismatch. Second rule: ink that overlaps a set piece's band must be gated on scroll position, not fire-once reveals: the featured work header hides through the film beats and plays a quick load-in once clear, re-arming on scroll-back (the one sanctioned two-way reveal; it exists so overlapped text can never sit over the film).
 - **2026-08-24 (featured work: the portfolio moment)**: New section directly after the hero (2b.featured-work.md; Brad's ask, round 1 rejected live for instrument-framing the grid). Rules it sets: the featured work section is the page's one PORTFOLIO moment and deliberately sheds the instrument layer (no rails, no SeparatorIn, no Nº label, no bracketed indexes; it is unnumbered, so Problem keeps Nº002); its edges run at lusion's `max(5vw, 40px)` instead of the 1200px container; its H2 renders at `--text-display`, a sanctioned exemption from 3.3's flat-H2 rule (like the footer wordmark, it is a set-piece headline, not a section header drifting in size); card titles use `--text-menu` in Bluu with the arrow-leads-title hover (a new 7.7 micro-interaction: → slides in from the left, title shifts right ~1.15em, transform/opacity only). Placement rule, reusable for any pinned set piece with an empty exit viewport: the next section may pull itself up into the released stage band (here -35svh/-60svh) so its headline arrives WHILE the set piece resolves, but only on the path that has the empty tail (reduced-motion and no-WebGL fall back to normal rhythm). The hero's post-wrapper info bar is removed. The support paragraph runs 13px uppercase Apfel 500 (an extended-eyebrow reading; flagged to Brad against copy-rules' ALL-CAPS-labels-only line). 8.case-studies.md's homepage grid is superseded by this section pending Brad's confirm.
 - **2026-08-24 (square field round 3: hero presence, jellyfish, wispier)**: Brad's review of the field: he wants the squares IN the hero (the round-2 reveal-at-reform gate was my call, overridden), a couple of viewport-scale squares that run off frame and float "like a giant jellyfish", and thinner, wispier strokes closer to the paper color. The field now hands off across the canvas instead of hiding under it: z-6 during the statement and film beats (above the canvas's opaque paper backdrop, still under all ink; visually identical to being in the paper, and the faint pass over the glass cube is below perception), z-1 from the reform on (the cube companion keeps passing over the field below the hero). The opacity veil is gone; the layer materializes once on mount. Field recomposed to ten squares: eight tumblers retuned to 3 to 5% opacity, plus two off-frame giants (680/820px, ~2.5% opacity, 0.75px stroke, near-still spin, stretched drift/breathe clocks, low parallax so they linger across sections). 7.4 entry rewritten; `heroReveal` prop renamed `heroStage`.

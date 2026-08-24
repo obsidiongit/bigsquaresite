@@ -15,6 +15,7 @@ import { useWebGLSupport } from "@/components/motion/useWebGLSupport";
 import { Pill } from "@/components/shared/Pill";
 import { Section } from "@/components/shared/Section";
 import { FEATURED_WORK, type WorkEntry } from "@/lib/featured-work";
+import { EDGE } from "@/lib/layout";
 import { EASE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -38,8 +39,6 @@ import { cn } from "@/lib/utils";
    Cube companion: `work` anchor; the reform now lands the cube at
    REFORM_END right-of-center (HomeCanvas), in this header's open band;
    from there it slips down the grid's center seam toward trust. */
-
-const EDGE = "px-[max(5vw,40px)]";
 
 /* the text load-in: quick rise from the baseline mask + support fade;
    hiding is faster and quiet (it happens while scrolling back into
