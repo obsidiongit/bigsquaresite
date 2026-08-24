@@ -77,7 +77,25 @@ const CARD_CENTER: [number, number] = [-0.24, -0.17];
 const CARD_W = 0.34;
 const CARD_CENTER_MOBILE: [number, number] = [-0.06, -0.16];
 const CARD_W_MOBILE = 0.62;
-const PANEL_MARGIN = 0.04;
+/* settled panel margin: fraction of viewport width with a px floor so
+   the panel always clears the 72px nav bar (Brad round 4: at 4vw the
+   panel top ran under the bar) */
+const PANEL_MARGIN = 0.06;
+const PANEL_MARGIN_PX_MIN = 96;
+
+/* Where the reform lands the cube: right-of-center, in the open band
+   of the featured work header (between its support text and the first
+   card row). The reform used to run the balloon backwards to
+   CARD_CENTER on the LEFT and the companion then swam the cube right,
+   a dogleg Brad called out in round 4: now the shrinking panel's
+   target slides toward this point, the cube forms already in place at
+   its settled scale, and the heroEnd waypoint below matches it
+   exactly, so the takeover is motionless. */
+const REFORM_END: [number, number] = [0.24, 0.03];
+const REFORM_END_MOBILE: [number, number] = [0.2, 0.16];
+const REFORM_SETTLE_SCALE = 0.82;
+const REFORM_SETTLE_SCALE_MOBILE = 0.7;
+const R_SETTLE: [number, number] = [0.58, 0.95]; /* cube eases to settle scale */
 
 const seg = (v: number, [a, b]: [number, number]) =>
   Math.min(1, Math.max(0, (v - a) / (b - a)));
@@ -105,7 +123,7 @@ const WHITE = new THREE.Color("#FFFFFF");
    of the idle turn; ease "steps4" quantizes the spin into the four
    quarter-turn ticks (the problem section's row counter). */
 
-type AnchorName = "heroEnd" | "trust" | "problem" | "solution" | "services";
+type AnchorName = "heroEnd" | "work" | "trust" | "problem" | "solution" | "services";
 
 type Waypoint = {
   anchor: AnchorName;
@@ -121,7 +139,18 @@ type Waypoint = {
 const HALF_TURNS = Math.PI * 2; /* four quarter-turn ticks */
 
 const WAYPOINTS: Waypoint[] = [
-  { anchor: "heroEnd", frac: 0, x: CARD_CENTER[0], y: CARD_CENTER[1], scale: 1, spin: 0, fade: 1 },
+  /* heroEnd mirrors REFORM_END + REFORM_SETTLE_SCALE exactly (round
+     4): the reform now shrinks the panel to the right and forms the
+     cube there at settle scale, so companion takeover is motionless */
+  { anchor: "heroEnd", frac: 0, x: REFORM_END[0], y: REFORM_END[1], scale: REFORM_SETTLE_SCALE, spin: 0.08, fade: 1 },
+  /* featured work (2b.featured-work.md v2): the section rises into the
+     hero's release beat, so companion control begins ~0.15 into it.
+     Hang right of the header, slip down the grid's center seam (small,
+     behind the ink, peeking through the gutter cross), drift right to
+     hand off to trust. */
+  { anchor: "work", frac: 0.2, x: 0.28, y: -0.05, scale: 0.5, spin: 0.25, fade: 1 },
+  { anchor: "work", frac: 0.55, x: 0, y: 0, scale: 0.34, spin: 0.45, fade: 1 },
+  { anchor: "work", frac: 0.9, x: 0.3, y: 0.02, scale: 0.55, spin: 0.6, fade: 1 },
   { anchor: "trust", frac: 0.55, x: 0.3, y: 0.04, scale: 0.62, spin: 0.7, fade: 1 },
   { anchor: "problem", frac: 0.2, x: 0.31, y: 0.07, scale: 0.55, spin: 1.0, fade: 1 },
   { anchor: "problem", frac: 0.78, x: 0.3, y: -0.08, scale: 0.5, spin: 1.0 + HALF_TURNS, fade: 1, ease: "steps4" },
@@ -131,12 +160,13 @@ const WAYPOINTS: Waypoint[] = [
   { anchor: "services", frac: 0.88, x: -0.34, y: 0.3, scale: 0.22, spin: 5.4 + HALF_TURNS, fade: 0 },
 ];
 
-/* Mobile: no whitespace to live in; one graceful exit over the trust
-   strip instead of the full journey. */
+/* Mobile: no whitespace to live in; one graceful exit over the top of
+   the featured work section instead of the full journey. */
 const WAYPOINTS_MOBILE: Waypoint[] = [
-  { anchor: "heroEnd", frac: 0, x: CARD_CENTER_MOBILE[0], y: CARD_CENTER_MOBILE[1], scale: 1, spin: 0, fade: 1 },
-  { anchor: "trust", frac: 0.5, x: 0.28, y: 0.06, scale: 0.5, spin: 0.9, fade: 1 },
-  { anchor: "problem", frac: 0.3, x: 0.34, y: 0.22, scale: 0.34, spin: 1.8, fade: 0 },
+  /* mirrors REFORM_END_MOBILE + settle scale, same as desktop */
+  { anchor: "heroEnd", frac: 0, x: REFORM_END_MOBILE[0], y: REFORM_END_MOBILE[1], scale: REFORM_SETTLE_SCALE_MOBILE, spin: 0.08, fade: 1 },
+  { anchor: "work", frac: 0.05, x: 0.28, y: 0.06, scale: 0.5, spin: 0.9, fade: 1 },
+  { anchor: "work", frac: 0.16, x: 0.34, y: 0.22, scale: 0.34, spin: 1.8, fade: 0 },
 ];
 
 /* quantized quarter-turn easing for the row ticks */
@@ -166,7 +196,7 @@ const createStage = (): StageState => ({
   els: {},
 });
 
-const ANCHOR_NAMES: AnchorName[] = ["trust", "problem", "solution", "services"];
+const ANCHOR_NAMES: AnchorName[] = ["work", "trust", "problem", "solution", "services"];
 
 /* Reads the DOM once per frame (reads only, during rAF: no thrash),
    updates raw/damped hero progress and the companion waypoint target.
@@ -332,8 +362,8 @@ function cardRect(w: number, h: number, mobile: boolean) {
   const center = mobile ? CARD_CENTER_MOBILE : CARD_CENTER;
   return { cx: center[0] * w, cy: center[1] * h, w: cw, h: (cw * 9) / 16 };
 }
-function panelRect(w: number, h: number) {
-  const m = PANEL_MARGIN * w;
+function panelRect(w: number, h: number, pxToWorld: number) {
+  const m = Math.max(PANEL_MARGIN * w, PANEL_MARGIN_PX_MIN * pxToWorld);
   return { cx: 0, cy: 0, w: w - 2 * m, h: h - 2 * m };
 }
 
@@ -616,9 +646,14 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
     const pos = curve.getPoint(flight);
     const bobX = Math.sin(t * 0.5) * 0.012 * rest;
     const bobY = Math.sin(t * 0.75 + 1.3) * 0.02 * rest;
+    /* reform drift: ride the shrinking panel's center toward
+       REFORM_END (same clock as the pane's R_SHRINK) so the cube
+       materializes inside the card wherever the card is */
+    const rc = mobile ? REFORM_END_MOBILE : REFORM_END;
+    const drift = smooth(seg(c, R_SHRINK));
     g.position.set(
-      (pos.x + bobX) * w,
-      (pos.y + bobY) * h,
+      (pos.x + bobX) * w + (rc[0] - pos.x) * w * drift,
+      (pos.y + bobY) * h + (rc[1] - pos.y) * h * drift,
       Math.sin(Math.PI * flight) * h * 0.06,
     );
 
@@ -632,12 +667,15 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
     );
 
     /* scale: cube at rest; flattens into the card; the reform runs the
-       same ramp backwards (flat returns to 0) */
+       same ramp backwards (flat returns to 0) and eases the cube down
+       to its companion settle scale so the heroEnd handoff is still */
     const card = cardRect(w, h, mobile);
+    const settleScale = mobile ? REFORM_SETTLE_SCALE_MOBILE : REFORM_SETTLE_SCALE;
+    const sEff = s * (1 - (1 - settleScale) * smooth(seg(c, R_SETTLE)));
     g.scale.set(
-      s + (card.w - s) * flat,
-      s + (card.h - s) * flat,
-      s * (1 - 0.965 * flat),
+      sEff + (card.w - sEff) * flat,
+      sEff + (card.h - sEff) * flat,
+      sEff * (1 - 0.965 * flat),
     );
     glass.thickness = 0.6 * (1 - 0.9 * flat) * (1 - mix);
     glass.envMapIntensity = (1 - 0.8 * flat) * (1 - 0.15 * mix);
@@ -805,8 +843,17 @@ function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
     m.renderOrder = 10;
 
     const card = cardRect(w, h, mobile);
-    const panel = panelRect(w, h);
-    (u.uStart.value as THREE.Vector4).set(card.cx, card.cy, card.w, card.h);
+    const panel = panelRect(w, h, pxToWorld);
+    /* during the reform the shrink target slides from the balloon's
+       card (CARD_CENTER) to REFORM_END, so the panel shrinks down to
+       the RIGHT, into the cube's companion position */
+    const rc = mobile ? REFORM_END_MOBILE : REFORM_END;
+    (u.uStart.value as THREE.Vector4).set(
+      card.cx + (rc[0] * w - card.cx) * sh,
+      card.cy + (rc[1] * h - card.cy) * sh,
+      card.w,
+      card.h,
+    );
     (u.uEnd.value as THREE.Vector4).set(panel.cx, panel.cy, panel.w, panel.h);
 
     const grow = seg(p, BALLOON) * (1 - sh);

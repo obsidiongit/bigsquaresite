@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import { SquareField } from "@/components/motion/SquareField";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { useWebGLSupport } from "@/components/motion/useWebGLSupport";
 import { HERO_POSTER, HERO_VIDEO } from "@/components/sections/home/media";
@@ -11,13 +12,18 @@ const HomeCanvas = dynamic(() => import("./HomeCanvas"), { ssr: false });
 /* HomeStage (2.hero.md v6): hosts the page-level fixed WebGL canvas
    behind the homepage sections. Layering contract:
 
-     nav (z-50)  >  section content (z-10)  >  canvas (z-5)  >
-     section grounds + GridLines rails (z-auto)
+     nav (z-50)  >  section content (z-10)  >  square field during
+     the hero beats (z-6)  >  canvas (z-5)  >  square field from the
+     reform on (z-1)  >  section grounds + GridLines rails (z-auto)
 
    so the glass cube travels OVER the section backgrounds and rails
-   but BEHIND every piece of ink. Sections opt in by wrapping their
-   content in a `relative z-10` layer and carrying a data-cube-anchor
-   attribute the canvas reads for the companion journey.
+   but BEHIND every piece of ink. The ambient square field (STYLE_GUIDE
+   7.4) hands off across the canvas: above it during the hero (its
+   opaque in-canvas paper backdrop would otherwise hide the squares),
+   below it once the cube releases, so the companion passes over the
+   field. Sections opt in by wrapping their content in a `relative
+   z-10` layer and carrying a data-cube-anchor attribute the canvas
+   reads for the companion journey.
 
    The children are server-rendered sections passed straight through:
    this wrapper adds no DOM around them beyond the stage div whose
@@ -43,6 +49,11 @@ export function HomeStage({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* heroStage: through the statement and film beats the field
+          rides at z-6, above the canvas's opaque paper backdrop (so
+          the squares live in the hero too, under its ink); from the
+          reform on it sits at z-1 so the companion passes over it */}
+      <SquareField heroStage={!reduced && webgl !== false} />
       {!reduced && webgl !== false && (
         <div aria-hidden className="pointer-events-none fixed inset-0 z-[5]">
           <HomeCanvas poster={HERO_POSTER} video={HERO_VIDEO} active={active} />

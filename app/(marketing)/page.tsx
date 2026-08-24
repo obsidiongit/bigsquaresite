@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FeaturedWork } from "@/components/sections/home/FeaturedWork";
 import { Hero } from "@/components/sections/home/Hero";
 import { HomeStage } from "@/components/sections/home/HomeStage";
 import { Problem } from "@/components/sections/home/Problem";
@@ -19,6 +20,7 @@ export default function HomePage() {
     <main>
       <HomeStage>
         <Hero />
+        <FeaturedWork />
         <TrustMarquee />
         <Problem />
         <Solution />

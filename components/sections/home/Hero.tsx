@@ -132,7 +132,7 @@ function FilmMeta({ className = "" }: { className?: string }) {
 function PanelMarks() {
   const mark = "absolute font-mono text-[12px] leading-none text-sec-mid";
   return (
-    <div aria-hidden className="absolute inset-[calc(4vw-18px)] hidden md:block">
+    <div aria-hidden className="absolute inset-[calc(max(6vw,96px)-18px)] hidden md:block">
       <span className={`${mark} left-0 top-0`}>+</span>
       <span className={`${mark} right-0 top-0`}>+</span>
       <span className={`${mark} bottom-0 left-0`}>+</span>
@@ -254,7 +254,13 @@ export function Hero() {
   const fbY = useTransform(p, (v) => `${lerp(segK(v, 0.52, 0.9), 40, 0)}%`);
   const fbClip = useTransform(p, (v) => {
     const t = segK(v, 0.62, 0.92);
-    return `inset(${lerp(t, 20, 4)}vw ${lerp(t, 20, 4)}vw round 24px)`;
+    /* settle margin matches the canvas panel: 6vw with a px floor so
+       the frame clears the 72px nav bar on narrow desktops */
+    const end =
+      typeof window !== "undefined"
+        ? Math.max(6, (96 / window.innerWidth) * 100)
+        : 6;
+    return `inset(${lerp(t, 20, end)}vw ${lerp(t, 20, end)}vw round 24px)`;
   });
 
   if (reduced) return <HeroStatic />;
@@ -439,18 +445,16 @@ export function Hero() {
             className="absolute inset-0"
           >
             <PanelMarks />
-            <div className="absolute inset-[4vw]">
+            <div className="absolute inset-[max(6vw,96px)]">
               <FilmMeta />
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* The info bar grounds the region back on paper */}
-      <InfoBar
-        className="relative z-10 pt-2"
-        links={[{ label: "Results", href: "/results/" }]}
-      />
+      {/* No info bar here anymore: the featured work section rises
+          into the release beat (2b.featured-work.md v2), so the hero
+          hands straight off to it with nothing between. */}
     </section>
   );
 }
