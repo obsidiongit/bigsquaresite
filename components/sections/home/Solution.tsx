@@ -57,10 +57,18 @@ export function Solution() {
             any day of the week.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 md:mt-0 md:shrink-0">
-            <Pill href="/schedule/" variant="primary">
+            <Pill
+              href="/schedule/"
+              variant="primary"
+              className="max-md:w-full max-md:justify-center"
+            >
               Schedule a Call
             </Pill>
-            <Pill href="/audit/" variant="secondary">
+            <Pill
+              href="/audit/"
+              variant="secondary"
+              className="max-md:w-full max-md:justify-center"
+            >
               Get a Free Audit
             </Pill>
           </div>

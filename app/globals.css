@@ -493,10 +493,12 @@
 .wgt-cal-l3 { animation: wgt-cal-3 4.5s linear infinite; }
 
 /* Task list (5s). Row 2 checks at 1.5s (30%), row 1 at 3s (60%):
-   check disc scales in 200ms, strike draws left-to-right 250ms, the
-   row's text column dims to 45%. The reset is ONE quick fade: the
-   rows wrapper dips to 0 around 93% while every element snaps back to
-   its unchecked state under cover, then rises fresh. */
+   check disc scales in 200ms, the strike fades in over 250ms (a
+   duplicate line-through text layer, so wrapped titles strike every
+   line; opacity only, 7.9), the row's text column dims to 45%. The
+   reset is ONE quick fade: the rows wrapper dips to 0 around 93%
+   while every element snaps back to its unchecked state under cover,
+   then rises fresh. */
 @keyframes wgt-task-reset {
   0%, 90% { opacity: 1; }
   93% { opacity: 0; }
@@ -508,9 +510,9 @@
   93%, 100% { opacity: 0; transform: scale(.5); }
 }
 @keyframes wgt-task-strike-1 {
-  0%, 59.9% { transform: scaleX(0); }
-  64.9%, 92.9% { transform: scaleX(1); }
-  93%, 100% { transform: scaleX(0); }
+  0%, 59.9% { opacity: 0; }
+  64.9%, 92.9% { opacity: 1; }
+  93%, 100% { opacity: 0; }
 }
 @keyframes wgt-task-dim-1 {
   0%, 59.9% { opacity: 1; }
@@ -523,9 +525,9 @@
   93%, 100% { opacity: 0; transform: scale(.5); }
 }
 @keyframes wgt-task-strike-2 {
-  0%, 29.9% { transform: scaleX(0); }
-  34.9%, 92.9% { transform: scaleX(1); }
-  93%, 100% { transform: scaleX(0); }
+  0%, 29.9% { opacity: 0; }
+  34.9%, 92.9% { opacity: 1; }
+  93%, 100% { opacity: 0; }
 }
 @keyframes wgt-task-dim-2 {
   0%, 29.9% { opacity: 1; }

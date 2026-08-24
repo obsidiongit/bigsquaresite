@@ -4,10 +4,12 @@ import { cn } from "@/lib/utils";
 import { useWidgetLoop } from "./useWidgetLoop";
 
 /* Task list loop (5.solution.md v3; measured from Task-List.mp4). 5s:
-   row 2 checks at 1.5s, row 1 at 3s (accent disc scales in 200ms,
-   strike draws left-to-right 250ms, the text column dims to 45%), then
-   one quick fade-reset near 4.5s (the wgt-task-reset wrapper dips
-   while every element snaps back under cover). No person names, no
+   row 2 checks at 1.5s, row 1 at 3s (accent disc scales in 200ms, the
+   strike fades in over 250ms, the text column dims to 45%), then one
+   quick fade-reset near 4.5s (the wgt-task-reset wrapper dips while
+   every element snaps back under cover). The strike is a duplicate
+   line-through text layer, not a positioned bar, so titles that wrap
+   at narrow card widths strike on every line. No person names, no
    dates (their video shows "Eric" and "Jul 29"): generic true-to-
    service tasks, mono chips, and a blurred value-bar where the
    reference put its fake date.
@@ -87,21 +89,24 @@ function TaskRow({ row, settled }: { row: Row; settled: boolean }) {
           settled ? "opacity-45" : `opacity-45 wgt-task-dim-${row.k}`,
         )}
       >
-        <span className="relative block w-fit">
+        <span className="relative block">
           <span className="block text-[14px] font-medium leading-tight text-sec-ink">
             {row.title}
           </span>
           <span
             aria-hidden
             className={cn(
-              "absolute left-0 top-1/2 h-px w-full bg-sec-mid",
-              !settled && `origin-left wgt-task-strike-${row.k}`,
+              "absolute inset-0 block text-[14px] font-medium leading-tight",
+              "text-transparent line-through decoration-sec-mid",
+              !settled && `wgt-task-strike-${row.k}`,
             )}
-          />
+          >
+            {row.title}
+          </span>
         </span>
         <p className="mt-1 text-[12px] leading-tight text-sec-mid">{row.sub}</p>
         <div className="mt-2 flex items-center gap-3">
-          <span className="rounded-full bg-surf px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.06em] text-sec-mid">
+          <span className="whitespace-nowrap rounded-full bg-surf px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.06em] text-sec-mid">
             {row.chip}
           </span>
           <span aria-hidden className="h-2 w-10 rounded-full bg-ink/10 blur-[2px]" />
