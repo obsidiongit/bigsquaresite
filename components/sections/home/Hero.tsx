@@ -13,6 +13,7 @@ import { Container } from "@/components/shared/Container";
 import { InfoBar } from "@/components/shared/InfoBar";
 import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { useScrollCheckpoints } from "@/components/motion/useScrollCheckpoints";
 import { useWebGLSupport } from "@/components/motion/useWebGLSupport";
 import { HERO_K, HERO_POSTER, HERO_VIDEO } from "@/components/sections/home/media";
 import { EASE } from "@/lib/motion";
@@ -28,6 +29,21 @@ import { EASE } from "@/lib/motion";
    back into the cube in the last 1/7 while still pinned. All v5.1 DOM
    scrubs are remapped by HERO_K so their choreography is unchanged;
    the panel meta additionally fades OUT as the reform begins. */
+
+/* Scroll checkpoints: the choreography's rest beats in wrapper
+   progress (raw clock). When scrolling goes idle between two of
+   these, useScrollCheckpoints glides the page to the boundary the
+   gesture was heading for, so no beat (headline exit, balloon,
+   reform) can be left parked half-played. The K-clock factors mirror
+   the scrub timeline: 0.60 sits inside the held-card beat (flatten
+   and gate done, side text fully in, balloon not started) and 0.98
+   is the settled panel with its meta in, just before the reform. */
+const CHECKPOINTS = [
+  0, /* the statement */
+  0.6 * HERO_K, /* the held film card + side text */
+  0.98 * HERO_K, /* the settled framed panel */
+  1, /* reform complete, the cube released as companion */
+];
 
 const H1_LINE1 = ["More", "locations."];
 const H1_LINE2 = ["More", "revenue", "from"];
@@ -161,6 +177,9 @@ export function Hero() {
     offset: ["start start", "end end"],
   });
 
+  /* idle-settle to the nearest rest beat; input always wins (7.4) */
+  useScrollCheckpoints(wrapRef, { checkpoints: CHECKPOINTS, enabled: !reduced });
+
   /* All scrub bindings use the explicit callback form with a manual
      clamp (`seg` below): linear inside [a, b], held flat outside it.
      `segK` runs in the v5.1 clock (the first HERO_K of the wrapper);
@@ -202,6 +221,29 @@ export function Hero() {
   const sidePointer = useTransform(p, (v) =>
     sideIn(v) > 0.5 && sideOut(v) < 0.5 ? "auto" : "none",
   );
+
+  /* The card-beat headline (Brad, 2026-08-24: the beat needed a large
+     statement, not just the small right column). Display-scale lines
+     swing in from the top left with per-line lag and a clearing blur
+     (mirroring the opening headline's exit) while the film card holds,
+     then retreat upward as the balloon takes the frame. */
+  const headIn1 = (v: number) => segK(v, 0.44, 0.55);
+  const headIn2 = (v: number) => segK(v, 0.47, 0.58);
+  const headOut = (v: number) => segK(v, 0.66, 0.72);
+  const head1Opacity = useTransform(p, (v) => headIn1(v) * (1 - headOut(v)));
+  const head2Opacity = useTransform(p, (v) => headIn2(v) * (1 - headOut(v)));
+  const head1X = useTransform(p, (v) => lerp(headIn1(v), -110, 0));
+  const head1Y = useTransform(
+    p,
+    (v) => lerp(headIn1(v), -100, 0) + lerp(headOut(v), 0, -56),
+  );
+  const head2X = useTransform(p, (v) => lerp(headIn2(v), -150, 0));
+  const head2Y = useTransform(
+    p,
+    (v) => lerp(headIn2(v), -80, 0) + lerp(headOut(v), 0, -40),
+  );
+  const headBlur = useTransform(p, (v) => lerp(headIn1(v), 6, 0));
+  const headFilter = useMotionTemplate`blur(${headBlur}px)`;
 
   /* No-WebGL fallback: an honest simple rise into the framed panel,
      which then simply holds (no cube, so no reform beat). */
@@ -304,6 +346,39 @@ export function Hero() {
             </motion.div>
           </Container>
 
+          {/* The card-beat headline: the film's statement at display
+              scale, in from the top left while the card holds (lusion's
+              big-left/small-right card screen, completed).
+              [PLACEHOLDER: headline copy is draft, awaiting Brad] */}
+          <div className="pointer-events-none absolute inset-x-0 top-[9svh] md:top-[11svh]">
+            <Container>
+              <p className="font-display text-display text-sec-ink">
+                <motion.span
+                  className="block"
+                  style={{
+                    opacity: head1Opacity,
+                    x: head1X,
+                    y: head1Y,
+                    filter: headFilter,
+                  }}
+                >
+                  Proof before
+                </motion.span>
+                <motion.span
+                  className="block"
+                  style={{
+                    opacity: head2Opacity,
+                    x: head2X,
+                    y: head2Y,
+                    filter: headFilter,
+                  }}
+                >
+                  <span className="italic">promises.</span>
+                </motion.span>
+              </p>
+            </Container>
+          </div>
+
           {/* The card beat: supporting text beside the held film card.
               [PLACEHOLDER: copy below is draft, awaiting Brad's text] */}
           <motion.div
@@ -317,11 +392,14 @@ export function Hero() {
               One team runs your ads, your search, your site, and your
               creative. This is the work in motion.
             </p>
+            {/* Retargeted 2026-08-24: featured work now lands directly
+                below the hero, so this points at the about page instead.
+                [PLACEHOLDER: label is draft, awaiting Brad] */}
             <a
-              href="/results/"
+              href="/about/"
               className="mt-8 flex items-center justify-between border-b border-sec-line pb-3 text-body font-bold text-sec-ink transition-colors hover:border-sec-ink"
             >
-              See the Results
+              How We Work
               <span aria-hidden>→</span>
             </a>
           </motion.div>
