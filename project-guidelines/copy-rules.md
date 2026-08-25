@@ -29,6 +29,8 @@ These are low-value words. They make business owners tune out or get annoyed. Do
 - "we pride ourselves," "passionate about," "dedicated to"
 - Cute rhyming or slogan-style labels for service groups. Service groups are Organic Marketing, Paid Advertising, Design & Development. Period.
 
+Exception, recorded 2026-08-24 (Brad's call, supersedes the earlier "name products instead" lock): copy may say "AI" when AI itself is the subject being talked about, as in the homepage search section ("Many people now use AI tools like ChatGPT..."). Pair it with a real product name where it helps. The ban still holds everywhere we describe our own services: no "AI-powered," "AI-driven," or vague "AI solutions."
+
 When we need to describe what these tools actually do, describe the outcome in plain words:
 - Not "AI-powered follow-up." Say "Every lead gets a text back in under a minute, day or night."
 - Not "marketing automation." Say "Email and text that go out on a schedule you set."

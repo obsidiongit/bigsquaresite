@@ -33,9 +33,16 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
    MORPH (lib/work-panel, 2b v3): it flattens into a brand-blue slab
    that the section's DOM panel grows out of, hides behind it for the
    grid's whole passage, and reforms off the panel's far edge; from
-   there the open-region journey continues to the dissolve over trust.
-   Extend WAYPOINTS when later sections (proof band, portal) want the
-   object back. Everything is a pure function of native scroll
+   there the open-region journey runs the problem strip, the solution
+   CARD SWEEP (the section pins over a runway, SolutionStage, and the
+   scrub sweeps the cube flat right-to-left under the frozen cards,
+   each title drawing its blue squiggly underline as the cube passes:
+   lib/solution-sweep syncs canvas, ink, and stage),
+   then a HIDDEN PASSAGE behind the search + proof-band grounds (those
+   two sections paint at z-[6], above this canvas) until the trust
+   marquee releases it, and on to the dissolve over the services exit.
+   Extend WAYPOINTS when later sections (portal) want the object
+   back. Everything is a pure function of native scroll
    smoothed by damped followers: no hijack, no Lenis.
 
    Rendering contract (STYLE_GUIDE 7.9) and the three hard-won rules
@@ -57,6 +64,19 @@ import {
   SLAB_VH,
   workMorph,
 } from "@/lib/work-panel";
+import {
+  SWEEP_ENTER,
+  SWEEP_EXIT,
+  SWEEP_UNDER,
+  sweepPin,
+} from "@/lib/solution-sweep";
+import {
+  DOCK_ENGAGE,
+  DOCK_FIT,
+  DOCK_RELEASE,
+  FLICK_DECAY,
+  dockFlick,
+} from "@/lib/services-dock";
 
 /* ---- timeline ------------------------------------------------------ */
 /* Act 1 beats are authored in 0..1 of the OLD wrapper and remapped by
@@ -188,6 +208,7 @@ type AnchorName =
   | "work"
   | "problem"
   | "solution"
+  | "solutionCards"
   | "search"
   | "services"
   | "proof"
@@ -228,22 +249,53 @@ const WAYPOINTS: Waypoint[] = [
   { anchor: "work", frac: 0.16, x: WORK_FLOAT[0], y: WORK_FLOAT[1], scale: 0.6, spin: 0.35, fade: 1 },
   { anchor: "work", frac: 0.5, x: 0, y: 0, scale: 0.55, spin: 0.5, fade: 1 },
   { anchor: "work", frac: 0.92, x: 0, y: -0.08, scale: 0.52, spin: 0.8, fade: 1 },
-  /* The open region (region pivot 2026-08-24): a minimal keep-it-working
-     remap in the new document order (problem, solution, search,
-     services, proof, trust). Brad retunes the journey himself in 2K.
-     The problem panel is a filled surf strip now, so the cube passes
-     BEHIND it on the right (accepted; no whitespace hold anymore).
-     search and proof anchors exist once those sections build; the
-     Tracker filters missing anchors, so listing them early is safe. */
+  /* The open region (region pivot 2026-08-24; card sweep session same
+     day): document order problem, solution, search, proof, trust,
+     services. The list MUST stay in document order: the segment walk
+     below assumes monotonic waypoint ys. Brad retunes the journey
+     himself in 2K. The problem panel is a filled surf strip, so the
+     cube passes BEHIND it on the right (accepted). The Tracker
+     filters missing anchors, so listing unbuilt sections is safe. */
   { anchor: "problem", frac: 0.35, x: 0.3, y: 0.04, scale: 0.55, spin: 1.0, fade: 1 },
   { anchor: "problem", frac: 0.85, x: 0.26, y: -0.02, scale: 0.5, spin: 1.35, fade: 1 },
-  { anchor: "solution", frac: 0.3, x: 0.34, y: -0.18, scale: 0.46, spin: 1.9, fade: 1 },
-  { anchor: "solution", frac: 0.85, x: -0.3, y: -0.24, scale: 0.44, spin: 2.5, fade: 1 },
-  { anchor: "search", frac: 0.5, x: -0.32, y: 0, scale: 0.5, spin: 2.9, fade: 1 },
-  { anchor: "services", frac: 0.4, x: -0.34, y: -0.02, scale: 0.46, spin: 3.3, fade: 1 },
-  { anchor: "services", frac: 0.85, x: -0.3, y: 0.1, scale: 0.42, spin: 3.7, fade: 1 },
-  { anchor: "proof", frac: 0.5, x: 0.3, y: 0, scale: 0.46, spin: 4.1, fade: 1 },
-  { anchor: "trust", frac: 0.75, x: 0.32, y: 0.28, scale: 0.22, spin: 6.2, fade: 0 },
+  /* the solution CARD SWEEP (5.solution.md v3.2, Brad's card sweep
+     session round 4: PINNED). The waypoints only stage the approach
+     and the aftermath: the cube dives below the frame on the right
+     as the section arrives, and parks below frame on the left after
+     the pin releases. The sweep itself (rise from below right, flat
+     pass under the three frozen cards, dive out at the left) is the
+     PIN OVERRIDE: SolutionStage pins the section over a 130svh
+     runway, and the Tracker scrubs the cube along a px path built
+     from the frozen grid's column centers (lib/solution-sweep).
+     During the pin, these anchors' rects freeze, so the waypoint
+     walk holds a below-frame blend the override owns; both handoffs
+     happen off-screen. */
+  { anchor: "solution", frac: 0.3, x: 0.42, y: 0, scale: 0.48, spin: 1.8, fade: 1 },
+  { anchor: "solutionCards", frac: 0.12, x: 0.44, y: -0.55, scale: 0.42, spin: 2.1, fade: 1 },
+  { anchor: "solutionCards", frac: 0.35, x: 0.36, y: -0.52, scale: 0.4, spin: 2.3, fade: 1 },
+  /* post-release park, below frame left: search and the proof band
+     paint their grounds at z-[6], ABOVE this canvas (the two
+     full-viewport occluders), so the cube stays out of sight from
+     here until the proof band's bottom edge releases it over the
+     trust marquee. The proof waypoint only steers the hidden drift
+     so the reveal happens on the right. */
+  { anchor: "solutionCards", frac: 0.85, x: -0.34, y: -0.55, scale: 0.4, spin: 3.1, fade: 1 },
+  { anchor: "proof", frac: 0.6, x: 0.3, y: -0.12, scale: 0.44, spin: 3.5, fade: 1 },
+  { anchor: "trust", frac: 0.5, x: 0.3, y: 0.06, scale: 0.44, spin: 3.7, fade: 1 },
+  /* the spotlight DOCK (6.services.md v4): the journey's destination.
+     The cube holds the right lane out of the trust strip; over
+     DOCK_ENGAGE the Tracker's dock blend (lib/services-dock) takes
+     x/y/scale into the panel's bay ([data-services-dock], measured
+     per frame, so the sticky panel and any width both land exactly).
+     These waypoints only shape the approach, the under-blend drift,
+     and the exit: past DOCK_RELEASE the blend hands back here and
+     the cube rises, shrinks, and dissolves over the section's exit.
+     (frac 0.22, not lower: the walk needs this y AFTER trust 0.5 at
+     short-viewport dims.) */
+  { anchor: "services", frac: 0.22, x: 0.3, y: 0.02, scale: 0.46, spin: 4.0, fade: 1 },
+  { anchor: "services", frac: 0.55, x: 0.28, y: 0, scale: 0.44, spin: 4.5, fade: 1 },
+  { anchor: "services", frac: 0.9, x: 0.28, y: 0.04, scale: 0.4, spin: 5.0, fade: 1 },
+  { anchor: "services", frac: 0.99, x: 0.28, y: 0.26, scale: 0.14, spin: 5.8, fade: 0 },
 ];
 
 /* Mobile: no whitespace to live in; one graceful exit over the top of
@@ -273,8 +325,23 @@ type StageState = {
   wp: { x: number; y: number; scale: number; spin: number; fade: number };
   /* work panel morph: shared clock + the bar's center and dims (px) */
   panel: { m: number; exiting: boolean; ax: number; ay: number; wPx: number; barPx: number };
+  /* the services cube dock (lib/services-dock): blend + bay center/px */
+  dock: { b: number; ax: number; ay: number; hPx: number };
+  /* the solution card sweep pin (lib/solution-sweep): runway progress
+     + the cube's px target along the under-card path */
+  sweep: { on: boolean; p: number; ax: number; ay: number };
   els: Partial<
-    Record<AnchorName | "hero" | "workPanel" | "workStage" | "workPin", HTMLElement | null>
+    Record<
+      | AnchorName
+      | "hero"
+      | "workPanel"
+      | "workStage"
+      | "workPin"
+      | "solutionStage"
+      | "solutionPin"
+      | "servicesDock",
+      HTMLElement | null
+    >
   >;
 };
 
@@ -284,6 +351,8 @@ const createStage = (): StageState => ({
   companion: false,
   wp: { x: CARD_CENTER[0], y: CARD_CENTER[1], scale: 1, spin: 0, fade: 1 },
   panel: { m: 0, exiting: false, ax: 0, ay: 0, wPx: 1, barPx: 1 },
+  dock: { b: 0, ax: 0, ay: 0, hPx: 1 },
+  sweep: { on: false, p: 0, ax: 0, ay: 0 },
   els: {},
 });
 
@@ -291,6 +360,7 @@ const ANCHOR_NAMES: AnchorName[] = [
   "work",
   "problem",
   "solution",
+  "solutionCards",
   "search",
   "services",
   "proof",
@@ -356,8 +426,85 @@ function Tracker({ stage }: { stage: StageState }) {
       stage.panel.m = 0;
     }
 
-    /* companion target from the waypoint journey */
     const mobile = state.size.width < 768;
+
+    /* the solution card sweep pin (lib/solution-sweep): while the
+       runway scrubs, the cube's target is computed in PX off the
+       FROZEN card grid's live rect (column centers + a lane below
+       the row), so the under-card alignment is exact at any width.
+       The path starts and ends BELOW THE FRAME, so the blend
+       handoffs to the waypoint journey on both sides happen
+       off-screen and can never show a seam. */
+    if (!els.solutionStage)
+      els.solutionStage = document.querySelector<HTMLElement>("[data-solution-stage]");
+    if (!els.solutionPin)
+      els.solutionPin = document.querySelector<HTMLElement>("[data-solution-pin]");
+    stage.sweep.on = false;
+    if (!mobile && els.solutionStage && els.solutionPin && els.solutionCards) {
+      const pin = sweepPin(
+        els.solutionStage.getBoundingClientRect(),
+        els.solutionPin.getBoundingClientRect(),
+      );
+      const p = pin.p;
+      stage.sweep.p = p;
+      if (pin.room > 1 && p > 0 && p < 1) {
+        const gr = els.solutionCards.getBoundingClientRect();
+        const colX = (i: number) => gr.left + gr.width * ((i + 0.5) / 3);
+        const laneY = Math.min(gr.bottom + 0.11 * vh, vh * 0.92);
+        const xEnter = gr.right - gr.width * 0.03;
+        const xExit = gr.left + gr.width * 0.02;
+        const yOff = vh * 1.12; /* parked below the frame */
+        let ax: number;
+        let ay = laneY;
+        if (p < SWEEP_ENTER[1]) {
+          ax = xEnter;
+          ay = lerp(smooth(seg(p, SWEEP_ENTER)), yOff, laneY);
+        } else if (p < SWEEP_UNDER[0]) {
+          ax = lerp(smooth(seg(p, [SWEEP_ENTER[1], SWEEP_UNDER[0]])), xEnter, colX(2));
+        } else if (p < SWEEP_UNDER[1]) {
+          ax = lerp(seg(p, [SWEEP_UNDER[0], SWEEP_UNDER[1]]), colX(2), colX(1));
+        } else if (p < SWEEP_UNDER[2]) {
+          ax = lerp(seg(p, [SWEEP_UNDER[1], SWEEP_UNDER[2]]), colX(1), colX(0));
+        } else {
+          const e = seg(p, SWEEP_EXIT);
+          ax = lerp(e, colX(0), xExit);
+          ay = lerp(smooth(e), laneY, yOff);
+        }
+        stage.sweep.on = true;
+        stage.sweep.ax = ax;
+        stage.sweep.ay = ay;
+      }
+    }
+
+    /* the services cube dock (lib/services-dock, 6.services.md v4):
+       blend the companion into the spotlight panel's bay over the
+       section's passage frac. The bay is measured per frame (it rides
+       a sticky panel: its rect moves), so the landing is exact at any
+       width. Desktop only: mobile renders no bay and the mobile
+       journey already ended at featured work. */
+    stage.dock.b = 0;
+    if (!mobile) {
+      if (!els.servicesDock)
+        els.servicesDock = document.querySelector<HTMLElement>(
+          "[data-services-dock]",
+        );
+      if (els.services && els.servicesDock) {
+        const sr = els.services.getBoundingClientRect();
+        const frac = (vh - sr.top) / (vh + sr.height);
+        const b =
+          smooth(seg(frac, DOCK_ENGAGE)) *
+          (1 - smooth(seg(frac, DOCK_RELEASE)));
+        if (b > 0.001) {
+          const br = els.servicesDock.getBoundingClientRect();
+          stage.dock.b = b;
+          stage.dock.ax = br.left + br.width / 2;
+          stage.dock.ay = br.top + br.height / 2;
+          stage.dock.hPx = Math.max(1, br.height);
+        }
+      }
+    }
+
+    /* companion target from the waypoint journey */
     const list = (mobile ? WAYPOINTS_MOBILE : WAYPOINTS).filter(
       (w) => w.anchor === "heroEnd" || els[w.anchor],
     );
@@ -741,6 +888,41 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
         tx = lerp(hold, tx, lerp(travel, WORK_FLOAT[0], WORK_CENTER[0]) * w);
         ty = lerp(hold, ty, lerp(travel, WORK_FLOAT[1], WORK_CENTER[1]) * h);
       }
+
+      /* the solution card sweep: while the pin runway scrubs, the
+         cube rides the px path the Tracker computed off the frozen
+         card grid (lib/solution-sweep). The path enters and exits
+         BELOW THE FRAME, so this hard override and the waypoint
+         journey only ever swap while the cube is off-screen. A slow
+         roll accumulates across the pass. */
+      if (stage.sweep.on) {
+        tx = (stage.sweep.ax / state.size.width - 0.5) * w;
+        ty =
+          (0.5 - stage.sweep.ay / state.size.height) * h +
+          Math.sin(t * 0.55 + 1.1) * 0.008 * h;
+        try_ += smooth(stage.sweep.p) * 2.2;
+      }
+
+      /* the services dock: the journey's destination (6.services.md
+         v4). Soft-blend the target into the bay's center and ease the
+         scale to fit it; the idle bob and pointer tilt stay live
+         (alive at rest, STYLE_GUIDE 7.4). The flick store integrates
+         hover impulses from the service rows into the spin: flick a
+         row, the cube spins up and coasts down. */
+      dockFlick.v *= Math.exp(-FLICK_DECAY * Math.min(delta, 0.1));
+      dockFlick.a += dockFlick.v * Math.min(delta, 0.1);
+      try_ += dockFlick.a;
+      let wpScale = stage.wp.scale;
+      const db = stage.dock.b;
+      if (db > 0.001) {
+        const bayX = (stage.dock.ax / state.size.width - 0.5) * w;
+        const bayY = (0.5 - stage.dock.ay / state.size.height) * h;
+        tx = lerp(db, tx, bayX + Math.sin(t * 0.4) * 0.004 * w);
+        ty = lerp(db, ty, bayY + Math.sin(t * 0.55 + 1.1) * 0.006 * h);
+        const fit = (stage.dock.hPx * DOCK_FIT * (h / state.size.height)) / s;
+        wpScale = lerp(db, wpScale, fit);
+      }
+
       const dive = smooth(seg(pm, WORK_DIVE));
       if (dive > 0) {
         const wx = (stage.panel.ax / state.size.width - 0.5) * w;
@@ -755,7 +937,7 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       /* the dive also eases the scale to the shared SLAB_VH square,
          so the swap geometry is deterministic: the DOM builds the
          identical square from the same constant (round 10) */
-      const tScale = lerp(dive, stage.wp.scale, (SLAB_VH * h) / s);
+      const tScale = lerp(dive, wpScale, (SLAB_VH * h) / s);
 
       /* damping ramps to near-exact tracking approaching the handoff
          (WORK_LOCK), so the slab cannot lag the DOM square at the swap */

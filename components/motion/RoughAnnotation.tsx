@@ -14,7 +14,9 @@ import { cn } from "@/lib/utils";
 
    Contract:
    - fixed seeds so shapes are stable across redraws
-   - draw-on entry via pathLength 0 -> 1 (1.2s, circle 2s, house ease)
+   - draw-on entry via pathLength 0 -> 1 (1.2s, circle 2s, house ease);
+     one-shot by default, `rearm` opts into two-way (retract at 0.5s
+     when `active` drops, replay on the next pass: the card sweep)
    - 3 pre-rendered boil frames cycled by visibility toggle, only while
      on screen, only after the draw completes
    - stroke reads var(--sec-acc) at draw time (live CSS var on the path)
@@ -38,7 +40,13 @@ const BOIL_INTERVAL_MS = 200;
 /* SVG bleed so rough strokes can wobble outside the measured box */
 const PAD = 14;
 
-function buildFrame(variant: Variant, w: number, h: number, frame: number): PathSpec[] {
+function buildFrame(
+  variant: Variant,
+  w: number,
+  h: number,
+  frame: number,
+  outset: boolean,
+): PathSpec[] {
   const gen = rough.generator();
   const paths: PathSpec[] = [];
   const seed = (i: number) => SEEDS[i % SEEDS.length] + frame * BOIL_SEED_STEP;
@@ -48,10 +56,17 @@ function buildFrame(variant: Variant, w: number, h: number, frame: number): Path
 
   if (variant === "bracket") {
     /* 6 lines forming [ and ]: top tip, vertical, bottom tip per side
-       (e2vc geometry: inset max(6, min*0.04), tip max(14, h*0.12)) */
-    const inset = Math.max(6, Math.min(w, h) * 0.04);
+       (e2vc geometry: inset max(6, min*0.04), tip max(14, h*0.12)).
+       `outset` flips the brackets slightly OUTSIDE the measured box
+       (~10px past every edge) so they read as bigger than the surface
+       they mark, e2vc's Apply-button read at panel scale (Brad, the
+       problem strip). The svg is overflow-visible, so escaping the
+       box is safe. */
+    const inset = outset
+      ? -Math.max(10, Math.min(w, h) * 0.02)
+      : Math.max(6, Math.min(w, h) * 0.04);
     const tip = Math.max(14, h * 0.12);
-    const yPad = h * 0.12;
+    const yPad = outset ? -Math.max(10, h * 0.025) : h * 0.12;
     const tipOpts = (i: number) => ({ seed: seed(i), roughness: 1.6, strokeWidth: 3 });
     const vertOpts = (i: number) => ({ seed: seed(i), roughness: 2.2, strokeWidth: 3 });
     push(gen.line(inset + tip, yPad, inset, yPad, tipOpts(0)), 3);
@@ -140,6 +155,20 @@ type Props = {
       the box variant passes the annotated surface's own fill so only
       the wobble escaping the edge shows. */
   stroke?: string;
+  /** Two-way draw: no latch, so `active` going false RETRACTS the
+      stroke (0.5s) and the annotation replays on the next pass. Only
+      for ink tied to a scrubbed object that can come back (the
+      solution card sweep, where each underline pops as the cube
+      slides under its card and unwinds on scroll-back). Everything
+      else keeps the one-shot draw + boil contract. */
+  rearm?: boolean;
+  /** bracket only: draw slightly OUTSIDE the measured box instead of
+      inside its edges (the problem strip panel). */
+  outset?: boolean;
+  /** Boil frame interval override in ms (default 200). Small-type
+      annotations read jittery at the default; the trust eyebrow
+      circle runs calmer at ~320. */
+  boilMs?: number;
 };
 
 export function RoughAnnotation({
@@ -151,6 +180,9 @@ export function RoughAnnotation({
   staticRender = false,
   instant = false,
   stroke = "var(--sec-acc, var(--acc))",
+  rearm = false,
+  outset = false,
+  boilMs = BOIL_INTERVAL_MS,
 }: Props) {
   const reducedPref = useReducedMotion();
   const reduced = reducedPref || staticRender;
@@ -163,16 +195,20 @@ export function RoughAnnotation({
   const [boilFrame, setBoilFrame] = useState(0);
 
   const shouldDraw = active ?? inView;
-  const draw = fired || shouldDraw;
+  const draw = rearm ? shouldDraw : fired || shouldDraw;
 
   useEffect(() => {
     if (shouldDraw) {
-      setFired(true);
+      if (!rearm) setFired(true);
       /* instant strokes are complete the moment they exist, so the
          boil may start right away */
       if (instant) setDrawn(true);
+    } else if (rearm) {
+      /* retracting: stop the boil immediately so frame 0's motion
+         paths are the visible ones while they unwind */
+      setDrawn(false);
     }
-  }, [shouldDraw, instant]);
+  }, [shouldDraw, instant, rearm]);
 
   // Measure the wrapped content and pre-render the boil frames.
   useEffect(() => {
@@ -188,7 +224,9 @@ export function RoughAnnotation({
       const h = Math.max(1, Math.round(el.offsetHeight));
       setSize({ w, h });
       setFrames(
-        Array.from({ length: BOIL_FRAMES }, (_, f) => buildFrame(variant, w, h, f)),
+        Array.from({ length: BOIL_FRAMES }, (_, f) =>
+          buildFrame(variant, w, h, f, outset),
+        ),
       );
     };
     generate();
@@ -199,17 +237,17 @@ export function RoughAnnotation({
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [variant]);
+  }, [variant, outset]);
 
   // Gentle boil: cycle frame visibility after the draw, while on screen.
   useEffect(() => {
     if (reduced || !drawn || !inView) return;
     const id = window.setInterval(
       () => setBoilFrame((f) => (f + 1) % BOIL_FRAMES),
-      BOIL_INTERVAL_MS,
+      boilMs,
     );
     return () => window.clearInterval(id);
-  }, [reduced, drawn, inView]);
+  }, [reduced, drawn, inView, boilMs]);
 
   const duration = variant === "circle" || variant === "box" ? 2 : 1.2;
   const visibleFrame = drawn ? boilFrame : 0;
@@ -217,7 +255,7 @@ export function RoughAnnotation({
   return (
     <span ref={ref} className={cn("relative inline-block", className)}>
       {children}
-      {size && frames && (reduced || draw) && (
+      {size && frames && (reduced || draw || rearm) && (
         <svg
           aria-hidden
           className="pointer-events-none absolute overflow-visible"
@@ -249,15 +287,36 @@ export function RoughAnnotation({
                     stroke={stroke}
                     strokeWidth={p.strokeWidth}
                     strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={draw ? { pathLength: 1 } : undefined}
-                    transition={{
-                      duration,
-                      ease: EASE.house,
-                      delay: delay + i * 0.08,
-                    }}
+                    /* rearm keeps the svg mounted while undrawn, and a
+                       zero-length round-cap path renders as a DOT at
+                       the path start: opacity snaps off once a retract
+                       lands (and stays off until the first draw) */
+                    initial={{ pathLength: 0, opacity: rearm ? 0 : 1 }}
+                    animate={
+                      draw
+                        ? { pathLength: 1, opacity: 1 }
+                        : rearm
+                          ? { pathLength: 0, opacity: 0 }
+                          : undefined
+                    }
+                    transition={
+                      draw
+                        ? {
+                            duration,
+                            ease: EASE.house,
+                            delay: delay + i * 0.08,
+                            opacity: { duration: 0 },
+                          }
+                        : {
+                            pathLength: { duration: 0.5, ease: EASE.house },
+                            opacity: { duration: 0.01, delay: 0.5 },
+                          }
+                    }
                     onAnimationComplete={
-                      i === frame.length - 1 ? () => setDrawn(true) : undefined
+                      /* draw is the animation target this completion
+                         belongs to (render closure), so this also
+                         clears the boil after a rearm retract */
+                      i === frame.length - 1 ? () => setDrawn(draw) : undefined
                     }
                   />
                 ),

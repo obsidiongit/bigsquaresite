@@ -1,23 +1,34 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
+import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
 import { Section } from "@/components/shared/Section";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { EDGE } from "@/lib/layout";
 import { EASE, VIEWPORT_ONCE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/* ProblemStrip (4.problem.md v3, region pivot): the setup, not the
-   pitch. One soft surf panel on the open-region EDGE (STYLE_GUIDE
-   4.5): claim + lead-in left, four x-marked pain points in a 2x2 grid
-   right. Compact and quiet on purpose; it reads in seconds and hands
-   off to the Solution headline next door. No rails, no rules, no
-   mono indexes, no looping motion.
+/* ProblemStrip (4.problem.md v3.1, region pivot + bracket beat): the
+   setup, not the pitch. One soft surf panel on the open-region EDGE
+   (STYLE_GUIDE 4.5): claim + lead-in left, four x-marked pain points
+   in a 2x2 grid right. Compact and quiet on purpose; it reads in
+   seconds and hands off to the Solution headline next door. No rails,
+   no rules, no mono indexes, no looping motion.
+
+   BRACKET PAIR (Brad, card sweep session rounds 2-3): the panel
+   wears a hand-drawn [ ] pair, RoughAnnotation's e2vc bracket
+   variant (the Apply-button brackets from their site) with `outset`
+   so the brackets sit slightly BIGGER than the panel, escaping past
+   every edge. Round 3 timing: they draw IMMEDIATELY on entering the
+   viewport (default inView trigger, no waiting for the cube or a
+   mid-viewport dwell) and PERSIST once drawn (standard one-shot +
+   boil; no retract on scroll-away). The cube companion still passes
+   BEHIND the filled panel (content z-10 over the z-5 canvas).
+   Another Brad-approved annotation-budget exception.
 
    X-glyphs are --sec-mid, never red (Youtech's traffic-light x is on
-   the do-not-take list). The cube companion passes BEHIND this filled
-   panel (content z-10 over the z-5 canvas; accepted, Brad wants to
-   see it). All copy DRAFT for Brad's single later pass. */
+   the do-not-take list). All copy DRAFT for Brad's single later
+   pass. */
 
 const PAIN_POINTS = [
   "Lock you into a long contract before you see a result",
@@ -104,39 +115,41 @@ export function ProblemStrip() {
       className="pt-section-y pb-10 md:pb-12"
     >
       <div className={cn(EDGE, "relative z-10")}>
-        {reduced ? (
-          <div className={PANEL}>
-            <div className={SPLIT}>
-              <Heading />
-              <div className={LINES}>
-                {PAIN_POINTS.map((text) => (
-                  <PainLine key={text} text={text} />
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <motion.div
-            variants={panelVar}
-            initial="hidden"
-            whileInView="show"
-            viewport={VIEWPORT_ONCE}
-            className={PANEL}
-          >
-            <div className={SPLIT}>
-              <motion.div variants={itemVar}>
+        <RoughAnnotation variant="bracket" outset className="block">
+          {reduced ? (
+            <div className={PANEL}>
+              <div className={SPLIT}>
                 <Heading />
-              </motion.div>
-              <div className={LINES}>
-                {PAIN_POINTS.map((text) => (
-                  <motion.div key={text} variants={itemVar}>
-                    <PainLine text={text} />
-                  </motion.div>
-                ))}
+                <div className={LINES}>
+                  {PAIN_POINTS.map((text) => (
+                    <PainLine key={text} text={text} />
+                  ))}
+                </div>
               </div>
             </div>
-          </motion.div>
-        )}
+          ) : (
+            <motion.div
+              variants={panelVar}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT_ONCE}
+              className={PANEL}
+            >
+              <div className={SPLIT}>
+                <motion.div variants={itemVar}>
+                  <Heading />
+                </motion.div>
+                <div className={LINES}>
+                  {PAIN_POINTS.map((text) => (
+                    <motion.div key={text} variants={itemVar}>
+                      <PainLine text={text} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </RoughAnnotation>
       </div>
     </Section>
   );

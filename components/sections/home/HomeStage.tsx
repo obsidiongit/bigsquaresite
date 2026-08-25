@@ -17,7 +17,11 @@ const HomeCanvas = dynamic(() => import("./HomeCanvas"), { ssr: false });
      reform on (z-1)  >  section grounds + GridLines rails (z-auto)
 
    so the glass cube travels OVER the section backgrounds and rails
-   but BEHIND every piece of ink. The ambient square field (STYLE_GUIDE
+   but BEHIND every piece of ink. Exception (card sweep session,
+   2026-08-24): Search and ProofBand lift their WHOLE section to
+   z-[6], above the canvas, so the companion disappears behind those
+   two full-viewport grounds between the solution card sweep and the
+   trust marquee. The ambient square field (STYLE_GUIDE
    7.4) hands off across the canvas: above it during the hero (its
    opaque in-canvas paper backdrop would otherwise hide the squares),
    below it once the cube releases, so the companion passes over the

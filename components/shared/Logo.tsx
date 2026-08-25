@@ -1,21 +1,24 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
+import logoMark from "@/assets/logo.svg";
 
 /**
- * Placeholder logo per decisions.md: a square outline in --acc with the
- * word "logo" inside. The real transparent mark drops in here later.
- * Never hard-code the placeholder outside this component.
+ * BigSquare logo mark. The nav bar uses this component today; other
+ * surfaces (marquee tiles, footer mark) wire up when their assets land.
  */
 export function Logo({ className }: { className?: string }) {
   return (
     <span
-      aria-label="BigSquare Marketing"
-      role="img"
-      className={cn(
-        "inline-flex size-10 items-center justify-center border-2 border-acc font-mono text-[10px] uppercase tracking-[0.08em] text-acc select-none",
-        className,
-      )}
+      className={cn("relative inline-block size-10 shrink-0", className)}
     >
-      logo
+      <Image
+        src={logoMark}
+        alt="BigSquare Marketing"
+        fill
+        className="object-contain"
+        sizes="40px"
+        priority
+      />
     </span>
   );
 }
