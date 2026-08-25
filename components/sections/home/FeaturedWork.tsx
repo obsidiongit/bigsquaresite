@@ -27,6 +27,7 @@ import {
   PANEL_HANDOFF,
   SLAB_VH,
   STRETCH_END,
+  TEXT_EXIT,
   lerp,
   seg,
   smooth,
@@ -178,13 +179,16 @@ export function FeaturedWork() {
     else if (v <= hideAt) setShown(false);
   });
 
-  /* the work panel morph, DOM side (lib/work-panel v8, pin-runway
-     driven): the section's header + grid PIN inside the stage
-     wrapper, and ~180svh of runway scrubs the whole choreography 1:1
-     like the hero film. The CANVAS plays cube -> flooded SQUARE slab;
-     at PANEL_HANDOFF the DOM opacity-swaps an identical clip-path
-     square over it (SLAB_VH, same constant both sides) and plays the
-     stretch + waterfall itself. Round 10 (Brad: the corners "morph
+  /* the work panel morph, DOM side (lib/work-panel v9, pin-runway
+     driven): the section's header + grid PIN inside the stage wrapper
+     AT the release composition (sticky top 30svh desktop, round 11),
+     and ~240svh of runway scrubs the whole choreography 1:1 like the
+     hero film: the header exits up and out (headerY, TEXT_EXIT), the
+     cube travels to center stage and turntables, then the CANVAS
+     plays cube -> flooded SQUARE slab; at PANEL_HANDOFF the DOM
+     opacity-swaps an identical clip-path square over it (SLAB_VH,
+     same constant both sides) and plays the stretch + waterfall
+     itself. Round 10 (Brad: the corners "morph
      into a pill shape", the squiggle "loads separately"): the morph
      is now TWO clip-path insets driven by the same four numbers each
      frame: fillClip shapes the blue surface with `round r` (absolute
@@ -197,6 +201,9 @@ export function FeaturedWork() {
   const stageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const panelBoxRef = useRef<HTMLDivElement>(null);
+  /* the TEXT EXIT actor (round 11): the pinned header rides up and
+     off the viewport top over TEXT_EXIT while the cube holds still */
+  const headerY = useMotionValue(0);
   const panelOpacity = useMotionValue(overlap ? 0 : 1);
   const fillClip = useMotionValue(
     overlap ? "inset(0px 0px 100% 0px round 32px)" : "inset(0px round 32px)",
@@ -275,6 +282,16 @@ export function FeaturedWork() {
         B = lerp(tArrive, (barPx - slabPx) / 2, 0);
         T = lerp(t2, ph - lerp(t1, (barPx + slabPx) / 2, barPx), 0);
       }
+      /* the TEXT EXIT (round 11): the header rides up and fully off
+         the viewport top while the cube holds. Measured off the
+         untransformed outer anchor (the transform lives on its inner
+         child), so nothing feeds back. */
+      const head = headerRef.current;
+      if (head) {
+        headerY.set(
+          -smooth(seg(m, TEXT_EXIT)) * (head.getBoundingClientRect().bottom + 32),
+        );
+      }
     }
     const rad = lerp(t1, rad0, 32);
     fillClip.set(`inset(${T}px ${L}px ${B}px ${L}px round ${rad}px)`);
@@ -286,20 +303,22 @@ export function FeaturedWork() {
     const eT = exiting ? T : 2 * T;
     const eB = exiting ? 2 * B : B;
     edgeClip.set(`inset(${eT}px ${L}px ${eB}px ${L}px)`);
-    captionMix.set(seg(m, [0.8, 0.94]));
+    captionMix.set(seg(m, [0.87, 0.97]));
     /* arm the squiggle well before the reveal: it renders pre-drawn
        (instant) and the clip does all the showing/hiding */
     if (m > MORPH_REST) setBorderActive(true);
   });
 
-  /* the morph's scroll checkpoints (STYLE_GUIDE 7.4): the COMMITTED
-     runway slice (MORPH_REST -> 1) and the exit window. The float and
-     spin beats before the dive park freely (the cube is alive there);
-     from the dive on, an idle park completes the morph on a SLOW
-     glide (~2600ms/vh vs the default 450: Brad round 9, the default
-     pace made the panel "appear almost instantaneously": the
-     completion should read as the animation playing, waterfall and
-     all). Outside the bands the hook is inert. */
+  /* the morph's scroll checkpoints (STYLE_GUIDE 7.4): the text-exit
+     beat (desktop only; a park must never leave the headline clipped
+     at the viewport top), the COMMITTED runway slice (MORPH_REST ->
+     1) and the exit window. The travel and turntable beats between
+     them park freely (the cube is alive there); from the dive on, an
+     idle park completes the morph on a SLOW glide (~2600ms/vh vs the
+     default 450: Brad round 9, the default pace made the panel
+     "appear almost instantaneously": the completion should read as
+     the animation playing, waterfall and all). Outside the bands the
+     hook is inert. */
   const morphBands = useCallback(() => {
     const stageEl = stageRef.current;
     const pinEl = pinRef.current;
@@ -311,6 +330,7 @@ export function FeaturedWork() {
       el.getBoundingClientRect().bottom,
       window.innerHeight,
       window.scrollY,
+      window.innerWidth >= 768,
     );
   }, []);
   useScrollCheckpoints(panelBoxRef, {
@@ -354,10 +374,24 @@ export function FeaturedWork() {
             height difference). Fallback paths render no runway, so
             the pin never engages and the clock reads settled. */}
         <div ref={stageRef} data-work-stage>
-        <div ref={pinRef} data-work-pin className={cn(overlap && "sticky top-[6svh]")}>
-        {/* header: huge left, small support pinned right (lusion) */}
+        {/* sticky top 30svh on desktop == the section's position at the
+            hero release (by construction: -mt-72svh + pt-2svh leaves
+            30svh between the release scroll and the stage top), so the
+            pin engages EXACTLY at the release rest with zero dead
+            travel (round 11: "without scrolling down on the page any
+            more than we already are now") */}
+        <div ref={pinRef} data-work-pin className={cn(overlap && "sticky top-[6svh] md:top-[30svh]")}>
+        {/* header: huge left, small support pinned right (lusion).
+            The outer div anchors the scroll gate and the base offset
+            (Brad's raised release composition, desktop); the inner
+            motion div is the TEXT EXIT actor, riding up and off the
+            viewport top on the morph clock while the cube holds. */}
         <div
           ref={headerRef}
+          className={cn(overlap && "md:-translate-y-30")}
+        >
+        <motion.div
+          style={{ y: headerY }}
           className={cn(EDGE, "md:flex md:items-start md:justify-between md:gap-12")}
         >
           {overlap ? (
@@ -398,6 +432,7 @@ export function FeaturedWork() {
               </Reveal>
             </>
           )}
+        </motion.div>
         </div>
 
         <div className="relative mt-16 md:mt-[14svh]">
@@ -473,9 +508,9 @@ export function FeaturedWork() {
             CONTENT box, so this must be a real spacer element: as
             wrapper padding the pin has zero room and never sticks
             (found live, round 8). Length is the morph's total scroll
-            budget: 180svh desktop (round 9, 110 was "too rushed"),
-            100svh mobile. */}
-        {overlap && <div aria-hidden className="h-[100svh] md:h-[180svh]" />}
+            budget: 240svh desktop (round 11: text exit + travel +
+            four-turn turntable + morph), 100svh mobile. */}
+        {overlap && <div aria-hidden className="h-[100svh] md:h-[240svh]" />}
         </div>
 
         <Reveal className="mt-20 flex justify-center md:mt-32">

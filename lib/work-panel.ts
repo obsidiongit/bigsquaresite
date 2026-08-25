@@ -1,6 +1,12 @@
-/* Shared scroll math for the featured work PANEL MORPH (2b v8, Brad
-   2026-08-24/25 rounds 5-10): the companion cube floats beside the
-   "Featured work" headline, spins, dives, flattens into a brand-blue
+/* Shared scroll math for the featured work PANEL MORPH (2b v9, Brad
+   2026-08-24/25 rounds 5-11): from the release rest (headline left,
+   cube in the headline/support gap, cards peeking below) the PIN
+   engages IMMEDIATELY (sticky top 30svh == the release composition,
+   round 11: "without scrolling down on the page any more than we
+   already are now"). Scroll then scrubs: the headline + support rise
+   up and OUT the viewport top while the cube holds still; the cube
+   glides to center stage above cards 01/02 and turntables ~4 slow
+   full turns; then it dives, flattens, floods into a brand-blue
    square slab, and ONE blue panel grows out of it (a clip-path
    stretch into the top bar, then a top-down waterfall carrying the
    edge squiggle with it) behind all six cards; at the grid's far
@@ -50,7 +56,7 @@ export const PANEL_BAR_VH = 0.14;
    slab of SLAB_VH edge (uniform bevel, no distortion) and the DOM
    plays the whole stretch + waterfall with clip-path inset(round r):
    absolute-px radii that never distort. */
-export const PANEL_HANDOFF = 0.62;
+export const PANEL_HANDOFF = 0.74;
 
 /* the flooded square slab's edge (fraction of viewport height): the
    deterministic swap geometry BOTH actors build independently. The
@@ -60,16 +66,22 @@ export const SLAB_VH = 0.11;
 
 /* morph value where the DOM stretch (square -> full-width top bar)
    ends and the top-down sweep begins */
-export const STRETCH_END = 0.76;
+export const STRETCH_END = 0.85;
 
-/* the last FREE morph value: below it the cube merely floats/spins at
-   its rest spot and any park is a legit rest, so the checkpoint band
-   starts HERE, not at the pin start (round 9; the full-runway band
-   meant one wheel notch into the pin idle-glided the entire
-   choreography, which read as the panel appearing instantly). It must
-   equal the canvas dive's start (HomeCanvas WORK_DIVE): from the dive
-   on, states are half-morphed and must complete. */
-export const MORPH_REST = 0.3;
+/* the headline + support EXIT beat (round 11): the pinned header
+   translates up and off the viewport top over this morph window,
+   scrubbed, while the cube holds still. A checkpoint band of its own
+   so a park can never leave the text half-clipped at the top edge. */
+export const TEXT_EXIT: [number, number] = [0.03, 0.14];
+
+/* the last FREE morph value: below it the cube merely travels/spins
+   at its center-stage spot and any park is a legit rest, so the main
+   checkpoint band starts HERE, not at the pin start (round 9; the
+   full-runway band meant one wheel notch into the pin idle-glided the
+   entire choreography, which read as the panel appearing instantly).
+   It must equal the canvas dive's start (HomeCanvas WORK_DIVE): from
+   the dive on, states are half-morphed and must complete. */
+export const MORPH_REST = 0.56;
 
 export const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 export const seg = (v: number, [a, b]: [number, number]) =>
@@ -95,9 +107,10 @@ export function workMorph(wr: Rect, cr: Rect, panelBottom: number, vh: number) {
 }
 
 /* Checkpoint bands for useScrollCheckpoints (STYLE_GUIDE 7.4): the
-   COMMITTED slice of the pin runway (MORPH_REST -> 1; the float/spin
-   zone before it parks freely) and the exit window, as absolute
-   scrollY ranges resolved at settle time. Inside the runway,
+   text-exit beat (desktop pins only; mobile's header never exits),
+   the COMMITTED slice of the pin runway (MORPH_REST -> 1; the
+   travel/spin zone before it parks freely) and the exit window, as
+   absolute scrollY ranges resolved at settle time. Inside the runway,
    pinStart = scrollY - pin offset is exact; parked outside it the
    degenerate band lands on a closed edge and the hook stays inert. */
 export function workMorphBands(
@@ -106,11 +119,17 @@ export function workMorphBands(
   panelBottom: number,
   vh: number,
   scrollY: number,
+  textExit: boolean,
 ): [number, number][] {
   const runway = wr.height - cr.height;
   const bands: [number, number][] = [];
   if (runway > 1) {
     const pinStart = scrollY - (cr.top - wr.top);
+    if (textExit)
+      bands.push([
+        pinStart + TEXT_EXIT[0] * runway,
+        pinStart + TEXT_EXIT[1] * runway,
+      ]);
     bands.push([pinStart + MORPH_REST * runway, pinStart + runway]);
   }
   const bottom = panelBottom + scrollY;

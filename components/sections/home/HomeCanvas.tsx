@@ -147,25 +147,32 @@ const BLACK = new THREE.Color("#000000");
    bevel scales with the mesh, and the wide bar turned its ends into
    pill curves (Brad round 10: "morphs into a pill shape"). The whole
    ladder runs backwards off the grid's far edge. */
-/* Round 9 pacing (Brad: "spread out these animations... slow them
-   down"): the clock is the section's PIN RUNWAY, grown to ~180svh of
-   scroll (lib/work-panel, FeaturedWork spacer), scrubbed 1:1 like the
-   hero film. The cube arrives at the pin ALREADY at the float spot
-   (the reform's R_ASCEND delivers it); WORK_HOLD only pins it there
-   against mid-pin waypoint drift while the showcase spin plays. The
-   committed morph starts at the dive (== MORPH_REST, where the
-   checkpoint band begins): float 0 -> 0.3 parks freely, dive on
-   completes. */
+/* Round 11 choreography (Brad): the pin engages AT the release
+   composition (FeaturedWork sticky top 30svh, zero dead travel), and
+   the clock is the section's PIN RUNWAY (~240svh, FeaturedWork
+   spacer), scrubbed 1:1 like the hero film. The cube arrives at the
+   pin ALREADY at the float spot (the reform's R_ASCEND delivers it)
+   and HOLDS STILL while the headline + support exit up and out
+   (TEXT_EXIT, DOM-side); then it TRAVELS to center stage above cards
+   01/02 and turntables WORK_TURNS slow full rotations; then the
+   committed morph starts at the dive (== MORPH_REST, where the main
+   checkpoint band begins): everything before it parks freely, dive
+   on completes. */
 const WORK_FLOAT: [number, number] = [0.14, 0.24];
-const WORK_HOLD: [number, number] = [0.02, 0.2];
-const WORK_SPIN: [number, number] = [0.02, 0.44]; /* extra showcase turn */
-const WORK_DIVE: [number, number] = [MORPH_REST, 0.55];
-const WORK_FLATTEN: [number, number] = [0.44, 0.6];
-const WORK_FLOOD: [number, number] = [0.46, 0.6];
+/* center stage: x centered over the grid, high enough to clear the
+   card row in the release-frozen composition */
+const WORK_CENTER: [number, number] = [0, 0.18];
+const WORK_HOLD: [number, number] = [0.02, 0.1];
+const WORK_TRAVEL: [number, number] = [0.1, 0.22]; /* float -> center */
+const WORK_SPIN: [number, number] = [0.18, 0.56]; /* the turntable */
+const WORK_TURNS = 4; /* full rotations across WORK_SPIN */
+const WORK_DIVE: [number, number] = [MORPH_REST, 0.66];
+const WORK_FLATTEN: [number, number] = [0.62, 0.72];
+const WORK_FLOOD: [number, number] = [0.63, 0.72];
 const WORK_VANISH: [number, number] = [PANEL_HANDOFF + 0.01, PANEL_HANDOFF + 0.06];
 /* damping ramps toward exact tracking approaching the handoff, so the
    slab and the DOM square cannot be offset by follower lag at the swap */
-const WORK_LOCK: [number, number] = [0.5, PANEL_HANDOFF];
+const WORK_LOCK: [number, number] = [0.62, PANEL_HANDOFF];
 
 /* ---- the companion journey ------------------------------------------ */
 /* Waypoints in viewport fractions from center (y up), keyed to the
@@ -717,17 +724,22 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       /* the pin choreography, all scrubbed over the runway:
          HOLD: the cube arrived at the float spot via the reform's
          ascent; this blend pins it there against mid-pin waypoint
-         drift while the showcase turn plays (the beat Brad wants to
-         actually SEE); enter side only, so the exit's reform hands
-         straight back to the waypoints instead.
-         DIVE: from the float spot to the bar's center, unwinding to
-         the nearest HALF turn (a quarter-turn landing shows the
-         cube's side, which the z-flatten squashes to a sliver). */
+         drift while the headline exits overhead (round 11: "without
+         this square moving").
+         TRAVEL: float spot -> center stage above cards 01/02, where
+         the TURNTABLE plays WORK_TURNS slow full rotations under the
+         visitor's scroll.
+         DIVE: from center stage down to the bar's center, unwinding
+         to the nearest HALF turn (a quarter-turn landing shows the
+         cube's side, which the z-flatten squashes to a sliver).
+         Enter side only, so the exit's reform hands straight back to
+         the waypoints instead. */
       if (!stage.panel.exiting) {
         const hold = smooth(seg(pm, WORK_HOLD));
-        try_ += smooth(seg(pm, WORK_SPIN)) * 1.3;
-        tx = lerp(hold, tx, WORK_FLOAT[0] * w);
-        ty = lerp(hold, ty, WORK_FLOAT[1] * h);
+        const travel = smooth(seg(pm, WORK_TRAVEL));
+        try_ += smooth(seg(pm, WORK_SPIN)) * WORK_TURNS * Math.PI * 2;
+        tx = lerp(hold, tx, lerp(travel, WORK_FLOAT[0], WORK_CENTER[0]) * w);
+        ty = lerp(hold, ty, lerp(travel, WORK_FLOAT[1], WORK_CENTER[1]) * h);
       }
       const dive = smooth(seg(pm, WORK_DIVE));
       if (dive > 0) {
@@ -795,7 +807,9 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       glass.emissive.copy(BLACK).lerp(WORK_BLUE, flood);
 
       if (sm) {
-        const smokeFade = fade * (1 - smooth(seg(pm, [0.3, 0.6])));
+        /* the smoke core stays lit through the whole turntable and
+           only quenches into the dive/flatten */
+        const smokeFade = fade * (1 - smooth(seg(pm, [0.56, 0.68])));
         sm.visible = smokeFade > 0.01;
         smokeMat.uniforms.uTime.value = t;
         smokeMat.uniforms.uDensity.value = smokeFade;
