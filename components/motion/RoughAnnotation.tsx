@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 
    Budget (STYLE_GUIDE.md 0, 8): at most 1 per viewport, 3 per page. */
 
-type Variant = "bracket" | "circle" | "underline" | "box";
+type Variant = "bracket" | "circle" | "underline" | "box" | "smiley";
 
 type PathSpec = { d: string; strokeWidth: number };
 
@@ -111,6 +111,48 @@ function buildFrame(
     push(
       gen.linearPath(pts, { seed: seed(0), roughness: 2.2, strokeWidth: 4.5 }),
       4.5,
+    );
+  } else if (variant === "smiley") {
+    /* hand-drawn smiley doodle (Brad's first-90-days finale ask,
+       2026-08-25): face ellipse, two dash eyes, a curved smile. A
+       DOODLE, not an annotation: it decorates a surface instead of
+       marking content, so it wraps an empty fixed-size span. Same
+       contract as every variant (seeds, draw-on, boil). */
+    push(
+      gen.ellipse(w / 2, h / 2, w * 0.92, h * 0.92, {
+        seed: seed(0),
+        roughness: 1.6,
+        strokeWidth: 3.5,
+      }),
+      3.5,
+    );
+    push(
+      gen.line(w * 0.36, h * 0.34, w * 0.35, h * 0.46, {
+        seed: seed(1),
+        roughness: 1.1,
+        strokeWidth: 3.5,
+      }),
+      3.5,
+    );
+    push(
+      gen.line(w * 0.64, h * 0.34, w * 0.65, h * 0.46, {
+        seed: seed(2),
+        roughness: 1.1,
+        strokeWidth: 3.5,
+      }),
+      3.5,
+    );
+    const smile: [number, number][] = [];
+    for (let k = 0; k <= 6; k++) {
+      const a = Math.PI * (0.16 + (0.68 * k) / 6);
+      smile.push([
+        w / 2 + w * 0.28 * Math.cos(a),
+        h * 0.48 + h * 0.28 * Math.sin(a),
+      ]);
+    }
+    push(
+      gen.curve(smile, { seed: seed(3), roughness: 1.3, strokeWidth: 3.5 }),
+      3.5,
     );
   } else if (variant === "circle") {
     push(

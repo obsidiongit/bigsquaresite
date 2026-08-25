@@ -40,10 +40,18 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
    lib/solution-sweep syncs canvas, ink, and stage),
    then a HIDDEN PASSAGE behind the search + proof-band grounds (those
    two sections paint at z-[6], above this canvas) until the trust
-   marquee releases it, and on to the dissolve over the services exit.
-   Extend WAYPOINTS when later sections (portal) want the object
-   back. Everything is a pure function of native scroll
-   smoothed by damped followers: no hijack, no Lenis.
+   marquee releases it, and on to the services spotlight DOCK.
+
+   THE ENDING (9.portal.md v3, 2026-08-25): the services dissolve is
+   retired. The cube leaves the dock alive, travels into the portal
+   section, and plays the PORTAL WINDOW MORPH (lib/portal-window): over
+   that section's own pin runway it dives onto the Obsidion mark in the
+   preview window's chrome bar, flattens, floods brand blue, and hands
+   a square to the DOM, which grows the window out of it. The object
+   does not fade out at the end of its journey; it becomes the product.
+
+   Everything is a pure function of native scroll smoothed by damped
+   followers: no hijack, no Lenis.
 
    Rendering contract (STYLE_GUIDE 7.9) and the three hard-won rules
    (r3f uniforms-clone trap, transmission-buffer exclusions, raw-sRGB
@@ -77,6 +85,18 @@ import {
   FLICK_DECAY,
   dockFlick,
 } from "@/lib/services-dock";
+import {
+  PORTAL_DIVE,
+  PORTAL_FLATTEN,
+  PORTAL_FLOOD,
+  PORTAL_LOCK,
+  PORTAL_SLAB_VH,
+  PORTAL_TURN,
+  PORTAL_TURNS,
+  PORTAL_VANISH,
+  portalMorph,
+  seedGeometry,
+} from "@/lib/portal-window";
 
 /* ---- timeline ------------------------------------------------------ */
 /* Act 1 beats are authored in 0..1 of the OLD wrapper and remapped by
@@ -212,7 +232,8 @@ type AnchorName =
   | "search"
   | "services"
   | "proof"
-  | "trust";
+  | "trust"
+  | "portal";
 
 type Waypoint = {
   anchor: AnchorName;
@@ -295,7 +316,23 @@ const WAYPOINTS: Waypoint[] = [
   { anchor: "services", frac: 0.22, x: 0.3, y: 0.02, scale: 0.46, spin: 4.0, fade: 1 },
   { anchor: "services", frac: 0.55, x: 0.28, y: 0, scale: 0.44, spin: 4.5, fade: 1 },
   { anchor: "services", frac: 0.9, x: 0.28, y: 0.04, scale: 0.4, spin: 5.0, fade: 1 },
-  { anchor: "services", frac: 0.99, x: 0.28, y: 0.26, scale: 0.14, spin: 5.8, fade: 0 },
+  /* the PORTAL WINDOW MORPH (9.portal.md v3): the journey's real
+     ending, and the reason the old services-exit dissolve is gone.
+     These waypoints only stage the approach: the cube crosses out of
+     the dock toward centre and rises above the window's chrome bar.
+     The morph itself is a PIN OVERRIDE, scrubbed off the portal
+     stage's runway (lib/portal-window), so once the pin engages the
+     override owns x/y/scale and these hold whatever the frozen
+     anchor last read. Past it the cube is not faded out: it is gone,
+     because the DOM window is now the object. */
+  { anchor: "services", frac: 0.99, x: 0.2, y: 0.16, scale: 0.44, spin: 5.6, fade: 1 },
+  /* the hold plays over the window's still-empty footprint, so the
+     cube can be a real presence here: it holds LARGER than it has
+     travelled all page (0.58) and compacts into the slab on the dive.
+     A small object turning in an empty viewport reads as a loading
+     state, not as a set piece. */
+  { anchor: "portal", frac: 0.2, x: 0.02, y: 0.14, scale: 0.58, spin: 6.0, fade: 1 },
+  { anchor: "portal", frac: 0.6, x: 0, y: 0.1, scale: 0.56, spin: 6.3, fade: 1 },
 ];
 
 /* Mobile: no whitespace to live in; one graceful exit over the top of
@@ -330,6 +367,10 @@ type StageState = {
   /* the solution card sweep pin (lib/solution-sweep): runway progress
      + the cube's px target along the under-card path */
   sweep: { on: boolean; p: number; ax: number; ay: number };
+  /* the portal window morph (lib/portal-window): runway progress plus
+     the seed square's px centre and edge, measured off the window's
+     own logo mark so both actors land on the same box */
+  portal: { on: boolean; p: number; ax: number; ay: number; slabPx: number };
   els: Partial<
     Record<
       | AnchorName
@@ -339,7 +380,10 @@ type StageState = {
       | "workPin"
       | "solutionStage"
       | "solutionPin"
-      | "servicesDock",
+      | "servicesDock"
+      | "portalStage"
+      | "portalPin"
+      | "portalMark",
       HTMLElement | null
     >
   >;
@@ -353,6 +397,7 @@ const createStage = (): StageState => ({
   panel: { m: 0, exiting: false, ax: 0, ay: 0, wPx: 1, barPx: 1 },
   dock: { b: 0, ax: 0, ay: 0, hPx: 1 },
   sweep: { on: false, p: 0, ax: 0, ay: 0 },
+  portal: { on: false, p: 0, ax: 0, ay: 0, slabPx: 1 },
   els: {},
 });
 
@@ -365,6 +410,7 @@ const ANCHOR_NAMES: AnchorName[] = [
   "services",
   "proof",
   "trust",
+  "portal",
 ];
 
 /* Reads the DOM once per frame (reads only, during rAF: no thrash),
@@ -500,6 +546,39 @@ function Tracker({ stage }: { stage: StageState }) {
           stage.dock.ax = br.left + br.width / 2;
           stage.dock.ay = br.top + br.height / 2;
           stage.dock.hPx = Math.max(1, br.height);
+        }
+      }
+    }
+
+    /* the PORTAL WINDOW MORPH (lib/portal-window, 9.portal.md v3):
+       the journey's ending. While the portal section's runway scrubs,
+       the cube's target is the SEED square built from the preview
+       window's own logo mark, measured per frame (clip-path never
+       changes layout, so the mark's box is live and exact the whole
+       way through). Desktop only, same reasoning as the dock. */
+    stage.portal.on = false;
+    if (!mobile) {
+      if (!els.portalStage)
+        els.portalStage = document.querySelector<HTMLElement>("[data-portal-stage]");
+      if (!els.portalPin)
+        els.portalPin = document.querySelector<HTMLElement>("[data-portal-pin]");
+      if (!els.portalMark)
+        els.portalMark = document.querySelector<HTMLElement>("[data-portal-mark]");
+      if (els.portalStage && els.portalPin && els.portalMark) {
+        const pin = portalMorph(
+          els.portalStage.getBoundingClientRect(),
+          els.portalPin.getBoundingClientRect(),
+        );
+        if (pin.runway > 1) {
+          const seed = seedGeometry(
+            els.portalMark.getBoundingClientRect(),
+            vh,
+          );
+          stage.portal.on = true;
+          stage.portal.p = pin.p;
+          stage.portal.ax = seed.cx;
+          stage.portal.ay = seed.cy;
+          stage.portal.slabPx = seed.slabPx;
         }
       }
     }
@@ -923,6 +1002,42 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
         wpScale = lerp(db, wpScale, fit);
       }
 
+      /* ---- the portal window morph (the ending) ------------------ */
+      /* Scrubbed off the portal pin's runway. The cube holds above the
+         window's chrome bar and TURNTABLES (the beat needs presence
+         before it resolves, or the morph reads as a jump cut), then
+         dives onto the logo mark's exact centre, easing to the shared
+         slab square and unwinding to the nearest HALF turn: a quarter
+         turn landing shows the cube's side, which the flatten would
+         squash to a sliver. Applied after the dock blend and before
+         the work dive, which cannot both be live at this scroll. */
+      const po = stage.portal.on ? stage.portal.p : 0;
+      let portalFlat = 0;
+      let portalFlood = 0;
+      let portalVanish = 0;
+      if (stage.portal.on) {
+        try_ += smooth(seg(po, PORTAL_TURN)) * PORTAL_TURNS * Math.PI * 2;
+        const pDive = smooth(seg(po, PORTAL_DIVE));
+        if (pDive > 0) {
+          const sx = (stage.portal.ax / state.size.width - 0.5) * w;
+          const sy = (0.5 - stage.portal.ay / state.size.height) * h;
+          const face = Math.round(try_ / Math.PI) * Math.PI;
+          tx = lerp(pDive, tx, sx);
+          ty = lerp(pDive, ty, sy);
+          trx = lerp(pDive, trx, 0);
+          try_ = lerp(pDive, try_, face);
+          trz = lerp(pDive, trz, 0);
+          wpScale = lerp(
+            pDive,
+            wpScale,
+            (stage.portal.slabPx * (h / state.size.height)) / s,
+          );
+        }
+        portalFlat = smooth(seg(po, PORTAL_FLATTEN));
+        portalFlood = smooth(seg(po, PORTAL_FLOOD));
+        portalVanish = seg(po, PORTAL_VANISH);
+      }
+
       const dive = smooth(seg(pm, WORK_DIVE));
       if (dive > 0) {
         const wx = (stage.panel.ax / state.size.width - 0.5) * w;
@@ -939,9 +1054,13 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
          identical square from the same constant (round 10) */
       const tScale = lerp(dive, wpScale, (SLAB_VH * h) / s);
 
-      /* damping ramps to near-exact tracking approaching the handoff
-         (WORK_LOCK), so the slab cannot lag the DOM square at the swap */
-      const lock = smooth(seg(pm, WORK_LOCK));
+      /* damping ramps to near-exact tracking approaching either
+         handoff (WORK_LOCK / PORTAL_LOCK), so the slab cannot lag the
+         DOM square at the swap */
+      const lock = Math.max(
+        smooth(seg(pm, WORK_LOCK)),
+        stage.portal.on ? smooth(seg(po, PORTAL_LOCK)) : 0,
+      );
       const kd = 1 - Math.exp(-(4 + 24 * lock) * Math.min(delta, 0.1));
       f.x += (tx - f.x) * kd;
       f.y += (ty - f.y) * kd;
@@ -951,7 +1070,8 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       f.rz += (trz - f.rz) * kd;
       f.s += (tScale - f.s) * kd;
 
-      g.visible = active && fade > 0.002 && vanish < 0.999;
+      g.visible =
+        active && fade > 0.002 && vanish < 0.999 && portalVanish < 0.999;
       if (!g.visible) {
         /* swallowed by the DOM panel (or faded): keep the follower
            pinned to the live target so the reform off the panel's far
@@ -970,7 +1090,7 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       g.rotation.set(f.rx, f.ry, f.rz);
       /* flatten only: the slab stays a SQUARE (uniform bevel, no pill
          ends) and the DOM's clip-path square takes over at the swap */
-      const flat = smooth(seg(pm, WORK_FLATTEN));
+      const flat = Math.max(smooth(seg(pm, WORK_FLATTEN)), portalFlat);
       const base = s * f.s;
       g.scale.set(base, base, base * (1 - 0.965 * flat));
 
@@ -978,9 +1098,12 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
          the EMISSIVE channel (base color to black, env to zero): a
          lit PBR base color cannot reproduce the CSS hex, and the DOM
          swap must be color-invisible */
-      const flood = smooth(seg(pm, WORK_FLOOD));
+      /* the portal morph floods to the SAME brand blue: the square it
+         becomes is the Obsidion mark, which is that blue */
+      const flood = Math.max(smooth(seg(pm, WORK_FLOOD)), portalFlood);
       glass.transmission = 0;
-      glass.opacity = (0.42 + 0.58 * flood) * fade * (1 - vanish);
+      glass.opacity =
+        (0.42 + 0.58 * flood) * fade * (1 - vanish) * (1 - portalVanish);
       glass.thickness = 0;
       glass.roughness = 0.09 + 0.55 * flood;
       glass.clearcoat = 1 - flood;
@@ -991,7 +1114,10 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       if (sm) {
         /* the smoke core stays lit through the whole turntable and
            only quenches into the dive/flatten */
-        const smokeFade = fade * (1 - smooth(seg(pm, [0.56, 0.68])));
+        const smokeFade =
+          fade *
+          (1 - smooth(seg(pm, [0.56, 0.68]))) *
+          (1 - smooth(seg(po, [PORTAL_DIVE[0], PORTAL_FLATTEN[1]])));
         sm.visible = smokeFade > 0.01;
         smokeMat.uniforms.uTime.value = t;
         smokeMat.uniforms.uDensity.value = smokeFade;
