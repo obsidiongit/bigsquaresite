@@ -47,6 +47,12 @@ const CHECKPOINTS = [
   HERO_K, /* the settled framed panel, reform's doorstep */
   1, /* reform complete, the cube released as companion */
 ];
+/* (Round 8, 2026-08-24: round 7 briefly dropped the release rest on
+   the canvas path and merged everything to the work panel into one
+   checkpoint band; a single wheel notch then auto-glided the whole
+   journey. Reverted: the reform settles locally between K and 1 as
+   before, and the featured work morph got real scroll room instead:
+   a pinned runway of its own, see lib/work-panel.) */
 
 const H1_LINE1 = ["More", "locations."];
 const H1_LINE2 = ["More", "revenue", "from"];

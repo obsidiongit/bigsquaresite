@@ -15,11 +15,22 @@ import { getLenis } from "@/components/motion/SmoothScroll";
    Checkpoints are wrapper-progress values (0 = wrapper top pinned,
    1 = wrapper released) and must be sorted ascending, normally with
    0 and 1 included so every beat has a rest on both sides. Pass a
-   module-level constant: the array is an effect dep by reference. */
+   module-level constant: the array is an effect dep by reference.
+
+   Alternatively pass `bands`: a resolver returning absolute scrollY
+   [start, end] ranges, re-measured at settle time, for beats whose
+   position depends on live layout (the featured work panel morph).
+   Idle-parking inside a band glides to the edge the gesture was
+   heading for; outside every band the hook is inert. The resolver is
+   an effect dep by reference: pass a stable function (useCallback
+   over refs). */
 
 type Options = {
   /** sorted wrapper-progress rests (0..1) the page may settle on */
-  checkpoints: number[];
+  checkpoints?: number[];
+  /** dynamic alternative: absolute scrollY beat bands, sorted and
+      non-overlapping, resolved fresh at each settle */
+  bands?: () => [number, number][];
   /** gate for reduced motion / fallback branches */
   enabled?: boolean;
 };
@@ -54,7 +65,7 @@ const easeInOutCubic = (t: number) =>
 
 export function useScrollCheckpoints(
   target: { readonly current: HTMLElement | null },
-  { checkpoints, enabled = true }: Options,
+  { checkpoints, bands, enabled = true }: Options,
 ) {
   useEffect(() => {
     if (!enabled) return;
@@ -107,6 +118,20 @@ export function useScrollCheckpoints(
 
     const settle = () => {
       if (animating || pointerHeld || touching) return;
+
+      /* dynamic bands: absolute-Y beats, re-measured now */
+      if (bands) {
+        const y = window.scrollY;
+        for (const [a, b] of bands()) {
+          if (!(b > a) || y <= a || y >= b) continue;
+          const f = (y - a) / (b - a);
+          glideTo(dir >= 0 ? (f >= COMMIT ? b : a) : (f <= 1 - COMMIT ? a : b));
+          return;
+        }
+        return;
+      }
+      if (!checkpoints) return;
+
       const vh = window.innerHeight;
       const rect = el.getBoundingClientRect();
       const span = rect.height - vh;
@@ -210,5 +235,5 @@ export function useScrollCheckpoints(
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);
     };
-  }, [enabled, target, checkpoints]);
+  }, [enabled, target, checkpoints, bands]);
 }

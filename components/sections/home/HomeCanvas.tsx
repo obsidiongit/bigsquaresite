@@ -29,13 +29,14 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
    THE COMPANION: past the hero the cube is driven by a waypoint
    journey keyed to the page sections (data-cube-anchor hooks read per
-   frame): it glides through the trust strip, holds in the problem
-   section's right whitespace and ticks a quarter turn as each numbered
-   row passes, dives behind the solution bento and re-emerges across
-   the viewport foot, climbs the services rail, then spins up and
-   dissolves. Extend WAYPOINTS when later sections (proof band, portal)
-   want the object back. Everything is a pure function of native
-   scroll smoothed by damped followers: no hijack, no Lenis.
+   frame). Through the featured work grid it plays the WORK PANEL
+   MORPH (lib/work-panel, 2b v3): it flattens into a brand-blue slab
+   that the section's DOM panel grows out of, hides behind it for the
+   grid's whole passage, and reforms off the panel's far edge; from
+   there the open-region journey continues to the dissolve over trust.
+   Extend WAYPOINTS when later sections (proof band, portal) want the
+   object back. Everything is a pure function of native scroll
+   smoothed by damped followers: no hijack, no Lenis.
 
    Rendering contract (STYLE_GUIDE 7.9) and the three hard-won rules
    (r3f uniforms-clone trap, transmission-buffer exclusions, raw-sRGB
@@ -49,6 +50,7 @@ type Props = {
 };
 
 import { HERO_K } from "@/components/sections/home/media";
+import { PANEL_BAR_VH, PANEL_HANDOFF, workMorph } from "@/lib/work-panel";
 
 /* ---- timeline ------------------------------------------------------ */
 /* Act 1 beats are authored in 0..1 of the OLD wrapper and remapped by
@@ -84,14 +86,18 @@ const PANEL_MARGIN = 0.06;
 const PANEL_MARGIN_PX_MIN = 96;
 
 /* Where the reform lands the cube: right-of-center, in the open band
-   of the featured work header (between its support text and the first
-   card row). The reform used to run the balloon backwards to
-   CARD_CENTER on the LEFT and the companion then swam the cube right,
-   a dogleg Brad called out in round 4: now the shrinking panel's
-   target slides toward this point, the cube forms already in place at
-   its settled scale, and the heroEnd waypoint below matches it
-   exactly, so the takeover is motionless. */
-const REFORM_END: [number, number] = [0.24, 0.03];
+   between the support text and the first card row (the round-4
+   approved landing). Round 8: round 5 had moved this to the FLOAT
+   spot up at (0.14, 0.22), which dragged the reform's shrinking film
+   card high-right too, and scrolling back up read as "this awkward,
+   shrunken-down media player box on the right" (Brad). The reform now
+   lands low, near where the film card naturally sits, and the cube
+   RISES to the float spot (WORK_FLOAT, Brad's round-5 red box) during
+   the first beat of the work pin, so the reverse plays: cube sinks,
+   film develops over it right where the panel balloons from. The
+   heroEnd waypoint mirrors this point exactly, so the companion
+   takeover stays motionless. */
+const REFORM_END: [number, number] = [0.2, 0.02];
 const REFORM_END_MOBILE: [number, number] = [0.2, 0.16];
 const REFORM_SETTLE_SCALE = 0.82;
 const REFORM_SETTLE_SCALE_MOBILE = 0.7;
@@ -114,6 +120,38 @@ const INK_ACC = new THREE.Color().setHex(0x0657f9, THREE.NoColorSpace);
    reading as glass. */
 const GLASS_TINT = new THREE.Color("#D7E3FF");
 const WHITE = new THREE.Color("#FFFFFF");
+/* the work panel's ground (--acc), managed pipeline like GLASS_TINT:
+   the flattened cube floods to this so the DOM panel crossfade is
+   color-invisible */
+const WORK_BLUE = new THREE.Color("#0657F9");
+const BLACK = new THREE.Color("#000000");
+
+/* ---- the work panel morph ------------------------------------------- */
+/* Sub-beats of the shared morph clock (lib/work-panel, 0 free cube ->
+   1 settled panel). CANVAS-LED to the handoff (v4): the cube dives to
+   the bar's center and unwinds face-on, flattens, floods to the flat
+   panel blue (emissive: a lit PBR blue can never match the CSS hex),
+   then STRETCHES into the full-width bar; at PANEL_HANDOFF the slab's
+   geometry equals the DOM bar exactly and the DOM panel opacity-swaps
+   over it, so there is one continuous object and no fade-in. The
+   whole ladder runs backwards off the grid's far edge. */
+/* Round 8 pacing: the clock is the section's PIN RUNWAY (~110svh of
+   scroll, lib/work-panel), scrubbed 1:1 like the hero film, so every
+   beat below owns tens of svh instead of tens of px. The first beat
+   is the RISE: the cube climbs from the reform's landing to the FLOAT
+   spot beside the headline (Brad's round-5 red box) and spins there
+   before diving. */
+const WORK_FLOAT: [number, number] = [0.14, 0.22];
+const WORK_RISE: [number, number] = [0.02, 0.2];
+const WORK_SPIN: [number, number] = [0.02, 0.45]; /* extra showcase turn */
+const WORK_DIVE: [number, number] = [0.28, 0.58];
+const WORK_FLATTEN: [number, number] = [0.42, 0.66];
+const WORK_FLOOD: [number, number] = [0.46, 0.7];
+const WORK_STRETCH: [number, number] = [0.66, PANEL_HANDOFF];
+const WORK_VANISH: [number, number] = [PANEL_HANDOFF + 0.01, PANEL_HANDOFF + 0.06];
+/* damping ramps toward exact tracking approaching the handoff, so the
+   slab and the DOM bar cannot be offset by follower lag at the swap */
+const WORK_LOCK: [number, number] = [0.6, PANEL_HANDOFF];
 
 /* ---- the companion journey ------------------------------------------ */
 /* Waypoints in viewport fractions from center (y up), keyed to the
@@ -150,14 +188,23 @@ const WAYPOINTS: Waypoint[] = [
      4): the reform now shrinks the panel to the right and forms the
      cube there at settle scale, so companion takeover is motionless */
   { anchor: "heroEnd", frac: 0, x: REFORM_END[0], y: REFORM_END[1], scale: REFORM_SETTLE_SCALE, spin: 0.08, fade: 1 },
-  /* featured work (2b.featured-work.md v2): the section rises into the
-     hero's release beat, so companion control begins ~0.15 into it.
-     Hang right of the header, slip down the grid's center seam (small,
-     behind the ink, peeking through the gutter cross), drift right to
-     hand off to the open region. */
-  { anchor: "work", frac: 0.2, x: 0.28, y: -0.05, scale: 0.5, spin: 0.25, fade: 1 },
-  { anchor: "work", frac: 0.55, x: 0, y: 0, scale: 0.34, spin: 0.45, fade: 1 },
-  { anchor: "work", frac: 0.9, x: 0.3, y: 0.02, scale: 0.55, spin: 0.6, fade: 1 },
+  /* featured work (2b.featured-work.md v6): the WORK PANEL MORPH
+     (stage.panel, lib/work-panel) owns the section's pin runway: the
+     cube rises from the reform landing to the float spot beside the
+     headline, spins, dives, flattens, floods brand blue, stretches
+     into the bar and is swallowed by the DOM panel; it reforms off
+     the panel's bottom edge and resumes here. These waypoints only
+     steer the free cube outside the pin (they freeze with the pinned
+     anchor during it, which is fine: the pin blends override them). */
+  /* the ascent: from the reform landing up to the float spot in the
+     short travel between the release and the pin start, so the cube
+     clears the rising card row and the pin-start rest frame shows it
+     beside the headline (it was tucked behind card 02 otherwise).
+     frac 0.16 sits ~70px past the release at 1536x864; the follower
+     smooths the exact geometry everywhere else. */
+  { anchor: "work", frac: 0.16, x: 0.14, y: 0.22, scale: 0.6, spin: 0.35, fade: 1 },
+  { anchor: "work", frac: 0.5, x: 0, y: 0, scale: 0.55, spin: 0.5, fade: 1 },
+  { anchor: "work", frac: 0.92, x: 0, y: -0.08, scale: 0.52, spin: 0.8, fade: 1 },
   /* The open region (region pivot 2026-08-24): a minimal keep-it-working
      remap in the new document order (problem, solution, search,
      services, proof, trust). Brad retunes the journey himself in 2K.
@@ -201,7 +248,11 @@ type StageState = {
   sp: number; /* damped follower of raw */
   companion: boolean; /* past the hero: waypoint control */
   wp: { x: number; y: number; scale: number; spin: number; fade: number };
-  els: Partial<Record<AnchorName | "hero", HTMLElement | null>>;
+  /* work panel morph: shared clock + the bar's center and dims (px) */
+  panel: { m: number; exiting: boolean; ax: number; ay: number; wPx: number; barPx: number };
+  els: Partial<
+    Record<AnchorName | "hero" | "workPanel" | "workStage" | "workPin", HTMLElement | null>
+  >;
 };
 
 const createStage = (): StageState => ({
@@ -209,6 +260,7 @@ const createStage = (): StageState => ({
   sp: 0,
   companion: false,
   wp: { x: CARD_CENTER[0], y: CARD_CENTER[1], scale: 1, spin: 0, fade: 1 },
+  panel: { m: 0, exiting: false, ax: 0, ay: 0, wPx: 1, barPx: 1 },
   els: {},
 });
 
@@ -252,6 +304,34 @@ function Tracker({ stage }: { stage: StageState }) {
 
     stage.companion = stage.raw >= 0.9995;
     if (!stage.companion) return;
+
+    /* work panel morph clock (lib/work-panel, round 8: pin-runway
+       driven): the DOM side measures the same elements with the same
+       math each frame */
+    if (!els.workPanel)
+      els.workPanel = document.querySelector<HTMLElement>("[data-work-panel]");
+    if (!els.workStage)
+      els.workStage = document.querySelector<HTMLElement>("[data-work-stage]");
+    if (!els.workPin)
+      els.workPin = document.querySelector<HTMLElement>("[data-work-pin]");
+    if (els.workPanel && els.workStage && els.workPin) {
+      const r = els.workPanel.getBoundingClientRect();
+      const ph = workMorph(
+        els.workStage.getBoundingClientRect(),
+        els.workPin.getBoundingClientRect(),
+        r.bottom,
+        vh,
+      );
+      const barPx = PANEL_BAR_VH * vh;
+      stage.panel.m = ph.morph;
+      stage.panel.exiting = ph.exiting;
+      stage.panel.ax = r.left + r.width / 2;
+      stage.panel.ay = ph.exiting ? r.bottom - barPx / 2 : r.top + barPx / 2;
+      stage.panel.wPx = r.width;
+      stage.panel.barPx = barPx;
+    } else {
+      stage.panel.m = 0;
+    }
 
     /* companion target from the waypoint journey */
     const mobile = state.size.width < 768;
@@ -605,20 +685,49 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
         f.s = g.scale.x / s || 1;
       }
       const fade = stage.wp.fade;
-      g.visible = active && fade > 0.002;
-      if (!g.visible) return;
+      const pm = stage.panel.m;
+      const vanish = seg(pm, WORK_VANISH);
 
       /* damped pointer tilt, alive again as the object travels */
       tilt.current.x += (pointer.current.y * 0.12 - tilt.current.x) * 0.05;
       tilt.current.y += (pointer.current.x * 0.16 - tilt.current.y) * 0.05;
 
-      const tx = stage.wp.x * w + Math.sin(t * 0.4) * 0.008 * w;
-      const ty = stage.wp.y * h + Math.sin(t * 0.55 + 1.1) * 0.01 * h;
-      const trx = 0.42 + tilt.current.x + Math.sin(t * 0.26) * 0.04;
-      const try_ = 0.6 + stage.wp.spin + t * 0.1 + tilt.current.y;
-      const trz = -0.08;
+      let tx = stage.wp.x * w + Math.sin(t * 0.4) * 0.008 * w;
+      let ty = stage.wp.y * h + Math.sin(t * 0.55 + 1.1) * 0.01 * h;
+      let trx = 0.42 + tilt.current.x + Math.sin(t * 0.26) * 0.04;
+      let try_ = 0.6 + stage.wp.spin + t * 0.1 + tilt.current.y;
+      let trz = -0.08;
 
-      const kd = 1 - Math.exp(-4 * Math.min(delta, 0.1));
+      /* the pin choreography, all scrubbed over the runway:
+         RISE: from the reform's landing up to the float spot beside
+         the headline, with an extra showcase turn (the beat Brad
+         wants to actually SEE); enter side only, so the exit's reform
+         hands straight back to the waypoints instead.
+         DIVE: from the float spot to the bar's center, unwinding to
+         the nearest HALF turn (a quarter-turn landing shows the
+         cube's side, which the z-flatten squashes to a sliver). */
+      if (!stage.panel.exiting) {
+        const rise = smooth(seg(pm, WORK_RISE));
+        try_ += smooth(seg(pm, WORK_SPIN)) * 1.3;
+        tx = lerp(rise, tx, WORK_FLOAT[0] * w);
+        ty = lerp(rise, ty, WORK_FLOAT[1] * h);
+      }
+      const dive = smooth(seg(pm, WORK_DIVE));
+      if (dive > 0) {
+        const wx = (stage.panel.ax / state.size.width - 0.5) * w;
+        const wy = (0.5 - stage.panel.ay / state.size.height) * h;
+        const face = Math.round(try_ / Math.PI) * Math.PI;
+        tx = lerp(dive, tx, wx);
+        ty = lerp(dive, ty, wy);
+        trx = lerp(dive, trx, 0);
+        try_ = lerp(dive, try_, face);
+        trz = lerp(dive, trz, 0);
+      }
+
+      /* damping ramps to near-exact tracking approaching the handoff
+         (WORK_LOCK), so the slab cannot lag the DOM bar at the swap */
+      const lock = smooth(seg(pm, WORK_LOCK));
+      const kd = 1 - Math.exp(-(4 + 24 * lock) * Math.min(delta, 0.1));
       f.x += (tx - f.x) * kd;
       f.y += (ty - f.y) * kd;
       f.z += (0 - f.z) * kd;
@@ -627,21 +736,55 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       f.rz += (trz - f.rz) * kd;
       f.s += (stage.wp.scale - f.s) * kd;
 
+      g.visible = active && fade > 0.002 && vanish < 0.999;
+      if (!g.visible) {
+        /* swallowed by the DOM panel (or faded): keep the follower
+           pinned to the live target so the reform off the panel's far
+           edge starts from the right spot, not a stale one */
+        f.x = tx;
+        f.y = ty;
+        f.z = 0;
+        f.rx = trx;
+        f.ry = try_;
+        f.rz = trz;
+        f.s = stage.wp.scale;
+        return;
+      }
+
       g.position.set(f.x, f.y, f.z);
       g.rotation.set(f.rx, f.ry, f.rz);
-      g.scale.setScalar(s * f.s);
+      /* flatten, then stretch the slab into the DOM bar's exact
+         geometry: one continuous object across the handoff */
+      const flat = smooth(seg(pm, WORK_FLATTEN));
+      const stretch = smooth(seg(pm, WORK_STRETCH));
+      const base = s * f.s;
+      const panelW = (stage.panel.wPx / state.size.width) * w;
+      const barH = (stage.panel.barPx / state.size.height) * h;
+      g.scale.set(
+        lerp(stretch, base, panelW),
+        lerp(stretch, base, barH),
+        base * (1 - 0.965 * flat),
+      );
 
+      /* flood: glass -> the panel's flat brand blue. The blue rides
+         the EMISSIVE channel (base color to black, env to zero): a
+         lit PBR base color cannot reproduce the CSS hex, and the DOM
+         swap must be color-invisible */
+      const flood = smooth(seg(pm, WORK_FLOOD));
       glass.transmission = 0;
-      glass.opacity = 0.42 * fade;
+      glass.opacity = (0.42 + 0.58 * flood) * fade * (1 - vanish);
       glass.thickness = 0;
-      glass.roughness = 0.09;
-      glass.envMapIntensity = 0.85;
-      glass.color.copy(GLASS_TINT);
+      glass.roughness = 0.09 + 0.55 * flood;
+      glass.clearcoat = 1 - flood;
+      glass.envMapIntensity = 0.85 * (1 - flood);
+      glass.color.copy(GLASS_TINT).lerp(BLACK, flood);
+      glass.emissive.copy(BLACK).lerp(WORK_BLUE, flood);
 
       if (sm) {
-        sm.visible = fade > 0.01;
+        const smokeFade = fade * (1 - smooth(seg(pm, [0.3, 0.6])));
+        sm.visible = smokeFade > 0.01;
         smokeMat.uniforms.uTime.value = t;
-        smokeMat.uniforms.uDensity.value = fade;
+        smokeMat.uniforms.uDensity.value = smokeFade;
         sm.position.set(
           Math.sin(t * 0.14) * 0.08,
           Math.sin(t * 0.1 + 1.3) * 0.07,
@@ -658,7 +801,16 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
     const p = Math.min(1, stage.sp / HERO_K);
     const c = seg(stage.sp, [HERO_K, 1]);
     const reform = smooth(seg(c, R_UNFLATTEN));
-    const alpha = Math.max(1 - seg(p, CUBE_FADE), smooth(seg(c, R_SOLID)));
+    /* the reform-side alpha rides the slab's THICKNESS: while still
+       flat the re-materializing glass stays faint and it reaches full
+       presence only as it thickens into the cube. Scrolling UP, the
+       cube melts toward the film instead of parking as a bright flat
+       "white frame" beside it (Brad round 7); scrolling down, the
+       quench reads softer but intact. */
+    const alpha = Math.max(
+      1 - seg(p, CUBE_FADE),
+      smooth(seg(c, R_SOLID)) * (0.25 + 0.75 * reform),
+    );
     g.visible = alpha > 0.001 && active;
     if (!g.visible) return;
 
@@ -704,6 +856,8 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
     glass.thickness = 0.6 * (1 - 0.9 * flat) * (1 - mix);
     glass.envMapIntensity = (1 - 0.8 * flat) * (1 - 0.15 * mix);
     glass.roughness = 0.09 * (1 - 0.7 * flat);
+    glass.clearcoat = 1; /* the companion's panel flood lowers these */
+    glass.emissive.copy(BLACK);
     glass.opacity = alpha * (1 - 0.58 * mix);
     glass.color.copy(WHITE).lerp(GLASS_TINT, mix);
 
