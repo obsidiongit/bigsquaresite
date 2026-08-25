@@ -97,7 +97,12 @@ export function ProblemStrip() {
   const reduced = useReducedMotionSafe();
 
   return (
-    <Section theme="light" anchor="problem">
+    <Section
+      theme="light"
+      anchor="problem"
+      size="none"
+      className="pt-section-y pb-10 md:pb-12"
+    >
       <div className={cn(EDGE, "relative z-10")}>
         {reduced ? (
           <div className={PANEL}>

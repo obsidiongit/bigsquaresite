@@ -22,8 +22,11 @@ import { FEATURED_WORK, type WorkEntry } from "@/lib/featured-work";
 import { EDGE } from "@/lib/layout";
 import { EASE } from "@/lib/motion";
 import {
+  MORPH_REST,
   PANEL_BAR_VH,
   PANEL_HANDOFF,
+  SLAB_VH,
+  STRETCH_END,
   lerp,
   seg,
   smooth,
@@ -49,9 +52,10 @@ import { cn } from "@/lib/utils";
    text can never sit over the film. The pull-up and the gate are both
    skipped when the hero has no canvas tail (reduced motion, no WebGL).
 
-   Cube companion + WORK PANEL MORPH (2b v3, Brad 2026-08-24): the
-   reform lands the cube at REFORM_END (HomeCanvas), in the whitespace
-   between the headline and the support column. As the grid scrolls in,
+   Cube companion + WORK PANEL MORPH (2b v7, Brad 2026-08-25): the
+   reform delivers the cube to the FLOAT spot (HomeCanvas R_ASCEND ->
+   WORK_FLOAT), raised in the whitespace between the headline and the
+   support column. As the grid scrolls in,
    the cube flattens into a brand-blue slab and ONE shared blue panel
    (`data-work-panel`) grows out of it behind all six cards, wearing a
    RoughAnnotation box squiggle once settled; off the grid's far edge
@@ -174,25 +178,30 @@ export function FeaturedWork() {
     else if (v <= hideAt) setShown(false);
   });
 
-  /* the work panel morph, DOM side (lib/work-panel v6, pin-runway
-     driven; canvas-led to the handoff): the section's header + grid
-     PIN inside the stage wrapper, and ~110svh of runway scrubs the
-     whole choreography 1:1 like the hero film (round 8, Brad: the
-     position-driven clock capped everything at ~0.5vh and it "just
-     shoots straight there"). The CANVAS slab plays the whole cube ->
-     bar transition; the DOM panel exists only from PANEL_HANDOFF,
-     opacity-swapped over the slab's identical geometry, then sweeps
-     scaleY down behind the cards. No fade-in: the swap is between two
-     same-color same-shape rects. Measured off the UNTRANSFORMED pin
-     elements and panel box so transforms never feed back. */
+  /* the work panel morph, DOM side (lib/work-panel v8, pin-runway
+     driven): the section's header + grid PIN inside the stage
+     wrapper, and ~180svh of runway scrubs the whole choreography 1:1
+     like the hero film. The CANVAS plays cube -> flooded SQUARE slab;
+     at PANEL_HANDOFF the DOM opacity-swaps an identical clip-path
+     square over it (SLAB_VH, same constant both sides) and plays the
+     stretch + waterfall itself. Round 10 (Brad: the corners "morph
+     into a pill shape", the squiggle "loads separately"): the morph
+     is now TWO clip-path insets driven by the same four numbers each
+     frame: fillClip shapes the blue surface with `round r` (absolute
+     px radii, crisp at every size; the old scaleX/scaleY squashed
+     them), and edgeClip on a 16px-padded wrapper reveals the
+     pre-drawn squiggle with a constant 16px lead past the fill's
+     live edge, so ink and fill waterfall down (and back up) as ONE
+     object. Measured off the UNTRANSFORMED pin elements and panel
+     box so nothing feeds back. */
   const stageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const panelBoxRef = useRef<HTMLDivElement>(null);
-  const panelScaleX = useMotionValue(1);
-  const panelScaleY = useMotionValue(overlap ? PANEL_BAR_VH : 1);
   const panelOpacity = useMotionValue(overlap ? 0 : 1);
-  const panelOrigin = useMotionValue("50% 0%");
-  const borderOpacity = useMotionValue(overlap ? 0 : 1);
+  const fillClip = useMotionValue(
+    overlap ? "inset(0px 0px 100% 0px round 32px)" : "inset(0px round 32px)",
+  );
+  const edgeClip = useMotionValue(overlap ? "inset(0px 0px 100% 0px)" : "inset(0px)");
   /* caption ink rides the same clock (0 section ink -> 1 on-accent)
      so tags and titles are never white on bare paper */
   const captionMix = useMotionValue(overlap ? 0 : 1);
@@ -212,33 +221,85 @@ export function FeaturedWork() {
       r.bottom,
       vh,
     );
-    /* the bar as a fraction of this panel's height: the scaleY start
-       that makes the DOM slice equal the canvas slab exactly */
-    const barFrac = (PANEL_BAR_VH * vh) / Math.max(1, r.height);
-    panelOrigin.set(exiting ? "50% 100%" : "50% 0%");
+    const pw = r.width;
+    const ph = r.height;
+    const barPx = PANEL_BAR_VH * vh;
+    const slabPx = SLAB_VH * vh;
+
+    /* the live rect as clip insets (px from the panel box edges):
+       square slab -> full-width bar over the stretch window (top bar
+       entering, bottom bar exiting), then the sweep runs the far edge
+       home. The ARRIVING edge (top on enter, bottom on exit) snaps to
+       its final line right after the opacity swap, so the squiggle's
+       run there has a real edge to hug instead of hovering over a gap.
+       The radius eases from the slab's bevel to the settled 32px, so
+       the growth reads as one rounded object, never a pill or a
+       squashed square. */
+    let t1: number;
+    let t2: number;
+    let L: number;
+    let T: number;
+    let B: number;
+    let rad0: number;
     if (window.innerWidth < 768) {
       /* mobile has no cube by the time the grid arrives (it fades out
-         over the section top), so the DOM bar leads its own morph:
-         grow wide from a small slab, then sweep, instead of popping
-         in at the handoff with no actor before it */
+         over the section top), so the DOM bar leads its own morph
+         from a narrow center slice; same clip mechanics, own windows */
       panelOpacity.set(seg(m, [0.5, 0.6]));
-      panelScaleX.set(lerp(smooth(seg(m, [0.5, PANEL_HANDOFF])), 0.14, 1));
-      panelScaleY.set(lerp(smooth(seg(m, [0.6, 1])), barFrac, 1));
+      t1 = smooth(seg(m, [0.5, 0.68]));
+      t2 = smooth(seg(m, [0.68, 1]));
+      L = lerp(t1, pw * 0.43, 0);
+      rad0 = 24;
+      if (!exiting) {
+        T = 0;
+        B = lerp(t2, ph - barPx, 0);
+      } else {
+        B = 0;
+        T = lerp(t2, ph - barPx, 0);
+      }
     } else {
       panelOpacity.set(seg(m, [PANEL_HANDOFF, PANEL_HANDOFF + 0.02]));
-      panelScaleX.set(1);
-      panelScaleY.set(lerp(smooth(seg(m, [PANEL_HANDOFF + 0.02, 1])), barFrac, 1));
+      t1 = smooth(seg(m, [PANEL_HANDOFF, STRETCH_END]));
+      t2 = smooth(seg(m, [STRETCH_END, 1]));
+      /* the arriving edge lands over the beat after the crossfade, so
+         the swap still meets the slab's exact square */
+      const tArrive = smooth(
+        seg(m, [PANEL_HANDOFF + 0.02, PANEL_HANDOFF + 0.06]),
+      );
+      L = lerp(t1, (pw - slabPx) / 2, 0);
+      rad0 = 0.06 * slabPx; /* the slab's RoundedBox bevel, projected */
+      if (!exiting) {
+        T = lerp(tArrive, (barPx - slabPx) / 2, 0);
+        B = lerp(t2, ph - lerp(t1, (barPx + slabPx) / 2, barPx), 0);
+      } else {
+        B = lerp(tArrive, (barPx - slabPx) / 2, 0);
+        T = lerp(t2, ph - lerp(t1, (barPx + slabPx) / 2, barPx), 0);
+      }
     }
-    captionMix.set(seg(m, [0.84, 0.96]));
-    borderOpacity.set(seg(m, [0.96, 0.995]));
-    if (m > 0.99) setBorderActive(true);
+    const rad = lerp(t1, rad0, 32);
+    fillClip.set(`inset(${T}px ${L}px ${B}px ${L}px round ${rad}px)`);
+    /* the squiggle's reveal: the same numbers on the 16px-padded
+       wrapper give a constant 16px LEAD past the fill's sweeping edge
+       (ink slightly ahead of the paint); the ARRIVING edge doubles
+       its inset instead, so its ink materializes exactly as the fill
+       edge lands on the final perimeter rather than floating early */
+    const eT = exiting ? T : 2 * T;
+    const eB = exiting ? 2 * B : B;
+    edgeClip.set(`inset(${eT}px ${L}px ${eB}px ${L}px)`);
+    captionMix.set(seg(m, [0.8, 0.94]));
+    /* arm the squiggle well before the reveal: it renders pre-drawn
+       (instant) and the clip does all the showing/hiding */
+    if (m > MORPH_REST) setBorderActive(true);
   });
 
-  /* the morph's scroll checkpoints (STYLE_GUIDE 7.4): the pin runway
-     and the exit window. Idle-parking mid-runway plays the beat to
-     the nearer end; outside them the hook is inert. (Round 8: the
-     round-7 single film-to-panel band auto-glided the whole journey
-     off one wheel notch and is reverted.) */
+  /* the morph's scroll checkpoints (STYLE_GUIDE 7.4): the COMMITTED
+     runway slice (MORPH_REST -> 1) and the exit window. The float and
+     spin beats before the dive park freely (the cube is alive there);
+     from the dive on, an idle park completes the morph on a SLOW
+     glide (~2600ms/vh vs the default 450: Brad round 9, the default
+     pace made the panel "appear almost instantaneously": the
+     completion should read as the animation playing, waterfall and
+     all). Outside the bands the hook is inert. */
   const morphBands = useCallback(() => {
     const stageEl = stageRef.current;
     const pinEl = pinRef.current;
@@ -252,19 +313,22 @@ export function FeaturedWork() {
       window.scrollY,
     );
   }, []);
-  useScrollCheckpoints(panelBoxRef, { bands: morphBands, enabled: overlap });
+  useScrollCheckpoints(panelBoxRef, {
+    bands: morphBands,
+    enabled: overlap,
+    glideMsPerVh: 2600,
+    glideMaxMs: 5000,
+  });
 
   /* static/fallback paths (reduced motion, no WebGL): the panel is
      simply there, border drawn on entry, no morph */
   useEffect(() => {
     if (overlap) return;
-    panelScaleX.set(1);
-    panelScaleY.set(1);
+    fillClip.set("inset(0px round 32px)");
+    edgeClip.set("inset(0px)");
     panelOpacity.set(1);
-    panelOrigin.set("50% 0%");
-    borderOpacity.set(1);
     captionMix.set(1);
-  }, [overlap, panelScaleX, panelScaleY, panelOpacity, panelOrigin, borderOpacity, captionMix]);
+  }, [overlap, fillClip, edgeClip, panelOpacity, captionMix]);
 
   return (
     <Section
@@ -339,8 +403,13 @@ export function FeaturedWork() {
         <div className="relative mt-16 md:mt-[14svh]">
           {/* the shared blue panel: ONE box behind all six cards. The
               untransformed outer div is the measured morph box (canvas
-              Tracker reads it too); the inner motion div is the visual
-              that grows/collapses at the live edge's growth point. */}
+              Tracker reads it too); inside it, ONE clipped stage
+              (round 10) holds the fill and the edge squiggle behind
+              the same moving clip edge, so panel and ink waterfall
+              down (and back up) as one object. The wrapper is padded
+              16px so the squiggle's outside wobble survives the clip
+              at rest; reusing the fill's inset numbers on the padded
+              box gives the ink a constant 16px lead at the live edge. */}
           <div
             ref={panelBoxRef}
             data-work-panel
@@ -348,27 +417,24 @@ export function FeaturedWork() {
             className="pointer-events-none absolute inset-x-[max(2.5vw,20px)] -bottom-[clamp(28px,3vw,56px)] -top-[clamp(64px,10vh,128px)]"
           >
             <motion.div
-              data-theme="accent"
-              style={{
-                scaleX: panelScaleX,
-                scaleY: panelScaleY,
-                opacity: panelOpacity,
-                transformOrigin: panelOrigin,
-              }}
-              className="absolute inset-0 rounded-[32px]"
-            />
-            {/* edge squiggle in the panel's OWN blue, riding the box
-                edge: the inside half vanishes into the fill and only
-                the wobble escaping onto the paper shows, so the edge
-                reads hand-drawn (round 6: a white inner line clashed).
-                Sits outside the scaled div: never distorted, and it
-                only shows once the panel is settled anyway. */}
-            <motion.div style={{ opacity: borderOpacity }} className="absolute inset-0">
+              style={{ opacity: panelOpacity, clipPath: edgeClip }}
+              className="absolute -inset-4"
+            >
+              <motion.div style={{ clipPath: fillClip }} className="absolute inset-4">
+                <div data-theme="accent" className="absolute inset-0 rounded-[32px]" />
+              </motion.div>
+              {/* edge squiggle in the panel's OWN blue, riding the box
+                  edge: the inside half vanishes into the fill and only
+                  the wobble escaping onto the paper shows, so the edge
+                  reads hand-drawn (round 6: a white inner line
+                  clashed). Pre-drawn (instant) so the clip alone
+                  reveals it; boils once drawn and on screen. */}
               <RoughAnnotation
                 variant="box"
                 stroke="var(--acc)"
+                instant
                 active={overlap ? borderActive : undefined}
-                className="absolute inset-0 block"
+                className="absolute inset-4 block"
               >
                 {null}
               </RoughAnnotation>
@@ -406,8 +472,10 @@ export function FeaturedWork() {
         {/* the RUNWAY: sticky offsets are constrained to the parent's
             CONTENT box, so this must be a real spacer element: as
             wrapper padding the pin has zero room and never sticks
-            (found live, round 8) */}
-        {overlap && <div aria-hidden className="h-[70svh] md:h-[110svh]" />}
+            (found live, round 8). Length is the morph's total scroll
+            budget: 180svh desktop (round 9, 110 was "too rushed"),
+            100svh mobile. */}
+        {overlap && <div aria-hidden className="h-[100svh] md:h-[180svh]" />}
         </div>
 
         <Reveal className="mt-20 flex justify-center md:mt-32">

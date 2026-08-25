@@ -50,7 +50,13 @@ type Props = {
 };
 
 import { HERO_K } from "@/components/sections/home/media";
-import { PANEL_BAR_VH, PANEL_HANDOFF, workMorph } from "@/lib/work-panel";
+import {
+  MORPH_REST,
+  PANEL_BAR_VH,
+  PANEL_HANDOFF,
+  SLAB_VH,
+  workMorph,
+} from "@/lib/work-panel";
 
 /* ---- timeline ------------------------------------------------------ */
 /* Act 1 beats are authored in 0..1 of the OLD wrapper and remapped by
@@ -85,23 +91,26 @@ const CARD_W_MOBILE = 0.62;
 const PANEL_MARGIN = 0.06;
 const PANEL_MARGIN_PX_MIN = 96;
 
-/* Where the reform lands the cube: right-of-center, in the open band
-   between the support text and the first card row (the round-4
-   approved landing). Round 8: round 5 had moved this to the FLOAT
-   spot up at (0.14, 0.22), which dragged the reform's shrinking film
-   card high-right too, and scrolling back up read as "this awkward,
-   shrunken-down media player box on the right" (Brad). The reform now
-   lands low, near where the film card naturally sits, and the cube
-   RISES to the float spot (WORK_FLOAT, Brad's round-5 red box) during
-   the first beat of the work pin, so the reverse plays: cube sinks,
-   film develops over it right where the panel balloons from. The
-   heroEnd waypoint mirrors this point exactly, so the companion
-   takeover stays motionless. */
+/* Where the reform quenches the film and re-forms the cube:
+   right-of-center, near where the film card naturally sits (round 8:
+   shrinking the card high-right instead read as "this awkward,
+   shrunken-down media player box on the right" on scroll-up). Round 9
+   (Brad: the PARKED cube sat "down too low and too far to the
+   right"): the cube no longer waits at this landing. Once it is a
+   cube again it ASCENDS to the float spot (R_ASCEND -> WORK_FLOAT,
+   the measured midpoint of the headline/support gap) inside the
+   reform's last beat, so the release REST already shows it raised
+   between "Featured work" and the support text. The film card still
+   develops/quenches at this low landing, so the scroll-up story is
+   unchanged. The heroEnd waypoint mirrors the ASCENT END exactly, so
+   the companion takeover stays motionless. Desktop only: mobile's
+   journey exits over the section top from the landing itself. */
 const REFORM_END: [number, number] = [0.2, 0.02];
 const REFORM_END_MOBILE: [number, number] = [0.2, 0.16];
 const REFORM_SETTLE_SCALE = 0.82;
 const REFORM_SETTLE_SCALE_MOBILE = 0.7;
 const R_SETTLE: [number, number] = [0.58, 0.95]; /* cube eases to settle scale */
+const R_ASCEND: [number, number] = [0.86, 0.98]; /* landing -> WORK_FLOAT */
 
 const seg = (v: number, [a, b]: [number, number]) =>
   Math.min(1, Math.max(0, (v - a) / (b - a)));
@@ -128,30 +137,35 @@ const BLACK = new THREE.Color("#000000");
 
 /* ---- the work panel morph ------------------------------------------- */
 /* Sub-beats of the shared morph clock (lib/work-panel, 0 free cube ->
-   1 settled panel). CANVAS-LED to the handoff (v4): the cube dives to
-   the bar's center and unwinds face-on, flattens, floods to the flat
-   panel blue (emissive: a lit PBR blue can never match the CSS hex),
-   then STRETCHES into the full-width bar; at PANEL_HANDOFF the slab's
-   geometry equals the DOM bar exactly and the DOM panel opacity-swaps
-   over it, so there is one continuous object and no fade-in. The
-   whole ladder runs backwards off the grid's far edge. */
-/* Round 8 pacing: the clock is the section's PIN RUNWAY (~110svh of
-   scroll, lib/work-panel), scrubbed 1:1 like the hero film, so every
-   beat below owns tens of svh instead of tens of px. The first beat
-   is the RISE: the cube climbs from the reform's landing to the FLOAT
-   spot beside the headline (Brad's round-5 red box) and spins there
-   before diving. */
-const WORK_FLOAT: [number, number] = [0.14, 0.22];
-const WORK_RISE: [number, number] = [0.02, 0.2];
-const WORK_SPIN: [number, number] = [0.02, 0.45]; /* extra showcase turn */
-const WORK_DIVE: [number, number] = [0.28, 0.58];
-const WORK_FLATTEN: [number, number] = [0.42, 0.66];
-const WORK_FLOOD: [number, number] = [0.46, 0.7];
-const WORK_STRETCH: [number, number] = [0.66, PANEL_HANDOFF];
+   1 settled panel). CANVAS-LED only to the flooded SQUARE since round
+   10: the cube dives to the bar's center, unwinds face-on, flattens,
+   floods to the flat panel blue (emissive: a lit PBR blue can never
+   match the CSS hex) while the dive eases its scale to exactly
+   SLAB_VH; at PANEL_HANDOFF the DOM opacity-swaps its identical
+   clip-path square over the slab and plays the stretch + waterfall
+   itself. The canvas never stretches anymore: RoundedBoxGeometry's
+   bevel scales with the mesh, and the wide bar turned its ends into
+   pill curves (Brad round 10: "morphs into a pill shape"). The whole
+   ladder runs backwards off the grid's far edge. */
+/* Round 9 pacing (Brad: "spread out these animations... slow them
+   down"): the clock is the section's PIN RUNWAY, grown to ~180svh of
+   scroll (lib/work-panel, FeaturedWork spacer), scrubbed 1:1 like the
+   hero film. The cube arrives at the pin ALREADY at the float spot
+   (the reform's R_ASCEND delivers it); WORK_HOLD only pins it there
+   against mid-pin waypoint drift while the showcase spin plays. The
+   committed morph starts at the dive (== MORPH_REST, where the
+   checkpoint band begins): float 0 -> 0.3 parks freely, dive on
+   completes. */
+const WORK_FLOAT: [number, number] = [0.14, 0.24];
+const WORK_HOLD: [number, number] = [0.02, 0.2];
+const WORK_SPIN: [number, number] = [0.02, 0.44]; /* extra showcase turn */
+const WORK_DIVE: [number, number] = [MORPH_REST, 0.55];
+const WORK_FLATTEN: [number, number] = [0.44, 0.6];
+const WORK_FLOOD: [number, number] = [0.46, 0.6];
 const WORK_VANISH: [number, number] = [PANEL_HANDOFF + 0.01, PANEL_HANDOFF + 0.06];
 /* damping ramps toward exact tracking approaching the handoff, so the
-   slab and the DOM bar cannot be offset by follower lag at the swap */
-const WORK_LOCK: [number, number] = [0.6, PANEL_HANDOFF];
+   slab and the DOM square cannot be offset by follower lag at the swap */
+const WORK_LOCK: [number, number] = [0.5, PANEL_HANDOFF];
 
 /* ---- the companion journey ------------------------------------------ */
 /* Waypoints in viewport fractions from center (y up), keyed to the
@@ -184,25 +198,27 @@ type Waypoint = {
 };
 
 const WAYPOINTS: Waypoint[] = [
-  /* heroEnd mirrors REFORM_END + REFORM_SETTLE_SCALE exactly (round
-     4): the reform now shrinks the panel to the right and forms the
-     cube there at settle scale, so companion takeover is motionless */
-  { anchor: "heroEnd", frac: 0, x: REFORM_END[0], y: REFORM_END[1], scale: REFORM_SETTLE_SCALE, spin: 0.08, fade: 1 },
-  /* featured work (2b.featured-work.md v6): the WORK PANEL MORPH
+  /* heroEnd mirrors the reform's ASCENT END (WORK_FLOAT) at settle
+     scale (round 9): the reform quenches the film low at REFORM_END,
+     re-forms the cube and climbs it to the float spot, so companion
+     takeover is motionless AND the release rest shows the cube raised
+     between the headline and the support text */
+  { anchor: "heroEnd", frac: 0, x: WORK_FLOAT[0], y: WORK_FLOAT[1], scale: REFORM_SETTLE_SCALE, spin: 0.08, fade: 1 },
+  /* featured work (2b.featured-work.md v7): the WORK PANEL MORPH
      (stage.panel, lib/work-panel) owns the section's pin runway: the
-     cube rises from the reform landing to the float spot beside the
-     headline, spins, dives, flattens, floods brand blue, stretches
-     into the bar and is swallowed by the DOM panel; it reforms off
-     the panel's bottom edge and resumes here. These waypoints only
-     steer the free cube outside the pin (they freeze with the pinned
-     anchor during it, which is fine: the pin blends override them). */
-  /* the ascent: from the reform landing up to the float spot in the
-     short travel between the release and the pin start, so the cube
-     clears the rising card row and the pin-start rest frame shows it
-     beside the headline (it was tucked behind card 02 otherwise).
-     frac 0.16 sits ~70px past the release at 1536x864; the follower
-     smooths the exact geometry everywhere else. */
-  { anchor: "work", frac: 0.16, x: 0.14, y: 0.22, scale: 0.6, spin: 0.35, fade: 1 },
+     cube holds the float spot beside the headline, spins, dives,
+     flattens, floods brand blue, stretches into the bar and is
+     swallowed by the DOM panel; it reforms off the panel's bottom
+     edge and resumes here. These waypoints only steer the free cube
+     outside the pin (they freeze with the pinned anchor during it,
+     which is fine: the pin blends override them). */
+  /* the pre-pin hold: the cube is already AT the float spot from the
+     reform's ascent; this waypoint keeps it there over the short
+     travel between the release and the pin start (easing down to the
+     float scale) so nothing drifts before the pin's own hold blend
+     takes over. frac 0.16 sits just short of the pin start at
+     1536x864. */
+  { anchor: "work", frac: 0.16, x: WORK_FLOAT[0], y: WORK_FLOAT[1], scale: 0.6, spin: 0.35, fade: 1 },
   { anchor: "work", frac: 0.5, x: 0, y: 0, scale: 0.55, spin: 0.5, fade: 1 },
   { anchor: "work", frac: 0.92, x: 0, y: -0.08, scale: 0.52, spin: 0.8, fade: 1 },
   /* The open region (region pivot 2026-08-24): a minimal keep-it-working
@@ -699,18 +715,19 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       let trz = -0.08;
 
       /* the pin choreography, all scrubbed over the runway:
-         RISE: from the reform's landing up to the float spot beside
-         the headline, with an extra showcase turn (the beat Brad
-         wants to actually SEE); enter side only, so the exit's reform
-         hands straight back to the waypoints instead.
+         HOLD: the cube arrived at the float spot via the reform's
+         ascent; this blend pins it there against mid-pin waypoint
+         drift while the showcase turn plays (the beat Brad wants to
+         actually SEE); enter side only, so the exit's reform hands
+         straight back to the waypoints instead.
          DIVE: from the float spot to the bar's center, unwinding to
          the nearest HALF turn (a quarter-turn landing shows the
          cube's side, which the z-flatten squashes to a sliver). */
       if (!stage.panel.exiting) {
-        const rise = smooth(seg(pm, WORK_RISE));
+        const hold = smooth(seg(pm, WORK_HOLD));
         try_ += smooth(seg(pm, WORK_SPIN)) * 1.3;
-        tx = lerp(rise, tx, WORK_FLOAT[0] * w);
-        ty = lerp(rise, ty, WORK_FLOAT[1] * h);
+        tx = lerp(hold, tx, WORK_FLOAT[0] * w);
+        ty = lerp(hold, ty, WORK_FLOAT[1] * h);
       }
       const dive = smooth(seg(pm, WORK_DIVE));
       if (dive > 0) {
@@ -723,9 +740,13 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
         try_ = lerp(dive, try_, face);
         trz = lerp(dive, trz, 0);
       }
+      /* the dive also eases the scale to the shared SLAB_VH square,
+         so the swap geometry is deterministic: the DOM builds the
+         identical square from the same constant (round 10) */
+      const tScale = lerp(dive, stage.wp.scale, (SLAB_VH * h) / s);
 
       /* damping ramps to near-exact tracking approaching the handoff
-         (WORK_LOCK), so the slab cannot lag the DOM bar at the swap */
+         (WORK_LOCK), so the slab cannot lag the DOM square at the swap */
       const lock = smooth(seg(pm, WORK_LOCK));
       const kd = 1 - Math.exp(-(4 + 24 * lock) * Math.min(delta, 0.1));
       f.x += (tx - f.x) * kd;
@@ -734,7 +755,7 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       f.rx += (trx - f.rx) * kd;
       f.ry += (try_ - f.ry) * kd;
       f.rz += (trz - f.rz) * kd;
-      f.s += (stage.wp.scale - f.s) * kd;
+      f.s += (tScale - f.s) * kd;
 
       g.visible = active && fade > 0.002 && vanish < 0.999;
       if (!g.visible) {
@@ -747,24 +768,17 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
         f.rx = trx;
         f.ry = try_;
         f.rz = trz;
-        f.s = stage.wp.scale;
+        f.s = tScale;
         return;
       }
 
       g.position.set(f.x, f.y, f.z);
       g.rotation.set(f.rx, f.ry, f.rz);
-      /* flatten, then stretch the slab into the DOM bar's exact
-         geometry: one continuous object across the handoff */
+      /* flatten only: the slab stays a SQUARE (uniform bevel, no pill
+         ends) and the DOM's clip-path square takes over at the swap */
       const flat = smooth(seg(pm, WORK_FLATTEN));
-      const stretch = smooth(seg(pm, WORK_STRETCH));
       const base = s * f.s;
-      const panelW = (stage.panel.wPx / state.size.width) * w;
-      const barH = (stage.panel.barPx / state.size.height) * h;
-      g.scale.set(
-        lerp(stretch, base, panelW),
-        lerp(stretch, base, barH),
-        base * (1 - 0.965 * flat),
-      );
+      g.scale.set(base, base, base * (1 - 0.965 * flat));
 
       /* flood: glass -> the panel's flat brand blue. The blue rides
          the EMISSIVE channel (base color to black, env to zero): a
@@ -827,9 +841,15 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
        materializes inside the card wherever the card is */
     const rc = mobile ? REFORM_END_MOBILE : REFORM_END;
     const drift = smooth(seg(c, R_SHRINK));
+    /* the ascent (round 9): once the slab has thickened back into the
+       cube, it climbs from the reform landing to the WORK_FLOAT spot
+       in the reform's last beat, so the release rest parks it raised
+       between the headline and the support text. Desktop only:
+       mobile's short exit journey starts from the landing itself. */
+    const ascend = mobile ? 0 : smooth(seg(c, R_ASCEND));
     g.position.set(
-      (pos.x + bobX) * w + (rc[0] - pos.x) * w * drift,
-      (pos.y + bobY) * h + (rc[1] - pos.y) * h * drift,
+      lerp(ascend, (pos.x + bobX) * w + (rc[0] - pos.x) * w * drift, WORK_FLOAT[0] * w),
+      lerp(ascend, (pos.y + bobY) * h + (rc[1] - pos.y) * h * drift, WORK_FLOAT[1] * h),
       Math.sin(Math.PI * flight) * h * 0.06,
     );
 

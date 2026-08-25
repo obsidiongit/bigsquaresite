@@ -33,6 +33,15 @@ type Options = {
   bands?: () => [number, number][];
   /** gate for reduced motion / fallback branches */
   enabled?: boolean;
+  /** glide pacing override, ms per viewport-height of distance
+      (default 450). A long pinned choreography wants a much slower
+      completion than a short beat hop: the work panel morph runs at
+      ~2600 so the auto-completed dive-to-panel reads as the animation
+      playing, not a jump cut (Brad round 9). Scalar on purpose: it is
+      an effect dep. */
+  glideMsPerVh?: number;
+  /** glide duration ceiling in ms (default 1500) */
+  glideMaxMs?: number;
 };
 
 /* quiet time after the last scroll event before we consider settling;
@@ -65,7 +74,13 @@ const easeInOutCubic = (t: number) =>
 
 export function useScrollCheckpoints(
   target: { readonly current: HTMLElement | null },
-  { checkpoints, bands, enabled = true }: Options,
+  {
+    checkpoints,
+    bands,
+    enabled = true,
+    glideMsPerVh = 450,
+    glideMaxMs = 1500,
+  }: Options,
 ) {
   useEffect(() => {
     if (!enabled) return;
@@ -100,10 +115,14 @@ export function useScrollCheckpoints(
       const fromY = window.scrollY;
       const dist = Math.abs(destY - fromY);
       if (dist < MIN_GLIDE_PX) return;
-      /* duration scales with distance: ~450ms per viewport, clamped
-         450-1500ms (the 550/2200 tune read as sluggish once the settle
-         started firing at the cusp instead of after the lerp tail) */
-      const dur = Math.min(1500, Math.max(450, (dist / window.innerHeight) * 450));
+      /* duration scales with distance: glideMsPerVh per viewport
+         (default 450; the 550/2200 tune read as sluggish once the
+         settle started firing at the cusp instead of after the lerp
+         tail), floored at 450ms, capped at glideMaxMs */
+      const dur = Math.min(
+        glideMaxMs,
+        Math.max(450, (dist / window.innerHeight) * glideMsPerVh),
+      );
       const t0 = performance.now();
       animating = true;
       const step = (now: number) => {
@@ -235,5 +254,5 @@ export function useScrollCheckpoints(
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);
     };
-  }, [enabled, target, checkpoints, bands]);
+  }, [enabled, target, checkpoints, bands, glideMsPerVh, glideMaxMs]);
 }

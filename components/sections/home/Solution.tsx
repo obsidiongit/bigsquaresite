@@ -41,7 +41,12 @@ const CARDS = [
 
 export function Solution() {
   return (
-    <Section theme="light" size="lg" anchor="solution">
+    <Section
+      theme="light"
+      size="none"
+      anchor="solution"
+      className="pt-10 pb-section-y-lg md:pt-12"
+    >
       <div className={cn(EDGE, "relative z-10")}>
         <BaselineReveal
           as="h2"

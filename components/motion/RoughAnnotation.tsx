@@ -130,6 +130,12 @@ type Props = {
   /** Render pre-drawn: no draw-on, no boil (nav active-link underline,
       1.nav.md). Same output as the reduced-motion branch. */
   staticRender?: boolean;
+  /** Pre-drawn but ALIVE: skip the pathLength draw-on yet keep the
+      boil. For strokes revealed by an external clip that must already
+      be complete wherever the clip uncovers them (the work panel's
+      edge squiggle waterfalls down inside the panel's own clip-path,
+      round 10: a separate draw-on read as two animations). */
+  instant?: boolean;
   /** Stroke override. Defaults to the theme accent read at draw time;
       the box variant passes the annotated surface's own fill so only
       the wobble escaping the edge shows. */
@@ -143,6 +149,7 @@ export function RoughAnnotation({
   active,
   delay = 0,
   staticRender = false,
+  instant = false,
   stroke = "var(--sec-acc, var(--acc))",
 }: Props) {
   const reducedPref = useReducedMotion();
@@ -159,8 +166,13 @@ export function RoughAnnotation({
   const draw = fired || shouldDraw;
 
   useEffect(() => {
-    if (shouldDraw) setFired(true);
-  }, [shouldDraw]);
+    if (shouldDraw) {
+      setFired(true);
+      /* instant strokes are complete the moment they exist, so the
+         boil may start right away */
+      if (instant) setDrawn(true);
+    }
+  }, [shouldDraw, instant]);
 
   // Measure the wrapped content and pre-render the boil frames.
   useEffect(() => {
@@ -220,7 +232,7 @@ export function RoughAnnotation({
           {frames.map((frame, f) => (
             <g key={f} visibility={visibleFrame === f ? "visible" : "hidden"}>
               {frame.map((p, i) =>
-                reduced || f > 0 ? (
+                reduced || instant || f > 0 ? (
                   <path
                     key={i}
                     d={p.d}

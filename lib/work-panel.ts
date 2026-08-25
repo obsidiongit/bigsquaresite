@@ -1,8 +1,10 @@
-/* Shared scroll math for the featured work PANEL MORPH (2b v6, Brad
-   2026-08-24 rounds 5-8): the companion cube floats beside the
+/* Shared scroll math for the featured work PANEL MORPH (2b v8, Brad
+   2026-08-24/25 rounds 5-10): the companion cube floats beside the
    "Featured work" headline, spins, dives, flattens into a brand-blue
-   slab, stretches into a bar, and ONE blue panel takes over behind
-   all six cards; at the grid's far edge it all runs backwards.
+   square slab, and ONE blue panel grows out of it (a clip-path
+   stretch into the top bar, then a top-down waterfall carrying the
+   edge squiggle with it) behind all six cards; at the grid's far
+   edge it all runs backwards.
 
    THE PIN (round 8). Rounds 5-7 drove the morph off the panel's own
    passage through the viewport, which caps the whole choreography at
@@ -13,8 +15,10 @@
    hero's own architecture: the section's header + grid PIN (position
    sticky inside a taller wrapper) and a scroll RUNWAY drives the
    morph 1:1 under the visitor's finger, exactly like the film
-   takeover. No auto-play; the checkpoint band only covers the runway
-   itself, settling a mid-beat park to the nearer end.
+   takeover. No auto-play; the checkpoint band covers only the
+   COMMITTED slice of the runway (MORPH_REST on, round 9): the
+   float/spin zone before the dive parks freely, and a park past the
+   dive completes the morph on a slow glide.
 
    Two actors read the same clock each frame and must agree exactly:
    the WebGL cube (HomeCanvas Tracker) and the DOM panel (FeaturedWork
@@ -36,9 +40,36 @@ const EXIT: [number, number] = [0.55, 0.05];
    the handoff geometry from this. */
 export const PANEL_BAR_VH = 0.14;
 
-/* morph value where the canvas slab and the DOM panel trade places
-   (slab geometry == bar geometry there, so the swap is invisible) */
-export const PANEL_HANDOFF = 0.8;
+/* morph value where the canvas slab and the DOM panel trade places.
+   Round 10 (Brad: the box "morphs into a pill shape... the rounded
+   corners morph when it's being stretched"): the swap moved BEFORE
+   the stretch. The canvas slab's RoundedBoxGeometry bevel scales with
+   the mesh, so stretching it to the full-width bar turned its ends
+   into ~90px pill curves; and the DOM's scaleY sweep squashed the
+   32px corners flat. The canvas now dives/flattens/floods to a SQUARE
+   slab of SLAB_VH edge (uniform bevel, no distortion) and the DOM
+   plays the whole stretch + waterfall with clip-path inset(round r):
+   absolute-px radii that never distort. */
+export const PANEL_HANDOFF = 0.62;
+
+/* the flooded square slab's edge (fraction of viewport height): the
+   deterministic swap geometry BOTH actors build independently. The
+   canvas dive eases the cube's scale to exactly this; the DOM's clip
+   starts as this square. Must stay under PANEL_BAR_VH. */
+export const SLAB_VH = 0.11;
+
+/* morph value where the DOM stretch (square -> full-width top bar)
+   ends and the top-down sweep begins */
+export const STRETCH_END = 0.76;
+
+/* the last FREE morph value: below it the cube merely floats/spins at
+   its rest spot and any park is a legit rest, so the checkpoint band
+   starts HERE, not at the pin start (round 9; the full-runway band
+   meant one wheel notch into the pin idle-glided the entire
+   choreography, which read as the panel appearing instantly). It must
+   equal the canvas dive's start (HomeCanvas WORK_DIVE): from the dive
+   on, states are half-morphed and must complete. */
+export const MORPH_REST = 0.3;
 
 export const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 export const seg = (v: number, [a, b]: [number, number]) =>
@@ -64,10 +95,11 @@ export function workMorph(wr: Rect, cr: Rect, panelBottom: number, vh: number) {
 }
 
 /* Checkpoint bands for useScrollCheckpoints (STYLE_GUIDE 7.4): the
-   pin runway and the exit window, as absolute scrollY ranges resolved
-   at settle time. Inside the runway, pinStart = scrollY - pin offset
-   is exact; parked outside it the degenerate band lands on a closed
-   edge and the hook stays inert. */
+   COMMITTED slice of the pin runway (MORPH_REST -> 1; the float/spin
+   zone before it parks freely) and the exit window, as absolute
+   scrollY ranges resolved at settle time. Inside the runway,
+   pinStart = scrollY - pin offset is exact; parked outside it the
+   degenerate band lands on a closed edge and the hook stays inert. */
 export function workMorphBands(
   wr: Rect,
   cr: Rect,
@@ -79,7 +111,7 @@ export function workMorphBands(
   const bands: [number, number][] = [];
   if (runway > 1) {
     const pinStart = scrollY - (cr.top - wr.top);
-    bands.push([pinStart, pinStart + runway]);
+    bands.push([pinStart + MORPH_REST * runway, pinStart + runway]);
   }
   const bottom = panelBottom + scrollY;
   bands.push([bottom - vh * EXIT[0], bottom - vh * EXIT[1]]);
