@@ -509,7 +509,7 @@ export function FeaturedWork() {
             wrapper padding the pin has zero room and never sticks
             (found live, round 8). Length is the morph's total scroll
             budget: 240svh desktop (round 11: text exit + travel +
-            four-turn turntable + morph), 100svh mobile. */}
+            turntable + morph), 100svh mobile. */}
         {overlap && <div aria-hidden className="h-[100svh] md:h-[240svh]" />}
         </div>
 

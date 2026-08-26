@@ -51,7 +51,7 @@ Section order as shipped: Hero (film + cube) → Featured Work → ProblemStrip 
 - [x] 2H. FAQ + final CTA: restructured 2026-08-25. Closing CTA = the 2G1 morph finale (`13.final-cta.md` rules govern the settled state); FAQ CUT from the homepage. Where `12.faq.md` content + FAQPage JSON-LD land is an interior-pages decision (plan doc)
 - [ ] 2I. Footer (`shared/footer.md` v3.1): Back Cover round 2 shipped (quiet columns + cropped wordmark set piece + paint layer). AWAITING Brad's screenshot review; open facts in the punch list
 - [ ] 2J. Homepage metadata, OG image, real favicon asset (404s today), Lighthouse pass (CWV green)
-- [ ] 2K. Cube animation quality passes: plan a FEW dedicated sessions (choreography, easing/damping, waypoint path, material/look; cube-look sign-off still open). Everything lives in `HomeCanvas.tsx`
+- [ ] 2K. Cube animation quality passes: plan a FEW dedicated sessions (choreography, easing/damping, waypoint path, material/look; cube-look sign-off still open). Everything lives in `HomeCanvas.tsx`. DONE so far: turntable rate (rounds 12-13), the reform transition rebuilt as one contraction with spin-in + slow reverse glide (round 14, build-log; AWAITING Brad's review, knobs listed there)
 
 ### Homepage punch list (the remaining 20 to 30%)
 
@@ -83,15 +83,19 @@ Trimmed 2026-08-23: CTA band, footer, case study card, testimonial card, metric 
 
 ## Phase 4: Service, industry, and location pages
 Planning note 2026-08-25: the buildout order, template system, and open design decisions for Phases 4 to 7 now live in `interior-buildout-plan.md`. Lock that doc with Brad before building; create the spec from the template before building each page; order matches sitemap.md.
-- [ ] Service page layout from `_service-page-template.md` (one component, per-page content)
+FLAGSHIP GATES (added 2026-08-25, Brad's rule): one page of each style gets built and green-lit BEFORE any stamping. Only Brad checks a GATE box; while a gate is unchecked, building further pages of that template is out of scope for any agent.
+- [ ] Service page layout from `_service-page-template.md` (one component, per-page content); flagship: /services/seo/
+- [ ] **GATE (Lane 2): Brad green-lights /services/seo/.** No other service page may be built until this box is checked
 - [ ] Organic Marketing: seo, generative-engine-optimization, social-media, content-marketing, email, obsidion-portal (richer layout per services-index note)
 - [ ] Paid Advertising: paid-search, google-local-services-ads, paid-social, amazon-ads, creator-network
 - [ ] Design & Development: web-design, branding, video-production, custom-development
 - [ ] /services/ hub page (added to sitemap.md 2026-08-25, D2; carries the #group anchors the homepage Services heads target)
 - [ ] Service JSON-LD + internal links (2 industries + 1 case study per page)
 - [ ] Franchise/multi-location URL family: ~10 service-template variants (D4, approved 2026-08-25; slugs from the Ahrefs keyword pass, then amend sitemap.md; build after the 15 core service pages)
+- [ ] Industry page flagship: /industries/franchise/ (most complete page after homepage, 1,500+ words)
+- [ ] **GATE (Lane 3): Brad green-lights /industries/franchise/.** No other industry page may be built until this box is checked
 - [ ] /industries/ index
-- [ ] Industry pages: franchise (most complete page after homepage), home-services, legal, healthcare (1,500+ words each)
+- [ ] Industry pages: home-services, legal, healthcare (1,500+ words each)
 - [ ] /locations/ index
 - [ ] /locations/denver/ and /locations/tampa/ (LocalBusiness JSON-LD, `[PLACEHOLDER]` office info)
 
@@ -111,7 +115,8 @@ Planning note 2026-08-25: the buildout order, template system, and open design d
 
 ## Phase 7: Company and conversion pages (added 2026-08-20)
 The original six phases did not cover these routes; specs now exist in project-sections/company/, /results/, /conversion/. Pull any of these forward if priorities shift; /schedule/ and /audit/ run on Phase 1 stubs until then. The plan doc proposes pulling /schedule/, /audit/, /contact/, and /about/ forward.
-- [ ] /schedule/ (real page on the booking component; primary conversion)
+- [ ] /schedule/ (real page on the booking component; primary conversion). Lane 1's FLAGSHIP
+- [ ] **GATE (Lane 1): Brad green-lights /schedule/.** No other conversion or company page may be built until this box is checked
 - [ ] /audit/ (real form page)
 - [ ] /contact/
 - [ ] /ad-credit/

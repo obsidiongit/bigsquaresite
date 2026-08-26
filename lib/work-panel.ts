@@ -1,16 +1,16 @@
-/* Shared scroll math for the featured work PANEL MORPH (2b v9, Brad
-   2026-08-24/25 rounds 5-11): from the release rest (headline left,
+/* Shared scroll math for the featured work PANEL MORPH (2b v10, Brad
+   2026-08-24/25 rounds 5-12): from the release rest (headline left,
    cube in the headline/support gap, cards peeking below) the PIN
    engages IMMEDIATELY (sticky top 30svh == the release composition,
    round 11: "without scrolling down on the page any more than we
    already are now"). Scroll then scrubs: the headline + support rise
    up and OUT the viewport top while the cube holds still; the cube
-   glides to center stage above cards 01/02 and turntables ~4 slow
-   full turns; then it dives, flattens, floods into a brand-blue
-   square slab, and ONE blue panel grows out of it (a clip-path
-   stretch into the top bar, then a top-down waterfall carrying the
-   edge squiggle with it) behind all six cards; at the grid's far
-   edge it all runs backwards.
+   glides to center stage above cards 01/02 and turntables THREE
+   slow full turns (round 13; see WORK_TURNS); then it dives, flattens,
+   floods into a brand-blue square slab, and ONE blue panel grows out
+   of it (a clip-path stretch into the top bar, then a top-down
+   waterfall carrying the edge squiggle with it) behind all six
+   cards; at the grid's far edge it all runs backwards.
 
    THE PIN (round 8). Rounds 5-7 drove the morph off the panel's own
    passage through the viewport, which caps the whole choreography at

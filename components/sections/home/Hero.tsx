@@ -40,10 +40,20 @@ import { EASE } from "@/lib/motion";
    not started until 0.62). The settled-panel rest sits at exactly
    HERO_K, the frame where the reform takes over: parking it earlier
    (the old 0.98K) left a dead zone ahead of the reform band that made
-   its boundary feel sticky (Brad, 2026-08-24 review). */
-const CHECKPOINTS = [
+   its boundary feel sticky (Brad, 2026-08-24 review).
+
+   Two hook instances (round 12): the reform band [K, 1] IS its whole
+   beat, so per STYLE_GUIDE 7.4 it earns slow-glide pacing (work-morph
+   precedent, 2600), while the Act-1 rests keep the approved 450
+   default (the uniform 550/2200 tune once read as sluggish). The
+   lists partition cleanly: each instance is inert outside its own
+   range, and MIN_GLIDE_PX keeps both quiet at the shared K rest. */
+const CHECKPOINTS_MAIN = [
   0, /* the statement */
   0.6 * HERO_K, /* the held film card: side text + card-beat headline */
+  HERO_K, /* the settled framed panel, reform's doorstep */
+];
+const CHECKPOINTS_REFORM = [
   HERO_K, /* the settled framed panel, reform's doorstep */
   1, /* reform complete, the cube released as companion */
 ];
@@ -186,8 +196,18 @@ export function Hero() {
     offset: ["start start", "end end"],
   });
 
-  /* idle-settle to the nearest rest beat; input always wins (7.4) */
-  useScrollCheckpoints(wrapRef, { checkpoints: CHECKPOINTS, enabled: !reduced });
+  /* idle-settle to the nearest rest beat; input always wins (7.4).
+     Split instances so the reform band alone gets slow-glide pacing:
+     the auto-completed reform reads as the animation playing, not a
+     450ms warp (Brad round 12: scrolling up "turns into a white box
+     ... and zooms up", not enough delay). */
+  useScrollCheckpoints(wrapRef, { checkpoints: CHECKPOINTS_MAIN, enabled: !reduced });
+  useScrollCheckpoints(wrapRef, {
+    checkpoints: CHECKPOINTS_REFORM,
+    enabled: !reduced,
+    glideMsPerVh: 2600,
+    glideMaxMs: 3000,
+  });
 
   /* All scrub bindings use the explicit callback form with a manual
      clamp (`seg` below): linear inside [a, b], held flat outside it.

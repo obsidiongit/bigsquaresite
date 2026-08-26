@@ -123,11 +123,17 @@ const MEDIA_SCALE: [number, number] = [0.62, 0.94];
    fade to 0.7) left ~13vh where only the pale slab moved. */
 const R_SHRINK: [number, number] = [0.02, 0.5]; /* panel -> card, re-ink */
 const R_SOLID: [number, number] = [0.28, 0.5]; /* glass re-materializes during the shrink */
-const R_PANE_FADE: [number, number] = [0.44, 0.62]; /* film quenches inside the unflatten */
+const R_PANE_FADE: [number, number] = [0.5, 0.65]; /* film quenches inside the
+   unflatten: LATE and STEEP, so the skin stays near-opaque dark ink
+   through the crossfade (a slow fade over the white glass read as a
+   washed-out grey card) and dies fast once the glass is solid */
 const R_UNFLATTEN: [number, number] = [0.46, 0.82]; /* slab -> cube, smoke back */
-const R_GLASS_MIX: [number, number] = [0.74, 0.94]; /* transmission -> alpha
+const R_GLASS_MIX: [number, number] = [0.62, 0.88]; /* transmission -> alpha
    glass; on the sp clock like the geometry (round 12), with the
-   backdrop's retire guarantee carried by the companion gate */
+   backdrop's retire guarantee carried by the companion gate. Starts
+   right as the film skin finishes dying: the forming cube tints
+   toward GLASS_TINT immediately instead of holding a white-on-white
+   beat over the paper ground */
 
 const CARD_CENTER: [number, number] = [-0.24, -0.17];
 const CARD_W = 0.34;
@@ -171,7 +177,7 @@ const R_ASCEND: [number, number] = [0.8, 0.96]; /* landing -> WORK_FLOAT */
    drift. Guardrail when tuning: keep R_SPIN_IN[0] >= R_PANE_FADE[1]
    - 0.06, so the cube is within a few degrees of face-on whenever
    the film crossfade is visible (round 10 shape-match rule). */
-const R_SPIN_IN: [number, number] = [0.56, 0.95];
+const R_SPIN_IN: [number, number] = [0.59, 0.95];
 const REFORM_POSE: [number, number, number] = [0.42, 0.68, -0.08];
 const REFORM_SPIN_TURNS = 1; /* whole extra turns wound in while forming */
 
@@ -179,6 +185,8 @@ const seg = (v: number, [a, b]: [number, number]) =>
   Math.min(1, Math.max(0, (v - a) / (b - a)));
 const smooth = (t: number) => t * t * (3 - 2 * t);
 const lerp = (t: number, a: number, b: number) => a + (b - a) * t;
+/* wrap an angle to (-PI, PI]: whole turns drop out */
+const wrapPi = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 
 /* Brand tokens in raw sRGB for the raw-shader pipeline */
 const INK_DEEP = new THREE.Color().setHex(0x0a2a73, THREE.NoColorSpace);
@@ -228,11 +236,13 @@ const WORK_CENTER: [number, number] = [0, 0.18];
 const WORK_HOLD: [number, number] = [0.02, 0.1];
 const WORK_TRAVEL: [number, number] = [0.1, 0.22]; /* float -> center */
 const WORK_SPIN: [number, number] = [0.18, 0.56]; /* the turntable */
-const WORK_TURNS = 1; /* full rotations across WORK_SPIN (round 12,
-   Brad: at 4 the turntable read as "extremely fast, like dozens of
-   times" - the spin window is only ~0.38 of the runway, so four turns
-   land inside ~1vh of scroll. One turn per viewport height is the
-   slow turntable the beat was always described as.) */
+const WORK_TURNS = 3; /* full rotations across WORK_SPIN. Round 12
+   (Brad: at 4 the turntable read as "extremely fast, like dozens of
+   times") cut this to 1; round 13 (Brad: "it turns too little now...
+   go for three turns") settled on 3. Rate matters more than count
+   here: WORK_SPIN is only ~0.38 of the ~2100px runway, so each turn
+   costs ~1.1 turns per viewport height of scroll. Widen the runway,
+   not the count, if this ever needs to read slower again. */
 const WORK_DIVE: [number, number] = [MORPH_REST, 0.66];
 const WORK_FLATTEN: [number, number] = [0.62, 0.72];
 const WORK_FLOOD: [number, number] = [0.63, 0.72];
@@ -948,6 +958,9 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
   useFrame((state, delta) => {
     const g = group.current;
     if (!g) return;
+    /* __DEBUG_PROBE__ (round-12 reform tuning; remove with its .mix
+       companion below when the session closes) */
+    (window as any).__cube = { ry: g.rotation.y, rx: g.rotation.x, raw: stage.raw, sp: stage.sp, comp: stage.companion, c: seg(stage.sp, [HERO_K, 1]), pm: stage.panel.m, vis: g.visible, scale: g.scale.x };
     const { width: w, height: h } = state.viewport;
     const mobile = state.size.width < 768;
     const t = state.clock.elapsedTime;
@@ -974,6 +987,18 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
         f.ry = g.rotation.y;
         f.rz = g.rotation.z;
         f.s = g.scale.x / s || 1;
+        /* round 12: the idle turn restarts at the engage epoch and
+           the whole turns the reform wound in carry over as bias, so
+           the takeover step is ~0 no matter how long the page has
+           been open or how many turns the spin-in added */
+        f.t0 = t;
+        f.bias =
+          Math.round(
+            (f.ry - (REFORM_POSE[1] + stage.wp.spin - 0.08 + tilt.current.y)) /
+              (2 * Math.PI),
+          ) *
+          2 *
+          Math.PI;
       }
       const fade = stage.wp.fade;
       const pm = stage.panel.m;
@@ -985,9 +1010,10 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
 
       let tx = stage.wp.x * w + Math.sin(t * 0.4) * 0.008 * w;
       let ty = stage.wp.y * h + Math.sin(t * 0.55 + 1.1) * 0.01 * h;
-      let trx = 0.42 + tilt.current.x + Math.sin(t * 0.26) * 0.04;
-      let try_ = 0.6 + stage.wp.spin + t * 0.1 + tilt.current.y;
-      let trz = -0.08;
+      let trx = REFORM_POSE[0] + tilt.current.x + Math.sin(t * 0.26) * 0.04;
+      let try_ =
+        REFORM_POSE[1] + (stage.wp.spin - 0.08) + (t - f.t0) * 0.1 + tilt.current.y + f.bias;
+      let trz = REFORM_POSE[2];
 
       /* the pin choreography, all scrubbed over the runway:
          HOLD: the cube arrived at the float spot via the reform's
@@ -1173,12 +1199,38 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       }
       return;
     }
-    follow.current.on = false;
-
     /* ---- Acts 1 and 2: the hero set piece + the reform ------------ */
     const p = Math.min(1, stage.sp / HERO_K);
     const c = seg(stage.sp, [HERO_K, 1]);
+
+    /* spin-in pose (round 12): the reform winds the cube into its
+       companion engage pose plus whole turns. Computed before the
+       follower flag drops so the first frame back from companion can
+       bank the difference from the live companion rotation as a
+       residual; wrapPi keeps only the sub-half-turn part (whole turns
+       drop, so the seed frame is pixel-identical and no dwell-time
+       idle spin ever has to visibly unwind). */
+    const spinIn = smooth(seg(c, R_SPIN_IN));
+    const poseX = spinIn * (REFORM_POSE[0] + tilt.current.x);
+    const poseY =
+      spinIn * (REFORM_POSE[1] + REFORM_SPIN_TURNS * 2 * Math.PI + tilt.current.y);
+    const poseZ = spinIn * REFORM_POSE[2];
+    if (follow.current.on) {
+      rotResid.current.x = wrapPi(follow.current.rx - poseX);
+      rotResid.current.y = wrapPi(follow.current.ry - poseY);
+      rotResid.current.z = wrapPi(follow.current.rz - poseZ);
+    }
+    follow.current.on = false;
+    /* the residual unwinds by time (parked) and by scrub (the spinIn
+       gate in the rotation write): face-on is structurally guaranteed
+       before the film crossfade becomes visible */
+    const residK = Math.exp(-6 * Math.min(delta, 0.1));
+    rotResid.current.x *= residK;
+    rotResid.current.y *= residK;
+    rotResid.current.z *= residK;
+
     const reform = smooth(seg(c, R_UNFLATTEN));
+    /* __DEBUG_PROBE__ */ const dbgCube = (window as any).__cube; if (dbgCube) { dbgCube.mix = mix; dbgCube.spinIn = spinIn; dbgCube.reform = reform; }
     /* the reform-side alpha rides the slab's THICKNESS: while still
        flat the re-materializing glass stays faint and it reaches full
        presence only as it thickens into the cube. Scrolling UP, the
@@ -1220,10 +1272,19 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
     tilt.current.x += (pointer.current.y * 0.2 * rest - tilt.current.x) * 0.05;
     tilt.current.y += (pointer.current.x * 0.28 * rest - tilt.current.y) * 0.05;
     const calm = 1 - flight;
+    /* Act-1 terms are calm-gated (zero through the whole reform, where
+       flight = 1); the round-12 pose + residual terms are spinIn-gated
+       (zero through all of Act 1). The two families never overlap. */
     g.rotation.set(
-      (0.44 + tilt.current.x + Math.sin(t * 0.3) * 0.05 * rest) * calm + Math.sin(Math.PI * flight) * 0.16,
-      (0.72 + tilt.current.y + t * 0.05 * rest) * calm + flight * 0.5 * calm,
-      -0.1 * calm,
+      (0.44 + tilt.current.x + Math.sin(t * 0.3) * 0.05 * rest) * calm +
+        Math.sin(Math.PI * flight) * 0.16 +
+        poseX +
+        rotResid.current.x * spinIn,
+      (0.72 + tilt.current.y + t * 0.05 * rest) * calm +
+        flight * 0.5 * calm +
+        poseY +
+        rotResid.current.y * spinIn,
+      -0.1 * calm + poseZ + rotResid.current.z * spinIn,
     );
 
     /* scale: cube at rest; flattens into the card; the reform runs the
@@ -1357,6 +1418,16 @@ function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
         fragmentShader: sheetFragment,
         transparent: true,
         depthWrite: false,
+        /* round 12: the pane must COMPOSITE over the re-forming glass
+           during the reform crossfade. The glass writes depth and its
+           transmission buffer excludes transparent materials (2.hero
+           gotcha), so with depth testing on, the slab erased the film
+           wherever they overlapped: the crossfade read as a parked
+           white box (Brad's complaint), not a melt. renderOrder 10 +
+           no depth test makes the pane the canvas's topmost layer;
+           its only co-located partner (the cube) always crossfades
+           via CUBE_FADE/GATE or R_SOLID/R_PANE_FADE, never depth. */
+        depthTest: false,
         uniforms: {
           uStart: { value: new THREE.Vector4(0, 0, 1, 1) },
           uEnd: { value: new THREE.Vector4(0, 0, 1, 1) },
@@ -1410,11 +1481,23 @@ function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
        card (CARD_CENTER) to REFORM_END, so the panel shrinks down to
        the RIGHT, into the cube's companion position */
     const rc = mobile ? REFORM_END_MOBILE : REFORM_END;
+    /* round 12: past the card the pane's rect keeps riding the SAME
+       contraction as the glass (the sEff/flat scale math in
+       GlassCube's reform branch, with flat = 1 - reform since p = 1
+       here): the dark film skin stays glued to the thickening cube's
+       front face instead of dying as a parked card around a smaller
+       object. Keep the two formulas in lockstep when tuning. */
+    const s = Math.min(w, h) * 0.2;
+    const settleScale = mobile ? REFORM_SETTLE_SCALE_MOBILE : REFORM_SETTLE_SCALE;
+    const sEff = s * (1 - (1 - settleScale) * smooth(seg(c, R_SETTLE)));
+    const flatR = 1 - smooth(seg(c, R_UNFLATTEN));
+    const skinW = sEff + (card.w - sEff) * flatR;
+    const skinH = sEff + (card.h - sEff) * flatR;
     (u.uStart.value as THREE.Vector4).set(
       card.cx + (rc[0] * w - card.cx) * sh,
       card.cy + (rc[1] * h - card.cy) * sh,
-      card.w,
-      card.h,
+      skinW,
+      skinH,
     );
     (u.uEnd.value as THREE.Vector4).set(panel.cx, panel.cy, panel.w, panel.h);
 
@@ -1431,8 +1514,8 @@ function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
     u.uPoster.value = media.poster.current;
     u.uTexMix.value = media.mix.current;
 
-    const midW = card.w + (panel.w - card.w) * smooth(grow);
-    const midH = card.h + (panel.h - card.h) * smooth(grow);
+    const midW = skinW + (panel.w - skinW) * smooth(grow);
+    const midH = skinH + (panel.h - skinH) * smooth(grow);
     coverScale(u.uCover.value as THREE.Vector2, media.dims.current.w, media.dims.current.h, midW / midH);
   });
 
