@@ -24,6 +24,7 @@ Bluu Next (Velvetyne) and Apfel Grotezk (Collletttivo) are free OFL fonts. Try t
 Meta Pixel, Google tag, and GA4 IDs are all env vars (NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_GTAG_ID, NEXT_PUBLIC_GA4_ID). Build the tag components now, leave the values empty. A teammate fills them in on a separate pass. Analytics loads after hydration.
 
 ## Proof density (overrides the homepage specs)
+**Stale as written: see Amendments 2026-08-25 below.** The spirit (launch with less, all values placeholder until real) still governs.
 Launch with less, grow into more.
 - 7.proof-numbers.md: 3 metrics, not 4. Three-up grid.
 - 8.case-studies.md: 3 cards at launch, not 6. "See All Results" button under them. The grid component supports 6 for later.
@@ -34,6 +35,7 @@ All values remain [PLACEHOLDER] until real numbers are supplied.
 Hero uses a dark abstract placeholder loop until the commercial is delivered. Build the video component so swapping the file is a one-line change.
 
 ## Obsidion portal section
+**Superseded 2026-08-25: see Amendments below.** The honesty rule (never a fake UI with fake numbers) stands; the mechanism changed.
 Portal is being built in tandem. Use clearly labeled placeholder screenshots (blurred frame with a "Portal preview" tag). Never render a fake UI with fake numbers. Layout takes inspiration from the Youtech Youlytics section: product frame on one side, five feature blocks on the other.
 
 ## Ad credit popup
@@ -47,3 +49,14 @@ This is a Phase 2 task, not optional. Before writing tasks.md, fetch the XML sit
 
 ## Reminder
 No invented numbers, names, reviews, badges, or URLs anywhere. No em dashes in user-facing text.
+
+## Amendments (2026-08-25)
+Recorded here because this file claims override authority; the source records live where noted.
+
+- **The open layout is the sitewide design system (Brad, 2026-08-25).** The 2026-08-24 region pivot (Youtech open flow below the homepage hero) was extended to the whole site: the instrument layer (GridLines rails, InfoBar, Nº section labels, 1200px Container as page chrome) is retired. Source of record: STYLE_GUIDE.md 4.5 + changelog "the open layout goes sitewide"; build history in tasks.md and build-log.md.
+- **"AI" naming exception (2026-08-24, mirrored here from copy-rules.md).** "AI" may appear only when AI itself is the subject (the homepage search section), ideally with a real product name; it stays banned wherever we describe our own services. copy-rules.md carries the full wording and governs.
+- **Proof density reconciled.** The pivot rebuilt the lower homepage: FeaturedWork runs 6 placeholder cards linking to /results/ skeletons; the ProofBand ships 4 metric slots behind a launch gate in lib/metrics.ts (3-vs-4 still Brad's call); testimonials are RETIRED from the homepage and move to interior pages once real ones exist. The principle stands: nothing launches without sourced values.
+- **Obsidion portal presentation.** The blurred-screenshot rule is superseded by the structural mock: a token-native app shell with skeleton bars, zero digits, and a visible PORTAL PREVIEW chip, with the window body as a slot for Brad's live portal code. Source of record: STYLE_GUIDE.md 6.12 and 9.portal.md v3.
+- **Trailing slashes: ON**, enforced via redirects (implemented Phase 1). Recorded here because no file had locked it in writing.
+- **Funnel indexability: /go/, /apply/, and /thanks/ are noindex** and excluded via robots.ts (implemented Phase 1). Ad landing pages never enter the XML sitemap.
+- **Interior buildout decisions D1-D6 are all locked (Brad, 2026-08-25):** open layout sitewide (D1), /services/ hub page added (D2), conversion-first build order (D3), franchise/multi-location URL family approved as wave 2 of the service template, slugs pending the Ahrefs keyword pass (D4), FAQ content lands on /contact/, /schedule/, and service pages with FAQPage JSON-LD (D5), and ad landing pages may use the alternate palettes, one palette per page (D6). Source of record: interior-buildout-plan.md.

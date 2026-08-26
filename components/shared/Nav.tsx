@@ -110,6 +110,12 @@ const ROWS: MenuRow[] = [
   { kind: "link", label: "Contact", href: "/contact/", match: ["/contact"] },
 ];
 
+function scrollToTop() {
+  const lenis = getLenis();
+  if (lenis) lenis.scrollTo(0);
+  else window.scrollTo(0, 0);
+}
+
 const rowsContainer: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } },
@@ -193,6 +199,12 @@ export function Nav() {
     match.some((m) => pathname === m || pathname.startsWith(m));
   const close = () => setOpen(false);
 
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== "/") return;
+    e.preventDefault();
+    scrollToTop();
+  };
+
   return (
     <header data-cursor-quiet>
       <div
@@ -204,7 +216,7 @@ export function Nav() {
         )}
       >
         <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-gutter-x md:h-[72px]">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3">
             <Logo className="size-8 shrink-0" />
             <span className="hidden text-[18px] font-bold text-ink sm:inline">
               BigSquare
@@ -235,7 +247,14 @@ export function Nav() {
                   {/* Overlay top bar mirrors the page bar */}
                   <div className="relative z-10 shrink-0 border-b border-line">
                     <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-gutter-x md:h-[72px]">
-                      <Link href="/" onClick={close} className="flex items-center gap-3">
+                      <Link
+                        href="/"
+                        onClick={(e) => {
+                          close();
+                          handleLogoClick(e);
+                        }}
+                        className="flex items-center gap-3"
+                      >
                         <Logo className="size-8 shrink-0" />
                         <span className="hidden text-[18px] font-bold text-ink sm:inline">
                           BigSquare

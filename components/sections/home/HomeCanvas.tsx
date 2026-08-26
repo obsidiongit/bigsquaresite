@@ -112,14 +112,22 @@ const DEVELOP: [number, number] = [0.5, 0.7];
 const BALLOON: [number, number] = [0.62, 0.92];
 const MEDIA_SCALE: [number, number] = [0.62, 0.94];
 
-/* Act 2 sub-beats, in 0..1 of the reform segment (hero progress K..1) */
+/* Act 2 sub-beats, in 0..1 of the reform segment (hero progress K..1).
+   Round 12 (Brad: the panel "shrinks down into this weird little box
+   and then to the cube ... an additional step that shouldn't be
+   there"): the beats OVERLAP so the object is never a parked flat
+   slab. The un-flatten and settle start before the shrink lands, the
+   film dies inside the thickening, and the spin winds in as the cube
+   forms: one continuous contraction, panel -> spinning cube. The old
+   sequential windows (solid 0.4-0.58 / unflatten from 0.58 / pane
+   fade to 0.7) left ~13vh where only the pale slab moved. */
 const R_SHRINK: [number, number] = [0.02, 0.5]; /* panel -> card, re-ink */
-const R_SOLID: [number, number] = [0.4, 0.58]; /* glass re-materializes */
-const R_PANE_FADE: [number, number] = [0.52, 0.7]; /* film quenches under it */
-const R_UNFLATTEN: [number, number] = [0.58, 0.88]; /* slab -> cube, smoke back */
-const R_GLASS_MIX: [number, number] = [0.84, 0.97]; /* transmission -> alpha
-   glass; driven by RAW scroll so the backdrop retires exactly when
-   transmission is gone, before the page can scroll under the canvas */
+const R_SOLID: [number, number] = [0.28, 0.5]; /* glass re-materializes during the shrink */
+const R_PANE_FADE: [number, number] = [0.44, 0.62]; /* film quenches inside the unflatten */
+const R_UNFLATTEN: [number, number] = [0.46, 0.82]; /* slab -> cube, smoke back */
+const R_GLASS_MIX: [number, number] = [0.74, 0.94]; /* transmission -> alpha
+   glass; on the sp clock like the geometry (round 12), with the
+   backdrop's retire guarantee carried by the companion gate */
 
 const CARD_CENTER: [number, number] = [-0.24, -0.17];
 const CARD_W = 0.34;
@@ -149,8 +157,23 @@ const REFORM_END: [number, number] = [0.2, 0.02];
 const REFORM_END_MOBILE: [number, number] = [0.2, 0.16];
 const REFORM_SETTLE_SCALE = 0.82;
 const REFORM_SETTLE_SCALE_MOBILE = 0.7;
-const R_SETTLE: [number, number] = [0.58, 0.95]; /* cube eases to settle scale */
-const R_ASCEND: [number, number] = [0.86, 0.98]; /* landing -> WORK_FLOAT */
+const R_SETTLE: [number, number] = [0.46, 0.86]; /* cube eases to settle scale:
+   runs with the unflatten so the old second shrink (card -> cube,
+   after a pause) merges into the one contraction (round 12) */
+const R_ASCEND: [number, number] = [0.8, 0.96]; /* landing -> WORK_FLOAT */
+
+/* Spin-in (round 12, Brad: "into the cube right away and start
+   spinning"): the reform winds the cube from face-on into its
+   companion engage pose plus REFORM_SPIN_TURNS whole turns, so it
+   forms already turning and the companion takeover is stepless. The
+   pose mirrors the companion target base exactly (trx 0.42; try 0.6 +
+   heroEnd spin 0.08; trz -0.08): extracted so the two sides cannot
+   drift. Guardrail when tuning: keep R_SPIN_IN[0] >= R_PANE_FADE[1]
+   - 0.06, so the cube is within a few degrees of face-on whenever
+   the film crossfade is visible (round 10 shape-match rule). */
+const R_SPIN_IN: [number, number] = [0.56, 0.95];
+const REFORM_POSE: [number, number, number] = [0.42, 0.68, -0.08];
+const REFORM_SPIN_TURNS = 1; /* whole extra turns wound in while forming */
 
 const seg = (v: number, [a, b]: [number, number]) =>
   Math.min(1, Math.max(0, (v - a) / (b - a)));
@@ -194,7 +217,7 @@ const BLACK = new THREE.Color("#000000");
    pin ALREADY at the float spot (the reform's R_ASCEND delivers it)
    and HOLDS STILL while the headline + support exit up and out
    (TEXT_EXIT, DOM-side); then it TRAVELS to center stage above cards
-   01/02 and turntables WORK_TURNS slow full rotations; then the
+   01/02 and turntables WORK_TURNS slow full rotation; then the
    committed morph starts at the dive (== MORPH_REST, where the main
    checkpoint band begins): everything before it parks freely, dive
    on completes. */
@@ -205,7 +228,11 @@ const WORK_CENTER: [number, number] = [0, 0.18];
 const WORK_HOLD: [number, number] = [0.02, 0.1];
 const WORK_TRAVEL: [number, number] = [0.1, 0.22]; /* float -> center */
 const WORK_SPIN: [number, number] = [0.18, 0.56]; /* the turntable */
-const WORK_TURNS = 4; /* full rotations across WORK_SPIN */
+const WORK_TURNS = 1; /* full rotations across WORK_SPIN (round 12,
+   Brad: at 4 the turntable read as "extremely fast, like dozens of
+   times" - the spin window is only ~0.38 of the runway, so four turns
+   land inside ~1vh of scroll. One turn per viewport height is the
+   slow turntable the beat was always described as.) */
 const WORK_DIVE: [number, number] = [MORPH_REST, 0.66];
 const WORK_FLATTEN: [number, number] = [0.62, 0.72];
 const WORK_FLOOD: [number, number] = [0.63, 0.72];
@@ -740,15 +767,20 @@ function StudioEnvironment() {
 }
 
 /* Paper backdrop: the transmission pipeline's ground during the hero.
-   It retires the moment the glass finishes crossfading to alpha mode
-   (raw-scroll gated), before any section can scroll under the fixed
-   canvas; from then on the page itself is the ground. */
+   It retires the moment the glass finishes crossfading to alpha mode,
+   before any section can scroll under the fixed canvas; from then on
+   the page itself is the ground. Round 12: the crossfade rides the sp
+   clock like the geometry (color and shape can no longer desync on a
+   fast reverse); the companion gate carries the old raw guarantee,
+   since the page can only scroll under the canvas once the wrapper
+   releases, which is exactly when companion mode engages. */
 function PaperBackdrop({ stage }: { stage: StageState }) {
   const mesh = useRef<THREE.Mesh>(null);
   useFrame(() => {
     const m = mesh.current;
     if (!m) return;
-    m.visible = seg(seg(stage.raw, [HERO_K, 1]), R_GLASS_MIX) < 1;
+    m.visible =
+      !stage.companion && seg(seg(stage.sp, [HERO_K, 1]), R_GLASS_MIX) < 1;
   });
   return (
     <mesh ref={mesh} position={[0, 0, -6]} scale={[80, 50, 1]}>
@@ -780,8 +812,15 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
   const pointer = useRef({ x: 0, y: 0 });
   const tilt = useRef({ x: 0, y: 0 });
   /* companion follower state (position/rotation/scale eased toward the
-     waypoint target; initialized from the group on mode entry) */
-  const follow = useRef({ on: false, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, s: 1 });
+     waypoint target; initialized from the group on mode entry). t0 is
+     the engage epoch for the idle turn and bias the whole-turn carry
+     from the reform's spin-in, so the takeover step cannot grow with
+     time-on-page and the wound-in turn is not unwound (round 12) */
+  const follow = useRef({ on: false, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, s: 1, t0: 0, bias: 0 });
+  /* companion-exit rotation residual: the sub-half-turn left between
+     the live companion pose and the reform's spin-in pose, decayed to
+     zero so scrolling up unwinds instead of snapping (round 12) */
+  const rotResid = useRef({ x: 0, y: 0, z: 0 });
 
   const geometry = useMemo(() => new RoundedBoxGeometry(1, 1, 1, 4, 0.06), []);
   const smokeGeometry = useMemo(() => new THREE.SphereGeometry(1, 48, 32), []);
@@ -915,9 +954,12 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
     const s = Math.min(w, h) * 0.2; /* hero rest scale */
     const sm = smoke.current;
 
-    /* transmission -> alpha-glass crossfade, raw-scroll gated so it
-       always completes before the page scrolls under the canvas */
-    const mix = smooth(seg(seg(stage.raw, [HERO_K, 1]), R_GLASS_MIX));
+    /* transmission -> alpha-glass crossfade, on the sp clock like the
+       geometry (round 12: on raw it whitened the cube before it had
+       reshaped on a fast reverse). The companion branch never reads
+       mix (it forces transmission 0 and owns color/opacity), so the
+       old raw guarantee lives in PaperBackdrop's companion gate. */
+    const mix = smooth(seg(seg(stage.sp, [HERO_K, 1]), R_GLASS_MIX));
     glass.transmission = 1 - mix;
 
     if (stage.companion) {
@@ -953,7 +995,7 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
          drift while the headline exits overhead (round 11: "without
          this square moving").
          TRAVEL: float spot -> center stage above cards 01/02, where
-         the TURNTABLE plays WORK_TURNS slow full rotations under the
+         the TURNTABLE plays WORK_TURNS slow full rotation under the
          visitor's scroll.
          DIVE: from center stage down to the bar's center, unwinding
          to the nearest HALF turn (a quarter-turn landing shows the

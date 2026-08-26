@@ -60,6 +60,11 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 | `/privacy-policy/` | Privacy Policy | Legal |
 | `/terms/` | Terms of Service | Legal |
 
+### Services hub (added 2026-08-25, interior-buildout-plan.md D2)
+| URL | Title tag (draft) | Purpose |
+|---|---|---|
+| `/services/` | Marketing Services for Multi-Location Brands \| BigSquare | Services hub; target of the homepage's `/services/#<group>` anchors |
+
 ### Services: Organic Marketing
 | URL | Title tag (draft) |
 |---|---|
