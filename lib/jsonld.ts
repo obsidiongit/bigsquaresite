@@ -48,6 +48,51 @@ export function serviceJsonLd({
   };
 }
 
+/** LocalBusiness for the /locations/ city pages (denver.md v2). Only
+    real values ship: while lib/offices.ts holds null for the street
+    address and phone, those properties are OMITTED (never a
+    placeholder string in structured data). Locality, region, and
+    country are real facts today. Geo and openingHours join when the
+    street address does. */
+export function localBusinessJsonLd({
+  path,
+  city,
+  stateCode,
+  state,
+  address,
+  phone,
+  email,
+  siteName,
+}: {
+  path: string;
+  city: string;
+  stateCode: string;
+  state: string;
+  address: string | null;
+  phone: string | null;
+  email: string;
+  siteName: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${SITE_URL}${path}#office`,
+    name: `${siteName} ${city}`,
+    url: `${SITE_URL}${path}`,
+    email,
+    parentOrganization: { "@id": `${SITE_URL}/#organization` },
+    address: {
+      "@type": "PostalAddress",
+      ...(address ? { streetAddress: address } : {}),
+      addressLocality: city,
+      addressRegion: stateCode,
+      addressCountry: "US",
+    },
+    ...(phone ? { telephone: phone } : {}),
+    areaServed: [state, "United States"],
+  };
+}
+
 /** FAQPage from the same array that renders the accordion. */
 export function faqJsonLd(items: { q: string; a: string }[]) {
   return {

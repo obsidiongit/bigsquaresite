@@ -1,21 +1,17 @@
-# Location Page: Tampa
+# Location Page: Tampa (v2, 2026-08-27, Batch 2)
+
+Consumes the city page template in denver.md (the canonical brief). Only the deltas live here; everything else is the template.
 
 ## Page
 - URL: /locations/tampa/
-- Title tag: Tampa Marketing Agency | BigSquare
-- Meta description: `[PLACEHOLDER]`
+- Title: "Tampa Marketing Agency" (template appends "| BigSquare")
 - Primary keyword: marketing agency Tampa
 
-## Content
-- H1: "BigSquare Marketing, Tampa"
-- Answer paragraph: "BigSquare is a Tampa marketing agency for multi-location and franchise brands. We run search, ads, websites, and creative for brands across Florida and the country, from our office in Tampa."
-- Office block: `[PLACEHOLDER: street address, phone, hours, map embed]`
-- Local proof: `[PLACEHOLDER: Florida clients or case studies]`
-- Services offered (all, as a link list)
-- Industries served (all four)
-- Small team photo or office photo `[PLACEHOLDER]`
-- FAQ: 3 local questions
-- CTA band
+## Deltas from the Denver brief
+- H1: "BigSquare Marketing, Tampa" (underline on "Tampa").
+- Answer paragraph and body copy swap Colorado for Florida; the register stays identical.
+- FAQ answers name Tampa and Florida; same 3-question structure, honest answers only.
+- Asset slot: `locations-tampa-office` (shared with the hub panel).
+- LocalBusiness JSON-LD: addressLocality Tampa, addressRegion FL, areaServed Florida + United States.
 
-## Schema
-LocalBusiness JSON-LD with name, address, phone, geo, opening hours, sameAs social links.
+Facts (address, phone) come from `lib/offices.ts` and are null until Brad provides them. Never name the planned third office.

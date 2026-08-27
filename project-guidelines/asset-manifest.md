@@ -48,5 +48,7 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `healthcare-hero` | /industries/healthcare/ | Hero, right framed object | Front desk or practice interior, people over equipment | 4:3 | EMPTY |
 | `healthcare-method` | /industries/healthcare/ | Band inside the method spine (after "From search to booked visit") | Booking screen or the care team | 16:9 | EMPTY |
 | `about-founders` | /about/ | Story section, right framed object | The founders, or the first office. Real photo only | 4:3 | EMPTY |
-| `about-team` | /about/ | Wide team band above the CTA | The whole team, one frame. Real photos only, no stock | ~21:9 (16:9 mobile crop safe) | EMPTY |
+| `about-team` | /about/ + /careers/ | Wide team band (about: above the CTA; careers: under the offices) | The whole team, one frame. Real photos only, no stock | ~21:9 (16:9 mobile crop safe) | EMPTY |
+| `locations-denver-office` | /locations/ + /locations/denver/ | Hub city panel (3:2 crop) + the city page's wide band | The Denver office, or the team in it. Real photo only | ~21:9 source (3:2 and 16:9 crops safe) | EMPTY |
+| `locations-tampa-office` | /locations/ + /locations/tampa/ | Hub city panel (3:2 crop) + the city page's wide band | The Tampa office, or the team in it. Real photo only | ~21:9 source (3:2 and 16:9 crops safe) | EMPTY |
 Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).

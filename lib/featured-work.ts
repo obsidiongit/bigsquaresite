@@ -9,6 +9,18 @@
    `title` to the client (or "industry, N locations" if unnamed),
    drop media into public/media/work/, and fill the metrics.] */
 
+/* Filter taxonomy (results-index.md v2, built now, no filter UI at
+   launch): industry mirrors the /industries/ slugs; brandType is the
+   Ignite-style category widened to the full audience (single-location
+   and ecommerce clients too). Both stay null until a real case study
+   fills the entry. */
+export type WorkBrandType =
+  | "franchisor"
+  | "franchisee-group"
+  | "regional-brand"
+  | "single-location"
+  | "ecommerce";
+
 export type WorkEntry = {
   slug: string;
   /** Project title; client name or industry descriptor once real */
@@ -17,6 +29,10 @@ export type WorkEntry = {
   tags: string[];
   /** Media still/loop for the card panel; null renders the placeholder frame */
   media: string | null;
+  /** /industries/ slug once real; null until then */
+  industry?: string | null;
+  /** brand category once real; null until then */
+  brandType?: WorkBrandType | null;
 };
 
 export const FEATURED_WORK: WorkEntry[] = [

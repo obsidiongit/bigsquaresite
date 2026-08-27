@@ -1,23 +1,26 @@
-# Results Index Page Specifications
+# /results/ Design Brief (v2, 2026-08-27, Batch 2)
+
+v1 was the Phase 1 stub. This v2 makes the index a REAL page under the open layout while case-study CONTENT stays hard-gated on real data: the 6 /results/[slug]/ skeletons stay noindex and untouched, and nothing on this page invents a client, metric, or review. The index's job until data lands: be the destination "See the Results" buttons deserve, and say honestly how we measure.
 
 ## Page
 - URL: /results/
-- Title tag: Client Results & Case Studies | BigSquare
-- Meta description: `[PLACEHOLDER]`
+- Title: "Client Results & Case Studies" (template appends "| BigSquare")
+- Meta description: real draft, Brad's sweep covers it
 
-## Content
-- Eyebrow "RESULTS", H1 "Real brands. Real numbers." (same pairing as home/8.case-studies.md, this is the page that section links to).
-- Sub: one line on how we measure. Draft: "Every number here comes from a real account. Ask us about any of them on a call."
-- Grid of case study cards (shared component, `../shared/case-study-card.md`). 3 at launch per decisions.md; grid supports 6+.
-- Filters (post-launch, build the data model for it now): by industry and by brand type (franchisor, franchisee group, regional brand). Ignite structures case studies this exact way (cs-industry and cs-category taxonomies); plan for the same two filters. Plain grid at launch, no filter UI.
-- CTA band (shared).
+## Posture
+- Open layout at EDGE. No SquareField, no pinned runways.
+- Theme rhythm: light hero, light grid, tint how-we-measure, accent CtaBand.
+- Annotation budget: 2 of 3 (H1 circle on "Real numbers", CtaBand bracket).
+- No registration marks.
 
-## Components to Use
-- Same card and grid as the homepage section. One `caseStudies` data array feeds both, filtered to featured for home.
+## Section order
+1. **Hero**: SeparatorIn + eyebrow "Results". H1 kept from v1: "Real brands. Real numbers." (circle on "Real numbers"). Support right, v1's draft kept: every number comes from a real account, ask about any of them on a call.
+2. **The case study grid**: 6 cards from `lib/featured-work.ts` (the same array the homepage grid and the skeleton pages read; one source). 2-up from md, 1-up below. Card anatomy in the PLACEHOLDER STATE: 3:2 designed media frame (the MediaSlot placeholder grammar: surf ground, ghost brand square, mono CASE STUDY chip), flagged title straight from the array, real service tags as mono text, RuleLink "See the Results" into the skeleton. NO metric chips and NO outcome headlines until real values exist (6.4's card lockup needs numbers; a 000% stand-in on an indexable page reads as a claim). One flagged mono line above the grid marks the whole grid as placeholder until client data lands.
+3. **How we measure** (tint): the page's real copy while data is owed. 3 numbered ruled rows, claims that are true today: numbers come from accounts you own; you see them in the same dashboard we do; we walk every report on a call. Short, no invented specifics.
+4. **CtaBand** (shared): headline swapped to the proof ask ("Want numbers like these with your name on them?" style, drafted in-page), buttons default.
 
-## Animations / Effects
-- Cards fade-up with stagger, metric counts up on entry, card lifts on hover.
+## Data model (filters, post-launch)
+Ignite structures case studies by industry + category; build the fields now, no filter UI at launch: `WorkEntry` gains `industry: string | null` and `brandType: "franchisor" | "franchisee-group" | "regional-brand" | "single-location" | "ecommerce" | null` (audience rule: the taxonomy includes single-location and ecommerce from day one). All null until real studies land.
 
-## Design Instructions
-- `--paper` background, cards on `--surf`. Three-by-two grid desktop, single column mobile.
-- Every card links to /results/[slug]/. No card ships without real data.
+## JSON-LD
+BreadcrumbList (Home > Results). No CollectionPage/ItemList until the cards carry real content (structured data never carries placeholders).

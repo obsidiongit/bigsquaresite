@@ -7,7 +7,7 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 ## Batch plan (order of work)
 
 - [x] **Batch 1: /audit/, /contact/, /about/** BUILT 2026-08-27; REVIEWED by Brad same day: "good, not great", structure approved, no rebuild wanted. Known placeholders (CTAs, form copy, content) ride the sitewide final pass; pages improve as we play with them
-- [ ] **Batch 2:** /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/
+- [ ] **Batch 2:** /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/. BUILT 2026-08-27 (briefs v2 + 5 pages, LocalBusiness JSON-LD on city pages, all in sitemap.xml; verified 4 widths + reduced motion + build), awaiting Brad's batch review. Owed: office addresses/phones/photos (lib/offices.ts + 2 asset slots), careers remote policy + open roles + application destination (lib/careers.ts), real case studies (lib/featured-work.ts)
 - [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/ (one flagship each inside the batch; alternate palettes per D6) + /ad-credit/ when terms exist
 - [ ] **Batch 4:** blog pipeline + 2 posts, lead magnets as assets land, then the D4 franchise service family after the keyword pass
 - [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass

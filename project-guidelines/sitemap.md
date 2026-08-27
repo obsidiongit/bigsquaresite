@@ -56,8 +56,8 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 | `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
 | `/about/` | built (Batch 1 reviewed 2026-08-27) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
 | `/leadership/` | blocked-on-content (names + photos) | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
-| `/careers/` | 404 | Careers at BigSquare | Batch 2 |
-| `/results/` | shell | Client Results & Case Studies \| BigSquare | Real index in Batch 2 |
+| `/careers/` | built (Batch 2, 2026-08-27, awaiting batch review) | Careers at BigSquare | Owed: remote policy, open roles, application destination |
+| `/results/` | built (Batch 2, 2026-08-27, awaiting batch review) | Client Results & Case Studies \| BigSquare | Real index; card grid stays flagged placeholder until real case studies land |
 | `/results/[slug]/` | blocked-on-content (real case-study data) | [Result] for [Client type] \| BigSquare | 6 noindex skeletons live; template ready |
 | `/contact/` | built (Batch 1 reviewed 2026-08-27) | Contact BigSquare Marketing | Form + offices + FAQ (D5). Owed: office addresses + phones |
 | `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Owed: VSL film, copy pass, GHL wiring |
@@ -112,9 +112,9 @@ Planned wave 2: ~10 franchise/multi-location service-template variants (D4). Slu
 ### Locations
 | URL | STATUS | Title tag (draft) |
 |---|---|---|
-| `/locations/` | 404 (Batch 2) | Our Offices \| BigSquare |
-| `/locations/denver/` | 404 (Batch 2; office info owed) | Denver Marketing Agency \| BigSquare |
-| `/locations/tampa/` | 404 (Batch 2; office info owed) | Tampa Marketing Agency \| BigSquare |
+| `/locations/` | built (Batch 2, 2026-08-27, awaiting batch review) | Our Offices \| BigSquare |
+| `/locations/denver/` | built (Batch 2, 2026-08-27, awaiting batch review; address + phone + photo owed) | Denver Marketing Agency \| BigSquare |
+| `/locations/tampa/` | built (Batch 2, 2026-08-27, awaiting batch review; address + phone + photo owed) | Tampa Marketing Agency \| BigSquare |
 
 ### Resources
 | URL | STATUS | Title tag (draft) |

@@ -5,8 +5,12 @@
    placeholder, real values drop in here only. */
 
 export type Office = {
+  /** the /locations/[city]/ route segment; keys lib/location-pages.ts */
+  slug: "denver" | "tampa";
   city: string;
   state: string;
+  /** USPS two-letter code, for LocalBusiness addressRegion */
+  stateCode: string;
   href: string;
   /** null until Brad provides it; renders a flagged placeholder */
   address: string | null;
@@ -16,17 +20,25 @@ export type Office = {
 
 export const OFFICES: Office[] = [
   {
+    slug: "denver",
     city: "Denver",
     state: "Colorado",
+    stateCode: "CO",
     href: "/locations/denver/",
     address: null,
     phone: null,
   },
   {
+    slug: "tampa",
     city: "Tampa",
     state: "Florida",
+    stateCode: "FL",
     href: "/locations/tampa/",
     address: null,
     phone: null,
   },
 ];
+
+export function getOffice(slug: Office["slug"]): Office {
+  return OFFICES.find((o) => o.slug === slug)!;
+}
