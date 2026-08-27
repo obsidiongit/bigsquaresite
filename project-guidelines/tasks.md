@@ -117,7 +117,7 @@ FLAGSHIP GATES (added 2026-08-25, Brad's rule): one page of each style gets buil
 ## Phase 7: Company and conversion pages (added 2026-08-20)
 The original six phases did not cover these routes; specs now exist in project-sections/company/, /results/, /conversion/. Pull any of these forward if priorities shift; /schedule/ and /audit/ run on Phase 1 stubs until then. The plan doc proposes pulling /schedule/, /audit/, /contact/, and /about/ forward.
 - [x] /schedule/ (primary conversion). Lane 1's FLAGSHIP (ROUND 4, 2026-08-27: 5-step application now opens with name, locations mid-flow with "Online only" (audience rule: never franchise-only), TrustMarquee mirrored; spec v2.1; probe-verified. Needs: VSL film + poster (lib/schedule-media.ts), Brad's copy pass, Mike's GHL API wiring)
-- [ ] **GATE (Lane 1): Brad green-lights /schedule/.** No other conversion or company page may be built until this box is checked
+- [x] **GATE (Lane 1): Brad green-lights /schedule/** (approved 2026-08-27, no further walkthrough wanted; the VSL film, his copy pass, and Mike's GHL wiring stay as content items, not build blockers). /audit/, /contact/, /about/ are unblocked and batch together
 - [ ] /audit/ (real form page)
 - [ ] /contact/
 - [ ] /ad-credit/

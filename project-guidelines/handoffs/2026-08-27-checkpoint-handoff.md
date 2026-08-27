@@ -16,17 +16,18 @@ Written at the major checkpoint commit `dd63ae5` (pushed to origin/main; prod bu
 
 Launch target per sitemap.md is ~55 endpoints: we are 23 real + 10 shells in, roughly **22 pages from route-complete**, and several of those are content-blocked, not build-blocked.
 
-## Next build order (interior-buildout-plan.md governs)
+## Next, in order (revised 2026-08-27 after Brad's checkpoint review)
 
-1. **Confirm the Lane 1 gate with Brad**: /schedule/ round 4 awaits his green-light (tasks.md Phase 7 GATE box). Its own opens: VSL film + poster (`lib/schedule-media.ts` one-line swap), his copy pass, Mike's GHL API wiring (server-side only).
-2. After the gate: **/audit/** (real form on the shared `Field` primitive; a round-3 handoff for it was already issued in the Lane 1 session), then **/contact/** (form + FAQ block per D5), then **/about/** (company/about.md needs its design-brief pass first).
-3. **/results/ index + case-study template polish** (HARD-GATED on real client data; the "1 case study link" SEO rule on every T2/T3 page waits with it).
-4. **/locations/** hub + denver + tampa (LocalBusiness JSON-LD; office facts pending).
-5. Phase 5 funnels (/go/, /apply/, /thanks/; alternate palettes sanctioned, D6), /ad-credit/ (blocked on terms), lead magnets (blocked on assets).
-6. Phase 6 blog (MDX pipeline + 2 posts), then the D4 franchise URL family (~10 T2 variants, needs the Ahrefs keyword pass).
-7. Homepage punch list + 2J (metadata/OG/favicon/Lighthouse) + 2K cube sessions interleaved.
+**The /schedule/ gate is APPROVED (Brad, 2026-08-27).** All three template gates are now open. Brad's process notes, binding from here: sessions and docs are getting too verbose, keep everything simple and plain; no more one-page-at-a-time builds, work in BATCHES now that the templates are proven; new template types (funnel, blog post, lead magnet, case study) still get one green-lit flagship before stamping, but that review rides inside the batch.
 
-New templates (case study, funnel, lead magnet, blog post) each get the FLAGSHIP GATE: build one, Brad green-lights, then stamp.
+**Job 1, cleanup (do this FIRST, docs only, one session):** consolidate the project docs to a small source of truth. Create `project-guidelines/archive/` and MOVE (never delete) everything historical into it: build-log.md, old handoffs, competitor-sitemaps/, interior-buildout-plan.md (its decisions are already recorded in decisions.md), and the briefs of ALREADY-BUILT sections/pages. The living set that remains: CLAUDE.md, tasks.md, STYLE_GUIDE.md, copy-rules.md, decisions.md, sitemap.md, asset-manifest.md, plus specs for UNBUILT pages only. Give sitemap.md a STATUS column per URL (built / shell / 404 / blocked-on-content) so it becomes the single endpoint tracker; trim tasks.md to only what is left to do; update CLAUDE.md's read-first list to match. Touch nothing in app/, components/, or lib/; run `npm run build` after to prove it. Commit before and after.
+
+**Job 2, batch builds:**
+1. Batch 1: /audit/, /contact/, /about/ in one push (specs in conversion/ + company/; about needs its design-brief pass first). One review round with Brad for the batch, not per page.
+2. Batch 2: /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/.
+3. Batch 3: funnel templates (/go/, /apply/, /thanks/ — one flagship each inside the batch; alternate palettes per D6) + /ad-credit/ when terms exist.
+4. Batch 4: blog pipeline + 2 posts, lead magnets as assets land, then the D4 franchise family after the keyword pass.
+5. Interleaved: homepage punch list, 2J metadata/OG/favicon/Lighthouse, 2K cube sessions, the registration-mark removal sweep, Brad's sitewide copy pass.
 
 ## Brad-owed content (blocks marked pages, nothing else)
 
