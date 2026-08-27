@@ -70,7 +70,7 @@ Needs Brad (facts and assets, none of which can be invented):
 
 Build items (small, any session):
 - [ ] Newsletter polish set: panel presence at 1536, frame cadence vs real photos, remove the headshot note when assets land, confirmation copy, optional cube anchor
-- [ ] Decide + relocate `12.faq.md` content and FAQPage JSON-LD (interior pages; see plan doc)
+- [x] Decide + relocate `12.faq.md` content and FAQPage JSON-LD: D5 locked, buyer-process set shipped on /schedule/ (lib/faq.ts + shared Faq, 2026-08-25); /contact/ adds its block when built, service-specific sets ride T2 pages
 - [ ] 2K prerequisite: waypoint retune list gathered from every section note (all currently "placeholder-grade for 2K")
 
 ## Phase 3: Shared components (whatever Phase 2 did not already produce)
@@ -79,28 +79,29 @@ Trimmed 2026-08-23: CTA band, footer, case study card, testimonial card, metric 
 - [ ] Effect library v2 as section specs demand: TypeOn, StickyShowcase, chapter rail, manifesto darkening (STYLE_GUIDE.md 7.3, 7.4)
 - [ ] Ad credit popup (Dialog, exit intent + mobile triggers, 14-day localStorage, route exclusions, POPUP_DEADLINE)
 - [ ] Portal scroll set piece once real Obsidion assets exist (deferred 2026-08-23; STYLE_GUIDE 7.4 frame sequence or fragment assembly)
-- [ ] Shared `Field` primitive extracted from NewsletterForm when the audit/contact forms are built (STYLE_GUIDE 6.13)
+- [x] Shared `Field` primitive extracted (2026-08-26, Lane 1, the /schedule/ application form; components/shared/Field.tsx, STYLE_GUIDE 6.13 updated). FOLLOW-UP (homepage session, small): migrate NewsletterForm onto Field so the anatomy lives once
 
 ## Phase 4: Service, industry, and location pages
 Planning note 2026-08-25: the buildout order, template system, and open design decisions for Phases 4 to 7 now live in `interior-buildout-plan.md`. Lock that doc with Brad before building; create the spec from the template before building each page; order matches sitemap.md.
 FLAGSHIP GATES (added 2026-08-25, Brad's rule): one page of each style gets built and green-lit BEFORE any stamping. Only Brad checks a GATE box; while a gate is unchecked, building further pages of that template is out of scope for any agent.
-- [ ] Service page layout from `_service-page-template.md` (one component, per-page content); flagship: /services/seo/
-- [ ] **GATE (Lane 2): Brad green-lights /services/seo/.** No other service page may be built until this box is checked
-- [ ] Organic Marketing: seo, generative-engine-optimization, social-media, content-marketing, email, obsidion-portal (richer layout per services-index note)
-- [ ] Paid Advertising: paid-search, google-local-services-ads, paid-social, amazon-ads, creator-network
-- [ ] Design & Development: web-design, branding, video-production, custom-development
-- [ ] /services/ hub page (added to sitemap.md 2026-08-25, D2; carries the #group anchors the homepage Services heads target)
-- [ ] Service JSON-LD + internal links (2 industries + 1 case study per page)
+- [x] Service page layout from `_service-page-template.md` (one component, per-page content); flagship: /services/seo/ (BUILT 2026-08-25, Lane 2 session 1: brief v2 + flagship + shared CtaBand/Faq/ProcessCard; ROUND 2 2026-08-26 on Brad's 7-8/10 review: brief v2.1 + asset-slot system (MediaSlot, lib/asset-files.ts, asset-manifest.md), hero media-right + rank fragment, work band image link, industry image cards, spine circle, variation kit for the stamps; verified 4 widths + reduced motion; awaiting Brad's gate re-review)
+- [ ] Asset drops for interior media slots: Brad fills `lib/asset-files.ts` from `project-guidelines/asset-manifest.md` at the end (slots accumulate as pages build; 4 slots as of 2026-08-26)
+- [x] **GATE (Lane 2): Brad green-lights /services/seo/.** (Verbal approval in the Lane 2 session 2026-08-26: "I'm liking the way that the SEO page looks... let's go ahead and build the other fourteen service pages and the hub page." One design note recorded: NO registration-mark plus signs on newly built pages; existing ones get swept in his site-wide audit later)
+- [x] Organic Marketing: seo, generative-engine-optimization, social-media, content-marketing, email, obsidion-portal (richer layout: exhibit centerpiece + portal fragment) (ALL STAMPED 2026-08-26, Lane 2 batch session; per-page copy pass + variation-kit picks; build-log "the 14-page stamp")
+- [x] Paid Advertising: paid-search, google-local-services-ads, paid-social, amazon-ads, creator-network (STAMPED 2026-08-26, same session)
+- [x] Design & Development: web-design, branding, video-production, custom-development (STAMPED 2026-08-26, same session)
+- [x] /services/ hub page (BUILT 2026-08-26: statement hero + 3 anchored group index sections carrying #organic-marketing/#paid-advertising/#design-development; the homepage group-head links now resolve)
+- [x] Service JSON-LD + internal links: 2 industry image cards + 3 related services per page; case study slot stays HARD-GATED empty until Phase 7 data (the "1 case study link" SEO rule waits with it)
 - [ ] Franchise/multi-location URL family: ~10 service-template variants (D4, approved 2026-08-25; slugs from the Ahrefs keyword pass, then amend sitemap.md; build after the 15 core service pages)
-- [ ] Industry page flagship: /industries/franchise/ (most complete page after homepage, 1,500+ words)
-- [ ] **GATE (Lane 3): Brad green-lights /industries/franchise/.** No other industry page may be built until this box is checked
-- [ ] /industries/ index
-- [ ] Industry pages: home-services, legal, healthcare (1,500+ words each)
+- [x] Industry page flagship: /industries/franchise/ (BUILT 2026-08-25, round 2 2026-08-26 after Brad's 7-8/10 review: hero media slot + mid-spine media band (MediaSlot/asset-manifest), THE BOARD interactive signature, persona chips, variance dials in the template v3; 1,606 words server-rendered; verified 4 widths + reduced motion; awaiting Brad's round-2 gate review)
+- [x] **GATE (Lane 3): Brad green-lights /industries/franchise/.** (Green-lit by Brad in the Lane 3 round-2 review, 2026-08-26: "quality of the build... pretty fine. I'll go ahead and green-light it"; box recorded on his behalf per that instruction. His standing note: copy across the whole site gets a large sweep later; rating held at 7-8/10 pending copy + small tweaks)
+- [x] /industries/ index (BUILT 2026-08-26 post-gate: lean hub, 4 linked MediaSlot cards on the shared industries-*-card assets, CtaBand; spec industries-hub.md)
+- [x] Industry pages: home-services, legal, healthcare (BUILT 2026-08-26 post-gate, each 1,500+ words server-rendered with its own copy pass + variance dials per its spec; franchise sectors chips now link the siblings; verified 4 widths + reduced motion per page)
 - [ ] /locations/ index
 - [ ] /locations/denver/ and /locations/tampa/ (LocalBusiness JSON-LD, `[PLACEHOLDER]` office info)
 
 ## Phase 5: Funnels, lead magnets, booking
-- [ ] Custom GHL booking component (styled placeholder first, API integration behind GHL_* env vars)
+- [ ] GHL API lead capture for the /schedule/ application form (server-side: submitForm destination or GHL API behind GHL_* env vars; the calendar component is RETIRED, Brad 2026-08-26, decisions.md amendment)
 - [ ] VSL landing template (/go/[slug]/, no nav/footer, noindex, video events)
 - [ ] Application funnel template (/apply/[slug]/, multi-step form, qualify events)
 - [ ] Thank-you template (/thanks/[slug]/, calendar/download/contact variants)
@@ -115,7 +116,7 @@ FLAGSHIP GATES (added 2026-08-25, Brad's rule): one page of each style gets buil
 
 ## Phase 7: Company and conversion pages (added 2026-08-20)
 The original six phases did not cover these routes; specs now exist in project-sections/company/, /results/, /conversion/. Pull any of these forward if priorities shift; /schedule/ and /audit/ run on Phase 1 stubs until then. The plan doc proposes pulling /schedule/, /audit/, /contact/, and /about/ forward.
-- [ ] /schedule/ (real page on the booking component; primary conversion). Lane 1's FLAGSHIP
+- [x] /schedule/ (primary conversion). Lane 1's FLAGSHIP (ROUND 4, 2026-08-27: 5-step application now opens with name, locations mid-flow with "Online only" (audience rule: never franchise-only), TrustMarquee mirrored; spec v2.1; probe-verified. Needs: VSL film + poster (lib/schedule-media.ts), Brad's copy pass, Mike's GHL API wiring)
 - [ ] **GATE (Lane 1): Brad green-lights /schedule/.** No other conversion or company page may be built until this box is checked
 - [ ] /audit/ (real form page)
 - [ ] /contact/

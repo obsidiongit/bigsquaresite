@@ -29,33 +29,36 @@ export function NumberedRuledList({
   className?: string;
 }) {
   return (
-    <ol className={cn(className)}>
-      {items.map((item, i) => (
-        <li key={i}>
-          <SeparatorIn delay={i * 0.08} />
-          <Reveal delay={i * 0.08}>
-            <div className="flex items-baseline gap-5 py-6 md:gap-8 md:py-7">
-              <BracketIndex n={i + 1} className="shrink-0 text-sec-acc" />
-              <div>
-                <p
-                  className={cn(
-                    "font-bold text-sec-ink",
-                    size === "major" ? "text-h3" : "text-[18px] leading-[1.4]",
-                  )}
-                >
-                  {item.text}
-                </p>
-                {item.sub && (
-                  <p className="mt-2 max-w-[56ch] text-body text-sec-mid">
-                    {item.sub}
+    <div className={cn(className)}>
+      <ol>
+        {items.map((item, i) => (
+          <li key={i}>
+            <SeparatorIn delay={i * 0.08} />
+            <Reveal delay={i * 0.08}>
+              <div className="flex items-baseline gap-5 py-6 md:gap-8 md:py-7">
+                <BracketIndex n={i + 1} className="shrink-0 text-sec-acc" />
+                <div>
+                  <p
+                    className={cn(
+                      "font-bold text-sec-ink",
+                      size === "major" ? "text-h3" : "text-[18px] leading-[1.4]",
+                    )}
+                  >
+                    {item.text}
                   </p>
-                )}
+                  {item.sub && (
+                    <p className="mt-2 max-w-[56ch] text-body text-sec-mid">
+                      {item.sub}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </Reveal>
-        </li>
-      ))}
+            </Reveal>
+          </li>
+        ))}
+      </ol>
+      {/* closing hairline lives outside the <ol>: a div is not a valid ol child */}
       <SeparatorIn delay={items.length * 0.08} />
-    </ol>
+    </div>
   );
 }

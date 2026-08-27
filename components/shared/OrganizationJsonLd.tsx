@@ -10,6 +10,7 @@ export function OrganizationJsonLd() {
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: `${SITE_URL}/`,
     email: SUPPORT_EMAIL,
