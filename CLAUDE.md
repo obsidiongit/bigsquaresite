@@ -5,8 +5,12 @@ These rules apply to every agent session in this repo (Claude, Composer, or any 
 ## Read first, every session
 1. `project-guidelines/project-brief.md` (what we are building and for whom)
 2. `project-guidelines/copy-rules.md` (how every word on the site must read)
-3. `project-guidelines/STYLE_GUIDE.md` if it exists (the design system; created in Phase 2)
-4. The section spec file for whatever you are building in `project-sections/`
+3. `project-guidelines/STYLE_GUIDE.md` (the authoritative design system)
+4. `project-guidelines/tasks.md` (what is left) and `project-guidelines/sitemap.md` (the single endpoint status tracker)
+5. `project-guidelines/decisions.md` (locked decisions D1 to D6 and amendments)
+6. The spec file for whatever you are building in `project-sections/` (specs exist for unbuilt pages only)
+
+History, old handoffs, the build log, and briefs of already-built pages live in `project-guidelines/archive/`. Move things there when they go stale; never delete from it.
 
 ## Style guide governance
 `project-guidelines/STYLE_GUIDE.md` is the authoritative design system once it exists.
@@ -31,10 +35,10 @@ Never silently diverge from the style guide.
 - No em dashes anywhere in user-facing text. Use a period, a comma, or a colon.
 
 ## Build protocol
-- Build one section or page per session. Start a new chat for each.
+- Work in batches per the batch plan in tasks.md (Brad, 2026-08-27); one review round with Brad per batch, not per page. A new template type still gets one green-lit flagship, reviewed inside the batch, and only Brad checks a gate box.
 - Hero first on any new page. It sets the visual tone for everything below it.
 - Check mobile after every section before marking the task done.
-- Update `project-guidelines/tasks.md` checkboxes as you complete work.
+- Update `project-guidelines/tasks.md` checkboxes and the STATUS column in `project-guidelines/sitemap.md` as you complete work.
 - Do not install a dependency that is not listed in PROJECT_REQUIREMENTS.md without adding it there first with a one-line reason.
 
 ## Stack (locked for v1)

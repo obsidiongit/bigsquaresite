@@ -1,8 +1,14 @@
 # BigSquare Marketing Sitemap
 
-Every URL the site will have at launch, plus the ones planned right after. Title tags and meta descriptions are first drafts. `[PLACEHOLDER]` marks anything that needs a real value.
+**This is the single endpoint tracker.** Every URL the site will have at launch, with its current status. Update the STATUS column whenever a page changes state; session detail goes nowhere else (history is archived in `archive/build-log.md`).
 
-Trailing slash: ON for all pages. Enforce with redirects.
+STATUS values:
+- **built**: real page, shipped and verified
+- **shell**: resolves, but only a stub or skeleton
+- **404**: does not resolve yet; build when its batch comes up
+- **blocked-on-content**: cannot become a real page until Brad (or Mike) provides content; noted in parentheses
+
+Trailing slash: ON for all pages. Enforce with redirects. Title tags and meta descriptions are first drafts. `[PLACEHOLDER]` marks anything that needs a real value.
 
 ## Primary navigation
 Order matches Youtech's proven structure, renamed for BigSquare.
@@ -45,87 +51,89 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 ## Full URL list
 
 ### Core
-| URL | Title tag (draft) | Purpose |
-|---|---|---|
-| `/` | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage |
-| `/about/` | About BigSquare Marketing | Who we are, how we work |
-| `/leadership/` | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
-| `/careers/` | Careers at BigSquare | Open roles |
-| `/results/` | Client Results & Case Studies \| BigSquare | Case study index |
-| `/results/[slug]/` | [Result] for [Client type] \| BigSquare | One per case study. 5 to 6 at launch. `[PLACEHOLDER: slugs]` |
-| `/contact/` | Contact BigSquare Marketing | Form, phone, both offices |
-| `/schedule/` | Schedule a Call \| BigSquare | Calendar embed. Primary conversion page |
-| `/audit/` | Get a Free Marketing Audit \| BigSquare | Secondary conversion page |
-| `/ad-credit/` | Claim Your Ad Credit \| BigSquare | Popup landing page |
-| `/privacy-policy/` | Privacy Policy | Legal |
-| `/terms/` | Terms of Service | Legal |
+| URL | STATUS | Title tag (draft) | Purpose |
+|---|---|---|---|
+| `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
+| `/about/` | 404 | About BigSquare Marketing | Batch 1; needs its design-brief pass first |
+| `/leadership/` | blocked-on-content (names + photos) | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
+| `/careers/` | 404 | Careers at BigSquare | Batch 2 |
+| `/results/` | shell | Client Results & Case Studies \| BigSquare | Real index in Batch 2 |
+| `/results/[slug]/` | blocked-on-content (real case-study data) | [Result] for [Client type] \| BigSquare | 6 noindex skeletons live; template ready |
+| `/contact/` | 404 | Contact BigSquare Marketing | Batch 1. Form, phone, both offices, FAQ block (D5) |
+| `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Owed: VSL film, copy pass, GHL wiring |
+| `/audit/` | shell | Get a Free Marketing Audit \| BigSquare | Batch 1. Secondary conversion page |
+| `/ad-credit/` | blocked-on-content (offer terms) | Claim Your Ad Credit \| BigSquare | Popup landing page, Batch 3 |
+| `/privacy-policy/` | shell (legal copy owed) | Privacy Policy | Legal |
+| `/terms/` | shell (legal copy owed) | Terms of Service | Legal |
 
-### Services hub (added 2026-08-25, interior-buildout-plan.md D2)
-| URL | Title tag (draft) | Purpose |
-|---|---|---|
-| `/services/` | Marketing Services for Multi-Location Brands \| BigSquare | Services hub; target of the homepage's `/services/#<group>` anchors |
+### Services hub
+| URL | STATUS | Title tag (draft) | Purpose |
+|---|---|---|---|
+| `/services/` | built | Marketing Services for Multi-Location Brands \| BigSquare | Hub; target of the homepage's `/services/#<group>` anchors |
 
 ### Services: Organic Marketing
-| URL | Title tag (draft) |
-|---|---|
-| `/services/seo/` | SEO for Multi-Location & Franchise Brands \| BigSquare |
-| `/services/generative-engine-optimization/` | Generative Engine Optimization (GEO) \| BigSquare |
-| `/services/social-media/` | Social Media Management for Franchises \| BigSquare |
-| `/services/content-marketing/` | Content Marketing for Multi-Location Brands \| BigSquare |
-| `/services/email/` | Email & Text Marketing \| BigSquare |
-| `/services/obsidion-portal/` | Obsidion Portal: See Every Lead & Every Dollar \| BigSquare |
+| URL | STATUS | Title tag (draft) |
+|---|---|---|
+| `/services/seo/` | built | SEO for Multi-Location & Franchise Brands \| BigSquare |
+| `/services/generative-engine-optimization/` | built | Generative Engine Optimization (GEO) \| BigSquare |
+| `/services/social-media/` | built | Social Media Management for Franchises \| BigSquare |
+| `/services/content-marketing/` | built | Content Marketing for Multi-Location Brands \| BigSquare |
+| `/services/email/` | built | Email & Text Marketing \| BigSquare |
+| `/services/obsidion-portal/` | built | Obsidion Portal: See Every Lead & Every Dollar \| BigSquare |
 
 ### Services: Paid Advertising
-| URL | Title tag (draft) |
-|---|---|
-| `/services/paid-search/` | Paid Search Management for Franchises \| BigSquare |
-| `/services/google-local-services-ads/` | Google Local Services Ads Management \| BigSquare |
-| `/services/paid-social/` | Paid Social Ads for Multi-Location Brands \| BigSquare |
-| `/services/amazon-ads/` | Amazon Ads Management \| BigSquare |
-| `/services/creator-network/` | Creator Network: Content That Sells \| BigSquare |
+| URL | STATUS | Title tag (draft) |
+|---|---|---|
+| `/services/paid-search/` | built | Paid Search Management for Franchises \| BigSquare |
+| `/services/google-local-services-ads/` | built | Google Local Services Ads Management \| BigSquare |
+| `/services/paid-social/` | built | Paid Social Ads for Multi-Location Brands \| BigSquare |
+| `/services/amazon-ads/` | built | Amazon Ads Management \| BigSquare |
+| `/services/creator-network/` | built | Creator Network: Content That Sells \| BigSquare |
 
 ### Services: Design & Development
-| URL | Title tag (draft) |
-|---|---|
-| `/services/web-design/` | Web Design for Multi-Location Brands \| BigSquare |
-| `/services/branding/` | Branding & Brand Positioning \| BigSquare |
-| `/services/video-production/` | Video Production & Commercials \| BigSquare |
-| `/services/custom-development/` | Custom Development \| BigSquare |
+| URL | STATUS | Title tag (draft) |
+|---|---|---|
+| `/services/web-design/` | built | Web Design for Multi-Location Brands \| BigSquare |
+| `/services/branding/` | built | Branding & Brand Positioning \| BigSquare |
+| `/services/video-production/` | built | Video Production & Commercials \| BigSquare |
+| `/services/custom-development/` | built | Custom Development \| BigSquare |
+
+Planned wave 2: ~10 franchise/multi-location service-template variants (D4). Slugs come from the Ahrefs keyword pass; amend this file when they exist.
 
 ### Industries
-| URL | Title tag (draft) |
-|---|---|
-| `/industries/` | Industries We Serve \| BigSquare |
-| `/industries/franchise/` | Franchise Marketing Agency \| BigSquare |
-| `/industries/home-services/` | Home Services Marketing Agency \| BigSquare |
-| `/industries/legal/` | Law Firm Marketing Agency \| BigSquare |
-| `/industries/healthcare/` | Healthcare Marketing Agency \| BigSquare |
+| URL | STATUS | Title tag (draft) |
+|---|---|---|
+| `/industries/` | built | Industries We Serve \| BigSquare |
+| `/industries/franchise/` | built | Franchise Marketing Agency \| BigSquare |
+| `/industries/home-services/` | built | Home Services Marketing Agency \| BigSquare |
+| `/industries/legal/` | built | Law Firm Marketing Agency \| BigSquare |
+| `/industries/healthcare/` | built | Healthcare Marketing Agency \| BigSquare |
 
 ### Locations
-| URL | Title tag (draft) |
-|---|---|
-| `/locations/` | Our Offices \| BigSquare |
-| `/locations/denver/` | Denver Marketing Agency \| BigSquare |
-| `/locations/tampa/` | Tampa Marketing Agency \| BigSquare |
+| URL | STATUS | Title tag (draft) |
+|---|---|---|
+| `/locations/` | 404 (Batch 2) | Our Offices \| BigSquare |
+| `/locations/denver/` | 404 (Batch 2; office info owed) | Denver Marketing Agency \| BigSquare |
+| `/locations/tampa/` | 404 (Batch 2; office info owed) | Tampa Marketing Agency \| BigSquare |
 
 ### Resources
-| URL | Title tag (draft) |
-|---|---|
-| `/blog/` | BigSquare Blog: Franchise & Multi-Location Marketing |
-| `/blog/[slug]/` | Per post |
-| `/resources/` | Free Guides & Tools \| BigSquare |
-| `/resources/[slug]/` | One per lead magnet. 5 at launch. See `project-sections/lead-magnets/` |
+| URL | STATUS | Title tag (draft) |
+|---|---|---|
+| `/blog/` | 404 (Batch 4, MDX pipeline) | BigSquare Blog: Franchise & Multi-Location Marketing |
+| `/blog/[slug]/` | blocked-on-content (topics from keyword pass) | Per post. 2 at launch |
+| `/resources/` | 404 (Batch 4) | Free Guides & Tools \| BigSquare |
+| `/resources/[slug]/` | blocked-on-content (lead-magnet assets) | One per lead magnet. 5 at launch. See `project-sections/lead-magnets/` |
 
 ### Paid traffic pages (noindex)
-These are ad destinations. No nav, no footer links, `noindex`.
-| URL | Purpose |
-|---|---|
-| `/go/[slug]/` | VSL landing pages. See `project-sections/landing-pages/vsl-template.md` |
-| `/apply/[slug]/` | Application funnels. See `project-sections/landing-pages/application-funnel-template.md` |
-| `/thanks/[slug]/` | Thank-you pages with next step and calendar |
+Ad destinations. No nav, no footer links, `noindex`. Templates are Batch 3; one flagship each gets green-lit inside the batch. Alternate palettes per D6.
+| URL | STATUS | Purpose |
+|---|---|---|
+| `/go/[slug]/` | 404 (Batch 3) | VSL landing pages. See `project-sections/landing-pages/vsl-template.md` |
+| `/apply/[slug]/` | 404 (Batch 3) | Application funnels. See `project-sections/landing-pages/application-funnel-template.md` |
+| `/thanks/[slug]/` | 404 (Batch 3) | Thank-you pages with next step |
 
 ## Footer (copied from the Youtech structure)
-Four columns on top, three plus a badge slot on the bottom. Full spec in `project-sections/shared/footer.md`.
+Four columns on top, three plus a badge slot on the bottom. Built; spec archived (`archive/project-sections/footer.md`).
 
 Row 1: Company | Organic Marketing | Paid Advertising | Design & Development
 Row 2: Socials | Locations | Contact Us | Badge slot (empty until a partner badge is earned)

@@ -31,7 +31,7 @@ BigSquare is the strategic growth partner for multi-location and franchise brand
 - Not a tool company. We never lead with "AI" or "automation."
 
 ## Sections and pages needed
-See `sitemap.md` for every URL. Homepage sections live in `project-sections/home/`. Every other page type has a spec or template in its own folder under `project-sections/`.
+See `sitemap.md` for every URL and its build status. Specs for unbuilt pages live under `project-sections/`; briefs for already-built pages are archived in `project-guidelines/archive/project-sections/`.
 
 ## Additional requirements
 - Fully responsive, mobile first. Most paid traffic is mobile.
@@ -39,7 +39,7 @@ See `sitemap.md` for every URL. Homepage sections live in `project-sections/home
 - SEO built in from day one. See `seo-requirements.md`.
 - Every page has one clear primary call to action above the fold.
 - Framer-level motion: smooth, purposeful, never distracting. Respect `prefers-reduced-motion`.
-- Graphite palette (01) is the site default. See `project-sections/0.design-moodboard.md`.
+- Graphite palette (01) is the site default. Defined in `STYLE_GUIDE.md` (origin: the archived design moodboard).
 - All copy follows `copy-rules.md`.
 - Hosted on Vercel. Blog is MDX in the repo for v1.
 - Built so partner badges and real case study numbers can be swapped in without a redesign.

@@ -49,14 +49,13 @@ All forms carry UTM parameters and the page slug as fields. One submit path for 
 ## Page index (routes from [sitemap.md](sitemap.md) → spec)
 | Route(s) | Spec |
 |---|---|
-| `/` | [project-sections/home/](../project-sections/home/) 1.nav through 13.final-cta, in order |
+| `/` | Built; section briefs archived in [archive/project-sections/home/](archive/project-sections/home/) |
 | `/about/`, `/leadership/`, `/careers/` | [company/](../project-sections/company/) about.md, leadership.md, careers.md |
 | `/results/`, `/results/[slug]/` | [results/results-index.md](../project-sections/results/results-index.md), [results/_case-study-template.md](../project-sections/results/_case-study-template.md) |
-| `/contact/`, `/schedule/`, `/audit/`, `/ad-credit/` | [conversion/](../project-sections/conversion/) contact.md, schedule.md, audit.md, ad-credit.md |
+| `/contact/`, `/schedule/`, `/audit/`, `/ad-credit/` | [conversion/](../project-sections/conversion/) contact.md, audit.md, ad-credit.md (schedule built, brief archived) |
 | `/privacy-policy/`, `/terms/` | Skeletons only per [decisions.md](decisions.md) |
-| `/services/*` (15 pages) | [services/_service-page-template.md](../project-sections/services/_service-page-template.md), index: [services-index.md](../project-sections/services/services-index.md) |
-| `/industries/` | [industries/industries-index.md](../project-sections/industries/industries-index.md) |
-| `/industries/{franchise,home-services,legal,healthcare}/` | [industries/_industry-page-template.md](../project-sections/industries/_industry-page-template.md) |
+| `/services/*` (15 pages, built) | [services/_service-page-template.md](../project-sections/services/_service-page-template.md) stays live for the D4 wave-2 family; hub brief archived |
+| `/industries/*` (hub + 4, built) | Briefs archived in [archive/project-sections/industries/](archive/project-sections/industries/) |
 | `/locations/` | [locations/locations-index.md](../project-sections/locations/locations-index.md) |
 | `/locations/denver/`, `/locations/tampa/` | [locations/denver.md](../project-sections/locations/denver.md), [locations/tampa.md](../project-sections/locations/tampa.md) |
 | `/blog/`, `/blog/[slug]/` | MDX; SEO rules in [seo-requirements.md](seo-requirements.md) |
@@ -64,7 +63,7 @@ All forms carry UTM parameters and the page slug as fields. One submit path for 
 | `/go/[slug]/` (noindex) | [landing-pages/vsl-template.md](../project-sections/landing-pages/vsl-template.md) |
 | `/apply/[slug]/` (noindex) | [landing-pages/application-funnel-template.md](../project-sections/landing-pages/application-funnel-template.md) |
 | `/thanks/[slug]/` (noindex) | [conversion/_thanks-template.md](../project-sections/conversion/_thanks-template.md) |
-| Shared: footer, CTA band, popup, cards | [project-sections/shared/](../project-sections/shared/) |
+| Shared: popup, cards | [project-sections/shared/](../project-sections/shared/) (footer + CTA band built, briefs archived) |
 
 ## Folder structure
 ```
