@@ -6,11 +6,12 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 
 ## Batch plan (order of work)
 
-- [x] **Batch 1: /audit/, /contact/, /about/** BUILT 2026-08-27 (briefs v2 written first; audit = T1 single-screen form as the hero; contact = form + shared OfficeCards + D5 FAQ; about = trust page with story/team asset slots, metrics band, CtaBand). Verified 4 widths + reduced motion + JSON-LD per page. AWAITING Brad's one review round for the batch
+- [x] **Batch 1: /audit/, /contact/, /about/** BUILT 2026-08-27; REVIEWED by Brad same day: "good, not great", structure approved, no rebuild wanted. Known placeholders (CTAs, form copy, content) ride the sitewide final pass; pages improve as we play with them
 - [ ] **Batch 2:** /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/
 - [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/ (one flagship each inside the batch; alternate palettes per D6) + /ad-credit/ when terms exist
 - [ ] **Batch 4:** blog pipeline + 2 posts, lead magnets as assets land, then the D4 franchise service family after the keyword pass
 - [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass
+- [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12); music loop slot awaits Brad's track (`MUSIC_SRC` in lib/sfx.ts)
 
 ## Homepage punch list (the remaining ~15%)
 
@@ -48,7 +49,7 @@ Build items (small, any session):
 
 ## Brad-owed content (blocks marked pages, nothing else)
 
-The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (drop files in `public/media/`, one row each in `lib/asset-files.ts`), the schedule VSL film + poster (`lib/schedule-media.ts`), real case studies + metrics + testimonials, leadership names/photos, office phones/addresses, socials, logo file, legal copy, ad-credit terms, lead-magnet assets, the Ahrefs keyword pass, FORM_WEBHOOK_URL + tracking IDs. Possible project-brief.md positioning amendment (audience rule).
+The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (drop files in `public/media/`, one row each in `lib/asset-files.ts`), the schedule VSL film + poster (`lib/schedule-media.ts`), real case studies + metrics + testimonials, leadership names/photos, office phones/addresses, socials, logo file, legal copy, ad-credit terms, lead-magnet assets, the Ahrefs keyword pass, FORM_WEBHOOK_URL + tracking IDs, the looping background music track (~60-90s seamless quiet loop, Suno is fine; drops into `public/audio/` + one-line `MUSIC_SRC` change in lib/sfx.ts). Possible project-brief.md positioning amendment (audience rule).
 
 ## Standing rules that bite
 
