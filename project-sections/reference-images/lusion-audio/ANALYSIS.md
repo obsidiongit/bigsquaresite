@@ -1,5 +1,10 @@
 # Lusion.co sound + page transition system (decoded 2026-08-27)
 
+> STATUS: BUILT 2026-08-27 (same day). lib/sfx.ts + SoundProvider/SoundToggle
+> + PageTransitions, documented in STYLE_GUIDE.md 7.11/7.12. Our synthesized
+> equivalents are rendered in `bigsquare-synth-preview.wav` in this folder:
+> listen against the reference oggs. Music slot still empty (Brad's loop).
+
 Reference files in this folder are downloaded from lusion.co for STUDY ONLY.
 Do not ship them on the BigSquare site. Source our own equivalents (see Asset plan).
 

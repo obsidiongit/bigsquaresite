@@ -10,6 +10,7 @@ import { getLenis } from "@/components/motion/SmoothScroll";
 import { GridLines } from "@/components/shared/GridLines";
 import { Logo } from "@/components/shared/Logo";
 import { Pill } from "@/components/shared/Pill";
+import { SoundToggle } from "@/components/sound/SoundToggle";
 import { EASE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -224,6 +225,7 @@ export function Nav() {
           </Link>
 
           <div className="flex items-center gap-2.5">
+            <SoundToggle />
             <Pill href="/schedule/" size="sm" className="max-sm:hidden">
               Let&apos;s Talk
             </Pill>

@@ -244,6 +244,15 @@
   --ease-house: cubic-bezier(.22, 1, .36, 1);
   --ease-soft: cubic-bezier(.4, 0, .1, 1);
   --ease-swoop: cubic-bezier(.6, 0, 0, 1);
+
+  /* Nav sound toggle level bars (STYLE_GUIDE.md 7.11); scaleY pulse,
+     each bar's inline height is its own ceiling */
+  --animate-sound-bar: sound-bar 900ms ease-in-out infinite;
+}
+
+@keyframes sound-bar {
+  0%, 100% { transform: scaleY(.35); }
+  50% { transform: scaleY(1); }
 }
 
 /* ------------------------------------------------------------------ */
@@ -442,6 +451,11 @@
   [data-slot="accordion-content"] {
     animation: none !important;
     transition: none !important;
+  }
+  /* The intro/route veil (7.12) never shows: CSS so it holds from the
+     server-rendered first paint, before hydration can run the JS kill. */
+  [data-page-veil] {
+    display: none !important;
   }
 }
 

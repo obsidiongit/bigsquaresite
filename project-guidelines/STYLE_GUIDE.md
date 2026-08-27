@@ -553,9 +553,56 @@ CSS `@keyframes` enter the stack for exactly one job: ambient product-UI loops (
 - No fake numbers, names, or dates inside a vignette, ever (copy-rules claims discipline).
 - Budget: loops count against section 0's live-element line. The solution row's three quiet loops on one row read as one moment and are the region's whole live budget (sanctioned exception to the 2-per-viewport cap, Brad's brief).
 
----
+### 7.11 Sound design (2026-08-27)
 
-## 8. Signature moves
+Sitewide UI sound, modeled on the lusion.co system (decoded in
+project-sections/reference-images/lusion-audio/ANALYSIS.md). Sound ships ON
+and is muted through the nav toggle (Brad's call: opt-out, not opt-in, or
+nobody ever hears it); the preference persists in localStorage.
+
+- Engine: `lib/sfx.ts`, synthesized Web Audio, zero asset files. Hover pops
+  are ~40ms sine chirps gliding up ~2 semitones at 780/1040/1240 Hz (a rising
+  triad), clicks 1320/1180 Hz and sharper, keyboard focus a quiet band-passed
+  swell, page changes a ~0.9s noise whoosh. Levels are quiet by design
+  (reference peaks ~-30dBFS); everything ramps, nothing cuts.
+- Variants cycle round-robin, never randomly: sequential pitches make rapid
+  hovers musical instead of repetitive. New sounds follow the same rule.
+- Wiring: `SoundProvider` (marketing layout) delegates on document; every
+  `a`, `button`, `[role=button]`, `summary`, and `[data-sfx]` sounds with no
+  per-component code. Opt out with `data-sfx="none"`. Hover pops are
+  fine-pointer only. The AudioContext unlocks on the first gesture (autoplay
+  policy); play() before that is a silent no-op.
+- The nav `SoundToggle`: three animated level bars in the brand square's
+  footprint, label hidden below md. Muting ramps the master gain, never stops
+  the graph.
+- Music slot: `MUSIC_SRC` in lib/sfx.ts, inert until a loop lands. Streams
+  via `<audio>`, gain-faded in, with a 300 Hz low-pass duck hook
+  (`sfx.duckMusic`) for overlays. Target: ~60-90s seamless loop, mixed quiet.
+- Preview: bigsquare-synth-preview.wav next to the reference set renders all
+  recipes for A/B against lusion's originals.
+
+### 7.12 Page load + route transitions (2026-08-27)
+
+The covered swap (`components/motion/PageTransitions.tsx`, marketing layout):
+a 10x6 grid of darkpanel squares assembles diagonally over the page (tile
+assembly, ease-swoop, ~0.55s), the route changes behind the cover, the tiles
+dissolve out along the same diagonal. The page whoosh (7.11) fires at cover
+start: sound and motion are one gesture.
+
+- Hard loads: the veil is server-rendered pre-assembled (framer SSRs the
+  covered pose), holds the logo + wordmark lockup until `document.fonts.ready`
+  (capped 1s) plus a 400ms floor, then dissolves; the mark quarter-turns on
+  exit (the brand square's tick). The page is never seen loading.
+- Navigations are intercepted document-level in the CAPTURE phase
+  (next/link preventDefaults in bubble, so capture is load-bearing): left
+  click, same-origin path, no hash/download/modifier/_blank. Cover ->
+  router.push -> pathname change -> scroll reset through Lenis -> reveal.
+  Back/forward run uncovered (popstate cannot be pre-empted).
+- Reduced motion: two layers again: CSS `[data-page-veil]{display:none}`
+  holds from first paint, and the component parks idle + stops intercepting,
+  so navigation is instant and native.
+- The veil is marketing-scoped: funnel routes with their own layout need
+  their own mount or the veil unmounts mid-swap.
 
 The BigSquare identity kit. Each move names its source; together they are what makes the site ours. Anything on this list appears deliberately and within its budget; nothing else gets invented mid-build without updating this file.
 
@@ -606,6 +653,8 @@ Homepage annotation map (the 3-per-page budget, instantiated): the hero circle o
 ---
 
 ## Changelog
+
+- **2026-08-27 (sound design + page transitions, new 7.11/7.12)**: The two lusion.co premium layers land sitewide. Sound: synthesized Web Audio engine (lib/sfx.ts, zero asset files), delegated wiring, nav SoundToggle, on by default with persisted opt-out (Brad's call), music slot inert until a loop lands. Transitions: PageTransitions veil, a 10x6 darkpanel tile assembly on ease-swoop covering route swaps, with a server-rendered pre-assembled intro holding the lockup until fonts land. Decode notes and measured sound profiles in project-sections/reference-images/lusion-audio/ANALYSIS.md. Two traps for posterity: link interception must run in the CAPTURE phase (next/link preventDefaults during bubble, which reads as "transition randomly skips"), and any effect timer that advances a phase machine must use a functional set with a from-state guard, or a competing effect (here: the reduced-motion kill) gets overridden by a stale timer.
 
 - **2026-08-26 (Lane 2 gate open: the 14-page stamp + hub; REGISTRATION MARKS retired for new builds)**: Brad green-lit /services/seo/ ("good enough for me... let's go ahead and build the other fourteen") with one system note that binds every lane going forward: **no "+" registration marks on newly built pages** ("it just looks really corny... a leftover remnant from the grid lines"). New builds pass `marks={false}` to MediaSlot and mount no `RegistrationMarks`; existing instances sitewide (homepage framed media, progress-rail caps, other lanes' shipped pages) stay put on his instruction for his site-wide audit, where 4.3's marks rule gets its final call. The stamp itself: all 14 remaining T2 pages + the /services/ hub built in one batch session, each content module with its own copy pass and variation-kit picks (hero variants spread A/B/C ~5/5/5 under the no-repeat-neighbors rule; 10 UI fragment compositions now live in ServicePage.tsx; obsidion-portal runs the richer variant: portal-window fragment + a full-width EXHIBIT media moment per 6.12's air rules). ServicePage.tsx gained variant B (statement-wide: hero media as a 2.4:1 band under the answer) and variant C (fragment-led: the fragment centered on a 4:3 surf panel in the hero's right column; `heroAsset` now optional). The hub carries the three #group anchor ids the homepage Services heads target (they resolve at last), a statement hero, and per-group editorial index rows. Verified across all 16 URLs at 375 + 1280: zero overflow, one H1 each, no page errors, 800+ words per service page (the hub is an index, thin by design), reduced motion settled on both new variants. sitemap.xml picks all 16 up from the registry. `npm run build` still owed before deploy (dev server occupied 3000 across sessions).
 - **2026-08-26 (T3 flagship round 2: THE BOARD, media slots on the industry template, the variance dials)**: Brad's gate review of the T3 round 1 (same session as T2's: "7 or 8 out of 10", too minimal and templated, wants playful + interactive + asset drop-in slots + visible variance across industry pages, SEO untouched as the top priority). Template brief now v3. What round 2 adds: (1) MEDIA: the hero becomes type-beside-a-framed-object and the method spine carries a 16:9 band, both through the shared `MediaSlot` (designed placeholder: surf panel, marks, ghost brand square, mono ASSET chip + wanted-shot note; built this session against lib/asset-files.ts, extended compatibly by Lane 2's parallel round with href/aspectClassName/marks; every slot rows into asset-manifest.md). (2) THE BOARD, the T3 interactive signature: one surf panel, thesis copy + mono readout left, a 16x6 grid of location-squares right; painting any square (pointer-move on fine pointers, tap on touch, `touch-action: pan-y`) flips the readout's unit index while its system chips NEVER change: the constancy is the demo of every-location-gets-the-whole-system. Deterministic SSR seed scatter (2 per row, hand-placed so no diagonal band forms), quiet activity blips on a fixed coprime stride while in view (the page's one live loop), aria-hidden throughout with every claim in the adjacent copy, static seed under reduced motion; skin (unit noun, chips, grid, seed, copy) is per-industry DATA so stamping restyles it without code. Fade-back targets the cell's base color, never "transparent" (a lingering inline transparent overrides the class after the fade). (3) VARIANCE DIALS: stamping = setting 7 documented dials (board skin, breadth-band variant, spine depth + band position, section-order swap, annotation placement, media aspects, eyebrow/chip wording); adjacent pages may not match on the loud three. Persona cards gained mono chips carrying SOURCED ranges only (20-500 units / 5-50 locations, project-brief.md). Annotation budget now exactly 3 (hero circle, board-H2 underline, CTA bracket). JSX lesson, binding: adjacent `whitespace-nowrap` spans with only a JSX newline between them FUSE into one unbreakable line (the hero mono strip shipped an 833px overflow at 375; JSX strips newline-only whitespace between elements): put an explicit `{" "}` between nowrap chunks. Verified: 4 widths + reduced motion (0 running animations), no overflow, 1,606 words server-rendered, JSON-LD intact, board paint/readout/blips probed live (rest label, hover index, fade, 3 cells walked in 2.6s).

@@ -11,7 +11,7 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 - [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/ (one flagship each inside the batch; alternate palettes per D6) + /ad-credit/ when terms exist
 - [ ] **Batch 4:** blog pipeline + 2 posts, lead magnets as assets land, then the D4 franchise service family after the keyword pass
 - [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass
-- [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12); music loop slot awaits Brad's track (`MUSIC_SRC` in lib/sfx.ts)
+- [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12). REVIEWED by Brad same night: approved as V1 ("really solid"), named a focus point; v2 section below
 
 ## Homepage punch list (the remaining ~15%)
 
@@ -34,6 +34,16 @@ Build items (small, any session):
 - [ ] 2K: cube animation quality passes, a few dedicated sessions (choreography, easing/damping, waypoint path, material/look), all in `HomeCanvas.tsx`. Prerequisite: gather the waypoint retune list from every section note
 - [ ] Migrate NewsletterForm onto the shared `Field` primitive so the form anatomy lives once
 - [ ] FAQ accordion open/close height animation (keyframes never defined); one-file fix in a quiet window
+
+## Sound v2 (Brad focus point, est. 1-2 sessions; V1 approved 2026-08-27)
+
+All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps not cuts, quiet mix, one mute).
+
+- [ ] Wire the background music loop when Brad's track lands (`MUSIC_SRC` + file in `public/audio/`), then: fade-in level check against the sfx mix, `sfx.duckMusic(true/false)` from the nav menu overlay open/close, and decide tab-blur behavior (duck vs pause)
+- [ ] Interaction audio for the homepage three.js cube (HomeCanvas): sounds tied to its scroll moments (turntable spin-up, panel morph beats, release into featured work). Needs a session with the scrub map open; rate-limit so scrubbing never machine-guns
+- [ ] A few more effect voices where the site already has moments: menu overlay open/close whoosh (distinct from page whoosh), form submit confirmation chime, FAQ accordion tick, possible ProcessCard/BentoPanel hover distinct from the standard pop
+- [ ] Tuning pass on the V1 synths with Brad listening live (pitch set, levels, hover density; compare against the reference oggs in project-sections/reference-images/lusion-audio/)
+- [ ] Transition polish ride-along: intro lockup beat + tile sweep timing once heard with sound on real pages
 
 ## Shared components still owed (Phase 3 remainder)
 
