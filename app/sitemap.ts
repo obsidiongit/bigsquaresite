@@ -9,6 +9,8 @@ import { SITE_URL } from "@/lib/site";
 // register.
 const ROUTES = [
   "/",
+  "/about/",
+  "/contact/",
   "/schedule/",
   "/audit/",
   "/privacy-policy/",

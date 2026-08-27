@@ -47,4 +47,6 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `legal-method` | /industries/legal/ | Band inside the method spine (after "Offices compete. The firm wins.") | Intake dashboard or the attorney team | 16:9 | EMPTY |
 | `healthcare-hero` | /industries/healthcare/ | Hero, right framed object | Front desk or practice interior, people over equipment | 4:3 | EMPTY |
 | `healthcare-method` | /industries/healthcare/ | Band inside the method spine (after "From search to booked visit") | Booking screen or the care team | 16:9 | EMPTY |
+| `about-founders` | /about/ | Story section, right framed object | The founders, or the first office. Real photo only | 4:3 | EMPTY |
+| `about-team` | /about/ | Wide team band above the CTA | The whole team, one frame. Real photos only, no stock | ~21:9 (16:9 mobile crop safe) | EMPTY |
 Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).

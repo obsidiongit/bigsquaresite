@@ -1,26 +1,31 @@
-# About Page Specifications
+# /about/ Design Brief (v2, 2026-08-27: the design-brief pass)
+
+v1 was the Phase 1 spec; the section order survives. This v2 grounds it in the built system: open layout (4.5), the ~65ch spine for long-form, MediaSlot for every media moment, theme rhythm with one dark band, CtaBand close. The about page is a TRUST page: its job is to make the claims on the conversion pages believable.
 
 ## Page
 - URL: /about/
-- Title tag: About BigSquare Marketing
-- Meta description: `[PLACEHOLDER]`
+- Title: "About BigSquare Marketing" (absolute, no template suffix)
+- Meta description: real draft, Brad's sweep covers it
+
+## Posture
+- Open layout at EDGE, calm page, no video, no pinned runways, no canvas.
+- Theme rhythm: light hero, light story, tint how-we-work, light what-we-are-not, DARK proof band, light offices + team, accent CtaBand, dark footer.
+- Annotation budget: 3 of 3 (H1 circle on "growth", spine underline in what-we-are-not, CtaBand bracket).
+- No registration marks anywhere (Brad's standing rule for new pages): every MediaSlot takes marks={false}.
 
 ## Section order
-1. Hero (short, no video): eyebrow "WHO WE ARE", H1 "The growth partner for multi-location brands", answer paragraph from the positioning line in project-brief.md, two buttons (Schedule a Call, Get a Free Audit).
-2. Story: how and why BigSquare started. `[PLACEHOLDER: founding story, 2 to 3 short paragraphs from Brad]`
-3. How we work (three cards, mirrors the homepage differentiators):
-   - **Proof before promises.** "Numbers, case studies, and a portal you can log into. Every claim has a paper trail."
-   - **One team, every channel.** "Search, ads, sites, and creative under one roof. No silos, no handoffs between vendors."
-   - **Premium work, in house.** "Brand and creative built by our own team, not outsourced."
-4. What we are not (short list, from project-brief.md): not a template shop, not a 300-person agency, not a tool company.
-5. Proof numbers: reuse the metrics band from home/7.proof-numbers.md (same `metrics` array).
-6. Offices: two cards, Denver and Tampa, linking to the location pages. Do not mention the planned third office.
-7. Team: photo grid or single team photo. `[PLACEHOLDER: real photos only, no stock]`
-8. CTA band (shared).
+1. **Hero** (short, no media): SeparatorIn + eyebrow "Who we are". H1 "The growth partner for multi-location brands" (circle on "growth"). Answer paragraph built from project-brief.md's positioning line, widened per the audience rule (single locations and ecommerce serve too; positioning amendment still Brad's call, so the widening rides the body copy, not the H1). CTAs: Schedule a Call pill + Get a Free Audit secondary.
+2. **Story** (65ch spine): eyebrow "The story". Body is `[PLACEHOLDER: founding story, 2 to 3 short paragraphs from Brad]` rendered as the honest mono placeholder block; alongside it one MediaSlot (`about-founders`, 4:3): the founders or the first office, real photo only.
+3. **How we work** (tint, three cards on paper): the locked v1 copy. Proof before promises / One team, every channel / Premium work, in house. Each card: mono index, Apfel 700 head, body line.
+4. **What we are not** (light, 65ch spine): short declaration + the three nots from project-brief.md as x-marked ruled rows (the ProblemStrip x-glyph grammar: --sec-mid, never red). Underline annotation on the payoff line.
+5. **Proof numbers** (dark band): the homepage metrics array (lib/metrics.ts, same launch gate; values are stand-ins until sourced) on borderless MetricBlocks. Eyebrow "The numbers".
+6. **Offices**: shared OfficeCards (same two cards as /contact/, linking to /locations/ pages; addresses stay placeholder).
+7. **Team**: one wide MediaSlot (`about-team`, ~21:9): the real team, one frame. `[PLACEHOLDER: real photos only, no stock]` rides the slot note. No grid until real photos exist.
+8. **CtaBand** (shared, default copy), flush above the dark footer.
 
-## Components to Use
-- Reuses: metric block, office cards, CTA band. No new components.
+## JSON-LD
+BreadcrumbList (Home > About). Organization is sitewide.
 
-## Design Instructions
-- `--paper` background, `--surf` for the how-we-work cards. Calm page, no video.
-- Copy per copy-rules.md. No "passionate about," no "we pride ourselves."
+## Asset slots (add to asset-manifest.md)
+- `about-founders`: story section, 4:3, founders or first office.
+- `about-team`: team band, ~21:9 (16:9 mobile crop safe), the whole team, real photo.

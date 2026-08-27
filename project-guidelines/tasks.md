@@ -6,7 +6,7 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 
 ## Batch plan (order of work)
 
-- [ ] **Batch 1: /audit/, /contact/, /about/** in one push. Specs in `project-sections/conversion/` + `company/`; about needs its design-brief pass first. One review round for the batch
+- [x] **Batch 1: /audit/, /contact/, /about/** BUILT 2026-08-27 (briefs v2 written first; audit = T1 single-screen form as the hero; contact = form + shared OfficeCards + D5 FAQ; about = trust page with story/team asset slots, metrics band, CtaBand). Verified 4 widths + reduced motion + JSON-LD per page. AWAITING Brad's one review round for the batch
 - [ ] **Batch 2:** /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/
 - [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/ (one flagship each inside the batch; alternate palettes per D6) + /ad-credit/ when terms exist
 - [ ] **Batch 4:** blog pipeline + 2 posts, lead magnets as assets land, then the D4 franchise service family after the keyword pass

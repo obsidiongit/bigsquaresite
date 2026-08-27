@@ -54,14 +54,14 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 | URL | STATUS | Title tag (draft) | Purpose |
 |---|---|---|---|
 | `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
-| `/about/` | 404 | About BigSquare Marketing | Batch 1; needs its design-brief pass first |
+| `/about/` | built (2026-08-27, awaiting Batch 1 review) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
 | `/leadership/` | blocked-on-content (names + photos) | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
 | `/careers/` | 404 | Careers at BigSquare | Batch 2 |
 | `/results/` | shell | Client Results & Case Studies \| BigSquare | Real index in Batch 2 |
 | `/results/[slug]/` | blocked-on-content (real case-study data) | [Result] for [Client type] \| BigSquare | 6 noindex skeletons live; template ready |
-| `/contact/` | 404 | Contact BigSquare Marketing | Batch 1. Form, phone, both offices, FAQ block (D5) |
+| `/contact/` | built (2026-08-27, awaiting Batch 1 review) | Contact BigSquare Marketing | Form + offices + FAQ (D5). Owed: office addresses + phones |
 | `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Owed: VSL film, copy pass, GHL wiring |
-| `/audit/` | shell | Get a Free Marketing Audit \| BigSquare | Batch 1. Secondary conversion page |
+| `/audit/` | built (2026-08-27, awaiting Batch 1 review) | Get a Free Marketing Audit \| BigSquare | Secondary conversion page. Owed: audit deliverables + turnaround |
 | `/ad-credit/` | blocked-on-content (offer terms) | Claim Your Ad Credit \| BigSquare | Popup landing page, Batch 3 |
 | `/privacy-policy/` | shell (legal copy owed) | Privacy Policy | Legal |
 | `/terms/` | shell (legal copy owed) | Terms of Service | Legal |
