@@ -44,7 +44,6 @@ Do not install anything not listed here. To add one: list it here first with a o
 | FORM_WEBHOOK_URL | Single server action posts every form here (GHL or Obsidion, decided later) |
 | GHL_API_KEY, GHL_CALENDAR_ID, GHL_LOCATION_ID | Custom booking component (placeholder until integration is built) |
 | NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_GTAG_ID, NEXT_PUBLIC_GA4_ID | Tracking components built now, values empty, filled by a teammate; load after hydration |
-| POPUP_DEADLINE | Rolling deadline for the ad credit popup (single config value) |
 
 All forms carry UTM parameters and the page slug as fields. One submit path for every form.
 
@@ -54,7 +53,7 @@ All forms carry UTM parameters and the page slug as fields. One submit path for 
 | `/` | Built; section briefs archived in [archive/project-sections/home/](archive/project-sections/home/) |
 | `/about/`, `/leadership/`, `/careers/` | [company/](../project-sections/company/) about.md, leadership.md, careers.md |
 | `/results/`, `/results/[slug]/` | [results/results-index.md](../project-sections/results/results-index.md), [results/_case-study-template.md](../project-sections/results/_case-study-template.md) |
-| `/contact/`, `/schedule/`, `/audit/`, `/ad-credit/` | [conversion/](../project-sections/conversion/) contact.md, audit.md, ad-credit.md (schedule built, brief archived) |
+| `/contact/`, `/schedule/`, `/audit/` | [conversion/](../project-sections/conversion/) contact.md, audit.md (schedule built, brief archived; ad-credit retired 2026-08-31) |
 | `/privacy-policy/`, `/terms/` | Skeletons only per [decisions.md](decisions.md) |
 | `/services/*` (15 pages, built) | [services/_service-page-template.md](../project-sections/services/_service-page-template.md) stays live for the D4 wave-2 family; hub brief archived |
 | `/industries/*` (hub + 4, built) | Briefs archived in [archive/project-sections/industries/](archive/project-sections/industries/) |
@@ -70,7 +69,7 @@ All forms carry UTM parameters and the page slug as fields. One submit path for 
 ## Folder structure
 ```
 app/
-  layout.tsx            # fonts, tracking, popup, nav, footer
+  layout.tsx            # fonts, tracking, nav, footer
   globals.css           # palettes, @theme, @font-face (see STYLE_GUIDE.md)
   page.tsx              # homepage
   (marketing)/          # about, results, contact, services/, industries/, locations/, resources/
@@ -79,7 +78,7 @@ app/
   sitemap.ts  robots.ts
 components/
   ui/                   # shadcn (CLI-managed)
-  shared/               # Logo, CTABand, AdCreditPopup, CaseStudyCard, TestimonialCard, Nav, Footer, BookingCalendar
+  shared/               # Logo, CTABand, CaseStudyCard, TestimonialCard, Nav, Footer, BookingCalendar
   sections/home/        # one component per home section spec
   tracking/             # Meta Pixel, gtag, GA4 (env-driven, after hydration)
 lib/                    # form action, webhook, utils, metrics/case-study data arrays

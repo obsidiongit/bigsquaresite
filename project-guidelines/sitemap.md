@@ -55,16 +55,15 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 |---|---|---|---|
 | `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
 | `/about/` | built (Batch 1 reviewed 2026-08-27) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
-| `/leadership/` | blocked-on-content (names + photos) | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
+| `/leadership/` | blocked-on-content (names + photos); lay the page out now with placeholder cards, noindex (handoffs-2026-08-31 Pane C) | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
 | `/careers/` | built (Batch 2, 2026-08-27, awaiting batch review) | Careers at BigSquare | Owed: remote policy, open roles, application destination |
 | `/results/` | built (Batch 2, 2026-08-27, awaiting batch review) | Client Results & Case Studies \| BigSquare | Real index; card grid stays flagged placeholder until real case studies land |
 | `/results/[slug]/` | blocked-on-content (real case-study data) | [Result] for [Client type] \| BigSquare | 6 noindex skeletons live; template ready |
 | `/contact/` | built (Batch 1 reviewed 2026-08-27) | Contact BigSquare Marketing | Form + offices + FAQ (D5). Owed: office addresses + phones |
 | `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Owed: VSL film, copy pass, GHL wiring |
 | `/audit/` | built (Batch 1 reviewed 2026-08-27) | Get a Free Marketing Audit \| BigSquare | Secondary conversion page. Owed: audit deliverables + turnaround |
-| `/ad-credit/` | blocked-on-content (offer terms) | Claim Your Ad Credit \| BigSquare | Popup landing page, Batch 3 |
-| `/privacy-policy/` | shell (legal copy owed) | Privacy Policy | Legal |
-| `/terms/` | shell (legal copy owed) | Terms of Service | Legal |
+| `/privacy-policy/` | shell (legal copy owed; plan + clause list in `project-sections/legal/legal-pages-plan.md`) | Privacy Policy | Legal |
+| `/terms/` | shell (legal copy owed; plan + clause list in `project-sections/legal/legal-pages-plan.md`) | Terms of Service | Legal |
 
 ### Services hub
 | URL | STATUS | Title tag (draft) | Purpose |

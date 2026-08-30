@@ -8,14 +8,14 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 
 - [x] **Batch 1: /audit/, /contact/, /about/** BUILT 2026-08-27; REVIEWED by Brad same day: "good, not great", structure approved, no rebuild wanted. Known placeholders (CTAs, form copy, content) ride the sitewide final pass; pages improve as we play with them
 - [ ] **Batch 2:** /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/. BUILT 2026-08-27 (briefs v2 + 5 pages, LocalBusiness JSON-LD on city pages, all in sitemap.xml; verified 4 widths + reduced motion + build), awaiting Brad's batch review. Owed: office addresses/phones/photos (lib/offices.ts + 2 asset slots), careers remote policy + open roles + application destination (lib/careers.ts), real case studies (lib/featured-work.ts)
-- [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/. BUILT 2026-08-30 (Pane B): `app/(funnel)/` route group (no nav, footer, or sound toggle; noindex; never in sitemap.xml), `lib/funnels/registry.ts`, `components/sections/funnels/`, `lib/track.ts` (no-op until tag IDs). Flagships `/go/audit/` (dark), `/apply/growth-partner/` (tint), `/thanks/audit/` + `/thanks/growth-partner/` (accent). Verified 4 widths + reduced motion + form flow + build; awaiting Brad's batch review. Owed: video URL + poster, one sourced result, budget ranges + qualifying floor, turnaround, offer terms. /ad-credit/ still 404: no offer terms posted yet
+- [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/. BUILT 2026-08-30 (Pane B): `app/(funnel)/` route group (no nav, footer, or sound toggle; noindex; never in sitemap.xml), `lib/funnels/registry.ts`, `components/sections/funnels/`, `lib/track.ts` (no-op until tag IDs). Flagships `/go/audit/` (dark), `/apply/growth-partner/` (tint), `/thanks/audit/` + `/thanks/growth-partner/` (accent). Verified 4 widths + reduced motion + form flow + build; awaiting Brad's batch review. Owed: video URL + poster, one sourced result, budget ranges + qualifying floor, turnaround. /ad-credit/ RETIRED 2026-08-31 (Brad), never building
 - [ ] **Batch 4:** blog pipeline + 2 posts (BUILT 2026-08-30, Pane A: MDX pipeline, /blog/ + 2 posts, /resources/ with request forms, the 404; awaiting Brad's review), lead magnets as assets land, then the D4 franchise service family after the keyword pass
 - [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass
 - [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12). REVIEWED by Brad same night: approved as V1 ("really solid"), named a focus point; v2 section below
 
 ## Brad's check-in, 2026-08-29 (goal: launch-ready this weekend)
 
-Site state: 35 pages resolve. Missing before launch: /leadership/ (names + photos), /ad-credit/ (terms), /blog/ + 2 posts, /resources/ + lead magnets, /go/ /apply/ /thanks/ funnel templates, a real 404 page (app/not-found.tsx does not exist), favicon (404s today).
+Site state: 35 pages resolve. Missing before launch: /leadership/ (names + photos), /blog/ + 2 posts, /resources/ + lead magnets, /go/ /apply/ /thanks/ funnel templates, a real 404 page (app/not-found.tsx does not exist), favicon (404s today).
 
 Brad's dislikes and wants, in his words, sorted into work:
 
@@ -55,6 +55,16 @@ Prerequisites, in order:
 - [ ] Create the routine with `/schedule` (environment "Default", env_01Fx9mjBD667qMn9xcsXLP9G; the prompt draft lives in `project-sections/blog/routine-prompt.md`)
 - [ ] First run by hand (`run now`), review the PR, tune the prompt, then let it ride
 
+## Content-blocked pages: lay them out now (Brad 2026-08-31)
+
+Brad: the pages waiting on his content should still get built as far as they can go. Ad credit is dead. Everything else gets a real layout with flagged placeholders so the content drop is data, not code. Handoff: `handoffs-2026-08-31.md` Pane C.
+- [ ] `/leadership/`: build the page per `project-sections/company/leadership.md` (hero, 3-up card grid, CtaBand) driven by `lib/leadership.ts` with 3 placeholder cards; `robots: noindex` until real people land; not in sitemap.xml until then
+- [ ] `/results/[slug]/`: template already resolves (6 noindex skeletons). Make it data-driven: extend `WorkEntry` in `lib/featured-work.ts` with the full case-study shape (headline result, 3 metrics with window + source, situation, steps naming services, result, optional quote, services used) so a real case study is one filled entry; index status flips per entry when `metrics` is non-null
+- [ ] `/privacy-policy/` + `/terms/`: render from `content/legal/*.mdx` on the spine with an on-page H2 list; Claude drafts both from the clause list in `project-sections/legal/legal-pages-plan.md` once Brad supplies the facts listed there; lawyer review is the last step
+- [ ] Forms: consent line under every submit button; SMS one-to-one consent checkbox wherever a phone field exists (`/apply/`), consent text + timestamp recorded through `submitForm`
+- [ ] Footer: "Do not sell or share my personal information" link to the privacy page's rights section
+- [ ] `/resources/[slug]/`: build the lead-magnet page template once (spec `project-sections/lead-magnets/_lead-magnet-template.md`) driven by `lib/resources.ts`; pages go live one by one as Brad picks the 5 and the assets land
+
 ## Homepage punch list (the remaining ~15%)
 
 Needs Brad (facts and assets, none of which can be invented):
@@ -91,7 +101,6 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 
 - [ ] PixelTrail cursor (quiet blue square trail, desktop pointer-fine only, off under reduced motion; STYLE_GUIDE 7.6)
 - [ ] Effect library v2 as section specs demand: TypeOn, StickyShowcase, chapter rail, manifesto darkening (STYLE_GUIDE 7.3, 7.4)
-- [ ] Ad credit popup (Dialog, exit intent + mobile triggers, 14-day localStorage, route exclusions, POPUP_DEADLINE)
 - [ ] Portal scroll set piece once real Obsidion assets exist (STYLE_GUIDE 7.4)
 
 ## Backend / integrations
@@ -101,9 +110,9 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 
 ## Brad-owed content (blocks marked pages, nothing else)
 
-Lead magnets (Brad 2026-08-30): the 5 titles on /resources/ are working titles only; the real list is still on Brad's whiteboard. When decided: 5 rows in `lib/resources.ts`, the 5 specs in `project-sections/lead-magnets/`, then the assets. Blog author: decide whether posts carry a named person (E-E-A-T) or stay "BigSquare Team".
+Lead magnets (Brad 2026-08-30): the 5 titles on /resources/ are working titles only; the real list is still on Brad's whiteboard. 16 candidates + a suggested 5 in `project-sections/lead-magnets/brainstorm-2026-08-31.md`; Brad picks. When decided: 5 rows in `lib/resources.ts`, the 5 specs in `project-sections/lead-magnets/`, then the assets. Blog author: decide whether posts carry a named person (E-E-A-T) or stay "BigSquare Team".
 
-The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (drop files in `public/media/`, one row each in `lib/asset-files.ts`), the schedule VSL film + poster (`lib/schedule-media.ts`), real case studies + metrics + testimonials, leadership names/photos, office phones/addresses, socials, logo file, legal copy, ad-credit terms, lead-magnet assets, the Ahrefs keyword pass, FORM_WEBHOOK_URL + tracking IDs, the looping background music track (~60-90s seamless quiet loop, Suno is fine; drops into `public/audio/` + one-line `MUSIC_SRC` change in lib/sfx.ts). Possible project-brief.md positioning amendment (audience rule).
+The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (drop files in `public/media/`, one row each in `lib/asset-files.ts`), the schedule VSL film + poster (`lib/schedule-media.ts`), real case studies + metrics + testimonials, leadership names/photos, office phones/addresses, socials, logo file, legal FACTS (see project-sections/legal/legal-pages-plan.md; Claude drafts, a lawyer reviews), the 5 lead-magnet picks (project-sections/lead-magnets/brainstorm-2026-08-31.md) then their assets, the Ahrefs keyword pass, FORM_WEBHOOK_URL + tracking IDs, the looping background music track (~60-90s seamless quiet loop, Suno is fine; drops into `public/audio/` + one-line `MUSIC_SRC` change in lib/sfx.ts). Possible project-brief.md positioning amendment (audience rule).
 
 ## Standing rules that bite
 

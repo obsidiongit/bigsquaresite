@@ -14,7 +14,7 @@ Top industries: home services, legal, healthcare, franchise systems.
 Primary: book a call (Schedule a Call).
 Secondary: request a free audit.
 Tertiary: download a lead magnet and join the email list.
-Site-wide capture: the exit-intent ad credit popup.
+Site-wide capture: none. (The exit-intent ad credit popup was retired 2026-08-31; capture happens on /audit/, /schedule/, the funnels, and the lead magnets.)
 
 ## Positioning in one line
 BigSquare is the strategic growth partner for multi-location and franchise brands. We help you open more locations and get more revenue out of the ones you have.

@@ -41,7 +41,7 @@ Hero uses a dark abstract placeholder loop until the commercial is delivered. Bu
 Portal is being built in tandem. Use clearly labeled placeholder screenshots (blurred frame with a "Portal preview" tag). Never render a fake UI with fake numbers. Layout takes inspiration from the Youtech Youlytics section: product frame on one side, five feature blocks on the other.
 
 ## Ad credit popup
-Use "$1,000 Advertising Credit" and a rolling deadline from a single config value (POPUP_DEADLINE). Fine print is [PLACEHOLDER]. Terms will be finalized later.
+**RETIRED 2026-08-31 (Brad: "the ad credit pop-up thing I just want to get rid of").** No popup, no /ad-credit/ page, no POPUP_DEADLINE. Specs archived in `archive/project-sections/`. The original decision, for history: use "$1,000 Advertising Credit" and a rolling deadline from a single config value (POPUP_DEADLINE).
 
 ## Legal pages
 Create /privacy-policy/ and /terms/ with a heading, a last-updated date, and section headings only. No legal body text. Mark each as [PLACEHOLDER: legal copy].
