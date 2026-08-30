@@ -21,5 +21,11 @@ export type AssetFile = {
 export const ASSET_FILES: Record<string, AssetFile> = {
   // empty on purpose: no real interior assets exist yet (2026-08-26)
   // AUTO-MANAGED by scripts/blog-assets.mjs (blog covers + headshots); do not edit inside
+  "blog-author-brad": { src: "/media/blog-author-brad.webp" },
+  "blog-author-chaley": { src: "/media/blog-author-chaley.webp" },
+  "blog-author-mike": { src: "/media/blog-author-mike.webp" },
+  "blog-author-russel": { src: "/media/blog-author-russel.webp" },
+  "blog-author-sadie": { src: "/media/blog-author-sadie.webp" },
+  "blog-cover-agency-7-numbers": { src: "/media/blog-cover-agency-7-numbers.webp" },
   // END AUTO-MANAGED
 };
