@@ -56,7 +56,11 @@ The post title sits directly above the cover on the page, so the cover never rep
 
 **Workflow**: one Figma (or Canva) file, a 2400x1200 master frame with the margins, the hairline grid, the FIG stamp, and a small library of square arrangements. Per post: duplicate, arrange the squares for the topic, swap 2 labels, bump the FIG number, export with the slot-id file name. The writer's `note` on each cover slot in `asset-manifest.md` is the brief.
 
-## 2c. AI-generated covers (Brad's test, 2026-08-30)
+## 2c. Cover + figure generation (history; superseded 2026-08-30, same day)
+
+**PIVOT (Brad, 2026-08-30 evening): image-model generation is REJECTED** ("low quality, can't get the resolution or the size we need"; the Codex hand-off "too clunky"). The pipeline is now: **Claude authors each figure as an HTML/CSS element with the site's real fonts and tokens, Playwright screenshots it at 2x, and that render is the asset.** One agent end to end, covers AND inline figures (short videos of CSS-animated figures are the stretch goal). Build handoff: `project-guidelines/handoff-blog-engine.md`. The GPT prompt experiment below stays for the record only.
+
+### The rejected image-gen path (for the record)
 
 Brad's idea: instead of a hand-made cover per post, have an image model (GPT Image via Codex, or similar) generate the figure, using the template rules above as the prompt. Worth testing; the risks are mangled small text, gradients sneaking in, and off-brand geometry, so the human merge review must also approve the cover.
 
