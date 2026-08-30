@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { BLOG_AUTHORS, TEAM_AUTHOR } from "@/lib/blog-authors";
 import { extractHeadings, type Heading } from "@/lib/blog-toc";
 import { RESOURCES } from "@/lib/resources";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
@@ -177,7 +178,13 @@ function readPost(file: string): Post {
   const author =
     typeof data.author === "string" && data.author.trim()
       ? data.author.trim()
-      : "BigSquare Team";
+      : TEAM_AUTHOR;
+  if (!BLOG_AUTHORS[author]) {
+    fail(
+      file,
+      `"author" must be a name registered in lib/blog-authors.ts (got "${author}")`,
+    );
+  }
 
   /* blog v2 keys, all optional */
   const takeaways = data.takeaways ?? [];
@@ -257,11 +264,14 @@ export function formatDate(iso: string): string {
   });
 }
 
-/** Article JSON-LD for a post. Author and publisher are the sitewide
-    Organization node (minted in OrganizationJsonLd); every value here
-    is real, so nothing placeholder ever reaches structured data. */
+/** Article JSON-LD for a post. A registered team member becomes a
+    Person author working for the sitewide Organization node; the
+    "BigSquare Team" byline stays the Organization itself. Every value
+    here is real, so nothing placeholder ever reaches structured data. */
 export function articleJsonLd(post: Post) {
   const url = `${SITE_URL}/blog/${post.slug}/`;
+  const orgId = `${SITE_URL}/#organization`;
+  const person = post.author !== TEAM_AUTHOR ? BLOG_AUTHORS[post.author] : null;
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -271,12 +281,19 @@ export function articleJsonLd(post: Post) {
     dateModified: post.date,
     url,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    author: {
-      "@type": "Organization",
-      name: SITE_NAME,
-      url: SITE_URL,
-      "@id": `${SITE_URL}/#organization`,
-    },
+    author: person
+      ? {
+          "@type": "Person",
+          name: post.author,
+          jobTitle: person.role,
+          worksFor: { "@id": orgId },
+        }
+      : {
+          "@type": "Organization",
+          name: SITE_NAME,
+          url: SITE_URL,
+          "@id": orgId,
+        },
     publisher: { "@id": `${SITE_URL}/#organization` },
     keywords: post.tags.join(", "),
     wordCount: post.wordCount,

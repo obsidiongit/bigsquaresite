@@ -21,7 +21,7 @@ You are writing one SEO blog post for BigSquare Marketing's website (Next.js, MD
    title: "Under 60 characters, sentence case"
    description: "Under 155 characters, no em dashes"
    date: "YYYY-MM-DD"
-   author: "BigSquare Team"
+   author: "A name registered in lib/blog-authors.ts"
    tags: ["Two", "To four", "Tags"]
    draft: false
    cover: "blog-cover-<short-name>"
@@ -34,6 +34,8 @@ You are writing one SEO blog post for BigSquare Marketing's website (Next.js, MD
    ---
    ```
    `date` is today in ISO form. `tags` is an inline list of 2 to 4 short labels (reuse existing tags where one fits: Reporting, Paid Advertising, SEO, Local Search, Multi-Location, Agencies). Reading time and the table of contents are computed by the site; do not add them. The `cover` id renders a designed placeholder until the cover file lands.
+
+   `author` rotation: read `lib/blog-authors.ts`. If it registers real people besides "BigSquare Team", pick the person with the FEWEST posts so bylines cycle (count `author:` lines across `content/blog/*.mdx`; break ties with the person whose last post is oldest). If "BigSquare Team" is the only entry, use it. Never write a name that is not in the registry: the build fails on it.
 7. Mark the topic done in `TOPICS.md` by appending ` [done YYYY-MM-DD]` to the END of its line. Do not delete or reorder lines.
 8. Run `npx tsc --noEmit` and `npm run build`. A frontmatter mistake fails the build with the file name in the error (an unknown `resource` slug fails too). Fix anything you broke.
 9. Create a branch `blog/<slug>`, commit the post and `TOPICS.md`, and open a pull request titled `blog: <post title>`. The PR body: the target keyword, the internal links used, the word count, the list of new asset slot ids (`cover` and every `<Figure id>`) with their notes so a human can add them to `project-guidelines/asset-manifest.md`, and any `[PLACEHOLDER]` lines a human must fill before merge.

@@ -56,4 +56,5 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `blog-fig-spend-by-channel` | /blog/is-your-marketing-agency-working-7-numbers/ | Inline figure, section 5 | Spend-by-channel table: 4 channels, this month vs last, cost per lead column (portal screenshot or designed table) | 16:9 | EMPTY |
 | `blog-fig-local-seo-system` | /blog/local-seo-with-more-than-one-location/ | Inline figure after the system table | Diagram: 1 location (listing, page, reviews) next to 20 sharing a source of truth, a review flow, and leads by location | 16:9 | EMPTY |
 | `blog-author-bigsquare-team` | every /blog/[slug]/ | Author card, 72px square | Team photo or a headshot once posts carry a named author | 1:1 | EMPTY |
+| `blog-author-<first-name>` | posts bylined by that person | Author card, 72px square | One square headshot per team member registered in `lib/blog-authors.ts` (Brad 2026-08-30: team bylines cycle per post) | 1:1 | one slot per author, added with their registry row |
 Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).

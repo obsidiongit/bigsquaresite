@@ -26,7 +26,7 @@ Post anatomy v2, top to bottom:
 | **Pull quote** | One line from the post at `text-statement`, blue rule, mid-post | None needed | Writer picks the line |
 | **Callout** | A short "do this" box for the practical step in each section | None needed | Writer |
 | **Mid-post CTA** | One quiet ruled row: "Get the checklist" to the matching `/resources/` item, or the audit | Points at /resources/ (assets still owed) | Automatic, from a `resource:` frontmatter key |
-| **Author card** | Photo + name + one line. "BigSquare Team" until Brad decides whether posts carry a person's name (a named author with a real bio helps E-E-A-T; BigSquare Team is honest and fine for launch) | Ghost square, mono chip | Brad: who is the author? |
+| **Author card** | Photo + name + role + one line. DECIDED 2026-08-30: team members take the byline with real headshots, cycled per post. Registry: `lib/blog-authors.ts` (frontmatter `author` must match a registered name or the build fails, so nobody can be invented) | Ghost square, mono chip until headshots land | Brad: names + roles into `lib/blog-authors.ts`, headshots into `public/media/` |
 | **Share + next** | Copy link, LinkedIn, X; then the more-posts strip that exists today | Built | Automatic |
 
 Frontmatter additions for v2: `cover` (slot id), `coverAlt`, `takeaways` (list), `resource` (a `/resources/` slug, optional), `quote` (optional). All optional so the two launch posts and the routine keep working; the loader ignores keys it does not know.
@@ -34,6 +34,27 @@ Frontmatter additions for v2: `cover` (slot id), `coverAlt`, `takeaways` (list),
 MDX components to add in `mdx-components.tsx` (writer-facing, plain names): `<Takeaways>`, `<Figure id note alt aspect>`, `<Quote>`, `<Callout title>`, `<Table>` styling for GFM tables (needs the `remark-gfm` plugin, string-named like `remark-frontmatter`; add to PROJECT_REQUIREMENTS.md).
 
 Estimated build: 1 session for the anatomy + components + retrofitting the 2 posts, half a session for the cover template with the designer, and 1 row per slot in `asset-manifest.md`.
+
+## 2b. The cover template, exactly (for Brad or the designer)
+
+BUILT-side contract is already live; this is the design side. One master frame, then every cover is a 10-minute duplicate-and-swap.
+
+**Format and size**
+- Canvas: **2400 x 1200 px (2:1)**. Export **WebP or JPG, under ~250KB** (next/image re-encodes, so JPG is fine).
+- File name = the slot id: `blog-cover-<short-name>.webp` (the id is in the post's frontmatter and in `asset-manifest.md`). Drop it in `public/media/`, add one line in `lib/asset-files.ts`, done.
+- On the page it shows full-width under the title: 2:1 on desktop, CSS-cropped to 16:9 on phones (a center crop that trims about 6% off each side). **Safe area: keep anything that matters inside the middle 88% of the width.**
+- The social share card is generated separately from the title (dark typographic card, automatic), so the cover does NOT need to work at 1200x630 and does NOT need the title on it.
+
+**Direction: a figure, not a poster**
+The post title sits directly above the cover on the page, so the cover never repeats the headline, and the no-copy-baked-into-images rule stands. The cover is a diagram in the brand system, like a chart from a beautiful annual report:
+1. Ground: paper `#F5F6F8` or ink `#0B0F17`. Alternate between posts. One blue only, `#0657F9`.
+2. **The blue square is the protagonist, and it depicts the topic.** 7 squares in a row for the 7-numbers post. 1 big square next to a 4x5 grid of small ones for the local SEO post. The reader should get the idea before reading a word.
+3. Hairlines as chart geometry: 1px rules, axes, brackets (`rgba(11,15,23,.12)` on paper, `rgba(233,236,241,.14)` on ink).
+4. Lenia Mono for tiny labels, uppercase, 2 or 3 max ("FIG. 001", "COST PER LEAD", "N = 20"). Tiny diagram labels are the one text exception. Never a sentence, never the headline.
+5. A **"FIG. 001" stamp** in a corner, incrementing with every post. That stamp is the series signature people start to recognize.
+6. Flat. No gradients, no shadows, no photos, no stock, no 3D.
+
+**Workflow**: one Figma (or Canva) file, a 2400x1200 master frame with the margins, the hairline grid, the FIG stamp, and a small library of square arrangements. Per post: duplicate, arrange the squares for the topic, swap 2 labels, bump the FIG number, export with the slot-id file name. The writer's `note` on each cover slot in `asset-manifest.md` is the brief.
 
 ## 3. How the scheduled writer gets set up (for the developer)
 

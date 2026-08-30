@@ -15,6 +15,7 @@ import {
   getPost,
   type Post,
 } from "@/lib/blog";
+import { BLOG_AUTHORS, TEAM_AUTHOR } from "@/lib/blog-authors";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { EDGE } from "@/lib/layout";
 import { RESOURCES } from "@/lib/resources";
@@ -118,11 +119,12 @@ function ResourceRow({ slug }: { slug: string }) {
 }
 
 function AuthorCard({ post }: { post: Post }) {
+  const author = BLOG_AUTHORS[post.author] ?? BLOG_AUTHORS[TEAM_AUTHOR];
   return (
     <div className="mt-12 flex items-center gap-5">
       <MediaSlot
-        id="blog-author-bigsquare-team"
-        note="Team photo or the author's headshot"
+        id={author.slot}
+        note="Headshot"
         alt={post.author}
         aspect="1 / 1"
         compact
@@ -131,11 +133,11 @@ function AuthorCard({ post }: { post: Post }) {
         className="w-[72px] shrink-0"
       />
       <div>
-        <p className="font-mono text-mono-sm uppercase text-sec-mid">Written by</p>
-        <p className="mt-1 text-h3 font-bold text-sec-ink">{post.author}</p>
-        <p className="mt-1 max-w-[48ch] text-small text-sec-mid">
-          One team that runs search, ads, sites, and creative for real brands.
+        <p className="font-mono text-mono-sm uppercase text-sec-mid">
+          Written by <span className="text-sec-acc">{author.role}</span>
         </p>
+        <p className="mt-1 text-h3 font-bold text-sec-ink">{post.author}</p>
+        <p className="mt-1 max-w-[48ch] text-small text-sec-mid">{author.line}</p>
       </div>
     </div>
   );
