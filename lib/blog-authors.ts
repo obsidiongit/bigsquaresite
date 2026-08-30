@@ -1,21 +1,21 @@
-/* Blog authors (Brad, 2026-08-30: "have our team... use team headshots
-   there... cycle through and have different team members be the ones
-   to create the blog post").
+/* Blog authors (Brad, 2026-08-30: team members take the byline with
+   real headshots, cycled per post; names supplied by Brad the same
+   day).
 
    The frontmatter `author` key MUST match a key here exactly;
    lib/blog.ts fails the build otherwise, so the scheduled writer can
-   never invent a person (copy-rules). To add a team member:
+   never invent a person (copy-rules). Headshot source files arrive in
+   assets/team/ (Brad's drop folder); to light a card up, export a
+   square crop to public/media/ and map the slot id in
+   lib/asset-files.ts. Until then the card shows the designed
+   placeholder.
 
-     1. add a row here (key = the byline, e.g. "Jane Smith")
-     2. drop the headshot in public/media/ and map the slot id in
-        lib/asset-files.ts (slot ids: blog-author-<first-name>)
-     3. done: the author card, the rotation, and the Article JSON-LD
-        (Person, worksFor BigSquare) pick it up
-
-   The writer routine rotates: it picks the registered person with the
-   fewest existing posts (routine-prompt.md step 6). "BigSquare Team"
-   stays as the fallback byline and is never rotated once real people
-   exist. */
+   The writer routine rotates: it picks the person with the fewest
+   existing posts (routine-prompt.md). "BigSquare Team" stays as the
+   fallback byline and is never rotated now that real people exist.
+   The one-liners are derived from the roles only; richer bios are
+   Brad's call (they should match /leadership/ when that page gets
+   names). */
 
 export type BlogAuthor = {
   /** short role line under the name, e.g. "Head of SEO" */
@@ -34,11 +34,34 @@ export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
     slot: "blog-author-bigsquare-team",
     line: "One team that runs search, ads, sites, and creative for real brands.",
   },
-  /* [PLACEHOLDER: real team members from Brad. One row each, like:
-  "First Last": {
-    role: "Head of Paid Media",
-    slot: "blog-author-first",
-    line: "Runs paid search and paid social at BigSquare.",
+  "Brad Brown": {
+    role: "CEO",
+    slot: "blog-author-brad",
+    line: "Runs BigSquare Marketing.",
   },
-  Names must be real people who are fine with the byline. */
+  "Mike Soden": {
+    role: "CTO",
+    slot: "blog-author-mike",
+    line: "Builds the tech behind the accounts and the reporting.",
+  },
+  "Chaley Selsor": {
+    role: "Team Lead",
+    slot: "blog-author-chaley",
+    line: "Leads the account team day to day.",
+  },
+  "Levi Holley": {
+    role: "VP of Sales",
+    slot: "blog-author-levi",
+    line: "Runs sales: the first call and the plan that follows.",
+  },
+  "Russel Spence": {
+    role: "Creative Director",
+    slot: "blog-author-russel",
+    line: "Leads brand, design, and film at BigSquare.",
+  },
+  "Sadie Pursell": {
+    role: "Brand Ambassador",
+    slot: "blog-author-sadie",
+    line: "Represents BigSquare out in the world.",
+  },
 };

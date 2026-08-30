@@ -56,5 +56,10 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `blog-fig-spend-by-channel` | /blog/is-your-marketing-agency-working-7-numbers/ | Inline figure, section 5 | Spend-by-channel table: 4 channels, this month vs last, cost per lead column (portal screenshot or designed table) | 16:9 | EMPTY |
 | `blog-fig-local-seo-system` | /blog/local-seo-with-more-than-one-location/ | Inline figure after the system table | Diagram: 1 location (listing, page, reviews) next to 20 sharing a source of truth, a review flow, and leads by location | 16:9 | EMPTY |
 | `blog-author-bigsquare-team` | every /blog/[slug]/ | Author card, 72px square | Team photo or a headshot once posts carry a named author | 1:1 | EMPTY |
-| `blog-author-<first-name>` | posts bylined by that person | Author card, 72px square | One square headshot per team member registered in `lib/blog-authors.ts` (Brad 2026-08-30: team bylines cycle per post) | 1:1 | one slot per author, added with their registry row |
+| `blog-author-brad` | posts bylined by Brad Brown (CEO) | Author card, 72px square | Square headshot crop; source arrives in `assets/team/`, export to `public/media/` + map in `lib/asset-files.ts` | 1:1 | EMPTY |
+| `blog-author-mike` | posts bylined by Mike Soden (CTO) | Author card | Same | 1:1 | EMPTY |
+| `blog-author-chaley` | posts bylined by Chaley Selsor (Team Lead) | Author card | Same | 1:1 | EMPTY |
+| `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same | 1:1 | EMPTY |
+| `blog-author-russel` | posts bylined by Russel Spence (Creative Director) | Author card | Same | 1:1 | EMPTY |
+| `blog-author-sadie` | posts bylined by Sadie Pursell (Brand Ambassador) | Author card | Same | 1:1 | EMPTY |
 Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).

@@ -56,6 +56,24 @@ The post title sits directly above the cover on the page, so the cover never rep
 
 **Workflow**: one Figma (or Canva) file, a 2400x1200 master frame with the margins, the hairline grid, the FIG stamp, and a small library of square arrangements. Per post: duplicate, arrange the squares for the topic, swap 2 labels, bump the FIG number, export with the slot-id file name. The writer's `note` on each cover slot in `asset-manifest.md` is the brief.
 
+## 2c. AI-generated covers (Brad's test, 2026-08-30)
+
+Brad's idea: instead of a hand-made cover per post, have an image model (GPT Image via Codex, or similar) generate the figure, using the template rules above as the prompt. Worth testing; the risks are mangled small text, gradients sneaking in, and off-brand geometry, so the human merge review must also approve the cover.
+
+**Size gotcha**: GPT Image does not output 2:1. Generate landscape **1536 x 1024 (3:2)** with everything important in the central horizontal band, then **crop the middle to 2:1** (1536 x 768) and export WebP/JPG under 250KB with the slot-id file name. The prompt below bakes that in.
+
+**The prompt template** (fill the 2 bracketed parts per post; the composition comes from the cover slot's note in `asset-manifest.md`):
+
+> A minimalist flat geometric editorial figure for a premium marketing blog, landscape. Solid off-white background, hex F5F6F8, filling the entire frame. The only accent color is one saturated blue, hex 0657F9. Composition: [WHAT THE SQUARES DEPICT, e.g. "7 solid blue squares of equal size in a horizontal row sitting on a thin 1px light gray baseline rule, with the 3rd square drawn as an outline only"]. Add 1 or 2 hairline-thin 1px rules in very light gray (12 percent black) as chart geometry: a baseline, one small measurement bracket. Exactly 2 small text labels in a plain monospaced font, uppercase, dark charcoal, hex 0B0F17: "FIG. [NNN]" in the top left corner, and "[ONE SHORT LABEL, e.g. COST PER LEAD]" near the composition. The style is a precise data diagram from a high-end annual report: absolutely flat, no gradients, no shadows, no 3D, no texture, no photographs, no people, no illustrations, no decorative shapes beyond the squares and rules. Generous empty background margins on all sides. Keep the whole composition inside the central horizontal band of the frame so the image survives a center crop to a 2:1 strip.
+
+Dark variant: swap the ground to "solid near-black, hex 0B0F17", the hairlines to "14 percent white", and the labels to "pale gray, hex E9ECF1". Alternate light and dark between posts.
+
+Filled example, the 7-numbers post: composition = "7 solid blue squares of equal size in one horizontal row on a thin baseline rule, the last square slightly separated with a small bracket over it", labels = "FIG. 001" and "N = 7". The local SEO post: composition = "1 large solid blue square on the left, and to its right a 4 by 5 grid of 20 small blue squares connected by a single thin baseline rule", labels = "FIG. 002" and "N = 20".
+
+**Judging the output**: reject anything with a gradient, a shadow, more than 1 blue, mangled or extra text, or a composition that fights the center 2:1 crop. If 1 in 2 generations passes, this works.
+
+**Weaving into the cron job (later, after the manual test passes)**: the writer routine already outputs a cover slot id + a composition note per post. A second step (in the same routine or a follow-up job) calls the image API with this template + the note, saves the crop to `public/media/<slot-id>.webp`, adds the `lib/asset-files.ts` row, and pushes to the same PR, so the reviewer sees the finished post WITH its cover on the Vercel preview and can reject either. Needs an OPENAI_API_KEY (or whichever model wins the test) as a repo secret; the developer wires it when Brad's manual test looks good. Until then the cover stays a designed placeholder and merges are never blocked on it.
+
 ## 3. How the scheduled writer gets set up (for the developer)
 
 Goal: a post lands as a pull request on a schedule, a human merges, Vercel deploys. Nothing publishes without a merge. Two ways to run the writer; pick one, both use the same prompt file (`project-sections/blog/routine-prompt.md`) and the same contract (`content/blog/TOPICS.md`, `lib/blog.ts`).
