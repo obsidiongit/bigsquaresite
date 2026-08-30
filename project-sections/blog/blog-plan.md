@@ -70,7 +70,9 @@ Dark variant: swap the ground to "solid near-black, hex 0B0F17", the hairlines t
 
 Filled example, the 7-numbers post: composition = "7 solid blue squares of equal size in one horizontal row on a thin baseline rule, the last square slightly separated with a small bracket over it", labels = "FIG. 001" and "N = 7". The local SEO post: composition = "1 large solid blue square on the left, and to its right a 4 by 5 grid of 20 small blue squares connected by a single thin baseline rule", labels = "FIG. 002" and "N = 20".
 
-**Judging the output**: reject anything with a gradient, a shadow, more than 1 blue, mangled or extra text, or a composition that fights the center 2:1 crop. If 1 in 2 generations passes, this works.
+**Judging the output**: reject anything with a gradient, a shadow, more than 1 blue, mangled or extra text, or a composition that fights the 2:1 crop. If 1 in 2 generations passes, this works.
+
+**TEST PASSED 2026-08-30.** Brad's first GPT Image generation of the 7-numbers cover came back on-spec: 1 blue, clean squares on a baseline, the bracket, exactly 2 uncorrupted mono labels, flat ground. One lesson: the model puts the FIG stamp at the very top edge, so a blind CENTER 2:1 crop cuts it off. Crop rule, amended: pick the 2:1 window that keeps both the stamp and the composition (from a 1536x1024 output that is usually the TOP 1536x768). Green light to wire generation into the writer job per the paragraph below.
 
 **Weaving into the cron job (later, after the manual test passes)**: the writer routine already outputs a cover slot id + a composition note per post. A second step (in the same routine or a follow-up job) calls the image API with this template + the note, saves the crop to `public/media/<slot-id>.webp`, adds the `lib/asset-files.ts` row, and pushes to the same PR, so the reviewer sees the finished post WITH its cover on the Vercel preview and can reject either. Needs an OPENAI_API_KEY (or whichever model wins the test) as a repo secret; the developer wires it when Brad's manual test looks good. Until then the cover stays a designed placeholder and merges are never blocked on it.
 
