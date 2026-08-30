@@ -14,10 +14,11 @@ const nextConfig: NextConfig = {
    default bundler here is Turbopack, which cannot take JS functions.
    remark-frontmatter strips the YAML block from the rendered body;
    lib/blog.ts reads the same block with fs for the post metadata, so
-   one file carries both the copy and its data. */
+   one file carries both the copy and its data. remark-gfm adds tables
+   (blog v2, 2026-08-30). */
 const withMDX = createMDX({
   options: {
-    remarkPlugins: ["remark-frontmatter"],
+    remarkPlugins: ["remark-frontmatter", "remark-gfm"],
     rehypePlugins: [],
   },
 });

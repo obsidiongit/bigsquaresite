@@ -185,13 +185,20 @@ export function ResourceList({ resources }: { resources: Resource[] }) {
   const [open, setOpen] = useState<string | null>(null);
   const panelId = useId();
 
+  /* Deep link from a blog post's resource row (/resources/#slug):
+     open that row's form on arrival. */
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash && resources.some((r) => r.slug === hash)) setOpen(hash);
+  }, [resources]);
+
   return (
     <div>
       {resources.map((resource, i) => {
         const isOpen = open === resource.slug;
         const id = `${panelId}-${resource.slug}`;
         return (
-          <div key={resource.slug}>
+          <div key={resource.slug} id={resource.slug} className="scroll-mt-28">
             <SeparatorIn delay={i * 0.08} />
             <Reveal delay={i * 0.08}>
               <div className="grid gap-4 py-6 md:grid-cols-12 md:gap-6 md:py-7">

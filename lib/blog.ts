@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { extractHeadings, type Heading } from "@/lib/blog-toc";
+import { RESOURCES } from "@/lib/resources";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 /* The blog loader (Pane A, 2026-08-30). Publishing is one step: drop
@@ -18,6 +20,13 @@ import { SITE_NAME, SITE_URL } from "@/lib/site";
      author       string, "BigSquare Team" for now
      tags         2 to 4 strings, inline [a, b] or a block list
      draft        boolean, default false
+   Blog v2 (2026-08-30), all optional:
+     cover        MediaSlot id for the cover figure (blog-cover-<name>)
+     coverAlt     alt text for the cover once the file lands
+     takeaways    3 to 5 one-line strings (the "In short" panel)
+     quote        one line pulled from the post (unused today: posts
+                  place <Quote> inline; kept for the OG card later)
+     resource     a /resources/ slug; renders the lead-magnet row
    The parser is deliberately small: flat key/value pairs, quoted or
    bare strings, booleans, and string lists. No nesting. */
 
@@ -32,6 +41,13 @@ export type Post = {
   draft: boolean;
   wordCount: number;
   readingMinutes: number;
+  /** blog v2 */
+  cover?: string;
+  coverAlt?: string;
+  takeaways: string[];
+  quote?: string;
+  resource?: string;
+  headings: Heading[];
 };
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
@@ -116,6 +132,17 @@ function fail(file: string, message: string): never {
   throw new Error(`content/blog/${file}: ${message}`);
 }
 
+function optionalString(
+  file: string,
+  data: Record<string, Scalar>,
+  key: string,
+): string | undefined {
+  const v = data[key];
+  if (v === undefined) return undefined;
+  if (typeof v !== "string" || !v.trim()) fail(file, `"${key}" must be a string`);
+  return v.trim();
+}
+
 function readPost(file: string): Post {
   const slug = file.replace(/\.mdx$/, "");
   if (!SLUG_RE.test(slug)) {
@@ -152,6 +179,23 @@ function readPost(file: string): Post {
       ? data.author.trim()
       : "BigSquare Team";
 
+  /* blog v2 keys, all optional */
+  const takeaways = data.takeaways ?? [];
+  if (!Array.isArray(takeaways)) {
+    fail(file, '"takeaways" must be a list of one-line strings');
+  }
+  const cover = optionalString(file, data, "cover");
+  const coverAlt = optionalString(file, data, "coverAlt");
+  if (cover && !coverAlt) fail(file, '"cover" needs a "coverAlt"');
+  const quote = optionalString(file, data, "quote");
+  const resource = optionalString(file, data, "resource");
+  if (resource && !RESOURCES.some((r) => r.slug === resource)) {
+    fail(
+      file,
+      `"resource" must be a slug from lib/resources.ts (got "${resource}")`,
+    );
+  }
+
   const wordCount = countWords(body);
   return {
     slug,
@@ -163,6 +207,12 @@ function readPost(file: string): Post {
     draft: draft === true,
     wordCount,
     readingMinutes: Math.max(1, Math.round(wordCount / WORDS_PER_MINUTE)),
+    cover,
+    coverAlt,
+    takeaways: takeaways.map((t) => t.trim()).filter(Boolean),
+    quote,
+    resource,
+    headings: extractHeadings(body),
   };
 }
 
