@@ -30,6 +30,9 @@ Next conversation, 3 panes in parallel:
 - [ ] Pane C: nav rebuild (Brad dislikes the Menu button, the Let's Talk button, and the sound button; wants them simpler and more unique; he has ideas, ask first) + footer redo ("good not great, too much chaos", cleaner and more stylistic)
 
 Then (handoff written: `project-guidelines/handoffs-2026-08-31.md`, Pane A copy pass + Pane B launch readiness):
+- [ ] Blog v2 (Brad 2026-08-30: posts "look very bare bones"): the post anatomy in `project-sections/blog/blog-plan.md` section 2 (cover figure MediaSlot per post + OG image from it, key takeaways panel, auto TOC, `<Figure>` / `<Quote>` / `<Callout>` MDX components, GFM tables via remark-gfm, mid-post CTA to /resources/, author card, share row). No stock photos: a designer-made cover template in the blue-square system. Retrofit the 2 launch posts, add a routine-prompt step for takeaways + figure notes. ~1 session + cover template with the designer
+- [ ] Scheduled blog writer, developer handoff: `project-sections/blog/blog-plan.md` section 3 (Option A Claude Code cloud routine vs Option B GitHub Actions cron + Claude Code; branch protection, Vercel preview, copy lint in CI, RSS feed, GSC). Prerequisite checklist stays in "Blog cadence" below
+- [ ] Press / publications motion: blog-plan.md section 4. No "As seen in" row until 3+ real placements; then a /press/ page
 - [ ] The big copy pass, one conversation: 210 franchise/multi-location mentions across 38 files. New rule: BigSquare is a full-stack marketing agency with strong creative. Franchise and multi-location is one big lane, not the whole road. Ecommerce, software brands, and single-location clients read as equals. Applies to titles, metas, heros, JSON-LD. Home title tag changes too
 - [ ] "Everything feels bigger" pass: portfolio-style scale (type, media, spacing) while still reading as an agency that serves brands. Blend of both
 - [ ] Premium cube: Brad is building an award-show-grade WebGL version in a separate project; it drops into `HomeCanvas.tsx` when ready. Do not spend cube sessions here until then
@@ -43,6 +46,8 @@ How it works, once Pane A ships the MDX pipeline:
 2. It reads `content/blog/TOPICS.md` (the queue: one line per topic, target keyword, angle, which service or industry page it should link to; seeded from the Ahrefs keyword pass, Brad or Mike keep it topped up), takes the top unwritten topic, writes one 900-1400 word post to `content/blog/<slug>.mdx` following copy-rules.md (no banned words, no em dashes, no invented numbers or client names, `[PLACEHOLDER]` for anything it cannot source), links 2-3 internal pages, marks the topic done in TOPICS.md.
 3. It opens a PR titled "blog: <post title>". Brad reviews on GitHub; merge = publish (Vercel deploys main). Nothing goes live without a human merge.
 4. Twice a month is a fine start (cron `0 12 1,15 * *`); weekly once the queue is deep enough.
+
+Full developer setup (both hosting options, guard rails, CI lint): `project-sections/blog/blog-plan.md` section 3.
 
 Prerequisites, in order:
 - [x] DONE 2026-08-30: Pane A shipped the MDX pipeline + `content/blog/TOPICS.md` with 12 seeded topics; `project-sections/blog/routine-prompt.md` updated to the built contract
@@ -95,6 +100,8 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 - [ ] Tracking IDs (Meta Pixel, Google tag, GA4 env values)
 
 ## Brad-owed content (blocks marked pages, nothing else)
+
+Lead magnets (Brad 2026-08-30): the 5 titles on /resources/ are working titles only; the real list is still on Brad's whiteboard. When decided: 5 rows in `lib/resources.ts`, the 5 specs in `project-sections/lead-magnets/`, then the assets. Blog author: decide whether posts carry a named person (E-E-A-T) or stay "BigSquare Team".
 
 The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (drop files in `public/media/`, one row each in `lib/asset-files.ts`), the schedule VSL film + poster (`lib/schedule-media.ts`), real case studies + metrics + testimonials, leadership names/photos, office phones/addresses, socials, logo file, legal copy, ad-credit terms, lead-magnet assets, the Ahrefs keyword pass, FORM_WEBHOOK_URL + tracking IDs, the looping background music track (~60-90s seamless quiet loop, Suno is fine; drops into `public/audio/` + one-line `MUSIC_SRC` change in lib/sfx.ts). Possible project-brief.md positioning amendment (audience rule).
 
