@@ -37,6 +37,7 @@ Do not install anything not listed here. To add one: list it here first with a o
 | lenis | Damped smooth scroll (Brad's call 2026-08-24, STYLE_GUIDE 7.1 revised): wheel eases the real scroll position so the hero scrub reads fluid; native touch/keyboard kept; off under reduced motion |
 | remark-frontmatter | Strips the YAML frontmatter block from blog MDX bodies (named as a string so Turbopack can load it); lib/blog.ts reads the same block with fs for post metadata |
 | remark-gfm | GitHub-flavored markdown for blog posts (tables, task lists, autolinks); string-named plugin so Turbopack can load it (blog v2, 2026-08-30) |
+| sharp (no install; the copy Next ships) | scripts/blog-assets.mjs crops and converts raw blog covers + headshots; uses next's bundled sharp, so it is not a new dependency |
 
 ## Environment variables (from decisions.md)
 | Var | Use |

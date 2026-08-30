@@ -20,4 +20,6 @@ export type AssetFile = {
 
 export const ASSET_FILES: Record<string, AssetFile> = {
   // empty on purpose: no real interior assets exist yet (2026-08-26)
+  // AUTO-MANAGED by scripts/blog-assets.mjs (blog covers + headshots); do not edit inside
+  // END AUTO-MANAGED
 };

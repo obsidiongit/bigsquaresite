@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "blog:assets": "node scripts/blog-assets.mjs",
     "start": "next start"
   },
   "dependencies": {
