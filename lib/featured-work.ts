@@ -21,6 +21,52 @@ export type WorkBrandType =
   | "single-location"
   | "ecommerce";
 
+/* The full case-study shape (2026-08-31, Pane C; section order from
+   project-sections/results/_case-study-template.md). When an entry has
+   a `caseStudy`, /results/[slug]/ renders the real layout, indexes the
+   page, and emits BreadcrumbList JSON-LD; while it is absent the page
+   stays a noindex skeleton. Every value must be real and sourced
+   (copy-rules: no invented numbers or clients; FTC Endorsement Guides:
+   every metric ships with its time window and source). */
+
+export type CaseMetric = {
+  /** The number as displayed, e.g. "34%" or "2.1x" */
+  value: string;
+  /** What the number is, plain words, e.g. "Lower cost per lead" */
+  label: string;
+  /** The time window it covers, e.g. "First 6 months" */
+  window: string;
+  /** Where it comes from, e.g. "Google Ads, Jan to Jun 2026" */
+  source: string;
+};
+
+export type CaseStep = {
+  /** One plain-words step naming the service used */
+  text: string;
+  /** The /services/ slug the step links to (key in SERVICE_PAGES) */
+  serviceSlug: string;
+};
+
+export type CaseStudy = {
+  /** The result sentence; also the title tag per the template pattern
+      "[Result] for [Client type] | BigSquare" */
+  headline: string;
+  /** One line under the H1; doubles as the meta description */
+  summary: string;
+  /** Exactly 3, rendered on the dark band */
+  metrics: [CaseMetric, CaseMetric, CaseMetric];
+  /** 2 to 3 short paragraphs: where they started, what was broken */
+  situation: string[];
+  /** 3 to 5 steps, each naming the service used */
+  steps: CaseStep[];
+  /** 1 to 2 paragraphs restating the headline number with the window */
+  result: string[];
+  /** Real names only, or omit the quote entirely */
+  quote?: { text: string; name: string; role: string };
+  /** /services/ slugs for the "Services used" link list */
+  services: string[];
+};
+
 export type WorkEntry = {
   slug: string;
   /** Project title; client name or industry descriptor once real */
@@ -33,6 +79,9 @@ export type WorkEntry = {
   industry?: string | null;
   /** brand category once real; null until then */
   brandType?: WorkBrandType | null;
+  /** The full case study; absent = /results/[slug]/ renders the
+      noindex skeleton. Filling this is the whole content drop. */
+  caseStudy?: CaseStudy;
 };
 
 export const FEATURED_WORK: WorkEntry[] = [

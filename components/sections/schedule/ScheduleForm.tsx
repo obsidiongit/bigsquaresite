@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
 import { Counter } from "@/components/shared/mono";
 import { submitForm } from "@/lib/form-action";
@@ -437,6 +438,8 @@ export function ScheduleForm() {
               <p className="text-small text-sec-mid">
                 No long-term contracts. You own your accounts.
               </p>
+              {/* Only where it applies: the send happens on the last step */}
+              {step === LAST_STEP ? <ConsentLine /> : null}
             </div>
           </motion.form>
         )}

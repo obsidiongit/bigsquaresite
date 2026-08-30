@@ -1,9 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { Check } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
 import { Counter } from "@/components/shared/mono";
 import { submitForm } from "@/lib/form-action";
@@ -154,6 +157,15 @@ const STEPS: Step[] = [
 const STEP_COUNT = STEPS.length;
 const LAST_STEP = STEP_COUNT - 1;
 
+/* One-to-one SMS consent (TCPA/CTIA, legal-pages-plan.md): shown next
+   to an UNCHECKED checkbox on the contact step. The recorded string
+   must equal the rendered sentence exactly, so the JSX below renders
+   these two parts with the legal-page links swapped into the tail. The
+   box never gates submission; it gates whether we may text. */
+const SMS_CONSENT_BODY =
+  "I agree to get text messages from BigSquare Marketing about this request at the number I gave. Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help.";
+const SMS_CONSENT_TEXT = `${SMS_CONSENT_BODY} See our Privacy Policy and Terms.`;
+
 type Status = "idle" | "sending";
 
 const stepVariants = {
@@ -193,6 +205,10 @@ export function ApplyForm({
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Answers>(EMPTY);
+  const [sms, setSms] = useState<{ checked: boolean; at: string | null }>({
+    checked: false,
+    at: null,
+  });
   const [nav, setNav] = useState({ step: 0, dir: 1 });
   const navigatedRef = useRef(false);
   const autoRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -251,6 +267,11 @@ export function ApplyForm({
       page: window.location.pathname,
       utm,
       fields: { ...answers, funnel: slug, qualified },
+      smsConsent: {
+        checked: sms.checked,
+        text: SMS_CONSENT_TEXT,
+        ...(sms.checked && sms.at ? { checkedAt: sms.at } : {}),
+      },
     });
 
     if (!result.ok) {
@@ -378,6 +399,59 @@ export function ApplyForm({
                     />
                   ))}
                 </div>
+
+                {/* SMS consent on the contact step only: unchecked by
+                    default, never required. Checking it stamps the
+                    timestamp that rides with the submission. */}
+                {step === LAST_STEP ? (
+                  <label className="mt-5 flex cursor-pointer items-start gap-3">
+                    <input
+                      type="checkbox"
+                      name="smsConsent"
+                      checked={sms.checked}
+                      onChange={(e) =>
+                        setSms(
+                          e.target.checked
+                            ? { checked: true, at: new Date().toISOString() }
+                            : { checked: false, at: null },
+                        )
+                      }
+                      className="peer sr-only"
+                    />
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "mt-0.5 grid size-5 shrink-0 place-items-center rounded-[4px] border",
+                        "transition-colors duration-[var(--dur-fast)]",
+                        "peer-focus-visible:outline-2 peer-focus-visible:outline-acc peer-focus-visible:outline-offset-2",
+                        sms.checked
+                          ? "border-acc bg-acc text-onacc"
+                          : "border-sec-line bg-paper",
+                      )}
+                    >
+                      {sms.checked ? (
+                        <Check strokeWidth={3} className="size-3.5" />
+                      ) : null}
+                    </span>
+                    <span className="text-small text-sec-mid">
+                      {SMS_CONSENT_BODY} See our{" "}
+                      <Link
+                        href="/privacy-policy/"
+                        className="underline underline-offset-2 transition-colors duration-[var(--dur-fast)] hover:text-sec-ink"
+                      >
+                        Privacy Policy
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        href="/terms/"
+                        className="underline underline-offset-2 transition-colors duration-[var(--dur-fast)] hover:text-sec-ink"
+                      >
+                        Terms
+                      </Link>
+                      .
+                    </span>
+                  </label>
+                ) : null}
               </div>
             )}
           </motion.div>
@@ -404,6 +478,7 @@ export function ApplyForm({
             {error}
           </p>
         ) : null}
+        {step === LAST_STEP ? <ConsentLine /> : null}
       </div>
     </form>
   );

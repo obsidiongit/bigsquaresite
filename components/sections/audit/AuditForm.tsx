@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
 import { submitForm } from "@/lib/form-action";
 import { EASE } from "@/lib/motion";
@@ -271,6 +272,7 @@ export function AuditForm() {
               <p className="text-small text-sec-mid">
                 No long-term contracts. You own your accounts.
               </p>
+              <ConsentLine />
             </div>
           </motion.form>
         )}

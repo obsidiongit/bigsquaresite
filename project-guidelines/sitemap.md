@@ -55,15 +55,15 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 |---|---|---|---|
 | `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
 | `/about/` | built (Batch 1 reviewed 2026-08-27) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
-| `/leadership/` | blocked-on-content (names + photos); lay the page out now with placeholder cards, noindex (handoffs-2026-08-31 Pane C) | Leadership Team \| BigSquare | Team page. `[PLACEHOLDER: who is listed]` |
+| `/leadership/` | built 2026-08-31 (Pane C) with placeholder cards; noindex + out of sitemap.xml until real people land in `lib/leadership.ts` | Leadership Team \| BigSquare | Team page. Owed: names, roles, bios, photos, intro line |
 | `/careers/` | built (Batch 2, 2026-08-27, awaiting batch review) | Careers at BigSquare | Owed: remote policy, open roles, application destination |
 | `/results/` | built (Batch 2, 2026-08-27, awaiting batch review) | Client Results & Case Studies \| BigSquare | Real index; card grid stays flagged placeholder until real case studies land |
-| `/results/[slug]/` | blocked-on-content (real case-study data) | [Result] for [Client type] \| BigSquare | 6 noindex skeletons live; template ready |
+| `/results/[slug]/` | data-driven 2026-08-31 (Pane C): a filled `caseStudy` in `lib/featured-work.ts` renders the real layout + indexes the page; the 6 entries stay noindex skeletons until real data | [Result] for [Client type] \| BigSquare | Owed: real case studies (metrics with window + source) |
 | `/contact/` | built (Batch 1 reviewed 2026-08-27) | Contact BigSquare Marketing | Form + offices + FAQ (D5). Owed: office addresses + phones |
 | `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Owed: VSL film, copy pass, GHL wiring |
 | `/audit/` | built (Batch 1 reviewed 2026-08-27) | Get a Free Marketing Audit \| BigSquare | Secondary conversion page. Owed: audit deliverables + turnaround |
-| `/privacy-policy/` | shell (legal copy owed; plan + clause list in `project-sections/legal/legal-pages-plan.md`) | Privacy Policy | Legal |
-| `/terms/` | shell (legal copy owed; plan + clause list in `project-sections/legal/legal-pages-plan.md`) | Terms of Service | Legal |
+| `/privacy-policy/` | drafted in full 2026-08-31 (Pane C) from `content/legal/privacy-policy.mdx`; LAWYER REVIEW OWED before launch | Privacy Policy | Legal |
+| `/terms/` | drafted in full 2026-08-31 (Pane C) from `content/legal/terms.mdx`; LAWYER REVIEW OWED before launch | Terms of Service | Legal |
 
 ### Services hub
 | URL | STATUS | Title tag (draft) | Purpose |

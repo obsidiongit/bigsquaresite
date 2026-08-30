@@ -9,6 +9,8 @@ import { SITE_URL } from "@/lib/site";
 // (Phases 2 through 7); /go/, /apply/, and /thanks/ never appear (noindex),
 // and neither do the /results/[slug]/ skeletons (noindex until real data)
 // or /resources/[slug]/ (404 until the lead-magnet assets land).
+// /leadership/ stays out (and noindex) until real people land in
+// lib/leadership.ts; add it here when they do.
 // Service, industry, location, and blog pages join automatically as their
 // content modules register (blog: any non-draft .mdx in content/blog/).
 const ROUTES = [

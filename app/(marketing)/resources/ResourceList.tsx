@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
 import { BracketIndex, Chip } from "@/components/shared/mono";
 import { submitForm } from "@/lib/form-action";
@@ -173,6 +174,7 @@ function RequestForm({
                 </p>
               )}
             </div>
+            <ConsentLine />
           </motion.form>
         )}
       </AnimatePresence>

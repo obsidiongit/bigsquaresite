@@ -13,7 +13,7 @@ Brad: "strategize on how to put together a solid terms and privacy policy sectio
 
 - **Federal:** CAN-SPAM (email), TCPA + CTIA/10DLC rules (texting; BigSquare sells email + text marketing and the /apply/ form collects a phone number), FTC Act section 5 (no deceptive claims), FTC Endorsement Guides (testimonials and case studies), COPPA (a one-line "not for under 13" statement).
 - **California CCPA/CPRA:** applies if BigSquare has $25M+ revenue OR handles data of 100k+ Californians OR earns 50%+ from selling data. Probably not today. Still write the policy CCPA-shaped (categories collected, purposes, sharing, retention, rights, "do not sell or share" statement, Global Privacy Control mention). It is the strictest US template, and clients and partners look for it.
-- **Colorado Privacy Act:** threshold is 100k Colorado consumers a year (or 25k + selling data). BigSquare is under it. Same move: write to the standard anyway, because the Denver office means Colorado is the natural governing law and Colorado readers will look.
+- **Colorado Privacy Act:** threshold is 100k Colorado consumers a year (or 25k + selling data). BigSquare is under it. Same move: write to the standard anyway, and clients and partners look for it. (Governing law is Florida per Brad, 2026-08-30; the CCPA-shaped policy is about strictness, not location.)
 - **Florida Digital Bill of Rights:** $1B revenue threshold. Does not apply. No Florida clause needed beyond the office address.
 - **GDPR:** only if BigSquare markets to or serves EU people. It does not. One sentence: "Our services are for businesses in the United States. We do not target people in the EU or UK." Skip the GDPR articles.
 - **Google:** if GA4 Advertising Features, Google Signals, or Ads remarketing are on, Google's policy requires the privacy page to name the features, explain first-party + third-party cookies used together, and link the opt-outs (Google Ads Settings, the NAI opt-out). Google can suspend the ads account if the policy is missing this.
@@ -23,13 +23,13 @@ Brad: "strategize on how to put together a solid terms and privacy policy sectio
 
 Plain English, one H2 per clause, short paragraphs, a bulleted list where a list is clearer. Reading level 6th to 8th grade is fine for legal pages (copy-rules' 3rd to 5th target is for marketing copy).
 
-1. **Who we are and what this covers.** Legal entity name, both office addresses, the sites covered (www.bigsquaremarketing.com and the /go/, /apply/ funnel pages), effective date.
+1. **Who we are and what this covers.** BigSquare Marketing LLC; addresses omitted for now (Brad, offices under construction), contact is support@bigsquaremarketing.com; the sites covered (www.bigsquaremarketing.com and the /go/, /apply/ funnel pages), effective date.
 2. **What we collect.** Grouped by source: (a) what you give us in forms: name, email, phone, company, website, location count, budget range, free-text answers; (b) what we collect automatically: IP, device, browser, pages viewed, referrer, UTM parameters, approximate location; (c) cookies and similar tech; (d) info from partners (ad platforms, the CRM). CCPA-style category table optional but recommended.
 3. **How we use it.** Reply to you, run the audit or call you booked, send marketing email and texts you asked for, measure ads and the site, improve the site, protect against fraud, meet legal duties.
 4. **Cookies, analytics, and ads.** Name the tools: Google Analytics 4 (and which Advertising Features are on), Google Ads remarketing, Meta Pixel, any heatmap or session tool, Vercel Analytics if used. Explain first-party + third-party cookies used together. Opt-out links: Google Ads Settings, NAI opt-out, Meta ad preferences, browser controls, Global Privacy Control honored.
 5. **Texting (SMS) program.** Consent is collected on the form, not here, but the policy must state: what texts we send, message frequency, "message and data rates may apply," STOP to cancel, HELP for help, and that **mobile opt-in data is never shared with third parties for their marketing** (the exact carrier-required sentence). Keep consent records: timestamp, IP, the consent text shown, the number.
 6. **Email.** CAN-SPAM: every marketing email has an unsubscribe link and a postal address; we honor opt-outs within 10 business days.
-7. **Who we share with.** Service providers only: CRM/automation (GoHighLevel), hosting (Vercel), email/SMS senders, ad platforms, analytics, the Obsidion portal. "We do not sell your personal information. We do not share it for cross-context behavioral advertising except through the ad cookies described above, which you can opt out of."
+7. **Who we share with.** Service providers only, by CATEGORY: "our CRM and marketing automation platform" (never the vendor name publicly, Brad 2026-08-30), hosting (Vercel), email/SMS senders, ad platforms, analytics, the Obsidion portal. "We do not sell your personal information. We do not share it for cross-context behavioral advertising except through the ad cookies described above, which you can opt out of."
 8. **How long we keep it.** Leads and client records: while the relationship lasts plus a stated period (suggest 3 to 7 years for contracts and billing; SMS consent records 4 years per the TCPA statute of limitations); analytics per the tool's retention setting (GA4 default 2 or 14 months).
 9. **Your choices and rights.** Access, correct, delete, opt out of marketing, opt out of targeted ads, appeal a denied request. How to ask (support@bigsquaremarketing.com), how we verify, response time (45 days, the CCPA/CPA standard), no discrimination for asking. A "Do not sell or share my personal information" statement.
 10. **Security.** Reasonable safeguards, no guarantee, what happens on a breach (notice per state law).
@@ -55,7 +55,7 @@ These are the rules for using the website and its forms. The client engagement i
 10. **Disclaimers.** Site provided "as is"; no warranties (express or implied) to the extent the law allows.
 11. **Limitation of liability.** Cap (no indirect or consequential damages; direct damages capped at a small fixed amount, commonly $100 or fees paid for site use, which is $0); carve-outs where state law forbids the cap.
 12. **Indemnification.** You cover us for claims arising from your misuse of the site or your content.
-13. **Governing law and venue.** Colorado law, Denver County courts (the HQ state; confirm with Brad). Optional: arbitration + class-action waiver (lawyer's call; it is standard but it also alarms some readers; skip on a website terms page unless counsel wants it).
+13. **Governing law and venue.** Florida law (Brad, 2026-08-30), Hillsborough County. Arbitration + class-action waiver: YES per Brad; counsel drafts the specifics (AAA consumer rules are the common pick).
 14. **Termination.** We can block access for violations.
 15. **Changes.** Posted with a new date.
 16. **Misc.** Severability, entire agreement (for the site only), no waiver, assignment.
@@ -67,6 +67,23 @@ These are the rules for using the website and its forms. The client engagement i
 - **Cookie notice.** Not legally required for a business under the state thresholds with US-only visitors, but Google and Meta want opt-outs to be findable. Cheapest honest answer: no banner; a "Cookies and ads" section in the privacy policy plus honoring Global Privacy Control in the tag loader (skip the ad tags when `navigator.globalPrivacyControl` is true). Add a banner only if counsel asks.
 - **Case study pages.** Every metric shows its time window and source line; client named or described honestly; no composite or rounded-up numbers.
 - **Footer.** Links to both pages, plus "Do not sell or share my personal information" pointing at the privacy page's rights section.
+
+## Brad's answers (2026-08-30)
+
+- Entity: **BigSquare Marketing LLC**
+- Office addresses: **omit for now** (offices under construction; add later). Note: CAN-SPAM requires a postal address in marketing EMAILS, so a mailing address (a PO box or registered agent address is fine) is needed before email campaigns send, even if the website omits it. `[PLACEHOLDER: mailing address for email footers]`
+- Governing law: **Florida** (venue: Hillsborough County; confirm with counsel)
+- Privacy contact: **support@bigsquaremarketing.com**
+- Tools: pretty much all connected (GA4, Google Ads remarketing, Meta Pixel, analytics). **Never name GoHighLevel anywhere public**: the policy says "our CRM and marketing automation platform" as a category. Google and Meta still get named (their policies require it).
+- Texting: **yes, we will text leads.** The SMS consent checkbox + carrier language is required work, not optional.
+- Retention: Brad asked what this means. Plain words: how long we keep someone's info after they stop being a lead or client. Proposed defaults to draft with: leads 3 years after last contact, client billing records 7 years, SMS consent records 4 years, analytics on the tool's default. Brad just says yes or gives different numbers.
+- Arbitration: **yes.** Terms get an arbitration clause + class action waiver (Florida seat); counsel tunes the wording.
+
+Final calls (Brad, 2026-08-30, second round):
+- Retention defaults: **approved** (leads 3 years, billing 7, SMS consent 4, analytics tool default).
+- Address: **fully omitted, no PO box.** Brad's decision, reaffirmed after the CAN-SPAM note ("other companies like us do not use their address... we are going to get a live version up now without an address"). The site and both policies ship with email-only contact. The CAN-SPAM postal-address requirement applies to marketing EMAILS when campaigns start; Brad will add an address when he revises the policies later. Flagged, decided, done.
+
+Nothing is open. Both pages can be drafted in full now.
 
 ## Facts we need from Brad (nothing drafts without these)
 

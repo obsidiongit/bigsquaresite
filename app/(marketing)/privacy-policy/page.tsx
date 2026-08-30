@@ -1,41 +1,30 @@
 import type { Metadata } from "next";
+import Body from "@/content/legal/privacy-policy.mdx";
+import { LegalArticle } from "@/components/sections/legal/LegalArticle";
+import { getLegalDoc } from "@/lib/legal";
+
+/* /privacy-policy/ (2026-08-31, Pane C): renders the full draft in
+   content/legal/privacy-policy.mdx through the blog's MDX pipeline via
+   the LegalArticle shell. The copy was drafted from
+   project-sections/legal/legal-pages-plan.md and still needs a
+   lawyer's review; counsel's edits are text changes in the MDX file
+   only. Indexed and in the sitemap (legal pages are fine to index).
+   The footer's "Do not sell or share" link targets
+   #your-choices-and-rights (the H2 id mdx-components generates). */
+
+const doc = getLegalDoc("privacy-policy");
 
 export const metadata: Metadata = {
   title: { absolute: "Privacy Policy" },
+  description:
+    "How BigSquare Marketing collects, uses, shares, and protects your information, and the choices you have.",
   alternates: { canonical: "/privacy-policy/" },
 };
 
-// Skeleton per decisions.md: heading, last-updated date, and section
-// headings only. No legal body text until counsel provides it.
-const SECTIONS = [
-  "Information we collect",
-  "How we use information",
-  "Cookies and tracking",
-  "How we share information",
-  "Data retention",
-  "Your rights and choices",
-  "Contact us",
-];
-
 export default function PrivacyPolicyPage() {
   return (
-    <main className="mx-auto max-w-[720px] px-[clamp(20px,4vw,48px)] pt-32 pb-16 md:pt-40 md:pb-24">
-      <h1 className="font-display text-[40px] leading-[1.05] tracking-[-0.015em] text-ink md:text-[64px]">
-        Privacy policy
-      </h1>
-      <p className="mt-4 text-sm text-mid">
-        Last updated: [PLACEHOLDER: date]
-      </p>
-      <div className="mt-12 flex flex-col gap-10">
-        {SECTIONS.map((section) => (
-          <section key={section}>
-            <h2 className="font-display text-2xl text-ink md:text-[32px] md:leading-[1.1]">
-              {section}
-            </h2>
-            <p className="mt-3 text-mid">[PLACEHOLDER: legal copy]</p>
-          </section>
-        ))}
-      </div>
-    </main>
+    <LegalArticle doc={doc}>
+      <Body />
+    </LegalArticle>
   );
 }

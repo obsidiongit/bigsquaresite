@@ -16,6 +16,20 @@ const utmSchema = z.object({
   utm_content: z.string().optional(),
 });
 
+/* SMS consent record (TCPA/CTIA one-to-one consent, legal-pages-plan.md):
+   the EXACT consent text the visitor saw, the checkbox state, and when it
+   was checked. Sent only by forms that show the SMS checkbox (ApplyForm);
+   the record rides to the CRM with the submission so proof of consent
+   exists per lead. The checkbox never gates submission; it gates texting. */
+const smsConsentSchema = z.object({
+  /** Whether the box was checked at submit time */
+  checked: z.boolean(),
+  /** The consent sentence rendered next to the box, verbatim */
+  text: z.string().min(1),
+  /** ISO timestamp of the check; absent while unchecked */
+  checkedAt: z.string().optional(),
+});
+
 const submissionSchema = z.object({
   /** Which form sent this: "contact" | "audit" | "popup" | "apply" | "lead-magnet" */
   formType: z.string().min(1),
@@ -26,6 +40,7 @@ const submissionSchema = z.object({
   fields: z
     .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
     .default({}),
+  smsConsent: smsConsentSchema.optional(),
 });
 
 export type FormSubmission = z.input<typeof submissionSchema>;
