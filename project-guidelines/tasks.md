@@ -27,7 +27,7 @@ Quick wins (this session):
 Next conversation, 3 panes in parallel:
 - [x] DONE 2026-08-30 (Pane A). Owed: Brad confirms the 5 lead-magnet working titles in lib/resources.ts and picks the 404 lines he likes. Pane A: /blog/ + 2 posts (MDX), /resources/ shell, app/not-found.tsx (Brad: FUN and unique, big editorial type, portfolio style). Handoffs for all three panes: `project-guidelines/handoffs-2026-08-30.md`. Brad 2026-08-29: LAUNCH WITH blog and resources. Build the blog so the scheduled writer below can drop posts in with zero code: `content/blog/<slug>.mdx` with frontmatter (title, description, date, author, tags, draft), a `lib/blog.ts` loader, /blog/ index + /blog/[slug]/ page with Article JSON-LD, sitemap.ts picks posts up automatically, `draft: true` posts never render or list. Seed `content/blog/TOPICS.md` with ~10 topics
 - [x] Pane B: funnel templates /go/, /apply/, /thanks/ (Batch 3). DONE 2026-08-30, see the Batch 3 line
-- [x] BUILT 2026-08-30, awaiting Brad's look: Pane C nav rebuild on his answers (menu trigger = the brand square, Let's Talk = square blue button, sound = tiny bars at the far right, no pills on the bar) + footer redo (wordmark on top, three ruled rows, mobile accordion, paint layer cut). STYLE_GUIDE 6.1/6.5/6.8/7.11 updated
+- [ ] Pane C: nav rebuild (Brad dislikes the Menu button, the Let's Talk button, and the sound button; wants them simpler and more unique; he has ideas, ask first) + footer redo ("good not great, too much chaos", cleaner and more stylistic)
 
 Then:
 - [ ] The big copy pass, one conversation: 210 franchise/multi-location mentions across 38 files. New rule: BigSquare is a full-stack marketing agency with strong creative. Franchise and multi-location is one big lane, not the whole road. Ecommerce, software brands, and single-location clients read as equals. Applies to titles, metas, heros, JSON-LD. Home title tag changes too
@@ -59,7 +59,7 @@ Needs Brad (facts and assets, none of which can be invented):
 - [ ] Real 4K hero film (one-line HERO_VIDEO swap in Hero.tsx)
 - [ ] Real 90-day milestones (`lib/ninety-days.ts`, currently invented + placeholder-flagged)
 - [ ] Newsletter: 5 client headshots, 4 photos (`lib/newsletter-frames.ts`), a real cadence, confirm "600+ clients" wording
-- [ ] Footer facts: socials, two office phones (both render as visible [PLACEHOLDER] tags in the footer since 2026-08-30), BIGSQUARE vs BIGSQUARE MARKETING wordmark (BIGSQUARE for now). Paint layer: CUT 2026-08-30
+- [ ] Footer facts: socials, two office phones, BIGSQUARE vs BIGSQUARE MARKETING wordmark, keep-or-cut the paint layer
 - [ ] Live Obsidion portal code for the window slot (chip drops with it)
 - [ ] FORM_WEBHOOK_URL destination (submissions log a server warning until set)
 - [ ] Cube look sign-off + the 3D bundle overage call (~232KB gz vs the 200KB line)
