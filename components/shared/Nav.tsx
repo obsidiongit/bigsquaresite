@@ -265,6 +265,16 @@ function MenuPanel({
   const slabFrom = from ? { ...from, borderRadius: 0 } : undefined;
   const ready = Boolean(slabTo && slabFrom);
 
+  /* the squiggle edge goes live as the slab settles: the soft ease is
+     within a couple of px of the target by ~85% of its run, so the
+     boil starts there instead of after the full 700ms (Brad: the
+     moving lines must start "right when the square fully expands") */
+  useEffect(() => {
+    if (!ready || reduced) return;
+    const id = window.setTimeout(() => setLanded(true), SLAB_OPEN.duration * 1000 * 0.85);
+    return () => window.clearTimeout(id);
+  }, [ready, reduced]);
+
   return (
     <>
       {/* scrim: the page stays visible, dimmed and inert */}
@@ -316,7 +326,6 @@ function MenuPanel({
           animate={slabTo}
           exit={reduced ? undefined : { ...slabFrom, transition: SLAB_CLOSE }}
           transition={SLAB_OPEN}
-          onAnimationComplete={() => setLanded(true)}
         />
       )}
 
@@ -336,16 +345,21 @@ function MenuPanel({
           <motion.div
             className="absolute inset-0"
             initial={reduced ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: landed ? 1 : 0 }}
             exit={reduced ? undefined : { opacity: 0, transition: FADE_OUT }}
-            transition={{ duration: 0.2, delay: 0.3 }}
+            transition={{ duration: 0.15, ease: EASE.house }}
           >
             {/* hand-drawn edge in the slab's own blue: the inside half
                 vanishes into the fill, only the wobble that escapes
-                onto the dimmed page shows (6.12 / work panel rule) */}
+                onto the dimmed page shows (6.12 / work panel rule).
+                Pre-drawn (instant) like the work panel, so the boil
+                runs from the moment the slab lands instead of after
+                a 2s draw-on; same blue as the slab, so its arrival
+                reads as the edge roughening, not a line appearing. */}
             <RoughAnnotation
               variant="box"
               stroke="var(--acc)"
+              instant
               active={landed}
               staticRender={reduced}
               className="absolute inset-0 block"
