@@ -264,6 +264,7 @@ Labels: Title Case, 2 to 4 words, from the approved list (Schedule a Call, Get a
 
 1. **Primary pill.** `--acc` bg, `--onacc` text, Apfel 700 at 16px, padding 16px 28px (14px 24px mobile), radius 999. Hover: scale 1.02 + soft shadow, 150ms `--ease-house`. Active: scale 0.98. On `accent` sections it inverts: white pill, `--acc` text.
 2. **Secondary pill.** 1px `--sec-ink` outline, transparent bg, same metrics. Hover: **directional fill** (below), label flips to `--sec-bg`.
+2b. **Square action** (2026-08-30, nav only). The primary's fill with square corners (radius 0) so it reads as one of the brand squares, not a rounded pill: `--acc` bg, `--onacc` label, Lenia Mono 700 at 15px, padding 11px 18px. Hover: `--ink` floods up from the bottom (the secondary's directional fill), label stays white. Inverts to white/`--acc` on `accent`. `Pill variant="square"`, `.pill-square` in globals.css. It is the bar's one ask and the overlay's two; page CTAs keep the rounded pills.
 3. **Bracket CTA** (signature, e2vc). Mono uppercase 13px label wrapped by a rough.js-drawn `[ ]` bracket in `--sec-acc`. The editorial secondary CTA: report downloads, case study links, "in-page" asks. Full spec in 7.3 and 8.
 4. **Rule link.** Full-width row on a 1px bottom hairline: label left, `→` or `↗` right (obys, pxpush). Hover: arrow slides 4px right, hairline darkens to `--sec-ink`, 250ms. For quiet in-section links and list rows.
 
@@ -305,14 +306,16 @@ Slots: eyebrow row (mono eyebrow, optionally on a `<SeparatorIn>` hairline), H2 
 - **UI-fragment illustration** (readymag): real product UI pieces (dashboard cards, report rows, metric chips from Obsidion or ad platforms) rendered as bare rounded cards with soft shadows floating inside panels. Never screenshots in fake browser chrome, never stock imagery.
 - **Logo item** (youtech open strip; supersedes the metacci logo tile, 2026-08-24): FULL-COLOR partner logo floating directly on the ground, no tile, no border, no grayscale filter. Height-normalized to 32px (28px mobile) inside a fixed-height row; wide gaps (48/64px) carry the separation. Lives in the trust marquee.
 
-### 6.5 Nav (rewritten 2026-08-23, direction pivot)
+### 6.5 Nav (rebuilt 2026-08-30 on Brad's answers)
 
-Quiet instrument bar, loud menu (lusion bar anatomy + e2vc editorial index; the v1 center-links bar and mega menu read as template chrome in build review and are retired).
+Quiet instrument bar, loud menu. Brad rejected the three-pill bar (Sound, Let's Talk, Menu: "not a fan" of all three) and answered the three questions: menu trigger is the brand square, Let's Talk becomes a square button, sound becomes a tiny unlabeled mark.
 
-- 72px bar (64px mobile). Logo + wordmark left. Right: exactly two pills: "Let's Talk" (primary sm, /schedule/) and "Menu" (secondary sm, small `--acc` square glyph). No center links.
-- Over the page top: transparent, no border. After 40px scroll: `--paper` at 85% + backdrop blur + 1px `--line` bottom border (moodboard).
-- The menu is a full-screen `--paper` overlay (Radix Dialog, focus trap, Escape): left, five index rows at `--text-menu` with mono `[01]` brackets (group rows toggle; leaf rows navigate); right on lg+, the active group's ruled mono link table (inline below lg); foot row with Login ↗, DEN/TPA mono, and the "Schedule a Call" pill. Row entrance staggers 55ms with the house ease.
+- 72px bar (64px mobile). Logo + wordmark left. Right, in order: the one ask "Let's Talk" as the **square action** (6.1 2b, /schedule/, shows at every width now); the **menu mark**: "Menu" in Lenia Mono 500 at 15px (md+ only) beside a 14px `--acc` square that quarter-turns on hover; and the **sound mark** at the far right edge: three level bars in the square's footprint, no label, no outline (7.11). No pills on the bar. No center links.
+- The square IS the trigger. In the overlay's top bar (which mirrors the page bar) the same mark reads "Close": the square shrinks out on its diagonal while two 2px `--ink` bars grow into the X (`.menu-mark[data-open]`, 300ms house; reduced motion: settled X, no animation). Hover on the X turns the bars `--acc`. Mechanics in globals.css `.menu-mark*`, independent `rotate`/`scale` properties so the hover turn and the open morph compose.
+- Over the page top: transparent, no border. After 40px scroll: `--paper` at 85% + backdrop blur + 1px `--line` bottom border.
+- The menu is a full-screen `--paper` overlay (Radix Dialog, focus trap, Escape, focus returns to the mark): left, five index rows at `--text-menu` with mono `[01]` brackets (group rows toggle; leaf rows navigate); right on lg+, the active group's ruled mono link table (inline below lg); foot row with Login ↗, DEN/TPA mono, and "Schedule a Call" as a square action. Row entrance staggers 55ms with the house ease. Unchanged from the 2026-08-23 version except the top bar and the foot button.
 - Active page marker: a static hand-drawn underline in `--acc` on the overlay's index row (annotation system, no boil, no draw-on).
+- Sound: the square action, the menu mark, the sound mark, and the overlay rows carry `data-sfx` (hover pop). Tab order at 1280: wordmark, Let's Talk, Menu, sound.
 - Luminance-sensing nav (pear-no) is catalogued in 7.4; candidate polish now that the homepage hero settles full-bleed dark under the light bar.
 
 ### 6.6 Info bar (RETIRED 2026-08-25)
@@ -323,22 +326,21 @@ Retired with the instrument layer (4.5): removed from the hero 2026-08-24, rejec
 
 Metacci's "Before you book" objection pattern: eyebrow + H2, then one bordered container (radius 16, `divide-y` hairlines) of shadcn Accordion items. Question: Apfel 700 18px left, chevron right. Answer: body in `--sec-mid`. 5 to 7 questions, one honest "when we are not the right fit" style question if the spec's copy provides it. Emit FAQPage JSON-LD from the same data array.
 
-### 6.8 Footer (rewritten 2026-08-25, round-1 rejection)
+### 6.8 Footer (rebuilt 2026-08-30, "good not great, too much chaos")
 
-Theme `dark`. **Quiet information, one big gesture.** The v2 anatomy (info bar, ruled mono link tables, mono colophon, rails) was built and rejected live: on a page whose whole lower region is the open layout, footer chrome read as "weird grid lines only on this section", chaotic, and nearly a full viewport tall. The corrected model is Youtech's information design crossed with e2vc's playfulness, kept compact.
+Theme `dark`. **One calm composition: three rows, one hairline between each, nothing boxed.** The 2026-08-25 version (four columns plus a locations row in the same grid, a legal line, the cropped back-cover wordmark underneath, and the pixel-grid paint layer) was reviewed by Brad as good-not-great with too much going on. The paint layer is CUT (FooterPixelGrid.tsx deleted). The wordmark moves to the top as the one big move; everything under it is quiet.
 
-Anatomy top to bottom:
-1. **Link columns**, four, mirroring the services IA exactly (Company, Organic Marketing, Paid Advertising, Design & Development), as PLAIN lists: header in Apfel 700 at 16px `--sec-ink`, links at 15px `--sec-mid` brightening to `--sec-ink` on hover. No rules, no arrows, no mono, no rails, no info bar. 4-up at `lg`, 2-up below.
-2. **Locations and Contact** flow as the next row of the SAME grid, so they align to the same columns instead of opening a second block. Each location row is the e2vc clock move, translated: a 7px `--sec-acc` brand square, the city link, and its live local time in the body face with tabular nums. Contact spans both mobile columns (an email address is wider than a half column at 375 and the wordmark's `overflow-hidden` would clip it).
-3. **Legal line**: 14px, `SITE_NAME © year All Rights Reserved.` left, Privacy and Terms right. No mark here: the wordmark below is the mark. Privacy and Terms live ONLY here, never also in a link column.
-4. **Set piece**: the logo mark at cap height followed by the BigSquare wordmark in Bluu Next, sized together to the full viewport width and cropped by the page's bottom edge (obys), solid `--sec-ink`. Glyphs rise into the crop on the footer's own scroll progress with a per-glyph lag, and letters flood `--sec-acc` bottom-up on hover. Putting the mark INSIDE the crop row is how a footer carries a display-scale logo for free: it scales with the type and adds no height (e2vc sets its own glyph into its wordmark the same way). It is `aria-hidden`; the name exists as real text in the legal line. Nothing may sit below it: it is the page's last pixels.
-5. **Paint layer** (optional, desktop): the 7.6 pixel trail scoped to the footer ground. See 7.6.
+Anatomy top to bottom (1200px Container, hairlines are `--sec-line` and span the container):
+1. **Wordmark row.** The logo mark at cap height followed by BIGSQUARE in Lenia Mono 700 (`font-display`, `leading-[0.92]`, tracking -0.03em), sized together to the container width by one measure-and-scale pass (Lenia is monospaced, so the 15.5vw estimate is close). Not cropped: the row keeps its natural height so the Q's tail is never cut. Glyphs rise into view on the row's own entry (scrubbed over "start end" to "end 70%", left letters leading 0.03 each, the mark first) and each letter floods `--sec-acc` bottom-up on hover. `aria-hidden`; the name is real text in the legal line.
+2. **Link columns** on the first hairline. md+: four plain lists (Company, Organic Marketing, Paid Advertising, Design & Development) from `lib/footer-links.ts`: header Lenia 700 at 16px `--sec-ink`, links 15px `--sec-mid` brightening to `--sec-ink`. Below md: the same four groups as a **ruled accordion** on native `<details>` (no JS, works under reduced motion), each summary a row on its own hairline with a 10px `--sec-acc` square at the right that quarter-turns when open. Both variants render; `md:hidden` / `hidden md:grid` pick one.
+3. **Offices and contact** on the second hairline, the same four columns: Denver and Tampa (city as a link to its location page, the 7px square + live local time via `OfficeTime` + "local", then the phone placeholder), Contact (support email, socials placeholder), Clients (Login ↗ to the portal). 2-up below md, the contact cells spanning both columns.
+4. **Legal line** on the last hairline: 14px, `SITE_NAME © year All Rights Reserved.` left, Privacy and Terms right. Privacy and Terms live ONLY here.
 
-Rules this sets: **placeholders never ship in site chrome.** A `[PLACEHOLDER: ...]` string is right in a section under review and wrong in a footer that appears on every page, where it reads as debris. Unconfirmed content (socials, office phones, a partner badge) is OMITTED and tracked in tasks.md until the fact exists. The badge slot renders nothing, never an empty box.
+Placeholders: per Brad's 2026-08-30 handoff the unconfirmed facts (two office phones, social links) render as visible `[PLACEHOLDER: ...]` tags in mono-sm so they cannot be forgotten before launch. This overrides the 2026-08-25 "omit and track" rule for the footer only, until the facts land (tasks.md, Footer facts).
 
-Height budget: under one viewport at 1280 (measured 77vh; 73vh at 1536, 99vh at 768, 130vh at 375). A footer taller than the screen is a wall, not a close.
+Sound: footer links stay silent on hover (no `data-sfx`); clicks sound like everywhere else.
 
-Scope note: the footer keeps the 1200px Container but NOT the hairline instrument (no GridLines, no ruled rows, no Nº labels, no mono meta). Since 4.5's 2026-08-25 rewrite this is no longer an exception, it is the rule everywhere; the footer's Container is the system's one surviving 1200px use.
+Height, measured 2026-08-30: 814px at 1280 (102vh of 800), 812px at 1536, 845px at 768 (83vh), 864px at 375 (117vh with the accordion closed; was 130vh). The 1280 number is the wordmark row's cost; it is the footer's reason to exist, so the "under one viewport" budget is relaxed to "about one viewport".
 
 The accent CTA sits directly above the footer on every page that uses it; together they are the closing brand moment.
 
@@ -533,7 +535,7 @@ Wrap the app in `<MotionConfig reducedMotion="user">` and verify per component:
 | Smooth scroll + scrollbar instrument | Never mounts; plain native scroll, browser scrollbar back |
 | Scroll checkpoints (idle-settle) | Off; no automatic scrolling of any kind |
 | Footer wordmark (6.8) | Settled in the crop; no rise, hover flood is a color change only |
-| Footer paint layer (7.6) | Never mounts; zero cells in the DOM |
+| Footer paint layer (7.6) | CUT 2026-08-30 (6.8); row kept for history |
 
 ### 7.9 Performance rules
 
@@ -578,9 +580,12 @@ nobody ever hears it); the preference persists in localStorage.
   body links, footer columns, and ruled-row tables stay silent on hover.
   Opt out of all sound with `data-sfx="none"`. The AudioContext unlocks on the first gesture (autoplay
   policy); play() before that is a silent no-op.
-- The nav `SoundToggle`: three animated level bars in the brand square's
-  footprint, label hidden below md. Muting ramps the master gain, never stops
-  the graph.
+- The nav `SoundToggle` (rebuilt 2026-08-30): no pill, no label. Three level
+  bars (2px wide, 12px tall) in the brand square's footprint at the bar's far
+  right edge, pulsing in `--ink` while on (hover `--acc`), flattened to a
+  `--mid` baseline when muted. A mono-sm "Sound on / Sound off" tooltip shows
+  under the mark on hover and keyboard focus; `aria-label` and `aria-pressed`
+  carry the state. Muting ramps the master gain, never stops the graph.
 - Music slot: `MUSIC_SRC` in lib/sfx.ts, inert until a loop lands. Streams
   via `<audio>`, gain-faded in, with a 300 Hz low-pass duck hook
   (`sfx.duckMusic`) for overlays. Target: ~60-90s seamless loop, mixed quiet.
@@ -660,6 +665,7 @@ Homepage annotation map (the 3-per-page budget, instantiated): the hero circle o
 
 ## Changelog
 
+- **2026-08-30 (nav rebuild + footer redo, Pane C)**: Brad, 2026-08-29: not a fan of the Sound, Let's Talk, or Menu buttons; footer "good not great, too much chaos". Asked him the three nav questions first; his answers: the menu trigger is the brand square (with "Menu" beside it on desktop), Let's Talk becomes a square blue button, the sound control becomes a tiny unlabeled mark at the far right. Built exactly that: 6.5 rewritten (no pills on the bar; the square IS the trigger and morphs into the close X in the overlay), 6.1 gained the square action variant (`Pill variant="square"`, `.pill-square`), 7.11's toggle is now the bare bars with a tooltip. Footer (6.8 rewritten): three rows on three hairlines, the BIGSQUARE wordmark in Lenia Mono moved to the top uncropped as the one big move, plain link columns (a native `<details>` ruled accordion below md, footer 130vh to 117vh at 375), offices with clocks + contact + client login, legal line last. Pixel-grid paint layer cut and FooterPixelGrid.tsx deleted. Placeholder tags for phones and socials are visible in the footer by Brad's instruction until the facts land. Engineering notes: Tailwind v4's independent `rotate`/`scale` properties let a hover turn and an open morph compose on one element with no transform string juggling; a `<details>` accordion is the cheapest reduced-motion-safe mobile pattern for link groups. Keyboard verified: Tab order wordmark, Let's Talk, Menu, sound; Enter opens, focus traps, Escape closes and returns focus to the mark.
 - **2026-08-27 (sound design + page transitions, new 7.11/7.12)**: The two lusion.co premium layers land sitewide. Sound: synthesized Web Audio engine (lib/sfx.ts, zero asset files), delegated wiring, nav SoundToggle, on by default with persisted opt-out (Brad's call), music slot inert until a loop lands. Transitions: PageTransitions veil, a 10x6 darkpanel tile assembly on ease-swoop covering route swaps, with a server-rendered pre-assembled intro holding the lockup until fonts land. Decode notes and measured sound profiles in project-sections/reference-images/lusion-audio/ANALYSIS.md. Two traps for posterity: link interception must run in the CAPTURE phase (next/link preventDefaults during bubble, which reads as "transition randomly skips"), and any effect timer that advances a phase machine must use a functional set with a from-state guard, or a competing effect (here: the reduced-motion kill) gets overridden by a stale timer.
 
 - **2026-08-26 (Lane 2 gate open: the 14-page stamp + hub; REGISTRATION MARKS retired for new builds)**: Brad green-lit /services/seo/ ("good enough for me... let's go ahead and build the other fourteen") with one system note that binds every lane going forward: **no "+" registration marks on newly built pages** ("it just looks really corny... a leftover remnant from the grid lines"). New builds pass `marks={false}` to MediaSlot and mount no `RegistrationMarks`; existing instances sitewide (homepage framed media, progress-rail caps, other lanes' shipped pages) stay put on his instruction for his site-wide audit, where 4.3's marks rule gets its final call. The stamp itself: all 14 remaining T2 pages + the /services/ hub built in one batch session, each content module with its own copy pass and variation-kit picks (hero variants spread A/B/C ~5/5/5 under the no-repeat-neighbors rule; 10 UI fragment compositions now live in ServicePage.tsx; obsidion-portal runs the richer variant: portal-window fragment + a full-width EXHIBIT media moment per 6.12's air rules). ServicePage.tsx gained variant B (statement-wide: hero media as a 2.4:1 band under the answer) and variant C (fragment-led: the fragment centered on a 4:3 surf panel in the hero's right column; `heroAsset` now optional). The hub carries the three #group anchor ids the homepage Services heads target (they resolve at last), a statement hero, and per-group editorial index rows. Verified across all 16 URLs at 375 + 1280: zero overflow, one H1 each, no page errors, 800+ words per service page (the hub is an index, thin by design), reduced motion settled on both new variants. sitemap.xml picks all 16 up from the registry. `npm run build` still owed before deploy (dev server occupied 3000 across sessions).

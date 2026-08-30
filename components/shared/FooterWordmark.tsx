@@ -7,35 +7,30 @@ import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { cn } from "@/lib/utils";
 import logoMark from "@/assets/logo.svg";
 
-/* The back-cover wordmark (shared/footer.md v3): BIGSQUARE in Bluu at
-   viewport scale, cropped by the page's bottom edge (obys). The letters
-   rise into the crop on the footer's own scroll progress, left letters
-   leading, and each letter floods --sec-acc bottom-up on hover (the 6.1
-   directional fill applied to a glyph via a clip-path twin). aria-hidden:
-   the brand name lives as real text in the info bar and colophon.
+/* The footer wordmark (6.8, rebuilt 2026-08-30): the mark at cap
+   height followed by BIGSQUARE in Lenia Mono 700, sized together to
+   the full container width. It is the footer's first row and its one
+   big move; nothing else in the footer is allowed to be loud. The
+   glyphs rise into view on the row's own scroll entry (scrubbed, left
+   letters leading) and each letter floods --sec-acc bottom-up on hover
+   (the 6.1 directional fill applied to a glyph via a clip-path twin).
+   aria-hidden: the brand name lives as real text in the legal line.
 
-   Sizing: Bluu's metrics make pure vw sizing drift across viewports, so
-   the row renders at a vw estimate and corrects with a measure-and-scale
-   pass (again once fonts finish loading), re-running on viewport WIDTH
-   change only (the RoughAnnotation resize rule). The crop is the
-   wrapper: overflow hidden, height a fraction of the glyph size, the
-   letters overflowing below its bottom edge, which is the page's last
-   pixel. TRIM pulls the row up past the font's internal leading so the
-   wrapper's top hugs the caps. */
+   Sizing: the row renders at a vw estimate and corrects with one
+   measure-and-scale pass (again once fonts finish loading), re-running
+   on viewport WIDTH change only. Lenia is monospaced, so the estimate
+   is close and the correction is a nudge. The wrapper clips the rise
+   at its own bottom edge (no fixed crop; the row keeps its natural
+   height so the descender room is never cut). */
 
 const WORD = "BIGSQUARE".split("");
-/* wrapper height as a fraction of the font size: the crop depth
-   (deepened in round 2: the footer must stay compact, Brad) */
-const CROP = 0.44;
-/* top leading trim, fraction of the font size */
-const TRIM = 0.06;
-/* rise choreography inside the footer's entry progress (scrubbed, so
+/* rise choreography inside the row's entry progress (scrubbed, so
    linear: the scroll is the easing) */
-const RISE_START = 0.2;
-const RISE_STAGGER = 0.034;
-const RISE_SPAN = 0.42;
-/* SSR estimate before the fit pass corrects it */
-const ESTIMATE = "15vw";
+const RISE_STAGGER = 0.03;
+const RISE_SPAN = 0.55;
+/* SSR estimate before the fit pass corrects it: nine mono glyphs
+   (~0.6em each) plus the mark */
+const ESTIMATE = "15.5vw";
 
 /* every glyph in the lockup rides the same rise, the mark included, so
    it reads as one object arriving rather than art plus type */
@@ -47,9 +42,9 @@ function useRise(
   /* callback form with explicit clamps (framer-motion 13.1.1 rule) */
   return useTransform(progress, (v) => {
     if (reduced) return "0%";
-    const start = RISE_START + index * RISE_STAGGER;
+    const start = index * RISE_STAGGER;
     const t = Math.min(1, Math.max(0, (v - start) / RISE_SPAN));
-    return `${(1 - t) * 80}%`;
+    return `${(1 - t) * 100}%`;
   });
 }
 
@@ -83,10 +78,8 @@ function Letter({
   );
 }
 
-/* The mark leads the lockup at cap height (e2vc set their own glyph
-   into the giant wordmark; Brad asked for the large logo). It is
-   `em`-sized so the one fit pass scales it with the type, and it sits
-   inside the same crop, so it costs the footer no height. */
+/* The mark leads the lockup at cap height. It is `em`-sized so the one
+   fit pass scales it with the type. */
 function Mark({
   progress,
   reduced,
@@ -101,7 +94,7 @@ function Mark({
       style={{ y }}
       /* margin, not translate-y: framer writes transform inline and
          would silently drop a Tailwind translate class */
-      className="relative mr-[0.07em] mt-[0.05em] inline-block size-[0.7em]"
+      className="relative mr-[0.08em] mt-[0.06em] inline-block size-[0.72em] self-start"
     >
       <Image src={logoMark} alt="" fill className="object-contain" sizes="30vw" />
     </motion.span>
@@ -111,16 +104,8 @@ function Mark({
 export function FooterWordmark({ className }: { className?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLElement | null>(null);
   const reduced = useReducedMotionSafe();
   const [fontSize, setFontSize] = useState<number | null>(null);
-
-  /* the rise maps over the whole footer's entry, not this element's own
-     sliver of scroll, so the target is the closest footer landmark */
-  useLayoutEffect(() => {
-    footerRef.current =
-      wrapRef.current?.closest("footer") ?? wrapRef.current ?? null;
-  }, []);
 
   useLayoutEffect(() => {
     let width = 0;
@@ -143,9 +128,11 @@ export function FooterWordmark({ className }: { className?: string }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  /* the rise maps over the row's own entry: from its top crossing the
+     viewport bottom to its bottom reaching the lower third */
   const { scrollYProgress } = useScroll({
-    target: footerRef as React.RefObject<HTMLElement>,
-    offset: ["start end", "end end"],
+    target: wrapRef,
+    offset: ["start end", "end 70%"],
   });
 
   return (
@@ -153,21 +140,11 @@ export function FooterWordmark({ className }: { className?: string }) {
       ref={wrapRef}
       aria-hidden
       className={cn("w-full overflow-hidden", className)}
-      style={{
-        height: fontSize
-          ? fontSize * CROP
-          : `calc(${ESTIMATE} * ${CROP})`,
-      }}
     >
       <div
         ref={rowRef}
-        className="flex w-max items-start whitespace-nowrap font-display font-bold leading-none tracking-[-0.02em] text-sec-ink"
-        style={{
-          fontSize: fontSize ?? ESTIMATE,
-          marginTop: fontSize
-            ? -fontSize * TRIM
-            : `calc(${ESTIMATE} * -${TRIM})`,
-        }}
+        className="flex w-max items-start whitespace-nowrap font-display leading-[0.92] tracking-[-0.03em] text-sec-ink"
+        style={{ fontSize: fontSize ?? ESTIMATE }}
       >
         <Mark progress={scrollYProgress} reduced={reduced} />
         {WORD.map((char, i) => (

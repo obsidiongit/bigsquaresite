@@ -14,12 +14,17 @@ import { SoundToggle } from "@/components/sound/SoundToggle";
 import { EASE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-/* Nav (1.nav.md v3, direction pivot 2026-08-23): quiet instrument bar,
-   loud menu. The bar carries only the mark and two pills (lusion); the
-   IA lives in a full-screen paper overlay: display-scale index rows on
-   the left, a ruled mono link table on the right, everything on the
-   hairline grid. The active page keeps the hand-drawn underline
-   (annotation budget: 1 of 3). data-cursor-quiet for Phase 3. */
+/* Nav (6.5, rebuilt 2026-08-30 on Brad's answers): quiet instrument
+   bar, loud menu. The bar carries the logo lockup left and three
+   things right: the one ask as a SQUARE button (no rounded pill), the
+   menu trigger, which is the brand square itself ("Menu" in Lenia Mono
+   beside it at md+; it quarter-turns on hover and morphs into the
+   close X in the overlay), and the sound control reduced to three
+   level bars at the far right edge, no label. The IA lives in a
+   full-screen paper overlay: display-scale index rows on the left, a
+   ruled mono link table on the right, everything on the hairline
+   grid. The active page keeps the hand-drawn underline (annotation
+   budget: 1 of 3). data-cursor-quiet for Phase 3. */
 
 const PORTAL_URL = "https://www.obsidion.ai/"; // decisions.md, locked
 
@@ -127,6 +132,23 @@ const rowIn: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE.house } },
 };
 
+/* The brand square as the menu trigger (6.5). Closed: the square, a
+   quarter-turn on hover. Open: the square leaves on its diagonal and
+   two bars grow into the X (mechanics in globals.css .menu-mark). The
+   parent carries `group` for the hover turn. */
+function MenuMark({ open = false }: { open?: boolean }) {
+  return (
+    <span aria-hidden className="menu-mark" data-open={open ? "" : undefined}>
+      <span className="menu-mark-square" />
+      <span className="menu-mark-bar" />
+      <span className="menu-mark-bar" />
+    </span>
+  );
+}
+
+const TRIGGER =
+  "group flex h-10 items-center gap-3 text-[15px] font-medium text-ink transition-colors duration-150 ease-house hover:text-acc";
+
 function RuleRow({ link, onNavigate }: { link: MenuLeaf; onNavigate: () => void }) {
   return (
     <Link
@@ -225,15 +247,14 @@ export function Nav() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-2.5">
-            <SoundToggle />
-            <Pill href="/schedule/" size="sm" className="max-sm:hidden">
+          <div className="flex items-center gap-4 md:gap-6">
+            <Pill href="/schedule/" variant="square" size="sm">
               Let&apos;s Talk
             </Pill>
             <Dialog.Root open={open} onOpenChange={setOpen}>
-              <Dialog.Trigger data-sfx="" className="group pill pill-secondary pill-sm gap-2.5">
-                <span aria-hidden className="size-2 bg-acc transition-transform duration-[250ms] ease-house group-hover:rotate-45" />
-                Menu
+              <Dialog.Trigger data-sfx="" className={TRIGGER}>
+                <span className="max-md:sr-only">Menu</span>
+                <MenuMark />
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Content
@@ -247,7 +268,8 @@ export function Nav() {
                   </Dialog.Description>
                   <GridLines className="z-0" />
 
-                  {/* Overlay top bar mirrors the page bar */}
+                  {/* Overlay top bar mirrors the page bar: same lockup,
+                      same cluster, the square now open as the X */}
                   <div className="relative z-10 shrink-0 border-b border-line">
                     <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-gutter-x md:h-[72px]">
                       <Link
@@ -263,10 +285,21 @@ export function Nav() {
                           BigSquare
                         </span>
                       </Link>
-                      <Dialog.Close className="pill pill-secondary pill-sm gap-2.5">
-                        <span aria-hidden className="size-2 rotate-45 bg-acc" />
-                        Close
-                      </Dialog.Close>
+                      <div className="flex items-center gap-4 md:gap-6">
+                        <Pill
+                          href="/schedule/"
+                          variant="square"
+                          size="sm"
+                          className="max-md:hidden"
+                        >
+                          Let&apos;s Talk
+                        </Pill>
+                        <Dialog.Close data-sfx="" className={TRIGGER}>
+                          <span className="max-md:sr-only">Close</span>
+                          <MenuMark open />
+                        </Dialog.Close>
+                        <SoundToggle className="-mr-3" />
+                      </div>
                     </div>
                   </div>
 
@@ -391,7 +424,7 @@ export function Nav() {
                           Denver / Tampa
                         </span>
                       </div>
-                      <Pill href="/schedule/" size="sm" className="shrink-0">
+                      <Pill href="/schedule/" variant="square" size="sm" className="shrink-0">
                         Schedule a Call
                       </Pill>
                     </div>
@@ -399,6 +432,7 @@ export function Nav() {
                 </Dialog.Content>
               </Dialog.Portal>
             </Dialog.Root>
+            <SoundToggle className="-mr-3" />
           </div>
         </div>
       </div>

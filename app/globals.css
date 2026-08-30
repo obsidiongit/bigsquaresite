@@ -433,6 +433,36 @@
     transform-origin: bottom;
   }
 
+  /* Square action (6.1 #3, 2026-08-30): the nav bar's one ask. The
+     primary's fill with square corners so it reads as a brand square,
+     not a rounded pill. Hover: --ink floods up from the bottom (the
+     secondary's mechanics), the label stays --onacc. Nav-size only. */
+  .pill-square {
+    border-radius: 0;
+    background: var(--acc);
+    color: var(--onacc);
+  }
+  .pill-square.pill-sm { padding: 11px 18px; font-size: 15px; }
+  .pill-square::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .3s var(--ease-swoop);
+  }
+  .pill-square:hover::before {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  [data-theme="accent"] .pill-square {
+    background: var(--onacc);
+    color: var(--acc);
+  }
+  [data-theme="accent"] .pill-square:hover { color: var(--onacc); }
+
   /* Directional fill for full-width rule rows (STYLE_GUIDE.md 6.1,
      ruled index tables and footer link tables): same mechanics as the
      secondary pill, squared off. The label flips to the section
@@ -460,13 +490,69 @@
     transform-origin: bottom;
   }
 
+  /* Menu mark (6.5, 2026-08-30): the brand square IS the menu trigger.
+     Closed: a 14px --acc square that quarter-turns on hover. Open (the
+     overlay's close button): the square shrinks out on its diagonal
+     while two bars grow into the X. Independent rotate/scale
+     properties, so the hover turn and the open morph compose. */
+  .menu-mark {
+    position: relative;
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
+  .menu-mark-square {
+    position: absolute;
+    inset: 0;
+    background: var(--acc);
+    transition:
+      rotate var(--dur-base) var(--ease-house),
+      scale var(--dur-base) var(--ease-house);
+  }
+  .group:hover .menu-mark-square { rotate: 45deg; }
+  .menu-mark-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    translate: -50% -50%;
+    scale: 0 1;
+    transition: background-color var(--dur-fast) var(--ease-house);
+  }
+  .menu-mark-bar:nth-of-type(2) { rotate: 45deg; }
+  .menu-mark-bar:nth-of-type(3) { rotate: -45deg; }
+  .menu-mark[data-open] .menu-mark-square {
+    rotate: 45deg;
+    scale: 0;
+    animation: menu-mark-square-out .3s var(--ease-house) both;
+  }
+  .menu-mark[data-open] .menu-mark-bar {
+    scale: 1 1;
+    animation: menu-mark-bar-in .3s .12s var(--ease-house) both;
+  }
+  .group:hover .menu-mark[data-open] .menu-mark-bar { background: var(--acc); }
+  @keyframes menu-mark-square-out {
+    from { rotate: 0deg; scale: 1; }
+    to { rotate: 45deg; scale: 0; }
+  }
+  @keyframes menu-mark-bar-in {
+    from { scale: 0 1; }
+    to { scale: 1 1; }
+  }
+
   /* Reduced motion (7.8): hover feedback is color/opacity only */
   @media (prefers-reduced-motion: reduce) {
     .pill-primary:hover,
     .pill-primary:active { transform: none; }
     .pill-primary:hover { opacity: .9; }
     .pill-secondary::before,
+    .pill-square::before,
     .row-fill::before { transition: none; }
+    .menu-mark-square { transition: none; }
+    .menu-mark[data-open] .menu-mark-square,
+    .menu-mark[data-open] .menu-mark-bar { animation: none; }
   }
 }
 
