@@ -88,7 +88,7 @@ const SUPPORT_COPY =
 
 function WorkCard({ work, index }: { work: WorkEntry; index: number }) {
   return (
-    <Link href={`/results/${work.slug}/`} className="group block">
+    <Link href={`/results/${work.slug}/`} data-sfx="" className="group block">
       {/* media: the biggest objects on the page after the hero film */}
       <div className="relative aspect-[3/2] overflow-hidden rounded-[24px] bg-darkpanel">
         <div

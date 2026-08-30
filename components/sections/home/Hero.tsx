@@ -130,32 +130,9 @@ function FilmMedia({ withVideo }: { withVideo: boolean }) {
   );
 }
 
-function FilmMeta({ className = "" }: { className?: string }) {
-  return (
-    <div
-      className={
-        "pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between px-6 pb-5 font-mono text-eyebrow uppercase text-ondarkmid " +
-        className
-      }
-    >
-      <span>BigSquare / Brand Film</span>
-      <span className="hidden tabular-nums sm:inline">Nº001 / ©2026</span>
-    </div>
-  );
-}
-
-/* "+" registration marks around the settled panel (STYLE_GUIDE 4.3) */
-function PanelMarks() {
-  const mark = "absolute font-mono text-[12px] leading-none text-sec-mid";
-  return (
-    <div aria-hidden className="absolute inset-[calc(max(6vw,96px)-18px)] hidden md:block">
-      <span className={`${mark} left-0 top-0`}>+</span>
-      <span className={`${mark} right-0 top-0`}>+</span>
-      <span className={`${mark} bottom-0 left-0`}>+</span>
-      <span className={`${mark} bottom-0 right-0`}>+</span>
-    </div>
-  );
-}
+/* Fold strip, film meta ("Nº001 / ©2026") and "+" panel marks were
+   cut 2026-08-29 (Brad: "not a fan"; registration marks retired per
+   STYLE_GUIDE 4.3 changelog 2026-08-26). */
 
 /* Static composition for prefers-reduced-motion: statement, then the
    film as a settled framed panel. No pin, no canvas, poster only. */
@@ -166,7 +143,7 @@ function HeroStatic() {
         <h1 className="font-display text-display text-sec-ink">
           More locations. <br />
           More revenue from{" "}
-          <RoughAnnotation variant="circle" active className="whitespace-nowrap">
+          <RoughAnnotation variant="circle" active className="whitespace-nowrap font-accent">
             each one.
           </RoughAnnotation>
         </h1>
@@ -178,7 +155,6 @@ function HeroStatic() {
       </Container>
       <div className="relative mx-[4vw] aspect-video max-h-svh overflow-hidden rounded-[24px] bg-darkpanel">
         <FilmMedia withVideo={false} />
-        <FilmMeta />
       </div>
       <InfoBar className="relative mt-6" links={[{ label: "Results", href: "/results/" }]} />
     </section>
@@ -227,15 +203,6 @@ export function Hero() {
   const stmtFilter = useMotionTemplate`blur(${stmtBlur}px)`;
   const stmtOpacity = useTransform(p, (v) => lerp(segK(v, 0.24, 0.42), 1, 0));
   const subY = useTransform(p, (v) => `${lerp(segK(v, 0.04, 0.38), 0, -16)}svh`);
-  const stripOpacity = useTransform(p, (v) => lerp(segK(v, 0.03, 0.15), 1, 0));
-
-  /* Film meta + registration marks on the settled panel (DOM): in with
-     the settle, out again the moment the reform starts pulling the
-     panel back into the cube. */
-  const metaIn = (v: number) => segK(v, 0.92, 0.98);
-  const metaOut = (v: number) => seg(v, HERO_K + 0.01, HERO_K + 0.05);
-  const metaOpacity = useTransform(p, (v) => metaIn(v) * (1 - metaOut(v)));
-  const metaY = useTransform(p, (v) => lerp(metaIn(v), 10, 0));
 
   /* The card-beat side text (lusion's card + paragraph screen): slides
      in from the right while the film card holds, slides away as the
@@ -353,7 +320,7 @@ export function Hero() {
                   <RoughAnnotation
                     variant="circle"
                     active={h1Done}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap font-accent"
                   >
                     <H1Word>each</H1Word> <H1Word>one.</H1Word>
                   </RoughAnnotation>
@@ -439,42 +406,6 @@ export function Hero() {
             </a>
           </motion.div>
 
-          {/* The instrument strip along the fold */}
-          <motion.div
-            style={{ opacity: stripOpacity }}
-            className="absolute inset-x-0 bottom-0"
-          >
-            <Container>
-              <div className="flex items-center justify-between border-t border-sec-line py-4 font-mono text-eyebrow uppercase text-sec-mid">
-                <span className="hidden md:inline">
-                  Multi-Location & Franchise Marketing
-                </span>
-                <span className="md:hidden">Multi-Location Marketing</span>
-                <span aria-hidden className="flex items-center gap-2 text-sec-ink">
-                  Scroll
-                  <motion.span
-                    animate={{ y: [0, 4, 0] }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    ↓
-                  </motion.span>
-                </span>
-                <span className="hidden tabular-nums sm:inline">©2026</span>
-              </div>
-            </Container>
-          </motion.div>
-
-          {/* Meta + registration marks on the settled panel */}
-          <motion.div
-            aria-hidden
-            style={{ opacity: metaOpacity, y: metaY }}
-            className="absolute inset-0"
-          >
-            <PanelMarks />
-            <div className="absolute inset-[max(6vw,96px)]">
-              <FilmMeta />
-            </div>
-          </motion.div>
         </div>
       </div>
 

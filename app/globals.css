@@ -52,7 +52,8 @@
 
 /* ------------------------------------------------------------------ */
 /* Fonts (STYLE_GUIDE.md section 3)                                    */
-/* Self-hosted woff2 in public/fonts/, SIL OFL.                        */
+/* Self-hosted woff2 in public/fonts/. Lenia Mono + Casual Human are  */
+/* Brad's licensed picks (2026-08-29); Bluu/Apfel stay as fallbacks.   */
 /* ------------------------------------------------------------------ */
 
 @font-face { font-family: 'BluuNext'; font-weight: 700; font-style: normal;
@@ -70,13 +71,41 @@
 @font-face { font-family: 'Apfel'; font-weight: 900; font-style: normal;
   font-display: swap; src: url('/fonts/Apfel-900.woff2') format('woff2'); }
 
+@font-face { font-family: 'LeniaMono'; font-weight: 400; font-style: normal;
+  font-display: swap; src: url('/fonts/LeniaMono-400.woff2') format('woff2'); }
+@font-face { font-family: 'LeniaMono'; font-weight: 500; font-style: normal;
+  font-display: swap; src: url('/fonts/LeniaMono-500.woff2') format('woff2'); }
+@font-face { font-family: 'LeniaMono'; font-weight: 600; font-style: normal;
+  font-display: swap; src: url('/fonts/LeniaMono-600.woff2') format('woff2'); }
+@font-face { font-family: 'LeniaMono'; font-weight: 700; font-style: normal;
+  font-display: swap; src: url('/fonts/LeniaMono-700.woff2') format('woff2'); }
+@font-face { font-family: 'LeniaMono'; font-weight: 800; font-style: normal;
+  font-display: swap; src: url('/fonts/LeniaMono-800.woff2') format('woff2'); }
+@font-face { font-family: 'CasualHuman'; font-weight: 400; font-style: normal;
+  font-display: swap; src: url('/fonts/CasualHuman-400.woff2') format('woff2'); }
+@font-face { font-family: 'CasualHuman'; font-weight: 700; font-style: normal;
+  font-display: swap; src: url('/fonts/CasualHuman-700.woff2') format('woff2'); }
+
 :root {
-  --d: 'BluuNext', Georgia, serif;
-  --dt: 'BluuTitling', Georgia, serif;
-  --t: 'Apfel', 'Helvetica Neue', Arial, sans-serif;
-  /* --font-plex-mono is injected by next/font (IBM Plex Mono, placeholder mono) */
-  --m: var(--font-plex-mono, 'IBM Plex Mono'), ui-monospace, Menlo, monospace;
+  /* Lenia Mono is the one face (Brad, 2026-08-29/30): headlines, body, UI,
+     and eyebrows. Bluu and Apfel stay loaded as fallbacks while the swap
+     is reviewed; delete their @font-face blocks once Brad signs off. */
+  --d: 'LeniaMono', 'BluuNext', Georgia, serif;
+  --dt: 'LeniaMono', 'BluuTitling', Georgia, serif;
+  --t: 'LeniaMono', 'Apfel', 'Helvetica Neue', Arial, sans-serif;
+  --m: 'LeniaMono', var(--font-plex-mono, 'IBM Plex Mono'), ui-monospace, Menlo, monospace;
+  /* Accent: scribbly handwriting for the annotated words and scribble moments */
+  --a: 'CasualHuman', 'Comic Sans MS', cursive;
 }
+
+/* Lenia Mono alternates (STYLE_GUIDE 3.1). ss01 swaps only the O/o
+   for the alternate form; salt swaps O a g l o r y. Brad: use them
+   lightly, mostly the O's. Display headlines carry the O alternate by
+   default; .alt-o / .alt-full / .alt-none override per element. */
+.font-display, .font-titling { font-feature-settings: "ss01" 1; font-weight: 700; }
+.alt-o    { font-feature-settings: "ss01" 1; }
+.alt-full { font-feature-settings: "salt" 1; }
+.alt-none { font-feature-settings: normal; }
 
 /* ------------------------------------------------------------------ */
 /* shadcn/ui token bridge (STYLE_GUIDE.md section 2)                   */
@@ -132,6 +161,7 @@
   --font-titling: var(--dt);
   --font-sans: var(--t);
   --font-mono: var(--m);
+  --font-accent: var(--a);
   /* shadcn internals that use font-heading get the UI face, not display */
   --font-heading: var(--t);
 

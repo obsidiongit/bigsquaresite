@@ -30,6 +30,7 @@ export function Pill({
   return (
     <Link
       href={href}
+      data-sfx=""
       className={cn(
         "pill",
         variant === "primary" ? "pill-primary" : "pill-secondary",

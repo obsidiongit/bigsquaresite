@@ -13,6 +13,43 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 - [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass
 - [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12). REVIEWED by Brad same night: approved as V1 ("really solid"), named a focus point; v2 section below
 
+## Brad's check-in, 2026-08-29 (goal: launch-ready this weekend)
+
+Site state: 35 pages resolve. Missing before launch: /leadership/ (names + photos), /ad-credit/ (terms), /blog/ + 2 posts, /resources/ + lead magnets, /go/ /apply/ /thanks/ funnel templates, a real 404 page (app/not-found.tsx does not exist), favicon (404s today).
+
+Brad's dislikes and wants, in his words, sorted into work:
+
+Quick wins (this session):
+- [x] DONE 2026-08-29. Hero bottom strip: cut "BigSquare / Brand Film", "Nº001 / ©2026", and the "+" corner marks in `components/sections/home/Hero.tsx` (FilmMeta + PanelMarks). A 50%-opacity office video goes behind the hero when Brad's asset lands
+- [x] DONE 2026-08-29 (opt-in via data-sfx; nav + featured work cards tagged). Hover sound density: too many pops. `components/sound/SoundProvider.tsx` pops on every a/button sitewide. Switch to opt-in (`data-sfx` only), then re-add hover pops on the few surfaces that earn it (nav, primary CTAs, featured work cards)
+- [x] DONE 2026-08-29 (Lenia Mono on --t/--m, Casual Human on --a/font-accent, hero "each one." is the first accent use; headlines moved to Lenia Mono 700 + ss01 filled-O alternate 2026-08-30; alt dials .alt-o/.alt-full/.alt-none). Fonts polish later: tracking on the display scale, where salt earns a place, kill the Bluu/Apfel @font-face blocks. New fonts: Brad has a zip with 2 licensed fonts (main + a playful scribble/handwriting accent). Drop into `public/fonts/`, swap the @font-face block in `app/globals.css`, keep Bluu/Apfel as fallback until sign-off. The accent font pairs with the scribble underline moments. Amends decisions.md "Fonts"
+
+Next conversation, 3 panes in parallel:
+- [ ] Pane A: /blog/ + 2 posts (MDX), /resources/ shell, app/not-found.tsx (Brad: FUN and unique, big editorial type, portfolio style). Handoffs for all three panes: `project-guidelines/handoffs-2026-08-30.md`. Brad 2026-08-29: LAUNCH WITH blog and resources. Build the blog so the scheduled writer below can drop posts in with zero code: `content/blog/<slug>.mdx` with frontmatter (title, description, date, author, tags, draft), a `lib/blog.ts` loader, /blog/ index + /blog/[slug]/ page with Article JSON-LD, sitemap.ts picks posts up automatically, `draft: true` posts never render or list. Seed `content/blog/TOPICS.md` with ~10 topics
+- [ ] Pane B: funnel templates /go/, /apply/, /thanks/ (Batch 3)
+- [ ] Pane C: nav rebuild (Brad dislikes the Menu button, the Let's Talk button, and the sound button; wants them simpler and more unique; he has ideas, ask first) + footer redo ("good not great, too much chaos", cleaner and more stylistic)
+
+Then:
+- [ ] The big copy pass, one conversation: 210 franchise/multi-location mentions across 38 files. New rule: BigSquare is a full-stack marketing agency with strong creative. Franchise and multi-location is one big lane, not the whole road. Ecommerce, software brands, and single-location clients read as equals. Applies to titles, metas, heros, JSON-LD. Home title tag changes too
+- [ ] "Everything feels bigger" pass: portfolio-style scale (type, media, spacing) while still reading as an agency that serves brands. Blend of both
+- [ ] Premium cube: Brad is building an award-show-grade WebGL version in a separate project; it drops into `HomeCanvas.tsx` when ready. Do not spend cube sessions here until then
+- [ ] Music loop: a song is being made for the site (Lusion-style loop). Wire via `MUSIC_SRC` when it lands (see Sound v2)
+- [ ] Placeholder assets: Brad's designer is producing them now. Sweep `asset-manifest.md` slots as files land
+
+## Blog cadence: scheduled Claude writer (Brad 2026-08-29, "regular blog posts on a cron job for SEO")
+
+How it works, once Pane A ships the MDX pipeline:
+1. A Claude Code cloud routine (claude.ai/code/routines, created with `/schedule`) runs every Monday 6:00am Denver (12:00 UTC, cron `0 12 * * 1`). Cloud agent, its own checkout of github.com/obsidiongit/bigsquaresite, model claude-sonnet-5.
+2. It reads `content/blog/TOPICS.md` (the queue: one line per topic, target keyword, angle, which service or industry page it should link to; seeded from the Ahrefs keyword pass, Brad or Mike keep it topped up), takes the top unwritten topic, writes one 900-1400 word post to `content/blog/<slug>.mdx` following copy-rules.md (no banned words, no em dashes, no invented numbers or client names, `[PLACEHOLDER]` for anything it cannot source), links 2-3 internal pages, marks the topic done in TOPICS.md.
+3. It opens a PR titled "blog: <post title>". Brad reviews on GitHub; merge = publish (Vercel deploys main). Nothing goes live without a human merge.
+4. Twice a month is a fine start (cron `0 12 1,15 * *`); weekly once the queue is deep enough.
+
+Prerequisites, in order:
+- [ ] Pane A ships the MDX pipeline + `content/blog/TOPICS.md` with ~10 seeded topics
+- [ ] Install the Claude GitHub App on obsidiongit/bigsquaresite (https://claude.ai/code/onboarding?magic=github-app-setup); the routine cannot clone or open PRs without it (the /schedule check could not verify access on 2026-08-29)
+- [ ] Create the routine with `/schedule` (environment "Default", env_01Fx9mjBD667qMn9xcsXLP9G; the prompt draft lives in `project-sections/blog/routine-prompt.md`)
+- [ ] First run by hand (`run now`), review the PR, tune the prompt, then let it ride
+
 ## Homepage punch list (the remaining ~15%)
 
 Needs Brad (facts and assets, none of which can be invented):

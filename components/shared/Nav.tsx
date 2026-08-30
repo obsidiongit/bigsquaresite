@@ -132,6 +132,7 @@ function RuleRow({ link, onNavigate }: { link: MenuLeaf; onNavigate: () => void 
     <Link
       href={link.href}
       onClick={onNavigate}
+      data-sfx=""
       className="group flex items-center justify-between border-t border-line py-2.5 text-[15px] font-medium text-ink transition-colors duration-150 hover:text-acc"
     >
       {link.label}
@@ -230,7 +231,7 @@ export function Nav() {
               Let&apos;s Talk
             </Pill>
             <Dialog.Root open={open} onOpenChange={setOpen}>
-              <Dialog.Trigger className="group pill pill-secondary pill-sm gap-2.5">
+              <Dialog.Trigger data-sfx="" className="group pill pill-secondary pill-sm gap-2.5">
                 <span aria-hidden className="size-2 bg-acc transition-transform duration-[250ms] ease-house group-hover:rotate-45" />
                 Menu
               </Dialog.Trigger>
@@ -291,6 +292,7 @@ export function Nav() {
                                 <Link
                                   href={row.href}
                                   onClick={close}
+                                  data-sfx=""
                                   className="group flex items-baseline gap-4 py-2.5 md:py-3"
                                 >
                                   {index}
@@ -314,6 +316,7 @@ export function Nav() {
                             <motion.div key={group.key} variants={rowIn}>
                               <button
                                 type="button"
+                                data-sfx=""
                                 onClick={() => setActive(group.key)}
                                 aria-expanded={isActive}
                                 className="group flex w-full items-baseline gap-4 py-2.5 text-left md:py-3"

@@ -13,6 +13,8 @@ This file wins over any conflicting line in project-brief.md, sitemap.md, or the
 Use a simple placeholder mark (a square outline in --acc with the word "logo" inside, or a standard broken-image style icon) in a shared `<Logo />` component. The real file drops in later. Never hard-code the placeholder outside that component.
 
 ## Fonts
+**Amended 2026-08-29 (Brad):** Lenia Mono is the main face (`--t`, `--m`) and Casual Human is the handwriting accent (`--a`, `font-accent`); both licensed, sources in `assets/font/`, woff2 in `public/fonts/`. Headlines moved to Lenia Mono too on 2026-08-30 (one family sitewide; `ss01` filled-O alternate on display by default, used lightly). Original rule below is history.
+
 Bluu Next (Velvetyne) and Apfel Grotezk (Collletttivo) are free OFL fonts. Try to extract them from project-sections/reference-images/bigsquare-style-sheet-v6.html first. If that fails, download from the foundries directly and place in public/fonts/. Do not substitute another font.
 
 ## Forms and booking

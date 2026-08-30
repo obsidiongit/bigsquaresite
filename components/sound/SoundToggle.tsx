@@ -25,6 +25,7 @@ export function SoundToggle({ className }: { className?: string }) {
 
   return (
     <button
+      data-sfx=""
       type="button"
       aria-pressed={enabled}
       aria-label={enabled ? "Turn sound off" : "Turn sound on"}

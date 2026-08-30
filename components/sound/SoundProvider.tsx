@@ -4,17 +4,21 @@ import { useEffect } from "react";
 import { sfx } from "@/lib/sfx";
 
 /* Sitewide sound wiring (STYLE_GUIDE.md 7.11). One delegated listener
-   set on document instead of per-component props: every link, button,
-   and [data-sfx] element pops on hover (fine pointers only) and clicks
-   sitewide, keyboard focus gets the quiet swell. Opt out any element
-   with data-sfx="none". The first gesture unlocks the AudioContext
-   (autoplay policy), so the very first pointerdown both unlocks and
-   plays. Mounted once in the marketing layout. */
+   set on document instead of per-component props. CLICKS sound on every
+   link, button, and summary sitewide; keyboard focus gets the quiet
+   swell. HOVER pops are OPT-IN (2026-08-29, Brad: "too much popping"):
+   only elements carrying [data-sfx] pop on hover, fine pointers only.
+   Today that is the nav (pills, menu trigger, overlay rows, sound
+   toggle) and the featured work cards. Opt any element out of all
+   sound with data-sfx="none". The first gesture unlocks the
+   AudioContext (autoplay policy), so the very first pointerdown both
+   unlocks and plays. Mounted once in the marketing layout. */
 
-const INTERACTIVE = 'a,button,[role="button"],summary,[data-sfx]';
+const CLICKABLE = 'a,button,[role="button"],summary,[data-sfx]';
+const HOVERABLE = "[data-sfx]";
 
-function target(e: Event): Element | null {
-  const el = e.target instanceof Element ? e.target.closest(INTERACTIVE) : null;
+function target(e: Event, selector: string): Element | null {
+  const el = e.target instanceof Element ? e.target.closest(selector) : null;
   return el && el.getAttribute("data-sfx") !== "none" ? el : null;
 }
 
@@ -30,7 +34,7 @@ export function SoundProvider() {
 
     const onOver = (e: PointerEvent) => {
       if (!finePointer.matches) return;
-      const el = target(e);
+      const el = target(e, HOVERABLE);
       if (!el) return;
       /* entering a child of the element we're already in is not a new hover */
       if (e.relatedTarget instanceof Node && el.contains(e.relatedTarget)) return;
@@ -38,7 +42,7 @@ export function SoundProvider() {
     };
 
     const onDown = (e: PointerEvent) => {
-      if (target(e)) sfx.play("click");
+      if (target(e, CLICKABLE)) sfx.play("click");
     };
 
     const onFocus = (e: FocusEvent) => {
