@@ -35,6 +35,7 @@ Do not install anything not listed here. To add one: list it here first with a o
 | three, @react-three/fiber (+ @types/three dev) | Hero v5 WebGL film sheet (2.hero.md); lazy-loaded, under 200KB gz, never LCP per STYLE_GUIDE 7.9 |
 | @react-three/drei | Sanctioned but NOT installed; add only when a spec needs one of its helpers (keeps the 3D chunk lean) |
 | lenis | Damped smooth scroll (Brad's call 2026-08-24, STYLE_GUIDE 7.1 revised): wheel eases the real scroll position so the hero scrub reads fluid; native touch/keyboard kept; off under reduced motion |
+| remark-frontmatter | Strips the YAML frontmatter block from blog MDX bodies (named as a string so Turbopack can load it); lib/blog.ts reads the same block with fs for post metadata |
 
 ## Environment variables (from decisions.md)
 | Var | Use |

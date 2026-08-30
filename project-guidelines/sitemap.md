@@ -119,10 +119,15 @@ Planned wave 2: ~10 franchise/multi-location service-template variants (D4). Slu
 ### Resources
 | URL | STATUS | Title tag (draft) |
 |---|---|---|
-| `/blog/` | 404 (Batch 4, MDX pipeline) | BigSquare Blog: Franchise & Multi-Location Marketing |
-| `/blog/[slug]/` | blocked-on-content (topics from keyword pass) | Per post. 2 at launch |
-| `/resources/` | 404 (Batch 4) | Free Guides & Tools \| BigSquare |
+| `/blog/` | built (Pane A, 2026-08-30; MDX pipeline live, awaiting review) | Marketing Blog \| BigSquare |
+| `/blog/[slug]/` | built (Pane A, 2026-08-30; 2 launch posts, Article JSON-LD; drop a .mdx in content/blog/ to publish) | Per post. Queue in `content/blog/TOPICS.md` |
+| `/resources/` | built (Pane A, 2026-08-30; 5 working titles in lib/resources.ts, request forms until assets land) | Free Guides & Tools \| BigSquare |
 | `/resources/[slug]/` | blocked-on-content (lead-magnet assets) | One per lead magnet. 5 at launch. See `project-sections/lead-magnets/` |
+
+### Utility
+| URL | STATUS | Title tag (draft) | Purpose |
+|---|---|---|---|
+| any unmatched URL (404) | built (Pane A, 2026-08-30; `app/not-found.tsx` + `app/NotFoundStage.tsx`) | Page Not Found \| BigSquare | Editorial 404: viewport-scale 404 with the brand square as the 0, a random line that retypes itself, home + contact links. noindex |
 
 ### Paid traffic pages (noindex)
 Ad destinations. No nav, no footer links, `noindex`. Templates are Batch 3; one flagship each gets green-lit inside the batch. Alternate palettes per D6.
