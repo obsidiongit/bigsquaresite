@@ -1,3 +1,5 @@
+> **BUILT 2026-08-30 (Batch 3, Pane B).** Lives at `app/(funnel)/apply/[slug]/page.tsx` with `components/sections/funnels/ApplyForm.tsx`, content in `lib/funnels/registry.ts` (flagship `/apply/growth-partner/`). What changed from this spec: no shadcn Form/Progress (the shared `Field` primitive + a hairline progress bar); "Online only" added to the industry and locations steps and "1" reads as a fine answer (audience rule); the thank-you page has no calendar (retired), it says what happens next; posts through `submitForm` (formType "apply") with UTMs, the slug, and a `qualified` flag (6+ locations and budget at or above the floor; ranges flagged placeholder), fires lead / qualified_lead through `lib/track.ts`, then routes to `/thanks/growth-partner/` with UTMs on the URL. Archived from `project-sections/landing-pages/`.
+
 # Application Funnel Template
 
 Quick qualifying funnel. Short page, multi-step form, calendar on the thank-you page. `noindex`.

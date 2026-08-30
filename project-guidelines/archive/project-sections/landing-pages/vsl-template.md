@@ -1,3 +1,5 @@
+> **BUILT 2026-08-30 (Batch 3, Pane B).** Lives at `app/(funnel)/go/[slug]/page.tsx`, content in `lib/funnels/registry.ts` (flagship `/go/audit/`), pieces in `components/sections/funnels/`. What changed from this spec: the calendar embed is retired (decisions.md), so the button routes to `/schedule/` with UTMs carried; the palette is one `[data-theme]` ground per page (D6) instead of the Graphite/Signal names; the player is a plain `<video>` slot until a URL lands; events fire through `lib/track.ts` (video_play, video_50, video_complete, calendar_open) and are no-ops until the tag IDs exist. Kept: the section order and the tracking list. Archived from `project-sections/landing-pages/`.
+
 # VSL Landing Page Template
 
 Ad destination. No nav, no footer, `noindex`. One goal: watch the video, book the call.

@@ -128,9 +128,9 @@ Planned wave 2: ~10 franchise/multi-location service-template variants (D4). Slu
 Ad destinations. No nav, no footer links, `noindex`. Templates are Batch 3; one flagship each gets green-lit inside the batch. Alternate palettes per D6.
 | URL | STATUS | Purpose |
 |---|---|---|
-| `/go/[slug]/` | 404 (Batch 3) | VSL landing pages. See `project-sections/landing-pages/vsl-template.md` |
-| `/apply/[slug]/` | 404 (Batch 3) | Application funnels. See `project-sections/landing-pages/application-funnel-template.md` |
-| `/thanks/[slug]/` | 404 (Batch 3) | Thank-you pages with next step |
+| `/go/[slug]/` | built (Batch 3, 2026-08-30, awaiting batch review; flagship `/go/audit/`) | VSL landing pages. Dark ground, `lib/funnels/registry.ts`. Owed: video URL + poster, one sourced result, video length, offer terms. Spec archived |
+| `/apply/[slug]/` | built (Batch 3, 2026-08-30, awaiting batch review; flagship `/apply/growth-partner/`) | Application funnels. Tint ground, 6-step form posts via `submitForm` then routes to `/thanks/`. Owed: budget ranges + qualifying floor, offer terms. Spec archived |
+| `/thanks/[slug]/` | built (Batch 3, 2026-08-30, awaiting batch review; `/thanks/audit/`, `/thanks/growth-partner/`) | Thank-you pages with next step. Accent ground, UTMs kept on the URL, fires `booked`. Owed: turnaround |
 
 ## Footer (copied from the Youtech structure)
 Four columns on top, three plus a badge slot on the bottom. Built; spec archived (`archive/project-sections/footer.md`).
