@@ -29,7 +29,7 @@ Next conversation, 3 panes in parallel:
 - [x] Pane B: funnel templates /go/, /apply/, /thanks/ (Batch 3). DONE 2026-08-30, see the Batch 3 line
 - [ ] Pane C: nav rebuild (Brad dislikes the Menu button, the Let's Talk button, and the sound button; wants them simpler and more unique; he has ideas, ask first) + footer redo ("good not great, too much chaos", cleaner and more stylistic)
 
-Then:
+Then (handoff written: `project-guidelines/handoffs-2026-08-31.md`, Pane A copy pass + Pane B launch readiness):
 - [ ] The big copy pass, one conversation: 210 franchise/multi-location mentions across 38 files. New rule: BigSquare is a full-stack marketing agency with strong creative. Franchise and multi-location is one big lane, not the whole road. Ecommerce, software brands, and single-location clients read as equals. Applies to titles, metas, heros, JSON-LD. Home title tag changes too
 - [ ] "Everything feels bigger" pass: portfolio-style scale (type, media, spacing) while still reading as an agency that serves brands. Blend of both
 - [ ] Premium cube: Brad is building an award-show-grade WebGL version in a separate project; it drops into `HomeCanvas.tsx` when ready. Do not spend cube sessions here until then
