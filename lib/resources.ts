@@ -3,7 +3,9 @@
    are still all [PLACEHOLDER], so these are WORKING TITLES drafted to
    fit the wide positioning (ecommerce, software, and single-location
    clients read as equals). Confirm with Brad, then mirror the final
-   values into the spec files. No asset exists yet: every row's "Get
+   values into the spec files. Brad, 2026-08-30: the real list is still
+   on his whiteboard ("not sure exactly what the lead magnets are going
+   to be quite yet"); expect all 5 rows to change. No asset exists yet: every row's "Get
    It" opens the request form on the page, and /resources/[slug]/
    stays 404 until files land (lib/asset-files.ts is where they go). */
 
