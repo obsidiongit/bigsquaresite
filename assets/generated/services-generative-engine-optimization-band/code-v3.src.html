@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- services-generative-engine-optimization-band
+     THE MARKED ANSWER: one oversized answer-engine response panel, structural
+     mock (skeleton bars, no readable text, no digits). The single blue story:
+     the mention token inside the answer, hand-underlined in blue pen, with a
+     hairline leader out to a margin label. Light ground, surf. -->
+<meta name="figure-viewport" content="1680x720">
+<title>services-geo-band</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --surf: #E9ECF1;
+    --mid: #5A6373;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+    --bone: rgba(11, 15, 23, .08);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1680px;
+    height: 720px;
+    background: var(--surf);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 13px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  /* quiet ground geometry: a full-width baseline the card rests over */
+  .baseline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 612px;
+    height: 1px;
+    background: var(--line);
+  }
+  .sampleview { right: 200px; top: 76px; color: var(--mid); }
+
+  /* the answer panel: a bare card floating on the ground */
+  .card {
+    position: absolute;
+    left: 340px;
+    top: 116px;
+    width: 840px;
+    height: 478px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 24px 64px rgba(11, 15, 23, .10);
+  }
+  .card > * { position: absolute; }
+
+  .querylabel { left: 48px; top: 42px; color: var(--mid); position: absolute; }
+  .query {
+    left: 48px; top: 72px;
+    width: 520px; height: 56px;
+    background: var(--surf);
+    border-radius: 12px;
+  }
+  .query .qbar {
+    position: absolute;
+    left: 20px; top: 21px;
+    width: 280px; height: 14px;
+    border-radius: 7px;
+    background: rgba(11, 15, 23, .10);
+  }
+  .query .qsend {
+    position: absolute;
+    right: 12px; top: 12px;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--bone);
+  }
+  .divider {
+    left: 48px; top: 166px;
+    width: 744px; height: 1px;
+    background: var(--line);
+  }
+
+  /* skeleton answer text */
+  .bar {
+    height: 14px;
+    border-radius: 7px;
+    background: var(--bone);
+  }
+  .a1 { left: 48px; top: 204px; width: 640px; }
+  .a2 { left: 48px; top: 238px; width: 700px; }
+  .a3 { left: 48px; top: 272px; width: 300px; }
+  .a4 { left: 48px; top: 306px; width: 660px; }
+  .a5 { left: 48px; top: 340px; width: 430px; }
+
+  /* THE story: the blue mention token in line three */
+  .mention-square {
+    left: 364px; top: 271px;
+    width: 16px; height: 16px;
+    background: var(--acc);
+  }
+  .mention-bar {
+    left: 390px; top: 272px;
+    width: 160px; height: 14px;
+    border-radius: 7px;
+    background: var(--acc);
+  }
+  .pen { left: 356px; top: 292px; width: 208px; height: 12px; }
+
+  /* cited sources, all quiet */
+  .chip {
+    top: 386px;
+    height: 40px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .c1 { left: 48px;  width: 132px; }
+  .c2 { left: 192px; width: 152px; }
+  .c3 { left: 356px; width: 124px; }
+  .chip .csq {
+    position: absolute;
+    left: 14px; top: 14px;
+    width: 10px; height: 10px;
+    background: rgba(11, 15, 23, .14);
+  }
+  .chip .cbar {
+    position: absolute;
+    left: 32px; top: 14px;
+    right: 16px; height: 10px;
+    border-radius: 5px;
+    background: var(--bone);
+  }
+
+  /* leader from the underline out to the margin label */
+  .leader {
+    position: absolute;
+    left: 920px; top: 413px;
+    width: 300px; height: 1px;
+    background: var(--line);
+  }
+  .mentionlabel { left: 1238px; top: 407px; font-size: 14px; }
+</style>
+</head>
+<body>
+  <div class="baseline"></div>
+  <span class="label sampleview">Sample view</span>
+
+  <div class="card">
+    <span class="label querylabel">Query</span>
+    <div class="query"><span class="qbar"></span><span class="qsend"></span></div>
+    <div class="divider"></div>
+
+    <div class="bar a1"></div>
+    <div class="bar a2"></div>
+    <div class="bar a3"></div>
+    <div class="mention-square"></div>
+    <div class="mention-bar"></div>
+    <svg class="pen" viewBox="0 0 208 12" fill="none" aria-hidden="true">
+      <path d="M3 8 C 28 4, 52 9.5, 84 6 C 116 2.8, 142 10, 172 6.2 C 184 4.6, 196 7, 205 5.2"
+            stroke="#0657F9" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div class="bar a4"></div>
+    <div class="bar a5"></div>
+
+    <div class="chip c1"><span class="csq"></span><span class="cbar"></span></div>
+    <div class="chip c2"><span class="csq"></span><span class="cbar"></span></div>
+    <div class="chip c3"><span class="csq"></span><span class="cbar"></span></div>
+  </div>
+
+  <div class="leader"></div>
+  <span class="label mentionlabel">The mention</span>
+</body>
+</html>

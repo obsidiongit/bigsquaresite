@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- services-generative-engine-optimization-band: the two-object story.
+     An answer-engine response card (skeleton text) mentions and cites the
+     client in blue; a hairline leader runs from the blue cited source chip
+     to the solid ink brand square resting on a baseline at right. The answer
+     points back at the client site. -->
+<meta name="figure-viewport" content="1680x720">
+<title>services-generative-engine-optimization-band</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --surf: #E9ECF1;
+    --mid: #5A6373;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+    --bar: rgba(11, 15, 23, .08);
+    --bar-strong: rgba(11, 15, 23, .12);
+    --control: rgba(11, 15, 23, .15);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1680px;
+    height: 720px;
+    background: var(--surf);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 13px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .label.ink { color: var(--ink); }
+
+  /* ---- object one: the answer card ---- */
+  .card {
+    position: absolute;
+    left: 240px;
+    top: 105px;
+    width: 680px;
+    height: 510px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 24px 64px rgba(11, 15, 23, .10);
+  }
+  .card .abs { position: absolute; }
+
+  .query-panel {
+    left: 40px;
+    top: 66px;
+    width: 600px;
+    height: 54px;
+    background: var(--surf);
+    border-radius: 12px;
+  }
+  .query-bar {
+    left: 60px;
+    top: 87px;
+    width: 260px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--bar-strong);
+  }
+  .query-glyph {
+    left: 601px;
+    top: 81px;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background: var(--control);
+  }
+  .divider {
+    left: 40px;
+    top: 156px;
+    width: 600px;
+    height: 1px;
+    background: var(--line);
+  }
+  .bar {
+    position: absolute;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--bar);
+  }
+  .bar.blue { background: var(--acc); }
+  .mention-square {
+    position: absolute;
+    left: 144px;
+    top: 254px;
+    width: 16px;
+    height: 16px;
+    background: var(--acc);
+  }
+  .pen {
+    position: absolute;
+    left: 136px;
+    top: 274px;
+    width: 186px;
+    height: 12px;
+  }
+
+  /* ---- source chips ---- */
+  .chip {
+    position: absolute;
+    top: 430px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .chip .dot {
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    background: var(--control);
+  }
+  .chip .cbar {
+    position: absolute;
+    left: 34px;
+    top: 15px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--bar);
+  }
+  .chip.cited { border: 1.5px solid var(--acc); }
+  .chip.cited .dot { background: var(--acc); }
+  .chip.cited .cbar { background: var(--acc); }
+
+  /* ---- the leader and object two: the brand square ---- */
+  .leader-h {
+    position: absolute;
+    left: 920px;
+    top: 555px;
+    width: 334px;
+    height: 1px;
+    background: var(--line);
+  }
+  .leader-v {
+    position: absolute;
+    left: 1253px;
+    top: 442px;
+    width: 1px;
+    height: 114px;
+    background: var(--line);
+  }
+  .baseline {
+    position: absolute;
+    left: 1030px;
+    top: 442px;
+    width: 650px;
+    height: 1px;
+    background: var(--line);
+  }
+  .brand-square {
+    position: absolute;
+    left: 1201px;
+    top: 338px;
+    width: 104px;
+    height: 104px;
+    background: var(--ink);
+  }
+</style>
+</head>
+<body>
+  <span class="label" style="right: 200px; top: 76px;">Sample view</span>
+
+  <!-- object one: the answer card -->
+  <div class="card">
+    <span class="label" style="left: 40px; top: 40px;">Query</span>
+    <div class="abs query-panel"></div>
+    <div class="abs query-bar"></div>
+    <div class="abs query-glyph"></div>
+    <div class="abs divider"></div>
+
+    <!-- answer skeleton -->
+    <div class="bar" style="left: 40px;  top: 192px; width: 560px;"></div>
+    <div class="bar" style="left: 40px;  top: 220px; width: 600px;"></div>
+    <!-- the mention line -->
+    <div class="bar" style="left: 40px;  top: 256px; width: 92px;"></div>
+    <div class="mention-square"></div>
+    <div class="bar blue" style="left: 172px; top: 256px; width: 136px;"></div>
+    <div class="bar" style="left: 322px; top: 256px; width: 258px;"></div>
+    <!-- the one hand-drawn accent: a blue pen underline beneath the mention -->
+    <svg class="pen" viewBox="0 0 186 12" fill="none" aria-hidden="true">
+      <path d="M3 6 C 30 2.5, 62 9, 94 5 C 124 1.5, 156 8.5, 183 4.5"
+            stroke="#0657F9" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <span class="label ink" style="left: 144px; top: 294px;">The mention</span>
+
+    <div class="bar" style="left: 40px; top: 332px; width: 520px;"></div>
+    <div class="bar" style="left: 40px; top: 360px; width: 312px;"></div>
+
+    <!-- sources -->
+    <span class="label" style="left: 40px; top: 404px;">Sources</span>
+    <div class="chip" style="left: 40px; width: 150px;">
+      <span class="dot"></span><span class="cbar" style="width: 96px;"></span>
+    </div>
+    <div class="chip" style="left: 202px; width: 170px;">
+      <span class="dot"></span><span class="cbar" style="width: 116px;"></span>
+    </div>
+    <div class="chip cited" style="left: 410px; width: 190px;">
+      <span class="dot"></span><span class="cbar" style="width: 134px;"></span>
+    </div>
+  </div>
+
+  <!-- one line between the two objects -->
+  <div class="leader-h"></div>
+  <div class="leader-v"></div>
+
+  <!-- object two: the brand square on its baseline -->
+  <div class="baseline"></div>
+  <div class="brand-square"></div>
+</body>
+</html>

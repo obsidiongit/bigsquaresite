@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- services-generative-engine-optimization-band
+     THE ANSWER CARD: one centered answer-engine response card on a surf ground.
+     Right-aligned query bubble, skeleton answer paragraph with ONE blue mention
+     token (square + solid blue bar, blue-pen wobbly underline), hairline
+     separator, sources chip row with ONE blue cited chip. Margin annotations
+     QUERY / THE MENTION on hairline dashes; SOURCES inside the card.
+     No sentences, no names, no digits. Safe area x 200-1480 respected. -->
+<meta name="figure-viewport" content="1680x720">
+<title>services-generative-engine-optimization-band</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --surf: #E9ECF1;
+    --mid: #5A6373;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+    --bar: rgba(11, 15, 23, .08);
+    --bar-strong: rgba(11, 15, 23, .10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1680px;
+    height: 720px;
+    background: var(--surf);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 13px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    white-space: nowrap;
+  }
+  /* quiet ground geometry: the exhibit bench line, may run edge to edge */
+  .bench {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 634px;
+    height: 1px;
+    background: var(--line);
+  }
+  /* the answer card */
+  .card {
+    position: absolute;
+    left: 400px;
+    top: 134px;
+    width: 880px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 24px 64px rgba(11, 15, 23, .10);
+    padding: 44px;
+  }
+  /* right-aligned query bubble */
+  .query-row { display: flex; justify-content: flex-end; margin-bottom: 36px; }
+  .bubble {
+    background: var(--surf);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .bubble .bar { width: 236px; background: var(--bar-strong); }
+  /* skeleton answer paragraph */
+  .answer { display: flex; flex-direction: column; gap: 20px; }
+  .row { display: flex; align-items: center; gap: 12px; height: 14px; }
+  .bar {
+    display: block;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--bar);
+  }
+  /* the one blue mention token */
+  .mention {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mention .glyph {
+    width: 16px;
+    height: 16px;
+    background: var(--acc);
+  }
+  .mention .bar { width: 150px; background: var(--acc); }
+  .mention svg {
+    position: absolute;
+    left: 26px;
+    bottom: -11px;
+  }
+  /* separator + sources */
+  .sep { height: 1px; background: var(--line); margin-top: 32px; }
+  .sources-label {
+    position: static;
+    display: block;
+    margin-top: 24px;
+    font: 500 13px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .chips { display: flex; gap: 12px; margin-top: 14px; }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .chip .dot { width: 12px; height: 12px; background: rgba(11, 15, 23, .14); }
+  .chip .bar { height: 10px; background: var(--bar); }
+  .chip.cited { border: 1.5px solid var(--acc); }
+  .chip.cited .dot { background: var(--acc); }
+  /* margin annotations + hairline dashes */
+  .dash {
+    position: absolute;
+    height: 1px;
+    background: var(--line);
+  }
+</style>
+</head>
+<body>
+  <div class="bench"></div>
+
+  <div class="card">
+    <div class="query-row">
+      <div class="bubble"><span class="bar"></span></div>
+    </div>
+
+    <div class="answer">
+      <div class="row">
+        <span class="bar" style="width: 178px"></span>
+        <span class="bar" style="width: 236px"></span>
+        <span class="bar" style="width: 118px"></span>
+        <span class="bar" style="width: 196px"></span>
+      </div>
+      <div class="row">
+        <span class="bar" style="width: 244px"></span>
+        <span class="bar" style="width: 132px"></span>
+        <span class="bar" style="width: 208px"></span>
+        <span class="bar" style="width: 96px"></span>
+      </div>
+      <div class="row">
+        <span class="mention">
+          <span class="glyph"></span>
+          <span class="bar"></span>
+          <svg width="156" height="12" viewBox="0 0 156 12" fill="none" aria-hidden="true">
+            <path d="M2 6 C 26 2, 48 9.5, 76 5.5 C 102 1.5, 128 9, 154 4.5"
+                  stroke="#0657F9" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="bar" style="width: 214px"></span>
+        <span class="bar" style="width: 158px"></span>
+        <span class="bar" style="width: 198px"></span>
+      </div>
+      <div class="row">
+        <span class="bar" style="width: 126px"></span>
+        <span class="bar" style="width: 232px"></span>
+        <span class="bar" style="width: 174px"></span>
+        <span class="bar" style="width: 148px"></span>
+      </div>
+      <div class="row">
+        <span class="bar" style="width: 202px"></span>
+        <span class="bar" style="width: 112px"></span>
+        <span class="bar" style="width: 164px"></span>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+    <span class="sources-label">Sources</span>
+    <div class="chips">
+      <div class="chip"><span class="dot"></span><span class="bar" style="width: 72px"></span></div>
+      <div class="chip cited"><span class="dot"></span><span class="bar" style="width: 84px"></span></div>
+      <div class="chip"><span class="dot"></span><span class="bar" style="width: 60px"></span></div>
+      <div class="chip"><span class="dot"></span><span class="bar" style="width: 78px"></span></div>
+    </div>
+  </div>
+
+  <!-- margin annotations -->
+  <div class="dash" style="left: 1288px; top: 201px; width: 28px;"></div>
+  <span class="label" style="left: 1328px; top: 195px;">Query</span>
+
+  <div class="dash" style="left: 372px; top: 335px; width: 28px;"></div>
+  <span class="label" style="right: 1316px; top: 329px;">The mention</span>
+</body>
+</html>

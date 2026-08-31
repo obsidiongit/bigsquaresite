@@ -56,9 +56,18 @@ Brad's designer is covering the video sections plus a handful of statics. Add an
 
 Later sessions: Codex volume production in batches (free, so generate wide and cull hard), Brad reviewing on the contact sheet; team composites after consent; Higgsfield video as its own careful project; figure videos; sweeps as designer files land.
 
+## Session 1 log (2026-08-31, DONE; awaiting Brad's review of both flagships + the triage)
+
+1. **Triage DONE**: OWNER column added to every manifest row + a new homepage-media table. Counts across the 61 empty slots: 16 LANE-1-CODE, 23 LANE-2-AI, 22 REAL-ONLY; homepage media: 3 DESIGNER (hero film, VSL, funnel video), 4 REAL-ONLY, 1 LANE-2-AI (newsletter cycle photos). In-house can cover 39 of 61 slots (64%), above the 30-50% target, so the designer's project stays small.
+2. **Skeleton DONE**: `assets/generated/` (+ README with the promotion contract) and the `/dev/assets` contact sheet (dev-only, walks the manifest + candidate folders on refresh; verified live). `npm run assets:studio` renders Lane-1 slot HTMLs from `scripts/asset-studio/slots/` into candidate folders.
+3. **World bible DRAFTED**: `world-bible.md` (the blue square as a physical object, no-text/no-screen-UI/no-people-v1 hard rules, light/lens/grain, place list, prompt kit + seed-ref contract). Brad reviews before volume production.
+4. **Lane-1 flagship DONE**: `services-generative-engine-optimization-band`, 4 candidates (code-v1..v4) from a 4-angle design workflow with a contract gate; session pick code-v1 (the answer card). All on `/dev/assets`.
+5. **Codex hookup PROVEN + Lane-2 flagship DONE**: CLI 0.151.0 signed in on Brad's plan; `scripts/asset-studio/codex-still.mjs` is the runner (prompt via stdin ALWAYS: the npm ps1 shim mangles multi-line args; refs via `-i`; workspace-write; `~/.codex/generated_images/` fallback scan; auto 21:9 crop + notes stamp). `services-branding-band/gen-v1` is the proof (the van still; agent self-corrected an off-palette detail unprompted).
+6. Nothing wired into `public/media/`; manifest still all-EMPTY on the in-house lanes.
+
 ## What Brad owes this workstream
 
-- Codex CLI installed and signed in on this machine (it is not on PATH today); the session takes it from there
+- ~~Codex CLI installed and signed in~~ DONE 2026-08-31 (0.151.0, ChatGPT login, hookup proven in session 1)
 - The designer's covered VIDEO list (stills overlap is fine, video is where double-work costs money)
 - Team OK for AI-stylized likenesses before composites ship
 - kie.ai API key only if we outgrow Codex + Higgsfield

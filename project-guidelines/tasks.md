@@ -50,8 +50,47 @@ Brad reviewed the home polish round live. Approved as-is: footer (mark, letter t
 ## Finalization: fit, finish, polish (Brad, 2026-08-31)
 
 The sitewide passes, each its own session:
-- [ ] The big copy pass, one conversation: ~210 franchise/multi-location mentions across ~38 files. Rule: BigSquare is a full-stack marketing agency with strong creative; franchise and multi-location is one big lane, not the whole road; ecommerce, software brands, and single-location clients read as equals. Titles, metas, heros, JSON-LD, the home title tag. Handoff: `handoffs-2026-08-31.md` Pane A
+- [x] The big copy pass DONE 2026-08-31 (Pane A): 187 mentions found, 141 remain (all deliberate: /industries/franchise/, hub cards, scoped lane sections, comments). Home hero + subhead, root title/meta, org JSON-LD description, 15 service-page frames, /services/ hub, /about/, CtaBand default, Newsletter, FeaturedWork all read wide. copy-rules.md "Audience" rule + project-brief positioning amended. Awaiting Brad's review with the rest of the batch
+- [ ] **Copy round 2, page by page (Brad, 2026-08-31): run this the day before launch.** Round 1 (above) set the wide positioning; round 2 is the line-by-line polish once the real content is in (metrics, case studies, team, legal, funnel facts), because those drops change the copy around them. Process per page: read every word on the page, run it through the installed skills (humanizer, no-ai-slop in detect mode, copywriting), fix what they catch, keep copy-rules.md as the tiebreaker, screenshot 375/1280, then show Brad the page. A box below gets checked only when Brad approves that page; a rejected page gets its notes written next to it and stays open. One session can walk many pages, but approval is per page, never per batch.
+  - [ ] `/` (home, includes Hero/Newsletter/FeaturedWork/90-days section copy)
+  - [ ] `/about/`
+  - [ ] `/team/`
+  - [ ] `/careers/`
+  - [ ] `/results/` + the `/results/[slug]/` template copy
+  - [ ] `/contact/`
+  - [ ] `/schedule/`
+  - [ ] `/audit/`
+  - [ ] `/services/` hub
+  - [ ] `/services/seo/`
+  - [ ] `/services/generative-engine-optimization/`
+  - [ ] `/services/social-media/`
+  - [ ] `/services/content-marketing/`
+  - [ ] `/services/email/`
+  - [ ] `/services/obsidion-portal/`
+  - [ ] `/services/paid-search/`
+  - [ ] `/services/google-local-services-ads/`
+  - [ ] `/services/paid-social/`
+  - [ ] `/services/amazon-ads/`
+  - [ ] `/services/creator-network/`
+  - [ ] `/services/web-design/`
+  - [ ] `/services/branding/`
+  - [ ] `/services/video-production/`
+  - [ ] `/services/custom-development/`
+  - [ ] `/industries/` hub
+  - [ ] `/industries/franchise/`
+  - [ ] `/industries/home-services/`
+  - [ ] `/industries/legal/`
+  - [ ] `/industries/healthcare/`
+  - [ ] `/locations/` hub
+  - [ ] `/locations/denver/`
+  - [ ] `/locations/tampa/`
+  - [ ] `/blog/` index + the 2 launch posts
+  - [ ] `/resources/` + lead magnet pages (once they exist)
+  - [ ] Funnels: `/go/audit/`, `/apply/growth-partner/`, `/thanks/*`
+  - [ ] Shared surfaces: nav + menu overlay, footer, CtaBand, form microcopy, 404
+  - [ ] Legal pages: SKIP rewriting (lawyer owns the words); check only the H1/intro line
 - [ ] "Everything feels bigger" pass: portfolio-style scale (type, media, spacing) while still reading as an agency that serves brands. Blend of both
+- [ ] Asset fill workstream (Brad, 2026-08-31; multi-session): fill the ~61 empty slots + homepage media 30-50% in-house alongside the designer's video/statics project. Plan, lanes, rules: `project-sections/assets/asset-fill-plan.md` (code-built UI assets; Codex stills on a world bible, free so generate wide; Higgsfield for video only; nothing wired without Brad's OK). SESSION 1 DONE 2026-08-31 (log in the plan file): OWNER triage in asset-manifest.md (16 code / 23 AI / 22 real-only), `/dev/assets` contact sheet, world bible draft, GEO-band flagship (4 candidates) + Codex van still (hookup proven). NEXT: Brad reviews both flagships + triage on `/dev/assets`, then volume batches
 - [ ] Fonts polish: tracking on the display scale, where ss01 salt earns a place, kill the Bluu/Apfel @font-face fallback blocks in `app/globals.css`
 - [ ] Strip the dead `marks` prop from MediaSlot call sites in a quiet window (registration marks retired sitewide 2026-08-30; the prop is a no-op)
 - [ ] Premium cube: Brad is building an award-show-grade WebGL version in a separate project; it drops into `HomeCanvas.tsx` when ready. No cube sessions here until then (the 2K choreography/waypoint retune list waits on it)

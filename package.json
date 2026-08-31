@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "assets:studio": "node scripts/asset-studio/render.mjs",
     "blog:assets": "node scripts/blog-assets.mjs",
     "blog:figures": "node scripts/blog-figures/render.mjs",
     "start": "next start"

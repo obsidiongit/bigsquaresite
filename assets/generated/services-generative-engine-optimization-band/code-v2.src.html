@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- services-generative-engine-optimization-band: THE ANSWER LOG.
+     A monitoring instrument on the ink ground: six skeleton query rows
+     crossed with three engine columns; a ghost square marks each logged
+     answer, greyed whether it mentioned the client or not. One cell is
+     solid blue: the fresh mention, called out by a hand-drawn blue
+     circle and its leader line. -->
+<meta name="figure-viewport" content="1680x720">
+<title>services-generative-engine-optimization-band</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --ink: #0B0F17;
+    --paperlight: #E9ECF1;
+    --acc: #0657F9;
+    --line: rgba(233, 236, 241, .14);
+    --rule: rgba(233, 236, 241, .10);
+    --bar: rgba(233, 236, 241, .12);
+    --ghost: rgba(233, 236, 241, .25);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1680px;
+    height: 720px;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 16px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--paperlight);
+  }
+  /* quiet bench line under the card, full bleed on purpose */
+  .bench {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 656px;
+    height: 1px;
+    background: rgba(233, 236, 241, .08);
+  }
+  .bench-tick {
+    position: absolute;
+    top: 648px;
+    width: 1px;
+    height: 8px;
+    background: rgba(233, 236, 241, .08);
+  }
+  /* the instrument card */
+  .card {
+    position: absolute;
+    left: 380px;
+    top: 96px;
+    width: 780px;
+    height: 528px;
+    background: rgba(233, 236, 241, .04);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 24px 64px rgba(11, 15, 23, .45);
+  }
+  .card .title { left: 44px; top: 40px; }
+  .chip {
+    position: absolute;
+    right: 44px;
+    top: 32px;
+    font: 500 13px/1 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(233, 236, 241, .60);
+    border: 1px solid rgba(233, 236, 241, .18);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+  .head-rule {
+    position: absolute;
+    left: 44px;
+    right: 44px;
+    top: 88px;
+    height: 1px;
+    background: var(--line);
+  }
+  .engines-label {
+    font-size: 13px;
+    color: rgba(233, 236, 241, .55);
+    left: 508px;
+    top: 112px;
+  }
+  .bracket {
+    position: absolute;
+    left: 460px;
+    top: 138px;
+    width: 220px;
+    height: 10px;
+    border: 1px solid var(--line);
+    border-bottom: none;
+  }
+  .engine-glyph {
+    position: absolute;
+    top: 162px;
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(233, 236, 241, .35);
+  }
+  .query-head {
+    position: absolute;
+    left: 44px;
+    top: 166px;
+    width: 90px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(233, 236, 241, .08);
+  }
+  .row-rule {
+    position: absolute;
+    left: 44px;
+    right: 44px;
+    height: 1px;
+    background: var(--rule);
+  }
+  .row-rule.close { background: var(--line); }
+  .qbar {
+    position: absolute;
+    left: 44px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--bar);
+  }
+  .cell {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+  }
+  .cell.hit { background: var(--ghost); }
+  .cell.hit.mention { background: var(--acc); }
+  .cell.miss { border: 1px solid var(--ghost); }
+  /* the hand-drawn callout */
+  .loop {
+    position: absolute;
+    left: 920px;
+    top: 434px;
+    width: 60px;
+    height: 46px;
+    transform: rotate(-5deg);
+  }
+  .leader {
+    position: absolute;
+    left: 986px;
+    top: 457px;
+    width: 218px;
+    height: 1px;
+    background: rgba(233, 236, 241, .18);
+  }
+  .mention-label { font-size: 14px; left: 1222px; top: 449px; }
+</style>
+</head>
+<body>
+  <div class="bench"></div>
+  <div class="bench-tick" style="left: 380px"></div>
+  <div class="bench-tick" style="left: 1159px"></div>
+
+  <div class="card">
+    <span class="label title">Answer Log</span>
+    <span class="chip">Sample View</span>
+    <div class="head-rule"></div>
+
+    <span class="label engines-label">Engines</span>
+    <div class="bracket"></div>
+    <div class="engine-glyph" style="left: 474px"></div>
+    <div class="engine-glyph" style="left: 564px"></div>
+    <div class="engine-glyph" style="left: 654px"></div>
+    <div class="query-head"></div>
+
+    <!-- six query rows: hairline, query skeleton bar, three engine cells -->
+    <div class="row-rule" style="top: 200px"></div>
+    <div class="qbar" style="top: 217px; width: 252px"></div>
+    <div class="cell hit"  style="left: 473px; top: 216px"></div>
+    <div class="cell miss" style="left: 563px; top: 216px"></div>
+    <div class="cell miss" style="left: 653px; top: 216px"></div>
+
+    <div class="row-rule" style="top: 246px"></div>
+    <div class="qbar" style="top: 263px; width: 186px"></div>
+    <div class="cell miss" style="left: 473px; top: 262px"></div>
+    <div class="cell miss" style="left: 563px; top: 262px"></div>
+    <div class="cell hit"  style="left: 653px; top: 262px"></div>
+
+    <div class="row-rule" style="top: 292px"></div>
+    <div class="qbar" style="top: 309px; width: 274px"></div>
+    <div class="cell hit"  style="left: 473px; top: 308px"></div>
+    <div class="cell hit"  style="left: 563px; top: 308px"></div>
+    <div class="cell miss" style="left: 653px; top: 308px"></div>
+
+    <div class="row-rule" style="top: 338px"></div>
+    <div class="qbar" style="top: 355px; width: 158px"></div>
+    <div class="cell miss" style="left: 473px; top: 354px"></div>
+    <div class="cell hit mention" style="left: 563px; top: 354px"></div>
+    <div class="cell miss" style="left: 653px; top: 354px"></div>
+
+    <div class="row-rule" style="top: 384px"></div>
+    <div class="qbar" style="top: 401px; width: 224px"></div>
+    <div class="cell hit"  style="left: 473px; top: 400px"></div>
+    <div class="cell miss" style="left: 563px; top: 400px"></div>
+    <div class="cell hit"  style="left: 653px; top: 400px"></div>
+
+    <div class="row-rule" style="top: 430px"></div>
+    <div class="qbar" style="top: 447px; width: 198px"></div>
+    <div class="cell hit"  style="left: 473px; top: 446px"></div>
+    <div class="cell hit"  style="left: 563px; top: 446px"></div>
+    <div class="cell hit"  style="left: 653px; top: 446px"></div>
+
+    <div class="row-rule close" style="top: 476px"></div>
+  </div>
+
+  <!-- one hand-drawn blue loop around the fresh mention, row 4 -->
+  <svg class="loop" viewBox="0 0 60 46" fill="none" aria-hidden="true">
+    <path d="M 46 7 C 55 12 58 24 51 33 C 44 42 20 44 10 36 C 2 29 2 14 12 8 C 22 2 38 2 50 9 C 52 10 53 12 54 14"
+          stroke="#0657F9" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  <div class="leader"></div>
+  <span class="label mention-label">The Mention</span>
+</body>
+</html>
