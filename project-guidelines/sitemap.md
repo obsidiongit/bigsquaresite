@@ -15,10 +15,11 @@ Order matches Youtech's proven structure, renamed for BigSquare.
 
 | Nav label | Type | Links to |
 |---|---|---|
-| Who We Are | Dropdown | About, Leadership, Careers |
+| Who We Are | Dropdown | About, Team, Careers |
 | Services | Mega menu | 3 columns, see below |
 | Industries | Dropdown | Franchise, Home Services, Legal, Healthcare |
 | Results | Link | /results/ |
+| Resources | Group (menu overlay small tier) | Blog, Free Guides (added 2026-08-30: /blog/ was unreachable from the menu) |
 | Contact | Link | /contact/ |
 | Login | Link (icon) | Obsidion portal `[PLACEHOLDER: portal URL]` |
 | Schedule a Call | Button (accent) | /schedule/ |
@@ -55,7 +56,7 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 |---|---|---|---|
 | `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
 | `/about/` | built (Batch 1 reviewed 2026-08-27) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
-| `/leadership/` | built 2026-08-31 (Pane C) with placeholder cards; noindex + out of sitemap.xml until real people land in `lib/leadership.ts` | Leadership Team \| BigSquare | Team page. Owed: names, roles, bios, photos, intro line |
+| `/team/` | built 2026-08-31 (Pane C; replaces /leadership/ on Brad's review: bigger, fun, profile popups); noindex + out of sitemap.xml until profiles are real in `lib/team.ts` | Meet the Team \| BigSquare | Roster wall + profile windows. 6 real members + 3 open slots. Owed: questionnaire answers, headshots, photos, more names (spec: `project-sections/company/team.md`) |
 | `/careers/` | built (Batch 2, 2026-08-27, awaiting batch review) | Careers at BigSquare | Owed: remote policy, open roles, application destination |
 | `/results/` | built (Batch 2, 2026-08-27, awaiting batch review) | Client Results & Case Studies \| BigSquare | Real index; card grid stays flagged placeholder until real case studies land |
 | `/results/[slug]/` | data-driven 2026-08-31 (Pane C): a filled `caseStudy` in `lib/featured-work.ts` renders the real layout + indexes the page; the 6 entries stay noindex skeletons until real data | [Result] for [Client type] \| BigSquare | Owed: real case studies (metrics with window + source) |

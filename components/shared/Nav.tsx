@@ -75,7 +75,7 @@ const WHO: MenuGroup = {
   label: "Who We Are",
   links: [
     { label: "About BigSquare", href: "/about/" },
-    { label: "Leadership", href: "/leadership/" },
+    { label: "Team", href: "/team/" },
     { label: "Careers", href: "/careers/" },
   ],
 };
@@ -87,6 +87,16 @@ const INDUSTRIES: MenuGroup = {
     { label: "Home Services", href: "/industries/home-services/" },
     { label: "Legal", href: "/industries/legal/" },
     { label: "Healthcare", href: "/industries/healthcare/" },
+  ],
+};
+
+/* Blog and free guides were footer-only until 2026-08-30 (Brad: no way
+   to reach /blog/ from the menu). */
+const RESOURCES: MenuGroup = {
+  label: "Resources",
+  links: [
+    { label: "Blog", href: "/blog/" },
+    { label: "Free Guides", href: "/resources/" },
   ],
 };
 
@@ -398,12 +408,12 @@ function MenuPanel({
               <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-sec-line pt-6 md:gap-x-10 lg:grid-cols-4">
                 <SmallGroup {...WHO} isCurrent={isCurrent} onNavigate={close} />
                 <SmallGroup {...INDUSTRIES} isCurrent={isCurrent} onNavigate={close} />
-                {/* Results and Contact: single links; on the four-column
-                    row they sit on the first link line (eyebrow + gap) */}
+                <SmallGroup {...RESOURCES} isCurrent={isCurrent} onNavigate={close} />
+                {/* Results and Contact: single links stacked in the last
+                    cell; on the four-column row they start on the first
+                    link line (eyebrow + gap) */}
                 <div className="lg:pt-[22px]">
                   <SmallLink link={RESULTS} current={isCurrent(RESULTS.href)} onNavigate={close} />
-                </div>
-                <div className="lg:pt-[22px]">
                   <SmallLink link={CONTACT} current={isCurrent(CONTACT.href)} onNavigate={close} />
                 </div>
               </div>
