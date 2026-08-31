@@ -54,7 +54,7 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 ### Core
 | URL | STATUS | Title tag (draft) | Purpose |
 |---|---|---|---|
-| `/` | built | Franchise & Multi-Location Marketing Agency \| BigSquare | Homepage, ~85%; punch list in tasks.md |
+| `/` | built | Marketing Agency That Shows Its Work \| BigSquare | Homepage, ~85%; punch list in tasks.md |
 | `/about/` | built (Batch 1 reviewed 2026-08-27) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
 | `/team/` | built 2026-08-31 (Pane C; replaces /leadership/ on Brad's review: bigger, fun, profile popups); noindex + out of sitemap.xml until profiles are real in `lib/team.ts` | Meet the Team \| BigSquare | Roster wall + profile windows. 6 real members + 3 open slots. Owed: questionnaire answers, headshots, photos, more names (spec: `project-sections/company/team.md`) |
 | `/careers/` | built (Batch 2, 2026-08-27, awaiting batch review) | Careers at BigSquare | Owed: remote policy, open roles, application destination |
@@ -69,31 +69,31 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 ### Services hub
 | URL | STATUS | Title tag (draft) | Purpose |
 |---|---|---|---|
-| `/services/` | built | Marketing Services for Multi-Location Brands \| BigSquare | Hub; target of the homepage's `/services/#<group>` anchors |
+| `/services/` | built | Every Marketing Service, One Team \| BigSquare | Hub; target of the homepage's `/services/#<group>` anchors |
 
 ### Services: Organic Marketing
 | URL | STATUS | Title tag (draft) |
 |---|---|---|
-| `/services/seo/` | built | SEO for Multi-Location & Franchise Brands \| BigSquare |
+| `/services/seo/` | built | Search Engine Optimization (SEO) \| BigSquare |
 | `/services/generative-engine-optimization/` | built | Generative Engine Optimization (GEO) \| BigSquare |
-| `/services/social-media/` | built | Social Media Management for Franchises \| BigSquare |
-| `/services/content-marketing/` | built | Content Marketing for Multi-Location Brands \| BigSquare |
+| `/services/social-media/` | built | Social Media Management \| BigSquare |
+| `/services/content-marketing/` | built | Content Marketing Services \| BigSquare |
 | `/services/email/` | built | Email & Text Marketing \| BigSquare |
 | `/services/obsidion-portal/` | built | Obsidion Portal: See Every Lead & Every Dollar \| BigSquare |
 
 ### Services: Paid Advertising
 | URL | STATUS | Title tag (draft) |
 |---|---|---|
-| `/services/paid-search/` | built | Paid Search Management for Franchises \| BigSquare |
+| `/services/paid-search/` | built | Paid Search Management \| BigSquare |
 | `/services/google-local-services-ads/` | built | Google Local Services Ads Management \| BigSquare |
-| `/services/paid-social/` | built | Paid Social Ads for Multi-Location Brands \| BigSquare |
+| `/services/paid-social/` | built | Paid Social Ads Management \| BigSquare |
 | `/services/amazon-ads/` | built | Amazon Ads Management \| BigSquare |
 | `/services/creator-network/` | built | Creator Network: Content That Sells \| BigSquare |
 
 ### Services: Design & Development
 | URL | STATUS | Title tag (draft) |
 |---|---|---|
-| `/services/web-design/` | built | Web Design for Multi-Location Brands \| BigSquare |
+| `/services/web-design/` | built | Web Design Services \| BigSquare |
 | `/services/branding/` | built | Branding & Brand Positioning \| BigSquare |
 | `/services/video-production/` | built | Video Production & Commercials \| BigSquare |
 | `/services/custom-development/` | built | Custom Development \| BigSquare |

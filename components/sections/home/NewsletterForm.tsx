@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { ConsentLine } from "@/components/shared/ConsentLine";
 import { submitForm } from "@/lib/form-action";
 import { EASE } from "@/lib/motion";
 import { getUtmParams } from "@/lib/utm";
@@ -161,6 +162,7 @@ export function NewsletterForm() {
                 {error}
               </p>
             ) : null}
+            <ConsentLine className="mt-3" />
           </motion.form>
         )}
       </AnimatePresence>

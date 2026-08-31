@@ -19,9 +19,9 @@ import { SERVICE_GROUPS, SERVICES } from "@/lib/services";
    H1 underline + CTA bracket. */
 
 export const metadata: Metadata = {
-  title: "Marketing Services for Multi-Location Brands",
+  title: "Every Marketing Service, One Team",
   description:
-    "15 services in 3 groups: Organic Marketing, Paid Advertising, and Design & Development. One team, one plan, one report for every location.",
+    "15 services in 3 groups: Organic Marketing, Paid Advertising, and Design & Development. One team, one plan, one report you can check any day.",
   alternates: { canonical: "/services/" },
 };
 
@@ -29,7 +29,7 @@ const GROUP_INTROS: Record<string, string> = {
   "organic-marketing":
     "The channels you own: search, answers, content, social, and your list. Slower to start, cheapest to keep winning.",
   "paid-advertising":
-    "Leads on demand. Ads that start producing in weeks and report their cost per lead by location.",
+    "Leads on demand. Ads that start producing in weeks and report what every lead cost.",
   "design-development":
     "What every channel points at: your brand, your site, and the tools behind them.",
 };
@@ -70,10 +70,10 @@ export default function ServicesHubPage() {
               </Reveal>
               <Reveal delay={0.1}>
                 <p className="mt-6 max-w-[60ch] text-lead text-sec-mid">
-                  BigSquare runs marketing for multi-location and franchise
-                  brands. 15 services in 3 groups, one team, one report. Pick a
-                  service to see how it works, or book a call and we will tell
-                  you where we would start.
+                  BigSquare runs marketing for brands of every size. 15
+                  services in 3 groups, one team, one report. Pick a service
+                  to see how it works, or book a call and we will tell you
+                  where we would start.
                 </p>
               </Reveal>
               <Reveal

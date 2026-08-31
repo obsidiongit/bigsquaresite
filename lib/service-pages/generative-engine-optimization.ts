@@ -9,12 +9,12 @@ export const GEO_PAGE: ServicePageContent = {
   slug: "generative-engine-optimization",
   title: "Generative Engine Optimization (GEO)",
   description:
-    "GEO gets your brand named when people ask ChatGPT, Gemini, or Perplexity who to call. One team makes your locations the answer in every market.",
+    "GEO gets your brand named when people ask ChatGPT, Gemini, or Perplexity who to call. We build the pages, facts, and mentions that make you the answer.",
   heroVariant: "fragment-led",
   heroVignette: "chat-answer",
   h1: [{ text: "Generative", mark: true }, { text: " engine optimization" }],
   answer:
-    "Generative engine optimization, or GEO, is the work of getting your brand named when someone asks a tool like ChatGPT or Gemini who to call. These tools read the open web and repeat sources they trust. We build the pages, facts, and mentions that make your locations the answer.",
+    "Generative engine optimization, or GEO, is the work of getting your brand named when someone asks a tool like ChatGPT or Gemini who to call. These tools read the open web and repeat sources they trust. We build the pages, facts, and mentions that make your brand the answer.",
   workBand: {
     id: "services-generative-engine-optimization-band",
     alt: "Reviewing which brands AI answer tools name for buyer questions",

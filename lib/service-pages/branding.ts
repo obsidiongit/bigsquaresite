@@ -8,7 +8,7 @@ export const BRANDING_PAGE: ServicePageContent = {
   slug: "branding",
   title: "Branding & Brand Positioning",
   description:
-    "Branding and positioning that make you the obvious choice in every market: one look, one voice, carried well by every location.",
+    "Branding and positioning that make you the obvious choice: one look, one voice, carried well everywhere you show up.",
   heroVariant: "media-right",
   heroVignette: "type-specimen",
   h1: [
@@ -16,10 +16,10 @@ export const BRANDING_PAGE: ServicePageContent = {
     { text: " and brand positioning" },
   ],
   answer:
-    "Branding is the look, the voice, and the promise that make people pick you before they compare prices. We build it, write it down, and make it easy for every location to carry. One brand, recognized in every market you enter.",
+    "Branding is the look, the voice, and the promise that make people pick you before they compare prices. We build it, write it down, and make it easy for your whole team to carry. One brand, recognized everywhere you show up.",
   heroAsset: {
     id: "services-branding-hero",
-    alt: "A brand identity system for a multi-location company",
+    alt: "A brand identity system built by BigSquare",
     note: "Square shot: brand elements arranged together, mark, type, and color.",
   },
   workBand: {

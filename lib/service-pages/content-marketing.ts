@@ -7,24 +7,24 @@ import type { ServicePageContent } from "./types";
 
 export const CONTENT_MARKETING_PAGE: ServicePageContent = {
   slug: "content-marketing",
-  title: "Content Marketing for Multi-Location Brands",
+  title: "Content Marketing Services",
   description:
     "Content marketing that brings in buyers and keeps bringing them in: articles, guides, and pages built around what your customers actually search.",
   heroVariant: "statement-wide",
   h1: [
     { text: "Content", mark: true },
-    { text: " marketing for multi-location brands" },
+    { text: " marketing that compounds" },
   ],
   answer:
     "Content marketing is publishing articles, guides, and pages that answer what your buyers search, so they find you before they find a competitor. A good piece keeps bringing in readers for years. We plan it, write it, and tie every piece to a service you sell.",
   heroAsset: {
     id: "services-content-marketing-hero",
-    alt: "A content plan for a multi-location brand",
+    alt: "A content plan built by BigSquare",
     note: "Wide shot: writing in progress, an article on screen, or a content plan board.",
   },
   workBand: {
     id: "services-content-marketing-band",
-    alt: "Published content bringing readers to a multi-location brand",
+    alt: "Published content bringing readers to a client site",
     note: "Wide shot: published pieces in a grid, or a reader-facing article.",
     href: "/results/",
   },

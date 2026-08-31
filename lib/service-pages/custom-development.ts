@@ -23,7 +23,7 @@ export const CUSTOM_DEVELOPMENT_PAGE: ServicePageContent = {
   whoFor: [
     {
       text: "Your team re-types the same data in 3 systems.",
-      sub: "Software should hand work to software. Those lost hours multiply across locations.",
+      sub: "Software should hand work to software. Those lost hours multiply across your team.",
     },
     {
       text: "Off-the-shelf tools almost fit.",
@@ -86,7 +86,7 @@ export const CUSTOM_DEVELOPMENT_PAGE: ServicePageContent = {
       heading: "Integrations end the re-typing",
       mark: "re-typing",
       paragraphs: [
-        "The quiet waste in a multi-location business is the same fact entered 3 times: once in the booking system, once in billing, once in a spreadsheet nobody trusts. Each entry is minutes, and minutes times locations times every workday is a real salary spent on typing.",
+        "The quiet waste in a growing business is the same fact entered 3 times: once in the booking system, once in billing, once in a spreadsheet nobody trusts. Each entry is minutes, and minutes times people times every workday is a real salary spent on typing.",
         "Connecting the systems removes it. Data lands once at the source and flows everywhere it belongs, and your reports finally agree with each other because they come from one truth.",
         "The first integration usually reveals the next 2 worth doing. We keep that list with you and take them in order of hours saved.",
       ],

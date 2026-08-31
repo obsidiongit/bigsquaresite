@@ -14,6 +14,8 @@ export function OrganizationJsonLd() {
     name: SITE_NAME,
     url: `${SITE_URL}/`,
     email: SUPPORT_EMAIL,
+    description:
+      "BigSquare is a full-service marketing agency based in Denver and Tampa. One team runs search, ads, websites, and creative for brands of every size, with reporting clients can check any day.",
   };
 
   return (

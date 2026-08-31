@@ -64,8 +64,8 @@ const CHECKPOINTS_REFORM = [
    before, and the featured work morph got real scroll room instead:
    a pinned runway of its own, see lib/work-panel.) */
 
-const H1_LINE1 = ["More", "locations."];
-const H1_LINE2 = ["More", "revenue", "from"];
+const H1_LINE1 = ["More", "customers."];
+const H1_LINE2 = ["More", "revenue", "you", "can"];
 
 const h1Container: Variants = {
   hidden: {},
@@ -141,16 +141,15 @@ function HeroStatic() {
     <section data-theme="light" className="relative">
       <Container className="relative flex min-h-[82svh] flex-col justify-end pb-16 pt-32 md:pt-40">
         <h1 className="font-display text-display text-sec-ink">
-          More locations. <br />
-          More revenue from{" "}
+          More customers. <br />
+          More revenue you can{" "}
           <RoughAnnotation variant="circle" active className="whitespace-nowrap font-accent">
-            each one.
+            count.
           </RoughAnnotation>
         </h1>
         <p className="mt-8 max-w-[44ch] text-lead text-sec-mid">
-          BigSquare is the growth partner for multi-location and franchise
-          brands. One team runs your ads, your search, your site, and your
-          creative.
+          BigSquare is the growth partner for brands that want proof. One
+          team runs your ads, your search, your site, and your creative.
         </p>
       </Container>
       <div className="relative mx-[4vw] aspect-video max-h-svh overflow-hidden rounded-[24px] bg-darkpanel">
@@ -322,7 +321,7 @@ export function Hero() {
                     active={h1Done}
                     className="whitespace-nowrap font-accent"
                   >
-                    <H1Word>each</H1Word> <H1Word>one.</H1Word>
+                    <H1Word>count.</H1Word>
                   </RoughAnnotation>
                 </motion.span>
               </motion.h1>
@@ -340,9 +339,9 @@ export function Hero() {
                   transition={{ delay: 0.55 }}
                   className="max-w-[38ch] text-body text-sec-mid md:text-right"
                 >
-                  BigSquare is the growth partner for multi-location and
-                  franchise brands. One team runs your ads, your search, your
-                  site, and your creative.
+                  BigSquare is the growth partner for brands that want
+                  proof. One team runs your ads, your search, your site, and
+                  your creative.
                 </motion.p>
               </motion.div>
             </motion.div>

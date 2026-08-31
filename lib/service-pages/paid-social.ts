@@ -6,19 +6,19 @@ import type { ServicePageContent } from "./types";
 
 export const PAID_SOCIAL_PAGE: ServicePageContent = {
   slug: "paid-social",
-  title: "Paid Social Ads for Multi-Location Brands",
+  title: "Paid Social Ads Management",
   description:
-    "Paid social ads on Meta and TikTok built to fill the calendar at every location, with creative made in house and budgets split by market.",
+    "Paid social ads on Meta and TikTok built to fill your calendar, with creative made in house and new angles tested every month.",
   heroVariant: "statement-wide",
   h1: [
     { text: "Paid social", mark: true },
-    { text: " ads for multi-location brands" },
+    { text: " ads people stop for" },
   ],
   answer:
-    "Paid social puts your brand in the feeds your customers scroll every day. We make the creative, run the ads on Meta and TikTok, and split budget by market so every location fills its calendar. When an ad wins in one city, every city gets it.",
+    "Paid social puts your brand in the feeds your customers scroll every day. We make the creative, run the ads on Meta and TikTok, and test new angles every month so a tired ad never drains your budget. Winners get more spend. Losers get cut.",
   heroAsset: {
     id: "services-paid-social-hero",
-    alt: "Paid social ad creative for a multi-location brand",
+    alt: "Paid social ad creative made by BigSquare",
     note: "Wide shot: ad creative variations on screen, or a phone mid-scroll on a client ad.",
   },
   workBand: {

@@ -59,6 +59,13 @@ When we need to describe what these tools actually do, describe the outcome in p
 - Partner badges (Google Partner, Meta Business Partner, Microsoft Advertising) are NOT earned yet. Do not display them. The trust row uses tool and platform logos framed as "Some of the partners we work with." See `project-sections/home/3.trust.md`.
 - If a claim cannot be backed up, wrap it as `[PLACEHOLDER: needs source]` and move on.
 
+## Audience (added 2026-08-31)
+Brad, 2026-08-29: "BigSquare is a full-stack marketing agency with strong creative. Franchise and multi-location is one big lane, not the whole road. Ecommerce, software brands, and single-location clients read as equals."
+
+What that means for copy:
+- Never write franchise or multi-location as the default reader. Titles, metas, heros, CTA bands, and FAQ answers read wide.
+- Franchise and multi-location copy stays full strength where the page is about it: /industries/franchise/, the D4 wave-2 service slugs, location pickers, and clearly scoped sections inside wider pages.
+
 ## Buttons
 Button labels say what happens next, in two to four words.
 - Schedule a Call

@@ -455,12 +455,12 @@ export function ServicePage({ content }: { content: ServicePageContent }) {
         </div>
       </Section>
 
-      {/* 4. The multi-location method: 3 process cards */}
+      {/* 4. The method: 3 process cards */}
       <Section theme="light">
         <div className={EDGE}>
           <SectionHeader
             eyebrow="How It Works"
-            title="How we do it for many locations"
+            title="How the work runs"
           />
           <Reveal stagger className="mt-10 grid gap-6 md:mt-12 lg:grid-cols-3">
             {content.process.map((step, i) => (

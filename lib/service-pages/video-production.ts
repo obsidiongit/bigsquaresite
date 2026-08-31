@@ -9,17 +9,17 @@ export const VIDEO_PRODUCTION_PAGE: ServicePageContent = {
   slug: "video-production",
   title: "Video Production & Commercials",
   description:
-    "Commercials, ads, and brand films shot and edited in house. One planned shoot becomes a year of content for every location and channel.",
+    "Commercials, ads, and brand films shot and edited in house. One planned shoot becomes a year of content for every channel.",
   heroVariant: "statement-wide",
   h1: [
     { text: "Video", mark: true },
     { text: " production and commercials" },
   ],
   answer:
-    "We shoot and edit commercials, ads, and brand films in house. One well-planned shoot becomes a year of content: the brand film, the cutdowns, the vertical clips, the ads. Made once, sized for every channel and every location.",
+    "We shoot and edit commercials, ads, and brand films in house. One well-planned shoot becomes a year of content: the brand film, the cutdowns, the vertical clips, the ads. Made once, sized for every channel.",
   heroAsset: {
     id: "services-video-production-hero",
-    alt: "A commercial shoot for a multi-location brand",
+    alt: "A BigSquare commercial shoot in progress",
     note: "Wide shot: a shoot in progress, camera and lights at a real client location.",
   },
   workBand: {

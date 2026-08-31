@@ -6,25 +6,25 @@ import type { ServicePageContent } from "./types";
 
 export const SOCIAL_MEDIA_PAGE: ServicePageContent = {
   slug: "social-media",
-  title: "Social Media Management for Franchises",
+  title: "Social Media Management",
   description:
-    "Social media management for franchises and multi-location brands. Posts planned, made, and shipped for every location, in one brand voice.",
+    "Social media management done for you. Posts planned, made, and shipped in your brand voice, with comments and messages answered the same day.",
   heroVariant: "media-right",
   heroVignette: "review-stars",
   h1: [
-    { text: "Social media management for " },
-    { text: "franchises", mark: true },
+    { text: "Social media that says " },
+    { text: "someone is home", mark: true },
   ],
   answer:
-    "We plan, make, and post social content for every location you have. One calendar, one voice, local details per market. Your brand looks alive and trusted everywhere, and your managers never have to think about what to post.",
+    "We plan, make, and post your social content. One calendar, one voice, real photos over stock. Your brand looks alive and trusted, and your team never has to think about what to post.",
   heroAsset: {
     id: "services-social-media-hero",
-    alt: "A social media content calendar for a multi-location brand",
+    alt: "A social media content calendar managed by BigSquare",
     note: "Square shot: a phone with a client feed open, or a content calendar wall.",
   },
   workBand: {
     id: "services-social-media-band",
-    alt: "Social content produced for multi-location brands",
+    alt: "Social content produced by BigSquare",
     note: "Wide shot: content being made, a set, or a grid of client posts.",
     href: "/results/",
   },

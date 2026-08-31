@@ -2,34 +2,35 @@ import { FRANCHISE, HOME_SERVICES } from "./industries";
 import type { ServicePageContent } from "./types";
 
 /* /services/seo/ (the T2 flagship). Title tag from sitemap.md.
-   Primary keyword: multi-location SEO (seo-requirements.md keyword
-   direction; final title lockdown waits on the Ahrefs pass).
+   Widened 2026-08-31 (wide-positioning pass): the multi-location SEO
+   keyword moves to its D4 wave-2 slug when the Ahrefs pass lands;
+   final title lockdown waits on that pass.
    Every claim here is either process description or traces to approved
    copy (the 3-to-6-months line and the ownership line come from
    project-sections/home/12.faq.md's locked answers). */
 
 export const SEO_PAGE: ServicePageContent = {
   slug: "seo",
-  title: "SEO for Multi-Location & Franchise Brands",
+  title: "Search Engine Optimization (SEO)",
   description:
-    "Multi-location SEO from one team: location pages, Google Business Profiles, and content that ranks in every city you serve. Reported by location.",
+    "SEO from one team: site fixes, content, and pages that rank where your buyers search. Watch rankings, calls, and leads move in one report.",
   h1: [
-    { text: "SEO for " },
-    { text: "multi-location", mark: true },
-    { text: " brands" },
+    { text: "SEO that " },
+    { text: "proves", mark: true },
+    { text: " it works" },
   ],
   answer:
-    "Multi-location SEO is the work of getting every one of your locations found on Google. One team builds the location pages, cleans up the listings, and writes the content that makes each city rank. You watch rankings, calls, and leads move in one report.",
+    "SEO is the work of getting your brand found on Google. One team fixes the site, builds the pages, and writes the content that makes you rank. You watch rankings, calls, and leads move in one report.",
   heroVariant: "media-right",
   heroAsset: {
     id: "services-seo-hero",
-    alt: "Local search rankings for a multi-location brand, tracked city by city in the Obsidion portal",
+    alt: "Search rankings tracked city by city in the Obsidion portal",
     note: "Square-ish shot: portal rankings view, or a map-grid rank tracker. Something with visible city-by-city structure.",
   },
   heroVignette: "local-rank",
   workBand: {
     id: "services-seo-band",
-    alt: "The BigSquare team reviewing multi-location SEO results",
+    alt: "The BigSquare team reviewing SEO results",
     note: "Wide (21:9) shot: team at work, a strategy wall, or a portal report on a big screen.",
     href: "/results/",
   },
@@ -92,10 +93,10 @@ export const SEO_PAGE: ServicePageContent = {
   ],
   spine: [
     {
-      heading: "What multi-location SEO is",
+      heading: "How SEO gets you found",
       paragraphs: [
-        "When someone searches \"roof repair near me\" or \"med spa in Tampa,\" Google shows businesses close to that person. Those results are local. Ranking well in one city does nothing for the next one. Multi-location SEO is the work of winning those local results in every market you serve, from one website. For a franchise, the same job runs across every unit.",
-        "The pieces are simple to name and slow to fake. Each location needs its own page with real local detail. Each needs a correct, active Google Business Profile. The site behind them needs to be fast and clean. And the brand needs content that answers the questions buyers type before they pick anyone.",
+        "When someone searches \"roof repair near me\" or \"med spa in Tampa,\" Google shows businesses close to that person. Those results are local, and winning them takes local pages and listings. An ecommerce or software brand fights a different fight: national rankings for the things it sells. SEO is the work of winning the searches your buyers make, local or national, from one site.",
+        "The pieces are simple to name and slow to fake. Pages that deserve to rank. Listings and profiles that are correct and active. A site that is fast and clean behind them. And content that answers the questions buyers type before they pick anyone.",
       ],
     },
     {

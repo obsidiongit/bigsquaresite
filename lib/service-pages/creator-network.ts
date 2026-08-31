@@ -18,7 +18,7 @@ export const CREATOR_NETWORK_PAGE: ServicePageContent = {
     "The Creator Network is real people making real content about your brand, which we then run as ads. A customer talking beats a logo talking. We match creators to your markets, brief them, and turn the best clips into the ads that fill your calendar.",
   heroAsset: {
     id: "services-creator-network-hero",
-    alt: "A creator filming content for a multi-location brand",
+    alt: "A creator filming content for a client brand",
     note: "Wide shot: a creator filming with a client product or at a client location.",
   },
   workBand: {

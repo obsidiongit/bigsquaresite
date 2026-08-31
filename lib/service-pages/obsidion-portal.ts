@@ -10,7 +10,7 @@ export const OBSIDION_PORTAL_PAGE: ServicePageContent = {
   slug: "obsidion-portal",
   title: "Obsidion Portal: See Every Lead & Every Dollar",
   description:
-    "The Obsidion Portal is one login that shows every lead, every call, and every dollar, by location. Check our work any day, not just report day.",
+    "The Obsidion Portal is one login that shows every lead, every call, and every dollar. Check our work any day, not just report day.",
   heroVariant: "fragment-led",
   heroVignette: "portal-window",
   h1: [
@@ -18,7 +18,7 @@ export const OBSIDION_PORTAL_PAGE: ServicePageContent = {
     { text: "every dollar", mark: true },
   ],
   answer:
-    "The Obsidion Portal is the dashboard every BigSquare client gets. One login shows every lead, every call, and every dollar of ad spend, broken out by location. It is how you check our work any day you want, not just on report day.",
+    "The Obsidion Portal is the dashboard every BigSquare client gets. One login shows every lead, every call, and every dollar of ad spend, broken out by channel and by location. It is how you check our work any day you want, not just on report day.",
   exhibit: {
     id: "services-obsidion-portal-exhibit",
     alt: "The Obsidion Portal dashboard showing leads, calls, and spend by location",

@@ -6,19 +6,19 @@ import type { ServicePageContent } from "./types";
 
 export const WEB_DESIGN_PAGE: ServicePageContent = {
   slug: "web-design",
-  title: "Web Design for Multi-Location Brands",
+  title: "Web Design Services",
   description:
-    "Fast, clean websites for multi-location brands, built to turn visitors into booked calls and to rank in every city you serve.",
+    "Fast, clean websites built to turn visitors into booked calls and to rank. Designed, written, and shipped by one team.",
   heroVariant: "statement-wide",
   h1: [
     { text: "Web design", mark: true },
-    { text: " for multi-location brands" },
+    { text: " that books the call" },
   ],
   answer:
-    "We design and build fast, clean websites that turn visitors into booked calls. For a multi-location brand that means a page for every location, one brand across all of them, and a site your team can update without calling a developer.",
+    "We design and build fast, clean websites that turn visitors into booked calls. One brand across every page, a structure built to rank, and a site your team can update without calling a developer.",
   heroAsset: {
     id: "services-web-design-hero",
-    alt: "A website designed and built for a multi-location brand",
+    alt: "A website designed and built by BigSquare, on desktop and phone",
     note: "Wide shot: a finished client site on desktop and phone together.",
   },
   workBand: {

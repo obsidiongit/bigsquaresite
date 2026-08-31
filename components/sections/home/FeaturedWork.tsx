@@ -87,7 +87,7 @@ const supportRise: Variants = {
 };
 
 const SUPPORT_COPY =
-  "A selection of work for multi-location and franchise brands. Open any project for the full story and the numbers behind it.";
+  "A selection of our work. Open any project for the full story and the numbers behind it.";
 
 function WorkCard({ work, index }: { work: WorkEntry; index: number }) {
   return (

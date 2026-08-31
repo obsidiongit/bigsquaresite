@@ -21,18 +21,20 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Franchise & Multi-Location Marketing Agency | BigSquare",
+    default: "Marketing Agency That Shows Its Work | BigSquare",
     template: "%s | BigSquare",
   },
   description:
-    "BigSquare Marketing helps franchise and multi-location brands grow with SEO, paid ads, and reporting you can check any day.",
+    "BigSquare is a full-service marketing agency. One team runs your search, your ads, your site, and your creative, with numbers you can check any day.",
 };
 
-// Above-the-fold faces preloaded per STYLE_GUIDE.md section 3
+// Above-the-fold faces preloaded per STYLE_GUIDE.md section 3.
+// Lenia Mono is the one family since 2026-08-29; Bluu and Apfel are
+// fallbacks only and no longer earn a preload (launch pass, 2026-08-31).
 const PRELOAD_FONTS = [
-  "/fonts/BluuNext-700.woff2",
-  "/fonts/Apfel-400.woff2",
-  "/fonts/Apfel-500.woff2",
+  "/fonts/LeniaMono-400.woff2",
+  "/fonts/LeniaMono-500.woff2", // eyebrows: above the fold on every hero
+  "/fonts/LeniaMono-700.woff2",
 ];
 
 export default function RootLayout({

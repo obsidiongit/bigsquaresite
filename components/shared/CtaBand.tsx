@@ -18,7 +18,7 @@ import { EDGE } from "@/lib/layout";
    --onacc here) and spends 1 slot of the page's annotation budget. */
 
 export function CtaBand({
-  headline = "Ready to grow every location?",
+  headline = "Ready to grow your brand?",
   body = "Book a call. We will look at your numbers together and tell you exactly what we would do first.",
   primaryLabel = "Schedule a Call",
   primaryHref = "/schedule/",

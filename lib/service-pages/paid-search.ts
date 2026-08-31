@@ -7,20 +7,20 @@ import type { ServicePageContent } from "./types";
 
 export const PAID_SEARCH_PAGE: ServicePageContent = {
   slug: "paid-search",
-  title: "Paid Search Management for Franchises",
+  title: "Paid Search Management",
   description:
-    "Paid search management for franchises: Google and Microsoft ads that reach buyers the moment they search, with budgets split by location.",
+    "Paid search management: Google and Microsoft ads that reach buyers the moment they search, tuned every week and tied to cost per lead.",
   heroVariant: "media-right",
   heroVignette: "bid-bars",
   h1: [
     { text: "Paid search", mark: true },
-    { text: " management for franchises" },
+    { text: " without the waste" },
   ],
   answer:
-    "Paid search puts your ad at the top of Google the moment someone searches for what you sell. We build the campaigns, write the ads, and split budget across your locations so every market gets its share. You see cost per lead by location, not one blurry total.",
+    "Paid search puts your ad at the top of Google the moment someone searches for what you sell. We build the campaigns, write the ads, and guard the budget so junk clicks never eat it. You see your true cost per lead, not one blurry total.",
   heroAsset: {
     id: "services-paid-search-hero",
-    alt: "A paid search campaign for a multi-location brand",
+    alt: "A client ad at the top of a Google search results page",
     note: "Square shot: a search results page with a client ad on top, or campaign structure on screen.",
   },
   workBand: {

@@ -16,7 +16,7 @@ import { METRICS } from "@/lib/metrics";
 export const metadata: Metadata = {
   title: { absolute: "About BigSquare Marketing" },
   description:
-    "BigSquare is the growth partner for multi-location and franchise brands. One team across search, ads, sites, and creative, with numbers you can check any day.",
+    "BigSquare is the growth partner for brands that want proof. One team across search, ads, sites, and creative, with numbers you can check any day.",
   alternates: { canonical: "/about/" },
 };
 
@@ -107,14 +107,14 @@ export default function AboutPage() {
                 >
                   growth
                 </RoughAnnotation>{" "}
-                partner for multi-location brands
+                partner for brands that want proof
               </h1>
             </Reveal>
             <Reveal delay={0.1} className="md:col-span-4 md:col-start-9 md:self-end">
               <p className="max-w-[40ch] text-body text-sec-mid">
-                We help you open more locations and get more revenue out of
-                the ones you have. Single locations and ecommerce brands
-                grow here too.
+                Ecommerce brands, software brands, single locations, and
+                big multi-location systems all grow here. One team, every
+                channel, and numbers you can check.
               </p>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <Pill href="/schedule/" className="max-sm:w-full max-sm:justify-center">
@@ -142,8 +142,8 @@ export default function AboutPage() {
               <div className="mt-6 max-w-[65ch]">
                 <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
                   [PLACEHOLDER: founding story, 2 to 3 short paragraphs from
-                  Brad: how BigSquare started, why it serves multi-location
-                  brands, and what changed along the way]
+                  Brad: how BigSquare started, who it serves, and what
+                  changed along the way]
                 </p>
               </div>
             </div>

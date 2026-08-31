@@ -9,7 +9,7 @@ export const EMAIL_PAGE: ServicePageContent = {
   slug: "email",
   title: "Email & Text Marketing",
   description:
-    "Email and text that follow up with every lead and bring old customers back. Written, scheduled, and reported by one team, location by location.",
+    "Email and text that follow up with every lead and bring old customers back. Written, scheduled, and reported by one team.",
   heroVariant: "fragment-led",
   heroVignette: "send-queue",
   h1: [{ text: "Email and " }, { text: "text", mark: true }, { text: " marketing" }],
@@ -17,7 +17,7 @@ export const EMAIL_PAGE: ServicePageContent = {
     "Email and text marketing is the follow-up your leads and past customers actually read. We write the messages, set the sending schedule, and keep your list clean. Every lead hears back fast, and old customers get a real reason to come back.",
   workBand: {
     id: "services-email-band",
-    alt: "Email and text follow-up for a multi-location brand",
+    alt: "An email and text follow-up thread with a customer",
     note: "Wide shot: a message thread with a customer, or the send calendar.",
     href: "/results/",
   },

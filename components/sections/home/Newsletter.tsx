@@ -68,10 +68,9 @@ export function Newsletter() {
               <Reveal stagger className="mt-6">
                 <RevealItem>
                   <p className="max-w-[46ch] text-body text-sec-mid">
-                    Most marketing advice is written for one location. Ours is
-                    not. Subscribe to get what our leadership team is seeing
-                    across multi-location and franchise accounts, in plain
-                    words.
+                    Most marketing advice is a guess. Ours is not. Subscribe
+                    to get what our team is seeing across real client
+                    accounts, in plain words.
                   </p>
                 </RevealItem>
 
