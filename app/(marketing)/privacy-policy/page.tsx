@@ -9,8 +9,10 @@ import { getLegalDoc } from "@/lib/legal";
    project-sections/legal/legal-pages-plan.md and still needs a
    lawyer's review; counsel's edits are text changes in the MDX file
    only. Indexed and in the sitemap (legal pages are fine to index).
-   The footer's "Do not sell or share" link targets
-   #your-choices-and-rights (the H2 id mdx-components generates). */
+   The #your-choices-and-rights anchor (the H2 id mdx-components
+   generates) must survive renames: the footer's "Do not sell or
+   share" link was CUT by Brad 2026-08-30, but counsel may want it
+   back, and it would target that id. */
 
 const doc = getLegalDoc("privacy-policy");
 
