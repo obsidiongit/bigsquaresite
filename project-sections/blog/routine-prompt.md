@@ -15,7 +15,7 @@ You are writing one SEO blog post for BigSquare Marketing's website (Next.js, MD
 5. Use the post pieces, all without imports:
    - Exactly 1 `<Quote>one line pulled from the post</Quote>` at the strongest line, on its own line between paragraphs.
    - 1 or 2 `<Callout title="Do this">...</Callout>` blocks, each the practical step of a section, 2 to 4 sentences.
-   - 1 or 2 `<Figure id="blog-fig-<short-name>" note="what the graphic shows, in one or two sentences" alt="what the finished graphic shows" aspect="16 / 9" caption="one line under it" />` where the post explains a system or a number. Always pass `aspect="16 / 9"`. You will author each figure yourself in step 7.
+   - 2 or 3 `<Figure id="blog-fig-<short-name>" note="what the graphic shows, in one or two sentences" alt="what the finished graphic shows" aspect="16 / 9" caption="one line under it" />` where the post explains a system, a comparison, or a piece of math (Brad, 2026-08-30: use MORE figures, they carry the posts). Always pass `aspect="16 / 9"`. You will author each figure yourself in step 7. A figure must depict something the post actually says; never decorate.
    - A markdown table when the post compares 3 or more things (3 columns max, short cells).
 6. Frontmatter, exactly these keys:
    ```

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- FIG. 001.2, inline figure for /blog/is-your-marketing-agency-working-7-numbers/
+     section 3: the cost-per-customer math the post walks through. 5 leads
+     at $50, 1 in 5 closes (the filled square), so 1 customer costs $250
+     (the big square). Sample math, labeled as such. Light ground. -->
+<meta name="figure-viewport" content="1200x675">
+<title>blog-fig-cost-per-customer</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --mid: #5A6373;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 675px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 16px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp { left: 100px; top: 72px; }
+  .sample { right: 100px; top: 72px; color: var(--mid); }
+  .baseline {
+    position: absolute;
+    left: 100px;
+    right: 100px;
+    top: 400px;
+    height: 1px;
+    background: var(--line);
+  }
+  /* 5 leads at $50: 64px squares, 24px gaps, bottoms on the baseline */
+  .lead {
+    position: absolute;
+    top: 336px;
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--acc);
+  }
+  .lead.closed { background: var(--acc); border: none; }
+  .bracket-one {
+    position: absolute;
+    left: 516px;
+    top: 296px;
+    width: 64px;
+    height: 14px;
+    border: 1px solid var(--line);
+    border-bottom: none;
+  }
+  .onein5 { left: 521px; top: 262px; }
+  .cost50 { left: 164px; top: 432px; }
+  /* 1 customer at $250 */
+  .customer {
+    position: absolute;
+    left: 900px;
+    top: 272px;
+    width: 128px;
+    height: 128px;
+    background: var(--acc);
+  }
+  .cost250 { left: 900px; top: 432px; }
+</style>
+</head>
+<body>
+  <span class="label stamp">FIG. 001.2</span>
+  <span class="label sample">Sample numbers</span>
+  <div class="baseline"></div>
+  <div class="lead" style="left: 164px"></div>
+  <div class="lead" style="left: 252px"></div>
+  <div class="lead" style="left: 340px"></div>
+  <div class="lead" style="left: 428px"></div>
+  <div class="lead closed" style="left: 516px"></div>
+  <div class="bracket-one"></div>
+  <span class="label onein5">1 in 5</span>
+  <span class="label cost50">$50 each</span>
+  <div class="customer"></div>
+  <span class="label cost250">= $250</span>
+</body>
+</html>

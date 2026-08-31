@@ -55,11 +55,13 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `blog-cover-local-seo-scale` | /blog/local-seo-with-more-than-one-location/ | Cover figure | Rendered by `npm run blog:figures` (FIG. 002, dark ground: 1 big square next to a 4x5 grid) | 2:1 | FILLED 2026-08-30 |
 | `blog-fig-spend-by-channel` | /blog/is-your-marketing-agency-working-7-numbers/ | Inline figure, section 5 | Rendered by `npm run blog:figures` (FIG. 001.1: the sample spend table, 4 channels, both months, cost per lead in blue). A real portal screenshot may replace it later via `assets/blog-covers/` after deleting the figure HTML | 16:9 | FILLED 2026-08-30 |
 | `blog-fig-local-seo-system` | /blog/local-seo-with-more-than-one-location/ | Inline figure after the system table | Rendered by `npm run blog:figures` (FIG. 002.1: 1 square next to the 4x5 grid over the 3 shared system bars) | 16:9 | FILLED 2026-08-30 |
+| `blog-fig-cost-per-customer` | /blog/is-your-marketing-agency-working-7-numbers/ | Inline figure, section 3 | Rendered by `npm run blog:figures` (FIG. 001.2: 5 lead squares at $50, 1 in 5 filled, = 1 customer square at $250; SAMPLE NUMBERS label) | 16:9 | FILLED 2026-08-30 |
+| `blog-fig-gbp-ownership` | /blog/local-seo-with-more-than-one-location/ | Inline figure, ownership section | Rendered by `npm run blog:figures` (FIG. 002.2: 1 owner-account square, hairline tree to 20 manager locations) | 16:9 | FILLED 2026-08-30 |
 | `blog-author-bigsquare-team` | every /blog/[slug]/ | Author card, 72px square | Team photo or a headshot once posts carry a named author | 1:1 | EMPTY |
 | `blog-author-brad` | posts bylined by Brad Brown (CEO) | Author card, 72px square | Square headshot crop; source arrives in `assets/team/`, `npm run blog:assets` exports + wires it | 1:1 | FILLED 2026-08-30 |
 | `blog-author-mike` | posts bylined by Mike Soden (CTO) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 | `blog-author-chaley` | posts bylined by Chaley Selsor (Team Lead) | Author card | Same | 1:1 | FILLED 2026-08-30 |
-| `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same; levi source still owed by Brad in `assets/team/` | 1:1 | EMPTY |
+| `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 | `blog-author-russel` | posts bylined by Russel Spence (Creative Director) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 | `blog-author-sadie` | posts bylined by Sadie Pursell (Brand Ambassador) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).

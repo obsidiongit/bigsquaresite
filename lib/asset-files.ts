@@ -23,11 +23,14 @@ export const ASSET_FILES: Record<string, AssetFile> = {
   // AUTO-MANAGED by scripts/blog-assets.mjs (blog covers + headshots); do not edit inside
   "blog-author-brad": { src: "/media/blog-author-brad.webp" },
   "blog-author-chaley": { src: "/media/blog-author-chaley.webp" },
+  "blog-author-levi": { src: "/media/blog-author-levi.webp" },
   "blog-author-mike": { src: "/media/blog-author-mike.webp" },
   "blog-author-russel": { src: "/media/blog-author-russel.webp" },
   "blog-author-sadie": { src: "/media/blog-author-sadie.webp" },
   "blog-cover-agency-7-numbers": { src: "/media/blog-cover-agency-7-numbers.webp" },
   "blog-cover-local-seo-scale": { src: "/media/blog-cover-local-seo-scale.webp" },
+  "blog-fig-cost-per-customer": { src: "/media/blog-fig-cost-per-customer.webp" },
+  "blog-fig-gbp-ownership": { src: "/media/blog-fig-gbp-ownership.webp" },
   "blog-fig-local-seo-system": { src: "/media/blog-fig-local-seo-system.webp" },
   "blog-fig-spend-by-channel": { src: "/media/blog-fig-spend-by-channel.webp" },
   // END AUTO-MANAGED

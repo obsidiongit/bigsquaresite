@@ -4,6 +4,35 @@ Only what is left to do. Endpoint status lives in `sitemap.md` (the single track
 
 Working rules: batch builds now that all three template gates are open (Brad, 2026-08-27); one review round with Brad per batch, not per page. New template types (funnel, blog post, lead magnet, case study) still get one green-lit flagship, reviewed inside the batch. Per page before checkoff: screenshot 375 / 768 / 1280 / 1536 + reduced motion, no overflow, JSON-LD probe, typecheck; stop any dev server before `npm run build`. End every session with a simple list of what was built.
 
+## DEVELOPER HANDOFF (Brad, 2026-08-30): what to pick up, in order
+
+Brad is finishing his section of the work and handing the site to the developer to finalize before go-live. Every URL in `sitemap.md` resolves and is built; the STATUS column there is the page-by-page truth. What is left falls into 4 buckets:
+
+**1. Not built yet (the only real gaps):**
+- [ ] `/resources/[slug]/` lead magnet pages: blocked on Brad's 5 picks (his whiteboard; research in `project-sections/lead-magnets/brainstorm-2026-08-31.md`). When decided: 5 rows in `lib/resources.ts`, 5 specs in `project-sections/lead-magnets/`, then the pages and assets. `/resources/` itself is live with request forms in the meantime
+- [ ] Wave 2 service pages (D4, ~10 franchise/multi-location variants of the service template): blocked on the Ahrefs keyword pass for slugs. Template exists; this is registry rows + copy per page
+- [ ] `/press/`: post-launch only, gated on 3+ real placements (blog-plan.md section 4)
+
+**2. Blog automation (Brad passed these 3 to the developer explicitly):**
+- [ ] Install the Claude GitHub App + create the writer routine + first run by hand: the 3 unchecked lines under "Blog cadence" below; full setup in `project-sections/blog/blog-plan.md` section 3 (either hosting option; the job env must install Playwright in its own step, it is deliberately not in package.json)
+- [ ] Figure videos (the stretch): CSS-animate the existing figure HTMLs and capture to webm with a `<FigureVideo>` MDX piece + reduced-motion poster fallback. Mechanics recorded in blog-plan.md 2c; build only after the still system is in use (stills approved by Brad 2026-08-30)
+
+**3. Wiring and launch plumbing (no design work):**
+- [ ] `FORM_WEBHOOK_URL` env: every form posts through one `submitForm` path (`lib/form-action.ts`) and logs a server warning until this is set
+- [ ] GHL API capture for `/schedule/` + `/apply/` (server-side only, `GHL_*` env vars; see "Backend / integrations" below)
+- [ ] Tracking IDs: `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_GTAG_ID`, `NEXT_PUBLIC_GA4_ID` (components built, values empty; `lib/track.ts` is a no-op until then)
+- [ ] 2J: real favicon (404s today), homepage metadata/OG check, Lighthouse pass (CWV green on key pages)
+- [ ] Blog SEO plumbing: RSS feed route, Google Search Console + sitemap submit at launch (blog-plan.md "SEO plumbing")
+- [ ] CI guard rails before the writer runs unattended: branch protection on main + Vercel build check, and the copy lint (blog-plan.md section 3 "guard rails")
+- [ ] Launch config sweep: `[PLACEHOLDER]` grep across the repo (portal login URL in the nav, office phones), redirects/domains on Vercel
+
+**4. Blocked on Brad's content, not on code (pointers only, details live where linked):**
+- [ ] The "Brad-owed content" section at the bottom of this file (case studies, metrics, photos, phones/addresses, hero film, music, lead-magnet picks, the Ahrefs pass)
+- [ ] Legal: lawyer review of the full drafts in `content/legal/*.mdx` (counsel edits the MDX only)
+- [ ] The sitewide copy pass (franchise-only mentions -> full-stack positioning) and "everything bigger" pass, listed under Brad's check-in above; Brad may run these with an agent before handoff
+
+Reviews still open (Brad may approve verbally; confirm and check off): Batch 2, Batch 3, blog v2, nav/menu/footer rebuilds, the 2026-08-30 home polish round.
+
 ## Batch plan (order of work)
 
 - [x] **Batch 1: /audit/, /contact/, /about/** BUILT 2026-08-27; REVIEWED by Brad same day: "good, not great", structure approved, no rebuild wanted. Known placeholders (CTAs, form copy, content) ride the sitewide final pass; pages improve as we play with them
@@ -53,9 +82,9 @@ Full developer setup (both hosting options, guard rails, CI lint): `project-sect
 Prerequisites, in order:
 - [x] DONE 2026-08-30: Pane A shipped the MDX pipeline + `content/blog/TOPICS.md` with 12 seeded topics; `project-sections/blog/routine-prompt.md` updated to the built contract
 - [x] DONE 2026-08-30 (blog asset engine session): the figure renderer (`npm run blog:figures`, `scripts/blog-figures/`; every cover + inline figure is authored HTML rendered at 2x, all 4 open slots rendered including the GPT cover replacement); TOPICS.md reworked into 25 question-led topics with `source:` demand evidence (Reddit / PAA / Quora research); routine-prompt.md now has the writer authoring its own figure HTMLs, running blog:figures, and answering the question directly in the first 2 paragraphs. The job environment must install Playwright in its own step (blog-plan 3)
-- [ ] Install the Claude GitHub App on obsidiongit/bigsquaresite (https://claude.ai/code/onboarding?magic=github-app-setup); the routine cannot clone or open PRs without it (the /schedule check could not verify access on 2026-08-29)
-- [ ] Create the routine with `/schedule` (environment "Default", env_01Fx9mjBD667qMn9xcsXLP9G; the prompt draft lives in `project-sections/blog/routine-prompt.md`)
-- [ ] First run by hand (`run now`), review the PR, tune the prompt, then let it ride
+- [ ] DEVELOPER (passed off by Brad 2026-08-30): Install the Claude GitHub App on obsidiongit/bigsquaresite (https://claude.ai/code/onboarding?magic=github-app-setup); the routine cannot clone or open PRs without it (the /schedule check could not verify access on 2026-08-29)
+- [ ] DEVELOPER: Create the routine with `/schedule` (environment "Default", env_01Fx9mjBD667qMn9xcsXLP9G; the prompt lives in `project-sections/blog/routine-prompt.md`; the environment setup must install Playwright, blog-plan 3)
+- [ ] DEVELOPER: First run by hand (`run now`), review the PR, tune the prompt, then let it ride
 
 ## Content-blocked pages: lay them out now (Brad 2026-08-31)
 
@@ -112,7 +141,7 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 
 ## Brad-owed content (blocks marked pages, nothing else)
 
-Lead magnets (Brad 2026-08-30): the 5 titles on /resources/ are working titles only; the real list is still on Brad's whiteboard. TABLED by Brad 2026-08-30: v1 rejected, v2 (interactive tools research in `project-sections/lead-magnets/brainstorm-2026-08-31.md`) is "fine info" but the suggested 5 still are not doing it for him; needs real iteration in a dedicated session, not this project push. MUST be done before launch. /resources/ ships with its request forms meanwhile. When decided: 5 rows in `lib/resources.ts`, the 5 specs in `project-sections/lead-magnets/`, then the assets. Blog authors: the 6 team members are registered in `lib/blog-authors.ts` (2026-08-30; launch posts bylined Brad Brown + Mike Soden). Owed: headshots (Brad drops sources in `assets/team/`; export square crops to `public/media/` + map the 6 `blog-author-*` slots in `lib/asset-files.ts`). Covers + figures, PIVOT 2026-08-30: image-model generation REJECTED (quality/resolution); Claude renders each figure as HTML/CSS with the site's fonts and tokens and screenshots it (one agent end to end, then short CSS-animation videos as the stretch). Build handoff: `project-guidelines/handoff-blog-engine.md` (also pivots TOPICS.md to real scraped questions). Headshots still flow through `npm run blog:assets` (assets/team/<first>.jpg); levi.png owed. Manual template spec stays in 2b as the fallback.
+Lead magnets (Brad 2026-08-30): the 5 titles on /resources/ are working titles only; the real list is still on Brad's whiteboard. TABLED by Brad 2026-08-30: v1 rejected, v2 (interactive tools research in `project-sections/lead-magnets/brainstorm-2026-08-31.md`) is "fine info" but the suggested 5 still are not doing it for him; needs real iteration in a dedicated session, not this project push. MUST be done before launch. /resources/ ships with its request forms meanwhile. When decided: 5 rows in `lib/resources.ts`, the 5 specs in `project-sections/lead-magnets/`, then the assets. Blog authors: the 6 team members are registered in `lib/blog-authors.ts` (2026-08-30; launch posts bylined Brad Brown + Mike Soden). Owed: headshots (Brad drops sources in `assets/team/`; export square crops to `public/media/` + map the 6 `blog-author-*` slots in `lib/asset-files.ts`). Covers + figures, PIVOT 2026-08-30: image-model generation REJECTED (quality/resolution); Claude renders each figure as HTML/CSS with the site's fonts and tokens and screenshots it (one agent end to end, then short CSS-animation videos as the stretch). Build handoff: `project-guidelines/handoff-blog-engine.md` (also pivots TOPICS.md to real scraped questions). Headshots still flow through `npm run blog:assets` (assets/team/<first>.jpg); all 6 wired 2026-08-30 (levi landed). Manual template spec stays in 2b as the fallback.
 
 The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (drop files in `public/media/`, one row each in `lib/asset-files.ts`), the schedule VSL film + poster (`lib/schedule-media.ts`), real case studies + metrics + testimonials, leadership names/photos, office phones/addresses, socials, logo file, legal facts COMPLETE 2026-08-30 (LLC, Florida law, arbitration yes, retention defaults approved, NO address by Brad's decision, never name the CRM vendor); Claude drafts in full, a lawyer reviews, the 5 lead-magnet picks (project-sections/lead-magnets/brainstorm-2026-08-31.md) then their assets, the Ahrefs keyword pass, FORM_WEBHOOK_URL + tracking IDs, the looping background music track (~60-90s seamless quiet loop, Suno is fine; drops into `public/audio/` + one-line `MUSIC_SRC` change in lib/sfx.ts). Possible project-brief.md positioning amendment (audience rule).
 
