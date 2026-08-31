@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ClipReveal } from "@/components/motion/ClipReveal";
-import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { cn } from "@/lib/utils";
 
@@ -87,7 +86,6 @@ export function FramedMediaPanel({
           {chip && <div className="absolute left-4 top-4">{chip}</div>}
         </div>
       </ClipReveal>
-      <RegistrationMarks />
     </div>
   );
 }

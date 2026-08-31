@@ -31,7 +31,15 @@ Brad is finishing his section of the work and handing the site to the developer 
 - [ ] Legal: lawyer review of the full drafts in `content/legal/*.mdx` (counsel edits the MDX only)
 - [ ] The sitewide copy pass (franchise-only mentions -> full-stack positioning) and "everything bigger" pass, listed under Brad's check-in above; Brad may run these with an agent before handoff
 
-Reviews still open (Brad may approve verbally; confirm and check off): Batch 2, Batch 3, blog v2, nav/menu/footer rebuilds, the 2026-08-30 home polish round.
+Reviews still open (Brad may approve verbally; confirm and check off): Batch 2, Batch 3, blog v2, nav/menu/footer rebuilds. (The 2026-08-30 home polish round WAS reviewed same day; verdicts + follow-ups in the next section.)
+
+## Brad's home review, 2026-08-30 (round 2: verdicts + what to iterate)
+
+Brad reviewed the home polish round live. Approved as-is: footer (mark, letter trail, legal line), services cube containment, menu Resources group. Shipped on the spot: registration marks retired sitewide (component deleted), solution underlines pre-drawn + boiling (no more draw-one-by-one). Left to iterate, for Mike or a dedicated build session:
+
+- [ ] **First 90 Days: rework the fill beat itself.** Brad: the square-fill is "kind of a whack animation... it doesn't look exciting, it's very boring", even at the shorter runway. The finale additions (circle, starburst, arrow, confetti, smiley) are GOOD and can be pushed further. Direction ideas for the session: fill by phase-row cascades instead of 90 ticks, make the big day counter the hero and demote the grid, or replace the grid fill with one bolder morph; keep the pin, keep the finale. Copy rides Brad's sitewide pass
+- [ ] **Featured Work: a different idea for the six works during the spin.** "Getting closer, I really like that", but scrolling through captions 01 through 06 is out. Keep: header stays, shorter spin. Ideas to explore: all six titles as a static index rail with the active one highlighted per half-turn (no swapping), or cut the step mapping and let the grid cards themselves be the content while the cube spins freely
+- [ ] **Solution: play with the cube's pass.** "Good, not great." The fly-under works but the moment wants more character; a dedicated play session on the sweep path/timing (underlines are already handled)
 
 ## Batch plan (order of work)
 
@@ -39,7 +47,7 @@ Reviews still open (Brad may approve verbally; confirm and check off): Batch 2, 
 - [ ] **Batch 2:** /locations/ hub + denver + tampa, /results/ real index (case-study content stays gated on real data), /careers/. BUILT 2026-08-27 (briefs v2 + 5 pages, LocalBusiness JSON-LD on city pages, all in sitemap.xml; verified 4 widths + reduced motion + build), awaiting Brad's batch review. Owed: office addresses/phones/photos (lib/offices.ts + 2 asset slots), careers remote policy + open roles + application destination (lib/careers.ts), real case studies (lib/featured-work.ts)
 - [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/. BUILT 2026-08-30 (Pane B): `app/(funnel)/` route group (no nav, footer, or sound toggle; noindex; never in sitemap.xml), `lib/funnels/registry.ts`, `components/sections/funnels/`, `lib/track.ts` (no-op until tag IDs). Flagships `/go/audit/` (dark), `/apply/growth-partner/` (tint), `/thanks/audit/` + `/thanks/growth-partner/` (accent). Verified 4 widths + reduced motion + form flow + build; awaiting Brad's batch review. Owed: video URL + poster, one sourced result, budget ranges + qualifying floor, turnaround. /ad-credit/ RETIRED 2026-08-31 (Brad), never building
 - [ ] **Batch 4:** blog pipeline + 2 posts (BUILT 2026-08-30, Pane A: MDX pipeline, /blog/ + 2 posts, /resources/ with request forms, the 404; awaiting Brad's review), lead magnets as assets land, then the D4 franchise service family after the keyword pass
-- [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass
+- [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), Brad's sitewide copy pass (registration-mark removal sweep DONE 2026-08-30, component deleted)
 - [x] SHIPPED 2026-08-30 (home polish round, awaiting Brad's review; STYLE_GUIDE changelog has the full entry): footer legal line drops the CCPA link; wordmark mark 0.72 -> 0.86em; letter hover = the 7.6 pixel trail INSIDE the glyphs (mix-blend-multiply), flood retired; registration marks off Newsletter + Portal; Solution scroll lock CUT (unpinned sweepFrac sweep) + the sticky-pin z-10 occlusion fix; services dock lock ramp + clamp (cube can no longer exit the bay on fast scroll); Featured Work keeps its header through the pin, runway 240 -> 160svh, six spin-indexed work captions; First 90 Days runway 160 -> 80svh with smoothstepped fill + finale cascade (starburst + arrow RoughAnnotation variants, square confetti, numeral pop); menu overlay gains Resources (Blog, Free Guides). Verified 4 widths + reduced motion, no overflow, tsc clean
 - [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12). REVIEWED by Brad same night: approved as V1 ("really solid"), named a focus point; v2 section below
 
@@ -109,7 +117,7 @@ Needs Brad (facts and assets, none of which can be invented):
 - [ ] Live Obsidion portal code for the window slot (chip drops with it)
 - [ ] FORM_WEBHOOK_URL destination (submissions log a server warning until set)
 - [ ] Cube look sign-off + the 3D bundle overage call (~232KB gz vs the 200KB line)
-- [ ] Reviews to record: 2G1 First 90 Days round 2, 2I footer Back Cover round 2, cube reform round 14 (Brad may have approved verbally; confirm, then check off), and the 2026-08-30 home polish round (solution unpin, featured work captions, day-90 round 3, letter trail)
+- [ ] Reviews to record: 2G1 First 90 Days round 2, 2I footer Back Cover round 2, cube reform round 14 (Brad may have approved verbally; confirm, then check off). The 2026-08-30 home polish round is REVIEWED; verdicts + follow-ups under "Brad's home review" above
 
 Build items (small, any session):
 - [ ] Newsletter polish set: panel presence at 1536, frame cadence vs real photos, remove the headshot note when assets land, confirmation copy, optional cube anchor
@@ -147,7 +155,7 @@ The homepage punch list above, plus: ~37 asset slots in `asset-manifest.md` (dro
 
 ## Standing rules that bite
 
-- Open layout sitewide (D1); no registration-mark plus signs on any newly built page; existing marks await Brad's site-wide audit
+- Open layout sitewide (D1); registration-mark plus signs retired SITEWIDE 2026-08-30 (component deleted; MediaSlot's `marks` prop is a dead no-op, strip it in a quiet window)
 - Audience rule: conversion surfaces never read franchise-only (ecommerce + single-location clients too)
 - copy-rules.md governs all copy; flagged drafts, never silent placeholders; Brad does one large sitewide copy sweep later
 - Forms: single submitForm path, in-place confirmation, shared `Field` primitive

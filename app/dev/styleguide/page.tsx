@@ -15,7 +15,6 @@ import { NumberedRuledList } from "@/components/shared/NumberedRuledList";
 import { RuleLink } from "@/components/shared/RuleLink";
 import { RuledLinkTable } from "@/components/shared/RuledLinkTable";
 import { BracketIndex, Chip, Counter, Eyebrow, NoLabel } from "@/components/shared/mono";
-import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { Section } from "@/components/shared/Section";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 
@@ -122,7 +121,7 @@ function ThemeShowcase({
           , not promises.
         </p>
 
-        {/* ClipReveal media frame with registration marks (4.3, 7.3) */}
+        {/* ClipReveal media frame (7.3; marks retired 2026-08-30) */}
         <div className="relative mt-16">
           <ClipReveal>
             <div className="flex aspect-video items-center justify-center bg-darkpanel">
@@ -131,7 +130,6 @@ function ThemeShowcase({
               </p>
             </div>
           </ClipReveal>
-          <RegistrationMarks />
         </div>
 
         {/* numbered ruled list (6.10) */}

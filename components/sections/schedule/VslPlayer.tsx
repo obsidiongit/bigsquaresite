@@ -3,13 +3,12 @@
 import Image from "next/image";
 import { useState } from "react";
 import { ClipReveal } from "@/components/motion/ClipReveal";
-import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { VSL_POSTER, VSL_VIDEO } from "@/lib/schedule-media";
 import { cn } from "@/lib/utils";
 
 /* The /schedule/ VSL player (conversion/schedule.md v2): the page's
    trust builder as a framed media object. Radius 24, dark interior,
-   registration marks, ClipReveal entry. Click-to-play WITH sound,
+   ClipReveal entry (registration marks retired sitewide 2026-08-30). Click-to-play WITH sound,
    native controls once playing, never autoplay (a VSL is watched, not
    ambient; distinct from FramedMediaPanel's muted loop contract).
 
@@ -89,7 +88,6 @@ export function VslPlayer({ className }: { className?: string }) {
           )}
         </div>
       </ClipReveal>
-      <RegistrationMarks className="max-lg:hidden" />
     </div>
   );
 }

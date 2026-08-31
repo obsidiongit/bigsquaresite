@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Chip } from "@/components/shared/mono";
-import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { ASSET_FILES } from "@/lib/asset-files";
 import { cn } from "@/lib/utils";
 
@@ -9,8 +8,8 @@ import { cn } from "@/lib/utils";
    workflow, 2026-08-26): every media moment on interior pages renders
    through one of these. While the id has no file in ASSET_FILES the
    slot shows its DESIGNED placeholder: a soft --surf panel at
-   --radius-media with registration marks, a centered ghost brand
-   square, and a mono ASSET chip naming the wanted shot (copy-rules:
+   --radius-media, a centered ghost brand square, and a mono ASSET
+   chip naming the wanted shot (copy-rules:
    never leave placeholder content looking finished, but it can look
    composed). Dropping a file into public/media/ and adding one
    ASSET_FILES row swaps in next/image; alt text ships with the slot
@@ -52,7 +51,9 @@ export function MediaSlot({
       the 6.4 hover scale. Do NOT set when a parent element is already
       a link (no nested anchors). */
   href?: string;
-  /** registration marks on lg+; off inside tight compositions */
+  /** DEAD 2026-08-30: registration marks retired sitewide; accepted so
+      the two dozen marks={false} call sites keep compiling, rendered
+      never. Strip the prop + call sites in a quiet window. */
   marks?: boolean;
   /** compact placeholder (ghost square + chip, no note) for slots too
       short to hold the note column, e.g. small 3:2 cards */
@@ -102,7 +103,6 @@ export function MediaSlot({
           </div>
         )}
       </div>
-      {marks && <RegistrationMarks className="hidden lg:block" />}
     </div>
   );
 
