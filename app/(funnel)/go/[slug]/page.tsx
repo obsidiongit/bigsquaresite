@@ -34,6 +34,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const funnel = VSL_PAGES[slug];
   return {
     title: funnel?.title ?? "BigSquare",
+    // The registry sub doubles as the share-preview description so the
+    // page never inherits the root description (launch sweep, 2026-08-31).
+    description: funnel?.sub,
     robots: { index: false, follow: false },
   };
 }

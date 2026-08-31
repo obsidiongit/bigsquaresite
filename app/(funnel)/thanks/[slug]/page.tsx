@@ -34,6 +34,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const funnel = THANKS_PAGES[slug];
   return {
     title: funnel?.title ?? "BigSquare",
+    // The registry lead doubles as the share-preview description so the
+    // page never inherits the root description (launch sweep, 2026-08-31).
+    description: funnel?.lead,
     robots: { index: false, follow: false },
   };
 }

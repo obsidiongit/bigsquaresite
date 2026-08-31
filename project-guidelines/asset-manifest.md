@@ -64,4 +64,22 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 | `blog-author-russel` | posts bylined by Russel Spence (Creative Director) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 | `blog-author-sadie` | posts bylined by Sadie Pursell (Brand Ambassador) | Author card | Same | 1:1 | FILLED 2026-08-30 |
-Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).
+| `team-brad-1` | /team/ | Brad's profile, personal photo 1 of 3 | A personal photo (his own pick; not a headshot) | 1:1 | EMPTY |
+| `team-brad-2` | /team/ | Brad's profile, personal photo 2 of 3 | Same | 1:1 | EMPTY |
+| `team-brad-3` | /team/ | Brad's profile, personal photo 3 of 3 | Same | 1:1 | EMPTY |
+| `team-mike-1` | /team/ | Mike's profile, personal photo 1 of 3 | Same | 1:1 | EMPTY |
+| `team-mike-2` | /team/ | Mike's profile, personal photo 2 of 3 | Same | 1:1 | EMPTY |
+| `team-mike-3` | /team/ | Mike's profile, personal photo 3 of 3 | Same | 1:1 | EMPTY |
+| `team-chaley-1` | /team/ | Chaley's profile, personal photo 1 of 3 | Same | 1:1 | EMPTY |
+| `team-chaley-2` | /team/ | Chaley's profile, personal photo 2 of 3 | Same | 1:1 | EMPTY |
+| `team-chaley-3` | /team/ | Chaley's profile, personal photo 3 of 3 | Same | 1:1 | EMPTY |
+| `team-levi-1` | /team/ | Levi's profile, personal photo 1 of 3 | Same | 1:1 | EMPTY |
+| `team-levi-2` | /team/ | Levi's profile, personal photo 2 of 3 | Same | 1:1 | EMPTY |
+| `team-levi-3` | /team/ | Levi's profile, personal photo 3 of 3 | Same | 1:1 | EMPTY |
+| `team-russel-1` | /team/ | Russel's profile, personal photo 1 of 3 | Same | 1:1 | EMPTY |
+| `team-russel-2` | /team/ | Russel's profile, personal photo 2 of 3 | Same | 1:1 | EMPTY |
+| `team-russel-3` | /team/ | Russel's profile, personal photo 3 of 3 | Same | 1:1 | EMPTY |
+| `team-sadie-1` | /team/ | Sadie's profile, personal photo 1 of 3 | Same | 1:1 | EMPTY |
+| `team-sadie-2` | /team/ | Sadie's profile, personal photo 2 of 3 | Same | 1:1 | EMPTY |
+| `team-sadie-3` | /team/ | Sadie's profile, personal photo 3 of 3 | Same | 1:1 | EMPTY |
+Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards). The /team/ profile wall reuses the `blog-author-*` headshots and adds the 18 `team-<first>-1..3` personal slots (Pane C handoff, 2026-08-31); the old `leadership-01..03` slot ids are dead, never add them.
