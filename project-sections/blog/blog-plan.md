@@ -56,11 +56,19 @@ The post title sits directly above the cover on the page, so the cover never rep
 
 **Workflow**: one Figma (or Canva) file, a 2400x1200 master frame with the margins, the hairline grid, the FIG stamp, and a small library of square arrangements. Per post: duplicate, arrange the squares for the topic, swap 2 labels, bump the FIG number, export with the slot-id file name. The writer's `note` on each cover slot in `asset-manifest.md` is the brief.
 
-## 2c. Cover + figure generation (history; superseded 2026-08-30, same day)
+## 2c. Cover + figure generation: the HTML/CSS renderer (BUILT 2026-08-30)
 
-**PIVOT (Brad, 2026-08-30 evening): image-model generation is REJECTED** ("low quality, can't get the resolution or the size we need"; the Codex hand-off "too clunky"). The pipeline is now: **Claude authors each figure as an HTML/CSS element with the site's real fonts and tokens, Playwright screenshots it at 2x, and that render is the asset.** One agent end to end, covers AND inline figures (short videos of CSS-animated figures are the stretch goal). Build handoff: `project-guidelines/handoff-blog-engine.md`. The GPT prompt experiment below stays for the record only.
+**This is THE pipeline.** Claude authors each figure as a small self-contained HTML file in `scripts/blog-figures/figures/<slot-id>.html` with the site's real fonts and tokens, `npm run blog:figures` (`scripts/blog-figures/render.mjs`) screenshots it with Playwright at deviceScaleFactor 2, converts to webp in `public/media/`, and rewrites the AUTO-MANAGED block in `lib/asset-files.ts` (through `scripts/blog-assets.mjs`, the block's only writer). One agent end to end: the writer routine authors the post AND its figures in one pass (`routine-prompt.md` steps 5 and 7). Authoring rules, tokens, safe areas, FIG numbering, and the Playwright resolution order (env var / `npm i --no-save`; never in package.json) live in `scripts/blog-figures/README.md`.
+
+Built and rendered 2026-08-30: `blog-cover-agency-7-numbers` (FIG. 001, re-rendered over the GPT test), `blog-cover-local-seo-scale` (FIG. 002, dark), `blog-fig-spend-by-channel` (FIG. 001.1, the sample spend table), `blog-fig-local-seo-system` (FIG. 002.1).
+
+**Precedence**: a slot with a figure HTML belongs to the renderer; `npm run blog:assets` skips raw drops in `assets/blog-covers/` for that slot. Raw drops remain the path for photos, portal screenshots, and headshots.
+
+**Videos (the stretch, not built yet)**: the same figure HTML can carry a CSS animation (squares translating/filling, hairlines drawing in, honoring the 7.2 motion tokens). Recommended mechanics when this gets built: a `data-animate` variant in the figure HTML, captured frame-by-frame with Playwright (`page.evaluate` stepping a CSS animation-delay, or `page.video`) into webm at 2x, a `<FigureVideo>` MDX piece that renders `<video autoplay muted loop playsinline>` with the STILL render as `poster` and a reduced-motion fallback to the poster image (the Framer reduced-motion trap does not apply to native video + media query). Half a session; do it after Brad approves the still system.
 
 ### The rejected image-gen path (for the record)
+
+**PIVOT (Brad, 2026-08-30 evening): image-model generation is REJECTED** ("low quality, can't get the resolution or the size we need"; the Codex hand-off "too clunky"). Build handoff: `project-guidelines/handoff-blog-engine.md`. The GPT prompt experiment below stays for the record only; it was superseded the same day by the renderer above.
 
 Brad's idea: instead of a hand-made cover per post, have an image model (GPT Image via Codex, or similar) generate the figure, using the template rules above as the prompt. Worth testing; the risks are mangled small text, gradients sneaking in, and off-brand geometry, so the human merge review must also approve the cover.
 
@@ -78,7 +86,7 @@ Filled example, the 7-numbers post: composition = "7 solid blue squares of equal
 
 **TEST PASSED 2026-08-30.** Brad's first GPT Image generation of the 7-numbers cover came back on-spec: 1 blue, clean squares on a baseline, the bracket, exactly 2 uncorrupted mono labels, flat ground. One lesson: the model puts the FIG stamp at the very top edge, so a blind CENTER 2:1 crop cuts it off. Crop rule, amended: pick the 2:1 window that keeps both the stamp and the composition (from a 1536x1024 output that is usually the TOP 1536x768). Green light to wire generation into the writer job per the paragraph below.
 
-**No manual cropping or wiring (Brad, 2026-08-30, and the script is built)**: save the RAW generation as `assets/blog-covers/<slot-id>.png` exactly as downloaded, and headshot sources as `assets/team/<first-name>.jpg`. `npm run blog:assets` (`scripts/blog-assets.mjs`) does everything: top-anchored 2:1 crop for covers (keeps the FIG stamp), smart square crop for headshots, webp under the size cap into `public/media/`, and the AUTO-MANAGED block in `lib/asset-files.ts`. Idempotent; unknown names are skipped so a stray file can never invent an author. Any Claude session runs it on request, and the writer job runs it as its last step once generation is wired.
+**No manual cropping or wiring (Brad, 2026-08-30, and the script is built)**: save the RAW generation as `assets/blog-covers/<slot-id>.png` exactly as downloaded, and headshot sources as `assets/team/<first-name>.jpg`. `npm run blog:assets` (`scripts/blog-assets.mjs`) does everything: top-anchored 2:1 crop for covers (keeps the FIG stamp), smart square crop for headshots, webp under the size cap into `public/media/`, and the AUTO-MANAGED block in `lib/asset-files.ts`. Idempotent; unknown names are skipped so a stray file can never invent an author. Any Claude session runs it on request. STILL LIVE for headshots and photo drops; figure slots now belong to the renderer in 2c, and blog:assets skips them.
 
 **Weaving into the cron job (later, after the manual test passes)**: the writer routine already outputs a cover slot id + a composition note per post. A second step (in the same routine or a follow-up job) calls the image API with this template + the note, saves the crop to `public/media/<slot-id>.webp`, adds the `lib/asset-files.ts` row, and pushes to the same PR, so the reviewer sees the finished post WITH its cover on the Vercel preview and can reject either. Needs an OPENAI_API_KEY (or whichever model wins the test) as a repo secret; the developer wires it when Brad's manual test looks good. Until then the cover stays a designed placeholder and merges are never blocked on it.
 
@@ -89,7 +97,7 @@ Goal: a post lands as a pull request on a schedule, a human merges, Vercel deplo
 ### Option A: Claude Code cloud routine (no code, fastest)
 
 1. Install the Claude GitHub App on `obsidiongit/bigsquaresite`: https://claude.ai/code/onboarding?magic=github-app-setup (needs a repo admin; this is what blocked the `/schedule` check on 2026-08-29).
-2. In Claude Code run `/schedule`, pick environment "Default" (`env_01Fx9mjBD667qMn9xcsXLP9G`), paste `routine-prompt.md` as the prompt, model `claude-sonnet-5`, cron `0 12 1,15 * *` (1st and 15th, 6:00am Denver) to start; `0 12 * * 1` (weekly) once the queue is deep.
+2. In Claude Code run `/schedule`, pick environment "Default" (`env_01Fx9mjBD667qMn9xcsXLP9G`), paste `routine-prompt.md` as the prompt, model `claude-sonnet-5`, cron `0 12 1,15 * *` (1st and 15th, 6:00am Denver) to start; `0 12 * * 1` (weekly) once the queue is deep. The environment's setup script must install the figure renderer's browser before the agent runs (Playwright is deliberately not in package.json): `npm i --no-save playwright && npx playwright install chromium`.
 3. Run it once by hand ("run now"), review the PR, fix the prompt if the post misses on voice or format, then let it ride.
 4. Nothing else to build. The routine clones the repo, writes the post, runs the build, opens the PR.
 
@@ -115,8 +123,9 @@ Everything lives in `.github/workflows/blog-writer.yml`, versioned with the site
          - uses: actions/setup-node@v4
            with: { node-version: 22, cache: npm }
          - run: npm ci
+         - run: npm i --no-save playwright && npx playwright install --with-deps chromium
          - run: npm i -g @anthropic-ai/claude-code
-         - run: claude -p "$(cat project-sections/blog/routine-prompt.md)" --allowedTools "Read,Write,Edit,Bash(npm run build),Bash(npx tsc --noEmit),Bash(git *),Bash(gh *)" --max-turns 60
+         - run: claude -p "$(cat project-sections/blog/routine-prompt.md)" --allowedTools "Read,Write,Edit,Bash(npm run build),Bash(npx tsc --noEmit),Bash(npm run blog:figures),Bash(git *),Bash(gh *)" --max-turns 60
            env: { ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}, GH_TOKEN: ${{ github.token }} }
    ```
    The prompt already tells the agent to branch, commit, and open the PR with `gh`. Alternative to the CLI: the official `anthropics/claude-code-action`, or a 40-line Claude Agent SDK script if the developer wants a typed harness.
@@ -129,7 +138,7 @@ Good when: the team wants the writer in the repo next to the site, with logs, re
 - **Branch protection on `main`**: require a PR, require the Vercel build check to pass. `lib/blog.ts` throws with the file name on a bad slug, date, tags, or missing title, so a malformed post cannot merge.
 - **Vercel preview on every PR**: the reviewer reads the post on the real design at the preview URL, not in a diff.
 - **A copy lint in CI** (small, worth it): a script that fails the build if a post contains an em dash, a banned word from `copy-rules.md`, a semicolon in body copy, or fewer than 900 / more than 1400 words. Half a day; it also keeps human-written posts honest.
-- **Topic supply**: `TOPICS.md` has 12 lines. The Ahrefs keyword pass should feed it 20 to 30 more, mixed across the lanes. When it runs dry the routine opens an issue instead of inventing a topic.
+- **Topic supply**: `TOPICS.md` was reworked 2026-08-30 into 25 question-led topics, each with a `source:` demand signal (subreddit, PAA, Quora, or "house"). When it runs dry the routine opens an issue instead of inventing a topic. Worth adding later: a monthly `research:` job (same cadence infra as the writer) that web-searches Reddit and People-Also-Ask for fresh questions and appends them to the queue with sources; needs web access in the job's environment, so the developer enables the WebSearch tool (cloud routine) or adds a search-capable step (Actions) when setting it up.
 - **Review rhythm**: whoever merges reads for facts, not grammar. The writer is told to write `[PLACEHOLDER: needs source]` rather than invent a number; the reviewer's job is to fill or cut those lines before merge.
 
 ### SEO plumbing still worth adding (small, any session)

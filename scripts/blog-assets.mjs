@@ -24,12 +24,19 @@
    unchanged sources are skipped, the block always mirrors disk.
 
    Uses the sharp copy Next already ships (PROJECT_REQUIREMENTS.md);
-   no separate install. The scheduled writer job runs this same script
-   once cover generation is wired (blog-plan.md 2c). */
+   no separate install.
+
+   PRECEDENCE (2026-08-30, the HTML/CSS figure pivot): if a slot has a
+   figure source in scripts/blog-figures/figures/<slot-id>.html, the
+   renderer (`npm run blog:figures`) OWNS that slot. A raw drop in
+   assets/blog-covers/ for the same slot is skipped with a warning so
+   the two pipelines never fight over public/media/<slot-id>.webp.
+   Raw drops remain the path for photos and screenshots only. */
 
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
 
 const require = createRequire(import.meta.url);
 let sharp;
@@ -42,6 +49,7 @@ try {
 
 const ROOT = process.cwd();
 const COVERS_SRC = path.join(ROOT, "assets", "blog-covers");
+const FIGURES_SRC = path.join(ROOT, "scripts", "blog-figures", "figures");
 const TEAM_SRC = path.join(ROOT, "assets", "team");
 const OUT_DIR = path.join(ROOT, "public", "media");
 const ASSET_TS = path.join(ROOT, "lib", "asset-files.ts");
@@ -70,6 +78,10 @@ async function processCover(src) {
   }
   if (!slot.startsWith("blog-cover-") && !slot.startsWith("blog-fig-")) {
     console.warn(`covers: "${slot}" does not start with blog-cover-/blog-fig-; wiring it anyway, check the frontmatter matches`);
+  }
+  if (fs.existsSync(path.join(FIGURES_SRC, `${slot}.html`))) {
+    console.warn(`covers: skipping "${path.basename(src)}": the figure renderer owns ${slot} (scripts/blog-figures/figures/${slot}.html exists; delete one source or the other)`);
+    return;
   }
   const out = path.join(OUT_DIR, `${slot}.webp`);
   if (fresh(src, out)) {
@@ -116,7 +128,9 @@ async function processHeadshot(src, authorsSource) {
   console.log(`team: wrote public/media/${slot}.webp`);
 }
 
-function rewriteAssetFiles() {
+/* Shared with scripts/blog-figures/render.mjs, which imports this so
+   the AUTO-MANAGED block has exactly one writer. */
+export function rewriteAssetFiles() {
   const rows = fs
     .readdirSync(OUT_DIR)
     .filter((f) => /^blog-(cover|fig|author)-[a-z0-9-]+\.(webp|jpg|jpeg|png)$/.test(f))
@@ -139,14 +153,21 @@ function rewriteAssetFiles() {
   console.log(`asset-files: managed block now has ${rows.length} row(s)`);
 }
 
-const covers = listImages(COVERS_SRC);
-const heads = listImages(TEAM_SRC);
-if (covers.length === 0 && heads.length === 0) {
-  console.log("blog-assets: nothing in assets/blog-covers/ or assets/team/ yet");
+const invokedDirectly =
+  process.argv[1] &&
+  pathToFileURL(path.resolve(process.argv[1])).href.toLowerCase() ===
+    import.meta.url.toLowerCase();
+
+if (invokedDirectly) {
+  const covers = listImages(COVERS_SRC);
+  const heads = listImages(TEAM_SRC);
+  if (covers.length === 0 && heads.length === 0) {
+    console.log("blog-assets: nothing in assets/blog-covers/ or assets/team/ yet");
+  }
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  const authorsSource = fs.readFileSync(AUTHORS_TS, "utf8");
+  for (const src of covers) await processCover(src);
+  for (const src of heads) await processHeadshot(src, authorsSource);
+  rewriteAssetFiles();
+  console.log("blog-assets: done");
 }
-fs.mkdirSync(OUT_DIR, { recursive: true });
-const authorsSource = fs.readFileSync(AUTHORS_TS, "utf8");
-for (const src of covers) await processCover(src);
-for (const src of heads) await processHeadshot(src, authorsSource);
-rewriteAssetFiles();
-console.log("blog-assets: done");

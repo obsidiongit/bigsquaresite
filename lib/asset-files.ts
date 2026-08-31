@@ -27,5 +27,8 @@ export const ASSET_FILES: Record<string, AssetFile> = {
   "blog-author-russel": { src: "/media/blog-author-russel.webp" },
   "blog-author-sadie": { src: "/media/blog-author-sadie.webp" },
   "blog-cover-agency-7-numbers": { src: "/media/blog-cover-agency-7-numbers.webp" },
+  "blog-cover-local-seo-scale": { src: "/media/blog-cover-local-seo-scale.webp" },
+  "blog-fig-local-seo-system": { src: "/media/blog-fig-local-seo-system.webp" },
+  "blog-fig-spend-by-channel": { src: "/media/blog-fig-spend-by-channel.webp" },
   // END AUTO-MANAGED
 };

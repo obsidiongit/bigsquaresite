@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- FIG. 001, cover for /blog/is-your-marketing-agency-working-7-numbers/.
+     7 squares on a baseline. The 7th ("what changed, and why" is a list,
+     not a number) is outlined and set apart under a measurement bracket.
+     Light ground. Safe area: central 88% of width (16:9 phone crop). -->
+<meta name="figure-viewport" content="1600x800">
+<title>blog-cover-agency-7-numbers</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1600px;
+    height: 800px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 17px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp { left: 120px; top: 96px; }
+  .n { right: 240px; top: 442px; }
+  .baseline {
+    position: absolute;
+    left: 240px;
+    right: 240px;
+    top: 512px;
+    height: 1px;
+    background: var(--line);
+  }
+  .sq {
+    position: absolute;
+    width: 88px;
+    height: 88px;
+    top: 424px; /* bottom sits on the baseline */
+    background: var(--acc);
+  }
+  .sq.outline {
+    background: none;
+    border: 2px solid var(--acc);
+  }
+  /* row of 7 centered: 6 tight (gap 26) + a 62px break before the 7th */
+  .bracket {
+    position: absolute;
+    top: 384px;
+    width: 88px;
+    height: 14px;
+    border: 1px solid var(--line);
+    border-bottom: none;
+  }
+</style>
+</head>
+<body>
+  <span class="label stamp">FIG. 001</span>
+  <div class="baseline"></div>
+  <div class="sq" style="left: 386px"></div>
+  <div class="sq" style="left: 500px"></div>
+  <div class="sq" style="left: 614px"></div>
+  <div class="sq" style="left: 728px"></div>
+  <div class="sq" style="left: 842px"></div>
+  <div class="sq" style="left: 956px"></div>
+  <div class="sq outline" style="left: 1126px"></div>
+  <div class="bracket" style="left: 1126px"></div>
+  <span class="label n">N = 7</span>
+</body>
+</html>

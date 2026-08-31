@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- FIG. 001.1, inline figure for /blog/is-your-marketing-agency-working-7-numbers/
+     section 5: the spend table an owner should ask for. 4 channels, both
+     months, cost per lead in the last column (blue: metrics are always
+     the accent). Numbers are marked SAMPLE on the render; the figure
+     shows the format, not a claim (copy-rules: no invented statistics
+     presented as real). -->
+<meta name="figure-viewport" content="1200x675">
+<title>blog-fig-spend-by-channel</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-400.woff2") format("woff2");
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --surf: #E9ECF1;
+    --mid: #5A6373;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 675px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    font-family: "Lenia Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .label {
+    position: absolute;
+    top: 72px;
+    font: 500 16px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp { left: 100px; }
+  .sample { right: 100px; color: var(--mid); }
+  table {
+    position: absolute;
+    left: 100px;
+    top: 148px;
+    width: 1000px;
+    border-collapse: collapse;
+  }
+  th {
+    background: var(--surf);
+    font: 500 15px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: left;
+    padding: 18px 24px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    font: 400 21px/1.2 "Lenia Mono", monospace;
+    color: var(--ink);
+    padding: 30px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  td.cpl { font-weight: 500; color: var(--acc); }
+  .sq {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 16px;
+    background: var(--acc);
+    vertical-align: 1px;
+  }
+</style>
+</head>
+<body>
+  <span class="label stamp">FIG. 001.1</span>
+  <span class="label sample">Sample numbers</span>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 34%">Channel</th>
+        <th style="width: 22%">Last month</th>
+        <th style="width: 22%">This month</th>
+        <th style="width: 22%">Cost per lead</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="sq"></span>Search</td>
+        <td>$5,800</td>
+        <td>$6,200</td>
+        <td class="cpl">$52</td>
+      </tr>
+      <tr>
+        <td><span class="sq"></span>Social</td>
+        <td>$1,800</td>
+        <td>$2,400</td>
+        <td class="cpl">$38</td>
+      </tr>
+      <tr>
+        <td><span class="sq"></span>Local Services</td>
+        <td>$1,500</td>
+        <td>$1,700</td>
+        <td class="cpl">$44</td>
+      </tr>
+      <tr>
+        <td><span class="sq"></span>Display</td>
+        <td>$1,100</td>
+        <td>$600</td>
+        <td class="cpl">$96</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

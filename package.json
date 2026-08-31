@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "blog:assets": "node scripts/blog-assets.mjs",
+    "blog:figures": "node scripts/blog-figures/render.mjs",
     "start": "next start"
   },
   "dependencies": {

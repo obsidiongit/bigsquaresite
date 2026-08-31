@@ -51,15 +51,15 @@ Rules: append a row here in the SAME session any new slot ships. Photos beat sto
 | `about-team` | /about/ + /careers/ | Wide team band (about: above the CTA; careers: under the offices) | The whole team, one frame. Real photos only, no stock | ~21:9 (16:9 mobile crop safe) | EMPTY |
 | `locations-denver-office` | /locations/ + /locations/denver/ | Hub city panel (3:2 crop) + the city page's wide band | The Denver office, or the team in it. Real photo only | ~21:9 source (3:2 and 16:9 crops safe) | EMPTY |
 | `locations-tampa-office` | /locations/ + /locations/tampa/ | Hub city panel (3:2 crop) + the city page's wide band | The Tampa office, or the team in it. Real photo only | ~21:9 source (3:2 and 16:9 crops safe) | EMPTY |
-| `blog-cover-agency-7-numbers` | /blog/is-your-marketing-agency-working-7-numbers/ | Cover figure under the hero meta; also the model for the OG card | From the blog cover template (blue-square system, big type, a figure number; no stock): the 7 numbers as a list or grid | 2:1 (16:9 mobile crop safe) | EMPTY |
-| `blog-cover-local-seo-scale` | /blog/local-seo-with-more-than-one-location/ | Cover figure | Cover template: 1 square next to a 4 by 5 grid of squares | 2:1 | EMPTY |
-| `blog-fig-spend-by-channel` | /blog/is-your-marketing-agency-working-7-numbers/ | Inline figure, section 5 | Spend-by-channel table: 4 channels, this month vs last, cost per lead column (portal screenshot or designed table) | 16:9 | EMPTY |
-| `blog-fig-local-seo-system` | /blog/local-seo-with-more-than-one-location/ | Inline figure after the system table | Diagram: 1 location (listing, page, reviews) next to 20 sharing a source of truth, a review flow, and leads by location | 16:9 | EMPTY |
+| `blog-cover-agency-7-numbers` | /blog/is-your-marketing-agency-working-7-numbers/ | Cover figure under the hero meta; also the model for the OG card | Rendered by `npm run blog:figures` from `scripts/blog-figures/figures/` (FIG. 001: 7 squares on a baseline, the 7th outlined under a bracket). Edit the HTML, re-run to change | 2:1 (16:9 mobile crop safe) | FILLED 2026-08-30 (replaced the GPT test render) |
+| `blog-cover-local-seo-scale` | /blog/local-seo-with-more-than-one-location/ | Cover figure | Rendered by `npm run blog:figures` (FIG. 002, dark ground: 1 big square next to a 4x5 grid) | 2:1 | FILLED 2026-08-30 |
+| `blog-fig-spend-by-channel` | /blog/is-your-marketing-agency-working-7-numbers/ | Inline figure, section 5 | Rendered by `npm run blog:figures` (FIG. 001.1: the sample spend table, 4 channels, both months, cost per lead in blue). A real portal screenshot may replace it later via `assets/blog-covers/` after deleting the figure HTML | 16:9 | FILLED 2026-08-30 |
+| `blog-fig-local-seo-system` | /blog/local-seo-with-more-than-one-location/ | Inline figure after the system table | Rendered by `npm run blog:figures` (FIG. 002.1: 1 square next to the 4x5 grid over the 3 shared system bars) | 16:9 | FILLED 2026-08-30 |
 | `blog-author-bigsquare-team` | every /blog/[slug]/ | Author card, 72px square | Team photo or a headshot once posts carry a named author | 1:1 | EMPTY |
-| `blog-author-brad` | posts bylined by Brad Brown (CEO) | Author card, 72px square | Square headshot crop; source arrives in `assets/team/`, export to `public/media/` + map in `lib/asset-files.ts` | 1:1 | EMPTY |
-| `blog-author-mike` | posts bylined by Mike Soden (CTO) | Author card | Same | 1:1 | EMPTY |
-| `blog-author-chaley` | posts bylined by Chaley Selsor (Team Lead) | Author card | Same | 1:1 | EMPTY |
-| `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same | 1:1 | EMPTY |
-| `blog-author-russel` | posts bylined by Russel Spence (Creative Director) | Author card | Same | 1:1 | EMPTY |
-| `blog-author-sadie` | posts bylined by Sadie Pursell (Brand Ambassador) | Author card | Same | 1:1 | EMPTY |
+| `blog-author-brad` | posts bylined by Brad Brown (CEO) | Author card, 72px square | Square headshot crop; source arrives in `assets/team/`, `npm run blog:assets` exports + wires it | 1:1 | FILLED 2026-08-30 |
+| `blog-author-mike` | posts bylined by Mike Soden (CTO) | Author card | Same | 1:1 | FILLED 2026-08-30 |
+| `blog-author-chaley` | posts bylined by Chaley Selsor (Team Lead) | Author card | Same | 1:1 | FILLED 2026-08-30 |
+| `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same; levi source still owed by Brad in `assets/team/` | 1:1 | EMPTY |
+| `blog-author-russel` | posts bylined by Russel Spence (Creative Director) | Author card | Same | 1:1 | FILLED 2026-08-30 |
+| `blog-author-sadie` | posts bylined by Sadie Pursell (Brand Ambassador) | Author card | Same | 1:1 | FILLED 2026-08-30 |
 Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards).

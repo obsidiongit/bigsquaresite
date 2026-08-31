@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- FIG. 002, cover for /blog/local-seo-with-more-than-one-location/.
+     1 big square next to a 4x5 grid of 20 small ones, one shared
+     baseline. Dark ground (covers alternate light/dark per post).
+     Safe area: central 88% of width (16:9 phone crop). -->
+<meta name="figure-viewport" content="1600x800">
+<title>blog-cover-local-seo-scale</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --ink: #0B0F17;
+    --ondark: #E9ECF1;
+    --acc: #0657F9;
+    --linedark: rgba(233, 236, 241, .14);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1600px;
+    height: 800px;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 17px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ondark);
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp { left: 120px; top: 96px; }
+  .n { left: 884px; top: 590px; }
+  .baseline {
+    position: absolute;
+    left: 240px;
+    right: 240px;
+    top: 560px;
+    height: 1px;
+    background: var(--linedark);
+  }
+  .big {
+    position: absolute;
+    left: 420px;
+    top: 340px; /* 220px tall, bottom on the baseline */
+    width: 220px;
+    height: 220px;
+    background: var(--acc);
+  }
+  /* 4 rows x 5 cols of 56px squares, 24px gaps; bottom row on the baseline */
+  .grid {
+    position: absolute;
+    left: 884px;
+    top: 264px;
+    width: 376px;
+    height: 296px;
+    display: grid;
+    grid-template-columns: repeat(5, 56px);
+    grid-template-rows: repeat(4, 56px);
+    gap: 24px;
+  }
+  .grid span { background: var(--acc); }
+</style>
+</head>
+<body>
+  <span class="label stamp">FIG. 002</span>
+  <div class="baseline"></div>
+  <div class="big"></div>
+  <div class="grid">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <span class="label n">N = 20</span>
+</body>
+</html>

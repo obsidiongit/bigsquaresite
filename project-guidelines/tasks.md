@@ -51,6 +51,7 @@ Full developer setup (both hosting options, guard rails, CI lint): `project-sect
 
 Prerequisites, in order:
 - [x] DONE 2026-08-30: Pane A shipped the MDX pipeline + `content/blog/TOPICS.md` with 12 seeded topics; `project-sections/blog/routine-prompt.md` updated to the built contract
+- [x] DONE 2026-08-30 (blog asset engine session): the figure renderer (`npm run blog:figures`, `scripts/blog-figures/`; every cover + inline figure is authored HTML rendered at 2x, all 4 open slots rendered including the GPT cover replacement); TOPICS.md reworked into 25 question-led topics with `source:` demand evidence (Reddit / PAA / Quora research); routine-prompt.md now has the writer authoring its own figure HTMLs, running blog:figures, and answering the question directly in the first 2 paragraphs. The job environment must install Playwright in its own step (blog-plan 3)
 - [ ] Install the Claude GitHub App on obsidiongit/bigsquaresite (https://claude.ai/code/onboarding?magic=github-app-setup); the routine cannot clone or open PRs without it (the /schedule check could not verify access on 2026-08-29)
 - [ ] Create the routine with `/schedule` (environment "Default", env_01Fx9mjBD667qMn9xcsXLP9G; the prompt draft lives in `project-sections/blog/routine-prompt.md`)
 - [ ] First run by hand (`run now`), review the PR, tune the prompt, then let it ride

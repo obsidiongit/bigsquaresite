@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- FIG. 002.1, inline figure for /blog/local-seo-with-more-than-one-location/:
+     1 location next to 20 on one baseline; below the 20, the 3 shared
+     system bars (source of truth, review flow, leads by location) that
+     only exist at scale. Light ground. -->
+<meta name="figure-viewport" content="1200x675">
+<title>blog-fig-local-seo-system</title>
+<style>
+  @font-face {
+    font-family: "Lenia Mono";
+    src: url("../../../public/fonts/LeniaMono-500.woff2") format("woff2");
+    font-weight: 500;
+  }
+  :root {
+    --paper: #F5F6F8;
+    --mid: #5A6373;
+    --ink: #0B0F17;
+    --acc: #0657F9;
+    --line: rgba(11, 15, 23, .12);
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 675px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    position: absolute;
+    font: 500 16px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp { left: 100px; top: 72px; }
+  .n1 { left: 170px; top: 356px; }
+  .n20 { left: 931px; top: 122px; }
+  .baseline {
+    position: absolute;
+    left: 100px;
+    right: 100px;
+    top: 330px;
+    height: 1px;
+    background: var(--line);
+  }
+  .one {
+    position: absolute;
+    left: 170px;
+    top: 234px; /* 96px, bottom on the baseline */
+    width: 96px;
+    height: 96px;
+    background: var(--acc);
+  }
+  /* 4 rows x 5 cols of 40px squares, 16px gaps; bottom row on the baseline */
+  .grid {
+    position: absolute;
+    left: 643px;
+    top: 122px;
+    width: 264px;
+    height: 208px;
+    display: grid;
+    grid-template-columns: repeat(5, 40px);
+    grid-template-rows: repeat(4, 40px);
+    gap: 16px;
+  }
+  .grid span { background: var(--acc); }
+  /* the system only the 20 share: 3 bars hanging under their side of the baseline */
+  .bar {
+    position: absolute;
+    left: 520px;
+    width: 510px;
+    height: 52px;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 20px;
+    font: 500 18px/1.2 "Lenia Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .bar::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background: var(--acc);
+  }
+</style>
+</head>
+<body>
+  <span class="label stamp">FIG. 002.1</span>
+  <div class="baseline"></div>
+  <div class="one"></div>
+  <span class="label n1">N = 1</span>
+  <div class="grid">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <span class="label n20">N = 20</span>
+  <div class="bar" style="top: 366px">Source of truth</div>
+  <div class="bar" style="top: 432px">Review flow</div>
+  <div class="bar" style="top: 498px">Leads by location</div>
+</body>
+</html>
