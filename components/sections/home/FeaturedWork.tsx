@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  AnimatePresence,
   motion,
   useAnimationFrame,
   useMotionValue,
@@ -26,11 +27,13 @@ import {
   PANEL_BAR_VH,
   PANEL_HANDOFF,
   SLAB_VH,
+  STEP_COUNT,
   STRETCH_END,
-  TEXT_EXIT,
+  WORK_SPIN,
   lerp,
   seg,
   smooth,
+  spinStep,
   workMorph,
   workMorphBands,
 } from "@/lib/work-panel";
@@ -179,16 +182,19 @@ export function FeaturedWork() {
     else if (v <= hideAt) setShown(false);
   });
 
-  /* the work panel morph, DOM side (lib/work-panel v9, pin-runway
+  /* the work panel morph, DOM side (lib/work-panel v11, pin-runway
      driven): the section's header + grid PIN inside the stage wrapper
      AT the release composition (sticky top 30svh desktop, round 11),
-     and ~240svh of runway scrubs the whole choreography 1:1 like the
-     hero film: the header exits up and out (headerY, TEXT_EXIT), the
-     cube travels to center stage and turntables, then the CANVAS
-     plays cube -> flooded SQUARE slab; at PANEL_HANDOFF the DOM
-     opacity-swaps an identical clip-path square over it (SLAB_VH,
-     same constant both sides) and plays the stretch + waterfall
-     itself. Round 10 (Brad: the corners "morph
+     and 160svh of runway scrubs the whole choreography 1:1 like the
+     hero film. The header STAYS on screen throughout (the old
+     TEXT_EXIT beat is retired: Brad, the title scrolled away and the
+     box spun alone too long); the cube drops under the headline and
+     turntables in STEP_COUNT eased half-turn steps while the caption
+     rail in the support column swaps one FEATURED_WORK entry per
+     step; then the CANVAS plays cube -> flooded SQUARE slab; at
+     PANEL_HANDOFF the DOM opacity-swaps an identical clip-path
+     square over it (SLAB_VH, same constant both sides) and plays the
+     stretch + waterfall itself. Round 10 (Brad: the corners "morph
      into a pill shape", the squiggle "loads separately"): the morph
      is now TWO clip-path insets driven by the same four numbers each
      frame: fillClip shapes the blue surface with `round r` (absolute
@@ -201,9 +207,14 @@ export function FeaturedWork() {
   const stageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const panelBoxRef = useRef<HTMLDivElement>(null);
-  /* the TEXT EXIT actor (round 11): the pinned header rides up and
-     off the viewport top over TEXT_EXIT while the cube holds still */
-  const headerY = useMotionValue(0);
+  /* the spin-indexed caption rail (retune 2026-08-30): step index is
+     REACT STATE so captions can crossfade, but it is written only
+     when the turntable crosses a slice edge (at most STEP_COUNT - 1
+     sets per direction, guarded by the ref: never per-frame). Rail
+     visibility is a per-frame motion value like the other actors. */
+  const [spinIdx, setSpinIdx] = useState(0);
+  const spinIdxRef = useRef(0);
+  const railOpacity = useMotionValue(0);
   const panelOpacity = useMotionValue(overlap ? 0 : 1);
   const fillClip = useMotionValue(
     overlap ? "inset(0px 0px 100% 0px round 32px)" : "inset(0px round 32px)",
@@ -282,16 +293,20 @@ export function FeaturedWork() {
         B = lerp(tArrive, (barPx - slabPx) / 2, 0);
         T = lerp(t2, ph - lerp(t1, (barPx + slabPx) / 2, barPx), 0);
       }
-      /* the TEXT EXIT (round 11): the header rides up and fully off
-         the viewport top while the cube holds. Measured off the
-         untransformed outer anchor (the transform lives on its inner
-         child), so nothing feeds back. */
-      const head = headerRef.current;
-      if (head) {
-        headerY.set(
-          -smooth(seg(m, TEXT_EXIT)) * (head.getBoundingClientRect().bottom + 32),
-        );
+      /* the caption rail rides the turntable: index flips exactly at
+         the slice edges (the middle of stepEase's face dwell, so the
+         swap lands with a landed face), fades in as the spin starts
+         and back out over the dive. Desktop only: mobile's morph has
+         no cube and the rail is display-hidden there. */
+      const idx = spinStep(m);
+      if (idx !== spinIdxRef.current) {
+        spinIdxRef.current = idx;
+        setSpinIdx(idx);
       }
+      railOpacity.set(
+        seg(m, [WORK_SPIN[0] - 0.04, WORK_SPIN[0] + 0.02]) *
+          (1 - seg(m, [MORPH_REST, MORPH_REST + 0.08])),
+      );
     }
     const rad = lerp(t1, rad0, 32);
     fillClip.set(`inset(${T}px ${L}px ${B}px ${L}px round ${rad}px)`);
@@ -309,15 +324,16 @@ export function FeaturedWork() {
     if (m > MORPH_REST) setBorderActive(true);
   });
 
-  /* the morph's scroll checkpoints (STYLE_GUIDE 7.4): the text-exit
-     beat (desktop only; a park must never leave the headline clipped
-     at the viewport top), the COMMITTED runway slice (MORPH_REST ->
-     1) and the exit window. The travel and turntable beats between
-     them park freely (the cube is alive there); from the dive on, an
-     idle park completes the morph on a SLOW glide (~2600ms/vh vs the
-     default 450: Brad round 9, the default pace made the panel
-     "appear almost instantaneously": the completion should read as
-     the animation playing, waterfall and all). Outside the bands the
+  /* the morph's scroll checkpoints (STYLE_GUIDE 7.4): one band per
+     turntable step (desktop only; an idle park in the spin settles on
+     a slice edge, a landed face with its caption settled, never
+     mid-swap), the COMMITTED runway slice (MORPH_REST -> 1) and the
+     exit window. The hold/travel beat before the spin parks freely
+     (the cube is alive there); from the dive on, an idle park
+     completes the morph on a SLOW glide (~2600ms/vh vs the default
+     450: Brad round 9, the default pace made the panel "appear
+     almost instantaneously": the completion should read as the
+     animation playing, waterfall and all). Outside the bands the
      hook is inert. */
   const morphBands = useCallback(() => {
     const stageEl = stageRef.current;
@@ -383,15 +399,15 @@ export function FeaturedWork() {
         <div ref={pinRef} data-work-pin className={cn(overlap && "sticky top-[6svh] md:top-[30svh]")}>
         {/* header: huge left, small support pinned right (lusion).
             The outer div anchors the scroll gate and the base offset
-            (Brad's raised release composition, desktop); the inner
-            motion div is the TEXT EXIT actor, riding up and off the
-            viewport top on the morph clock while the cube holds. */}
+            (Brad's raised release composition, desktop). It STAYS on
+            screen through the whole pin (the TEXT EXIT actor is
+            retired: the retune ties the spin INTO the title instead
+            of replacing it). */}
         <div
           ref={headerRef}
           className={cn(overlap && "md:-translate-y-30")}
         >
-        <motion.div
-          style={{ y: headerY }}
+        <div
           className={cn(EDGE, "md:flex md:items-start md:justify-between md:gap-12")}
         >
           {overlap ? (
@@ -410,11 +426,48 @@ export function FeaturedWork() {
                 initial={false}
                 animate={shown ? "show" : "hidden"}
                 variants={supportRise}
-                className="mt-8 md:mt-4 md:max-w-[38ch] md:shrink-0 md:basis-[30%]"
+                className="mt-8 md:mt-4 md:max-w-[38ch] md:shrink-0 md:basis-[30%] md:relative"
               >
                 <p className="text-[13px] font-medium uppercase leading-[1.7] tracking-[0.08em] text-sec-mid">
                   {SUPPORT_COPY}
                 </p>
+                {/* the spin-indexed caption rail: one step per
+                    FEATURED_WORK entry, flipped by the turntable
+                    (spinStep) exactly on stepEase's face dwells, so
+                    the caption swap and the face landing read as one
+                    beat. Absolutely positioned below the support copy
+                    so the pinned header's height (and the release
+                    composition) never changes; visibility rides the
+                    morph clock (railOpacity), so no gated motion
+                    wrapper: the reduced-motion / no-WebGL paths never
+                    render this branch at all and the rail is simply
+                    absent there. Desktop only (mobile's morph has no
+                    cube); aria-hidden, it restates the cards below. */}
+                <motion.div
+                  aria-hidden
+                  style={{ opacity: railOpacity }}
+                  className="pointer-events-none absolute inset-x-0 top-full mt-6 hidden md:block"
+                >
+                  <AnimatePresence initial={false} mode="popLayout">
+                    <motion.div
+                      key={spinIdx}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -16 }}
+                      transition={{ duration: 0.35, ease: EASE.house }}
+                    >
+                      <p className="font-mono text-mono-sm uppercase text-sec-mid">
+                        {String(spinIdx + 1).padStart(2, "0")}
+                      </p>
+                      <p className="mt-2 font-display text-[clamp(20px,12px+0.9vw,26px)] leading-[1.15] text-sec-ink">
+                        {FEATURED_WORK[spinIdx].title}
+                      </p>
+                      <p className="mt-2 font-mono text-mono-sm uppercase text-sec-mid">
+                        {FEATURED_WORK[spinIdx].tags.join(" • ")}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.div>
               </motion.div>
             </>
           ) : (
@@ -432,7 +485,7 @@ export function FeaturedWork() {
               </Reveal>
             </>
           )}
-        </motion.div>
+        </div>
         </div>
 
         <div className="relative mt-16 md:mt-[14svh]">
@@ -508,9 +561,12 @@ export function FeaturedWork() {
             CONTENT box, so this must be a real spacer element: as
             wrapper padding the pin has zero room and never sticks
             (found live, round 8). Length is the morph's total scroll
-            budget: 240svh desktop (round 11: text exit + travel +
-            turntable + morph), 100svh mobile. */}
-        {overlap && <div aria-hidden className="h-[100svh] md:h-[240svh]" />}
+            budget: 160svh desktop (retune 2026-08-30: was 240svh;
+            with the text exit retired and the spin widened to 0.48 of
+            the clock, the shorter runway keeps the felt turn rate
+            near the old one: see WORK_SPIN in lib/work-panel),
+            100svh mobile. */}
+        {overlap && <div aria-hidden className="h-[100svh] md:h-[160svh]" />}
         </div>
 
         <Reveal className="mt-20 flex justify-center md:mt-32">

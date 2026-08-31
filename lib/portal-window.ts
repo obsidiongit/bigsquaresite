@@ -12,8 +12,9 @@
    Same proven mechanics, a different read: the object does not become
    a panel, it becomes the software's identity.
 
-   THE PIN. Same architecture as the hero film, the work panel, and the
-   solution sweep: the composition pins inside a taller wrapper and a
+   THE PIN. Same architecture as the hero film, the work panel, and
+   the first-90-days close (the solution sweep left the pin family
+   2026-08-30): the composition pins inside a taller wrapper and a
    scroll RUNWAY scrubs the choreography 1:1 under the visitor's
    finger. No auto-play, no hijack.
 
@@ -107,7 +108,7 @@ export function portalMorph(wr: Rect, cr: Rect) {
    committed slice only, as an absolute scrollY range resolved at
    settle time. Inside the runway pinStart = scrollY - pin offset is
    exact; parked outside it the band is degenerate and the hook stays
-   inert. Unlike the solution sweep's free-park runway, a park here
+   inert. Unlike the work turntable's free-park spin zone, a park here
    must complete: a half-built window reads as broken, not as an
    object at rest. */
 export function portalBands(

@@ -28,7 +28,14 @@ import { cn } from "@/lib/utils";
 
    Budget (STYLE_GUIDE.md 0, 8): at most 1 per viewport, 3 per page. */
 
-type Variant = "bracket" | "circle" | "underline" | "box" | "smiley";
+type Variant =
+  | "bracket"
+  | "circle"
+  | "underline"
+  | "box"
+  | "smiley"
+  | "starburst"
+  | "arrow";
 
 type PathSpec = { d: string; strokeWidth: number };
 
@@ -154,6 +161,63 @@ function buildFrame(
       gen.curve(smile, { seed: seed(3), roughness: 1.3, strokeWidth: 3.5 }),
       3.5,
     );
+  } else if (variant === "starburst") {
+    /* radiating spark burst (first-90-days finale enrichment,
+       2026-08-30): 7 short rays around the wrapped box. A DOODLE like
+       the smiley: it decorates a surface off an empty fixed-size
+       span. Rays start OFF centre so the burst reads as an open ring
+       that can tuck behind other ink without crowding it; per-ray
+       length wobble comes off the seed table so frames stay stable,
+       and the draw-on's per-path stagger makes the rays pop around
+       the dial for free. */
+    const RAYS = 7;
+    for (let i = 0; i < RAYS; i++) {
+      const a = -Math.PI / 2 + (i / RAYS) * Math.PI * 2 + 0.24;
+      const wob = 0.8 + 0.25 * ((SEEDS[i % SEEDS.length] % 7) / 6);
+      push(
+        gen.line(
+          w / 2 + Math.cos(a) * w * 0.26,
+          h / 2 + Math.sin(a) * h * 0.26,
+          w / 2 + Math.cos(a) * w * 0.5 * wob,
+          h / 2 + Math.sin(a) * h * 0.5 * wob,
+          { seed: seed(i), roughness: 1.3, strokeWidth: 3 },
+        ),
+        3,
+      );
+    }
+  } else if (variant === "arrow") {
+    /* hand-drawn pointer (first-90-days finale enrichment): a curved
+       shaft from the box's top-left to a tip at the lower right plus
+       two barbs. A consumer aims it by placing the box between the
+       words and the target (rotate via className for other bearings).
+       Barb angles derive from the shaft's landing heading so the head
+       stays true when the box is stretched off-square. */
+    const tip: [number, number] = [w * 0.8, h * 0.86];
+    const shaft: [number, number][] = [
+      [w * 0.14, h * 0.08],
+      [w * 0.26, h * 0.42],
+      [w * 0.5, h * 0.68],
+      tip,
+    ];
+    push(gen.curve(shaft, { seed: seed(0), roughness: 1.3, strokeWidth: 3 }), 3);
+    const heading = Math.atan2(tip[1] - h * 0.68, tip[0] - w * 0.5);
+    const barb = Math.max(10, Math.min(w, h) * 0.26);
+    for (const [i, off] of [
+      [1, 0.55],
+      [2, -0.55],
+    ] as const) {
+      const a = heading + Math.PI + off;
+      push(
+        gen.line(
+          tip[0],
+          tip[1],
+          tip[0] + barb * Math.cos(a),
+          tip[1] + barb * Math.sin(a),
+          { seed: seed(i), roughness: 1.1, strokeWidth: 3 },
+        ),
+        3,
+      );
+    }
   } else if (variant === "circle") {
     push(
       gen.ellipse(w / 2, h / 2, w * 1.15, h * 1.7, {

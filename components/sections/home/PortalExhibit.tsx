@@ -7,7 +7,6 @@ import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { useScrollCheckpoints } from "@/components/motion/useScrollCheckpoints";
 import { useWebGLSupport } from "@/components/motion/useWebGLSupport";
 import { PortalGlyph, PortalWindow } from "@/components/sections/home/PortalWindow";
-import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { CALL_LOG } from "@/lib/obsidion-preview";
 import {
   PORTAL_HANDOFF,
@@ -38,8 +37,8 @@ import { cn } from "@/lib/utils";
      SEED     the seed retires sitting exactly on top of the real mark,
               so the swap is invisible rather than a fade-out
      UNROLL   the body unrolls downward from under the bar
-     SETTLE   the frame's shadow, the registration marks, and the
-              second window arrive with it
+     SETTLE   the frame's shadow and the second window arrive with it
+              (registration marks retired 2026-08-30, Brad)
 
    The reveal is ONE clip-path inset on the frame wrapper, with
    absolute-px radii (the work-panel round-10 rule: scaleX/scaleY
@@ -263,8 +262,6 @@ export function PortalExhibit() {
           ))}
         </div>
       </motion.div>
-
-      <RegistrationMarks className="hidden lg:block" />
     </div>
   );
 }

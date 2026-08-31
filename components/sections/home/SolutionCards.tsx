@@ -4,31 +4,33 @@ import { useEffect, useRef, useState } from "react";
 import { Reveal, RevealItem } from "@/components/motion/Reveal";
 import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
-import { SWEEP_UNDER, sweepPin } from "@/lib/solution-sweep";
+import { useWebGLSupport } from "@/components/motion/useWebGLSupport";
+import { SWEEP_UNDER, sweepFrac } from "@/lib/solution-sweep";
 
-/* SolutionCards (5.solution.md v3.2): the three widget cards plus the
-   CARD SWEEP ink. Desktop: the section PINS (SolutionStage) and the
-   runway scrubs the companion cube right-to-left flat under the
-   frozen cards; as it crosses under each title, that title's ROUGH
-   UNDERLINE draws in behind it — the same
-   hand-drawn annotation system as the hero circle and the featured
-   work box squiggle (RoughAnnotation, Brad's call over a bespoke sine
-   underline: "the animated kind of scribble lines"). TWO-WAY via the
-   `rearm` prop (Brad's round 2: the lines must "pop up one by one as
-   the square slides under that actual card", never sit pre-drawn):
-   each underline draws as the cube crosses under its card, boils
-   while lit, and retracts when the cube scrubs back past it, so the
-   beat replays on every pass. Three underlines share one viewport
-   here, a deliberate exception to the 1-per-viewport annotation
-   budget (Brad's ask; they draw one at a time behind the cube).
+/* SolutionCards (5.solution.md v3.2; unpinned 2026-08-30, Brad
+   killed the scroll lock): the three widget cards plus the CARD
+   SWEEP ink. Desktop: the grid's natural passage scrubs the
+   companion cube right-to-left flat under the cards; as it crosses
+   under each title, that title's ROUGH UNDERLINE draws in behind it
+   — the same hand-drawn annotation system as the hero circle and the
+   featured work box squiggle (RoughAnnotation, Brad's call over a
+   bespoke sine underline: "the animated kind of scribble lines").
+   TWO-WAY via the `rearm` prop (Brad's round 2: the lines must "pop
+   up one by one as the square slides under that actual card", never
+   sit pre-drawn): each underline draws as the cube crosses under its
+   card, boils while lit, and retracts when the cube scrubs back past
+   it, so the beat replays on every pass. Three underlines share one
+   viewport here, a deliberate exception to the 1-per-viewport
+   annotation budget (Brad's ask; they draw one at a time behind the
+   cube).
 
-   The triggers replay the canvas Tracker's pin-clock math on the
-   same stage/pin rects (lib/solution-sweep sweepPin), so cube and
-   ink cannot drift apart. Collapsed-runway paths (mobile, where the
-   cube's journey exits back at featured work; desktop with no cube)
-   light each card on its own position instead, top-down. Reduced
-   motion: RoughAnnotation renders the underlines settled, nothing
-   draws.
+   The triggers replay the canvas Tracker's clock on the SAME grid
+   rect (lib/solution-sweep sweepFrac of this component's own
+   wrapper), so cube and ink cannot drift apart. Cube-less paths
+   (mobile, where the cube's journey exits back at featured work;
+   desktop with no WebGL) light each card on its own position
+   instead, top-down. Reduced motion: RoughAnnotation renders the
+   underlines settled, nothing draws.
 
    The grid wrapper carries data-cube-anchor="solutionCards": the
    canvas positions the sweep off this rect's live column geometry;
@@ -41,6 +43,7 @@ const MOBILE_TRIGGER = 0.78;
 
 export function SolutionCards({ cards }: { cards: Card[] }) {
   const reduced = useReducedMotionSafe();
+  const webgl = useWebGLSupport();
   const gridRef = useRef<HTMLDivElement>(null);
   /* bitmask of lit underlines by card index (document order); bits
      drop again on scroll-back and the rearm annotations retract */
@@ -50,30 +53,25 @@ export function SolutionCards({ cards }: { cards: Card[] }) {
     if (reduced) return;
     const grid = gridRef.current;
     if (!grid) return;
-    const stageEl = grid.closest<HTMLElement>("[data-solution-stage]");
-    const pinEl = stageEl?.querySelector<HTMLElement>("[data-solution-pin]");
     let raf = 0;
     const measure = () => {
       raf = 0;
       const vh = window.innerHeight;
       let mask = 0;
-      const pin =
-        window.innerWidth >= 768 && stageEl && pinEl
-          ? sweepPin(
-              stageEl.getBoundingClientRect(),
-              pinEl.getBoundingClientRect(),
-            )
-          : { room: 0, p: 0 };
-      if (pin.room > 1) {
-        /* the pinned sweep: runway progress p is the clock, shared
-           with the canvas cube. Right to left, so stage 1 lights
-           column 2 (Full Approach), stage 3 column 0. */
-        const stage = SWEEP_UNDER.filter((beat) => pin.p >= beat).length;
+      /* webgl null means "not yet known": assume the cube exists so
+         the beats never flash between models on first paint */
+      if (window.innerWidth >= 768 && webgl !== false) {
+        /* the sweep: the grid's own passage frac is the clock, shared
+           with the canvas cube (which measures this same wrapper).
+           Right to left, so stage 1 lights column 2 (Full Approach),
+           stage 3 column 0. */
+        const p = sweepFrac(grid.getBoundingClientRect(), vh);
+        const stage = SWEEP_UNDER.filter((beat) => p >= beat).length;
         for (let i = 0; i < cards.length; i++)
           if (stage >= cards.length - i) mask |= 1 << i;
       } else {
-        /* collapsed runway (mobile, or a desktop fallback with no
-           cube): each card lights on its own position, top-down */
+        /* no cube (mobile, or a desktop fallback with no WebGL):
+           each card lights on its own position, top-down */
         const els = grid.querySelectorAll<HTMLElement>("[data-sweep-card]");
         els.forEach((el, i) => {
           if (el.getBoundingClientRect().top < vh * MOBILE_TRIGGER)
@@ -93,7 +91,7 @@ export function SolutionCards({ cards }: { cards: Card[] }) {
       window.removeEventListener("resize", queue);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [reduced, cards.length]);
+  }, [reduced, webgl, cards.length]);
 
   return (
     <div

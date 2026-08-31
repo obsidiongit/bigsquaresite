@@ -11,6 +11,7 @@ Working rules: batch builds now that all three template gates are open (Brad, 20
 - [ ] **Batch 3:** funnel templates /go/, /apply/, /thanks/. BUILT 2026-08-30 (Pane B): `app/(funnel)/` route group (no nav, footer, or sound toggle; noindex; never in sitemap.xml), `lib/funnels/registry.ts`, `components/sections/funnels/`, `lib/track.ts` (no-op until tag IDs). Flagships `/go/audit/` (dark), `/apply/growth-partner/` (tint), `/thanks/audit/` + `/thanks/growth-partner/` (accent). Verified 4 widths + reduced motion + form flow + build; awaiting Brad's batch review. Owed: video URL + poster, one sourced result, budget ranges + qualifying floor, turnaround. /ad-credit/ RETIRED 2026-08-31 (Brad), never building
 - [ ] **Batch 4:** blog pipeline + 2 posts (BUILT 2026-08-30, Pane A: MDX pipeline, /blog/ + 2 posts, /resources/ with request forms, the 404; awaiting Brad's review), lead magnets as assets land, then the D4 franchise service family after the keyword pass
 - [ ] Interleaved: homepage punch list, metadata/OG/favicon/Lighthouse (2J), cube sessions (2K), registration-mark removal sweep, Brad's sitewide copy pass
+- [x] SHIPPED 2026-08-30 (home polish round, awaiting Brad's review; STYLE_GUIDE changelog has the full entry): footer legal line drops the CCPA link; wordmark mark 0.72 -> 0.86em; letter hover = the 7.6 pixel trail INSIDE the glyphs (mix-blend-multiply), flood retired; registration marks off Newsletter + Portal; Solution scroll lock CUT (unpinned sweepFrac sweep) + the sticky-pin z-10 occlusion fix; services dock lock ramp + clamp (cube can no longer exit the bay on fast scroll); Featured Work keeps its header through the pin, runway 240 -> 160svh, six spin-indexed work captions; First 90 Days runway 160 -> 80svh with smoothstepped fill + finale cascade (starburst + arrow RoughAnnotation variants, square confetti, numeral pop); menu overlay gains Resources (Blog, Free Guides). Verified 4 widths + reduced motion, no overflow, tsc clean
 - [x] SHIPPED 2026-08-27: sitewide sound design (synth engine, nav toggle, on-by-default) + page load/route transition veil (STYLE_GUIDE 7.11/7.12). REVIEWED by Brad same night: approved as V1 ("really solid"), named a focus point; v2 section below
 
 ## Brad's check-in, 2026-08-29 (goal: launch-ready this weekend)
@@ -63,7 +64,7 @@ Brad: the pages waiting on his content should still get built as far as they can
 - [x] BUILT 2026-08-31 (Pane C). `/results/[slug]/`: data-driven; `WorkEntry.caseStudy` in `lib/featured-work.ts` carries the full shape (headline, summary, 3 metrics with window + source, situation, steps with service slugs, result, optional quote, services); a filled entry renders the real layout, flips robots to index, and emits BreadcrumbList JSON-LD; the 6 entries stay skeletons
 - [x] DRAFTED 2026-08-31 (Pane C). `/privacy-policy/` + `/terms/`: full drafts in `content/legal/*.mdx`, rendered through the blog MDX pipeline on the spine with the sticky H2 rail (`components/sections/legal/LegalArticle.tsx`, `lib/legal.ts`). LAWYER REVIEW OWED before launch; counsel edits the MDX files only
 - [x] DONE 2026-08-31 (Pane C). Forms: `<ConsentLine>` under every submit button (contact, audit, schedule last step, apply last step, resource request; NewsletterForm owed to Pane A, see handoff cross-pane requests); SMS one-to-one checkbox on `/apply/` with the consent text + timestamp + checkbox state recorded through `submitForm` (`smsConsent` in `lib/form-action.ts`)
-- [x] DONE 2026-08-31 (Pane C). Footer legal line links "Do not sell or share my personal information" to `/privacy-policy/#your-choices-and-rights`
+- [x] DONE 2026-08-31 (Pane C). Footer legal line links "Do not sell or share my personal information" to `/privacy-policy/#your-choices-and-rights`. CUT 2026-08-30 on Brad's walkthrough ("drop that and just have the privacy policy and terms"); the rights section stays inside the privacy page. FLAG TO THE LAWYER PASS: counsel may want the footer link back for CCPA/CPRA
 - [ ] TABLED 2026-08-30 (Brad): `/resources/[slug]/` waits for the lead-magnet session; do not build yet
 
 ## Homepage punch list (the remaining ~15%)
@@ -75,11 +76,11 @@ Needs Brad (facts and assets, none of which can be invented):
 - [ ] Real 4K hero film (one-line HERO_VIDEO swap in Hero.tsx)
 - [ ] Real 90-day milestones (`lib/ninety-days.ts`, currently invented + placeholder-flagged)
 - [ ] Newsletter: 5 client headshots, 4 photos (`lib/newsletter-frames.ts`), a real cadence, confirm "600+ clients" wording
-- [ ] Footer facts: socials, two office phones, BIGSQUARE vs BIGSQUARE MARKETING wordmark, keep-or-cut the paint layer
+- [ ] Footer facts: socials, two office phones, BIGSQUARE vs BIGSQUARE MARKETING wordmark (paint layer question ANSWERED 2026-08-30: it returns letters-only inside the wordmark, STYLE_GUIDE 7.6)
 - [ ] Live Obsidion portal code for the window slot (chip drops with it)
 - [ ] FORM_WEBHOOK_URL destination (submissions log a server warning until set)
 - [ ] Cube look sign-off + the 3D bundle overage call (~232KB gz vs the 200KB line)
-- [ ] Reviews to record: 2G1 First 90 Days round 2, 2I footer Back Cover round 2, cube reform round 14 (Brad may have approved verbally; confirm, then check off)
+- [ ] Reviews to record: 2G1 First 90 Days round 2, 2I footer Back Cover round 2, cube reform round 14 (Brad may have approved verbally; confirm, then check off), and the 2026-08-30 home polish round (solution unpin, featured work captions, day-90 round 3, letter trail)
 
 Build items (small, any session):
 - [ ] Newsletter polish set: panel presence at 1536, frame cadence vs real photos, remove the headshot note when assets land, confirmation copy, optional cube anchor

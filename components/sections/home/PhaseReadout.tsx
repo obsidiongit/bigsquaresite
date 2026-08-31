@@ -112,14 +112,32 @@ export function PhaseReadout({
         ))}
       </div>
 
-      {/* the clock */}
+      {/* the clock. The numeral gets a landing pop when the clock
+          reaches 90 (round 3): keyframes fire when the animate target
+          flips from 1 to the array, so a scroll-back and return
+          replays it. Driven by the integer day the parent already
+          derives from dayMv (no new per-frame work); transform only,
+          origin-bottom so it grows off the baseline without reflow.
+          Reduced motion renders the plain span (framer trap: never a
+          gated motion wrapper). */}
       <div className="mt-7 flex items-baseline gap-3">
         <span className="font-mono text-mono-sm uppercase text-sec-mid">
           Day
         </span>
-        <span className="font-mono text-[clamp(52px,4.5vw,76px)] leading-none tracking-[-0.03em] tabular-nums text-sec-ink">
-          {String(shownDay).padStart(2, "0")}
-        </span>
+        {reduced ? (
+          <span className="inline-block font-mono text-[clamp(52px,4.5vw,76px)] leading-none tracking-[-0.03em] tabular-nums text-sec-ink">
+            {String(shownDay).padStart(2, "0")}
+          </span>
+        ) : (
+          <motion.span
+            className="inline-block origin-bottom font-mono text-[clamp(52px,4.5vw,76px)] leading-none tracking-[-0.03em] tabular-nums text-sec-ink"
+            initial={false}
+            animate={{ scale: day >= TOTAL_DAYS ? [1, 1.06, 1] : 1 }}
+            transition={{ duration: 0.5, ease: EASE.swoop }}
+          >
+            {String(shownDay).padStart(2, "0")}
+          </motion.span>
+        )}
         <span className="font-mono text-mono-sm uppercase tabular-nums text-sec-mid">
           / {TOTAL_DAYS}
         </span>

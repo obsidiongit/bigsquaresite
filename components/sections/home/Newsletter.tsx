@@ -3,7 +3,6 @@ import { ClipReveal } from "@/components/motion/ClipReveal";
 import { Reveal, RevealItem } from "@/components/motion/Reveal";
 import { NewsletterForm } from "@/components/sections/home/NewsletterForm";
 import { NewsletterPanel } from "@/components/sections/home/NewsletterPanel";
-import { RegistrationMarks } from "@/components/shared/RegistrationMarks";
 import { Section } from "@/components/shared/Section";
 import { EDGE } from "@/lib/layout";
 import { cn } from "@/lib/utils";
@@ -96,13 +95,12 @@ export function Newsletter() {
           </div>
 
           {/* ---- the cycling panel --------------------------------- */}
-          {/* the marks ride an outer wrapper: ClipReveal clips its own
-              overflow and would crop anything drawn on the corners */}
+          {/* registration marks retired here 2026-08-30 (Brad),
+              extending the 2026-08-26 new-page rule to the home page */}
           <div className="relative max-w-[26rem] lg:col-span-5 lg:col-start-8 lg:max-w-none">
             <ClipReveal>
               <NewsletterPanel />
             </ClipReveal>
-            <RegistrationMarks className="hidden lg:block" />
           </div>
         </div>
       </div>

@@ -1,16 +1,20 @@
-/* Shared scroll math for the featured work PANEL MORPH (2b v10, Brad
-   2026-08-24/25 rounds 5-12): from the release rest (headline left,
-   cube in the headline/support gap, cards peeking below) the PIN
-   engages IMMEDIATELY (sticky top 30svh == the release composition,
-   round 11: "without scrolling down on the page any more than we
-   already are now"). Scroll then scrubs: the headline + support rise
-   up and OUT the viewport top while the cube holds still; the cube
-   glides to center stage above cards 01/02 and turntables THREE
-   slow full turns (round 13; see WORK_TURNS); then it dives, flattens,
-   floods into a brand-blue square slab, and ONE blue panel grows out
-   of it (a clip-path stretch into the top bar, then a top-down
-   waterfall carrying the edge squiggle with it) behind all six
-   cards; at the grid's far edge it all runs backwards.
+/* Shared scroll math for the featured work PANEL MORPH (2b v11, Brad
+   2026-08-24/25 rounds 5-12; retune 2026-08-30): from the release
+   rest (headline left, cube in the headline/support gap, cards
+   peeking below) the PIN engages IMMEDIATELY (sticky top 30svh == the
+   release composition, round 11: "without scrolling down on the page
+   any more than we already are now"). Scroll then scrubs: the
+   headline + support STAY PUT for the whole choreography (the old
+   TEXT_EXIT beat is retired: Brad, the title scrolled away and the
+   box spun alone too long with no words); the cube drifts from the
+   float spot to a spot just under the headline's baseline and
+   turntables WORK_TURNS slow full turns in SIX eased half-turn steps,
+   each step swapping a caption (index, title, tags of one
+   FEATURED_WORK entry) in the support column beside it; then it
+   dives, flattens, floods into a brand-blue square slab, and ONE blue
+   panel grows out of it (a clip-path stretch into the top bar, then a
+   top-down waterfall carrying the edge squiggle with it) behind all
+   six cards; at the grid's far edge it all runs backwards.
 
    THE PIN (round 8). Rounds 5-7 drove the morph off the panel's own
    passage through the viewport, which caps the whole choreography at
@@ -68,17 +72,30 @@ export const SLAB_VH = 0.11;
    ends and the top-down sweep begins */
 export const STRETCH_END = 0.85;
 
-/* the headline + support EXIT beat (round 11): the pinned header
-   translates up and off the viewport top over this morph window,
-   scrubbed, while the cube holds still. A checkpoint band of its own
-   so a park can never leave the text half-clipped at the top edge. */
-export const TEXT_EXIT: [number, number] = [0.03, 0.14];
+/* the TURNTABLE window, shared by both actors (moved here from
+   HomeCanvas in the spin-caption retune so the canvas rotation and
+   the DOM caption rail can never disagree on where a step lands).
+   WORK_SPIN[1] must stay <= MORPH_REST: the last face must land
+   before (or exactly at) the dive. Felt turn rate, desktop: old =
+   3 turns / (0.38 x 240svh runway) = 1 turn per 30.4svh; new =
+   3 turns / (0.48 x 160svh runway) = 1 turn per 25.6svh (~16%
+   faster, the closest the shorter runway allows with the dive ladder
+   untouched). Widen the runway, not the count, to slow it (round
+   13). */
+export const WORK_SPIN: [number, number] = [0.08, 0.56];
 
-/* the last FREE morph value: below it the cube merely travels/spins
-   at its center-stage spot and any park is a legit rest, so the main
-   checkpoint band starts HERE, not at the pin start (round 9; the
-   full-runway band meant one wheel notch into the pin idle-glided the
-   entire choreography, which read as the panel appearing instantly).
+/* one caption step per FEATURED_WORK entry; each step is half a turn,
+   so STEP_COUNT / 2 == WORK_TURNS by construction. Round 12 (4 turns
+   read "extremely fast") and round 13 ("go for three turns") settled
+   the count at 3; the caption retune keeps it and indexes it. */
+export const STEP_COUNT = 6;
+export const WORK_TURNS = STEP_COUNT / 2;
+
+/* where the COMMITTED morph begins: the main checkpoint band starts
+   HERE, not at the pin start (round 9; the full-runway band meant one
+   wheel notch into the pin idle-glided the entire choreography, which
+   read as the panel appearing instantly). Below it the hold/travel
+   zone parks freely and the spin parks on step edges (workMorphBands).
    It must equal the canvas dive's start (HomeCanvas WORK_DIVE): from
    the dive on, states are half-morphed and must complete. */
 export const MORPH_REST = 0.56;
@@ -88,6 +105,28 @@ export const seg = (v: number, [a, b]: [number, number]) =>
   clamp01((v - a) / (b - a));
 export const smooth = (t: number) => t * t * (3 - 2 * t);
 export const lerp = (t: number, a: number, b: number) => a + (b - a) * t;
+
+/* eased waypoint steps for the turntable (the steps4 pattern): within
+   each 1/STEP_COUNT slice the value dwells on the landed face (first
+   and last 15% of the slice), then EASES to the next: never a snap,
+   which the canvas's damped follower would rubber-band on. Adjacent
+   dwells merge into one 30%-of-a-slice rest exactly straddling each
+   slice edge, which is also where spinStep flips: face landings and
+   caption swaps read locked together. Continuous, stepEase(0) = 0,
+   stepEase(1) = 1, so the dive's nearest-half-turn unwind starts on
+   an exact face. */
+export const stepEase = (t: number) => {
+  const q = Math.min(STEP_COUNT, Math.max(0, t) * STEP_COUNT);
+  const i = Math.min(STEP_COUNT - 1, Math.floor(q));
+  const f = q - i;
+  const glide = f < 0.15 ? 0 : f > 0.85 ? 1 : smooth((f - 0.15) / 0.7);
+  return (i + glide) / STEP_COUNT;
+};
+
+/* which caption the turntable is on for a morph value: 0..STEP_COUNT-1,
+   clamped so pre-spin reads step 0 and the dive holds the last one */
+export const spinStep = (m: number) =>
+  Math.min(STEP_COUNT - 1, Math.floor(seg(m, WORK_SPIN) * STEP_COUNT));
 
 type Rect = { top: number; height: number };
 
@@ -106,30 +145,39 @@ export function workMorph(wr: Rect, cr: Rect, panelBottom: number, vh: number) {
   };
 }
 
-/* Checkpoint bands for useScrollCheckpoints (STYLE_GUIDE 7.4): the
-   text-exit beat (desktop pins only; mobile's header never exits),
-   the COMMITTED slice of the pin runway (MORPH_REST -> 1; the
-   travel/spin zone before it parks freely) and the exit window, as
-   absolute scrollY ranges resolved at settle time. Inside the runway,
-   pinStart = scrollY - pin offset is exact; parked outside it the
-   degenerate band lands on a closed edge and the hook stays inert. */
+/* Checkpoint bands for useScrollCheckpoints (STYLE_GUIDE 7.4): one
+   band per turntable step (desktop pins only; mobile has no cube by
+   the grid), the COMMITTED slice of the pin runway (MORPH_REST -> 1;
+   the hold/travel zone before the spin parks freely) and the exit
+   window, as absolute scrollY ranges resolved at settle time. The
+   step bands tile WORK_SPIN edge to edge, so an idle park anywhere in
+   the spin glides to a slice edge: a landed face with its caption
+   settled, never a mid-swap. Their shared edges are legit rests (the
+   hook only acts strictly inside a band), and the last edge is
+   MORPH_REST itself, where the committed band takes over. Inside the
+   runway, pinStart = scrollY - pin offset is exact; parked outside it
+   the degenerate band lands on a closed edge and the hook stays
+   inert. */
 export function workMorphBands(
   wr: Rect,
   cr: Rect,
   panelBottom: number,
   vh: number,
   scrollY: number,
-  textExit: boolean,
+  desktop: boolean,
 ): [number, number][] {
   const runway = wr.height - cr.height;
   const bands: [number, number][] = [];
   if (runway > 1) {
     const pinStart = scrollY - (cr.top - wr.top);
-    if (textExit)
-      bands.push([
-        pinStart + TEXT_EXIT[0] * runway,
-        pinStart + TEXT_EXIT[1] * runway,
-      ]);
+    if (desktop) {
+      const span = WORK_SPIN[1] - WORK_SPIN[0];
+      for (let i = 0; i < STEP_COUNT; i++)
+        bands.push([
+          pinStart + (WORK_SPIN[0] + (i / STEP_COUNT) * span) * runway,
+          pinStart + (WORK_SPIN[0] + ((i + 1) / STEP_COUNT) * span) * runway,
+        ]);
+    }
     bands.push([pinStart + MORPH_REST * runway, pinStart + runway]);
   }
   const bottom = panelBottom + scrollY;

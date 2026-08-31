@@ -141,20 +141,16 @@ export function Footer() {
           <span className="text-sec-mid">
             {SITE_NAME} © {year} All Rights Reserved.
           </span>
+          {/* The CCPA-shaped "Do not sell or share" link was cut here
+              (Brad, 2026-08-30); the right lives inside the privacy
+              page itself. Flag to the lawyer pass (legal-pages-plan.md)
+              in case they want it back. */}
           <span className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link href="/privacy-policy/" className={LINK}>
               Privacy Policy
             </Link>
             <Link href="/terms/" className={LINK}>
               Terms
-            </Link>
-            {/* CCPA/CPRA-shaped link (legal-pages-plan.md): targets the
-                privacy page's rights H2 (id from mdx-components' slugify) */}
-            <Link
-              href="/privacy-policy/#your-choices-and-rights"
-              className={LINK}
-            >
-              Do not sell or share my personal information
             </Link>
           </span>
         </div>

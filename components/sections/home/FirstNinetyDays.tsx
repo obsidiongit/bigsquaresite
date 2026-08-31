@@ -35,11 +35,11 @@ import { cn } from "@/lib/utils";
    1. PINNED RUNWAY. Round 1's plain scroll map played the whole fill
       in ~1.5 viewports ("just happens way too fast... needs to lock
       and stop the scroll"). The stage (headline + slab) is now sticky
-      inside a 160svh runway on desktop and the day clock scrubs 1:1
-      over the pin, FeaturedWork's proven architecture (sticky needs
-      the runway as SIBLING content, never wrapper padding). This is
-      the page's THIRD pin, on Brad's explicit call, superseding the
-      v3 spec's no-pin decision.
+      inside a RUNWAY_SVH runway on desktop and the day clock scrubs
+      1:1 over the pin, FeaturedWork's proven architecture (sticky
+      needs the runway as SIBLING content, never wrapper padding).
+      This is the page's THIRD pin, on Brad's explicit call,
+      superseding the v3 spec's no-pin decision.
    2. CALM SCRUB. Hover no longer drives the clock (accidental
       mouse-over read as chaos); DayGrid highlights under the pointer
       and scrubs only on press-drag, and the clock CHASES the drag
@@ -59,6 +59,14 @@ import { cn } from "@/lib/utils";
       session 2026-08-25) ends the page FirstNinetyDays -> footer,
       superseding the standalone 2H CTA band and retiring the
       homepage testimonial and FAQ.
+
+   ROUND 3 (Brad 2026-08-30): the fill scrub dragged ("takes way too
+   long") and the day-90 payoff was sparse. Runway halved and beats
+   rebalanced so the finale owns the back half; the fill map gets a
+   mild smoothstep; the payoff gains a staggered ink cascade (circle,
+   starburst, arrow, smiley), a one-shot square-confetti burst as the
+   panel takes over, and a landing pop on the day numeral. No new
+   copy: every addition is aria-hidden decoration.
 
    One value still drives the clock: `day` 0..90 on a motion value.
    Scroll owns it (pin progress on desktop, a slab-based map on
@@ -85,17 +93,35 @@ import { cn } from "@/lib/utils";
 const CLIP_CLOSED = "inset(48% 49% round 8px)";
 const CLIP_OPEN = "inset(0% 0% round 8px)";
 
-/* pin beats, in 0..1 of the runway */
-const FILL: [number, number] = [0.02, 0.6];
-const MERGE_AT = 0.65;
-const EXPAND: [number, number] = [0.72, 0.88];
+/* pin beats, in 0..1 of the runway (round 3 rebalance: the fill owns
+   the front 40%, the merge-expand payoff owns the back half). Scrub
+   rate per the 7.4 rule: fill = 0.40 x 80svh = 32svh of scroll for
+   90 days, ~2.8 days per svh average (the smoothstep peaks ~4.2
+   mid-fill and lands soft), up from round 2's ~0.97 days/svh over
+   the old 160svh runway. Beat order is load-bearing: merge strictly
+   after fill's end, expand strictly after merge, and the finaleInk
+   latch (expandMv 0.9 = runway 0.775) inside the expand window. */
+const FILL: [number, number] = [0.02, 0.42];
+const MERGE_AT = 0.48;
+const EXPAND: [number, number] = [0.55, 0.8];
 /* the checkpoint band: merge start (just before, so a park at the
-   cusp resolves) through the runway's end */
-const BAND_FROM = 0.62;
+   cusp resolves) through the runway's end. Locked to MERGE_AT per
+   STYLE_GUIDE 7.4's hard lesson (the band starts where the
+   choreography commits): move these two together, always. */
+const BAND_FROM = 0.45;
 
-const RUNWAY_SVH = 160;
+const RUNWAY_SVH = 80;
 /* RoughAnnotation's SVG bleed pad, reused for the finale clip math */
 const PAD = 16;
+
+/* square confetti (round 3): burst size and per-index jitter. Seeded
+   per house rule (no Math.random, identical every play): the sin-hash
+   gives a stable 0..1 per (index, salt). */
+const CONFETTI_COUNT = 18;
+const cJit = (i: number, salt: number) => {
+  const x = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
 
 export function FirstNinetyDays() {
   const reduced = useReducedMotionSafe();
@@ -132,6 +158,7 @@ export function FirstNinetyDays() {
   const [day, setDay] = useState(0);
   const [complete, setComplete] = useState(false);
   const [finaleInk, setFinaleInk] = useState(false);
+  const [burst, setBurst] = useState(false);
   const manual = useRef({ pointer: false, focus: false });
   const scrollDayRef = useRef(0);
   const mobLatchRef = useRef(false);
@@ -144,7 +171,11 @@ export function FirstNinetyDays() {
 
   useMotionValueEvent(pinP, "change", (v) => {
     if (reduced || !desktopRef.current) return;
-    const t = Math.min(1, Math.max(0, (v - FILL[0]) / (FILL[1] - FILL[0])));
+    const raw = Math.min(1, Math.max(0, (v - FILL[0]) / (FILL[1] - FILL[0])));
+    /* mild smoothstep on the fill map: at the halved runway a linear
+       map reads as a metronome tick; easing the ends lets the first
+       rows gather and the last rows land with a flourish */
+    const t = raw * raw * (3 - 2 * raw);
     scrollDayRef.current = t * TOTAL_DAYS;
     if (!manual.current.pointer && !manual.current.focus) {
       stopAnim();
@@ -179,6 +210,10 @@ export function FirstNinetyDays() {
 
   useMotionValueEvent(expandMv, "change", (v) => {
     setFinaleInk((prev) => (v >= 0.9 ? true : v < 0.85 ? false : prev));
+    /* the confetti one-shot: latch the moment EXPAND begins, release
+       only once the expand fully unwinds so a scroll-back can replay
+       the burst without it stuttering at the cusp */
+    setBurst((prev) => (v >= 0.04 ? true : v <= 0.005 ? false : prev));
   });
 
   /* ---- drag scrub: chase the target, never teleport --------------- */
@@ -256,7 +291,13 @@ export function FirstNinetyDays() {
   const shownDay = reduced ? TOTAL_DAYS : day;
   const showComplete = reduced || complete;
 
-  /* ---- finale panel content (shared between paths) ---------------- */
+  /* ---- finale panel content (shared between paths) ----------------
+     Round 3 ink cascade: all four annotations fire off the one
+     finaleInk latch, sequenced by draw delay (circle 0, starburst
+     0.5, arrow 0.95, smiley 1.35) so completions roll in that order
+     rather than landing as one splat. All decorative pieces are
+     aria-hidden and pointerless; every retract (rearm) unwinds them
+     together when the latch drops. */
   const finaleContent = (
     <div
       data-theme="light"
@@ -270,7 +311,27 @@ export function FirstNinetyDays() {
           rearm={!reduced}
           staticRender={reduced}
         >
-          <span className="whitespace-nowrap">day 90</span>
+          <span className="relative whitespace-nowrap">
+            day 90
+            {/* the starburst pops off the circle's shoulder; nested in
+                the circled phrase so it tracks the words through any
+                wrap or resize */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -right-9 -top-8 md:-right-11 md:-top-10"
+            >
+              <RoughAnnotation
+                variant="starburst"
+                active={reduced ? undefined : finaleInk}
+                delay={0.5}
+                rearm={!reduced}
+                staticRender={reduced}
+                className="block size-9 md:size-12"
+              >
+                {null}
+              </RoughAnnotation>
+            </span>
+          </span>
         </RoughAnnotation>{" "}
         you will know exactly what every dollar did.
       </p>
@@ -278,17 +339,38 @@ export function FirstNinetyDays() {
           white (globals 6.1: [data-theme="accent"] .pill-primary);
           the finale panel is paper inside the blue slab, so force the
           standard fill back on */}
-      <Link
-        href="/schedule/"
-        className="pill pill-primary !bg-acc !text-onacc"
-      >
-        <span className="pill-label">Schedule a Call</span>
-      </Link>
-      {/* the smiley doodle, tilted into the top-right whitespace */}
+      <div className="relative">
+        <Link
+          href="/schedule/"
+          className="pill pill-primary !bg-acc !text-onacc"
+        >
+          <span className="pill-label">Schedule a Call</span>
+        </Link>
+        {/* the arrow rides the pill's box (not the panel) so its tip
+            aims at the pill's left edge at every breakpoint */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-16 -top-8 h-12 w-12 -rotate-6 md:-left-20 md:-top-10 md:h-14 md:w-14"
+        >
+          <RoughAnnotation
+            variant="arrow"
+            active={reduced ? undefined : finaleInk}
+            delay={0.95}
+            rearm={!reduced}
+            staticRender={reduced}
+            className="block h-full w-full"
+          >
+            {null}
+          </RoughAnnotation>
+        </div>
+      </div>
+      {/* the smiley doodle, tilted into the top-right whitespace; the
+          cascade's closing beat */}
       <div className="pointer-events-none absolute right-[5%] top-[7%] rotate-6 md:right-[8%] md:top-[10%]">
         <RoughAnnotation
           variant="smiley"
           active={reduced ? undefined : finaleInk}
+          delay={1.35}
           rearm={!reduced}
           staticRender={reduced}
           className="block size-12 md:size-16 lg:size-20"
@@ -470,6 +552,87 @@ export function FirstNinetyDays() {
                 </motion.div>
               )}
             </div>
+
+            {/* ---- square confetti: a one-shot celebration burst as
+                EXPAND begins. Brand squares scatter up and out of the
+                merged grid rect, above the growing panel (z-30 over
+                its z-20) so they read against the arriving paper.
+                Position comes from the already-measured grid geometry
+                (geomRef is populated on mount, long before the latch
+                can fire); the flight is transform + opacity only, and
+                the whole layer exists only while the burst is latched.
+                Motion path only: never rendered under reduced motion.
+                overflow-hidden is load-bearing: transformed squares
+                extend scrollable overflow, and flights past the stage
+                edge widened scrollWidth to 412px at 375 (the squares
+                are near opacity 0 out there, so the clip never shows). */}
+            {!reduced && burst && (
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-[clamp(10px,1.4vw,20px)] z-30 overflow-hidden"
+              >
+                <div
+                  className="absolute"
+                  style={{
+                    top: geomRef.current.top,
+                    left: geomRef.current.left,
+                    right: geomRef.current.right,
+                    bottom: geomRef.current.bottom,
+                  }}
+                >
+                  {Array.from({ length: CONFETTI_COUNT }, (_, i) => {
+                    /* fan the squares around the rect's edge, fly them
+                       outward along their own bearing with an upward
+                       bias; all jitter is seeded per index */
+                    const a =
+                      (i / CONFETTI_COUNT) * Math.PI * 2 + cJit(i, 1) * 0.6;
+                    const size = 5 + Math.round(cJit(i, 2) * 5);
+                    const fly = 70 + cJit(i, 3) * 110;
+                    const dur = 0.85 + cJit(i, 7) * 0.45;
+                    return (
+                      <motion.span
+                        key={i}
+                        className="absolute block"
+                        style={{
+                          left: `${50 + Math.cos(a) * 46}%`,
+                          top: `${50 + Math.sin(a) * 46}%`,
+                          width: size,
+                          height: size,
+                          background:
+                            i % 3 === 0 ? "var(--sec-ink)" : "var(--acc)",
+                        }}
+                        initial={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
+                        animate={{
+                          x: Math.cos(a) * fly,
+                          y:
+                            Math.sin(a) * fly * 0.7 -
+                            (80 + cJit(i, 4) * 100),
+                          rotate:
+                            (cJit(i, 5) > 0.5 ? 1 : -1) *
+                            (140 + cJit(i, 6) * 180),
+                          opacity: [1, 1, 0],
+                          scale: 0.55,
+                        }}
+                        transition={{
+                          duration: dur,
+                          ease: EASE.house,
+                          delay: cJit(i, 8) * 0.12,
+                          opacity: {
+                            duration: dur,
+                            /* per-value override drops the top-level
+                               delay; restate it so the fade tracks
+                               the flight */
+                            delay: cJit(i, 8) * 0.12,
+                            times: [0, 0.55, 1],
+                            ease: "linear",
+                          },
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

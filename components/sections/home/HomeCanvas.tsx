@@ -34,10 +34,11 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
    that the section's DOM panel grows out of, hides behind it for the
    grid's whole passage, and reforms off the panel's far edge; from
    there the open-region journey runs the problem strip, the solution
-   CARD SWEEP (the section pins over a runway, SolutionStage, and the
-   scrub sweeps the cube flat right-to-left under the frozen cards,
-   each title drawing its blue squiggly underline as the cube passes:
-   lib/solution-sweep syncs canvas, ink, and stage),
+   CARD SWEEP (unpinned, 2026-08-30: the cards' natural passage is
+   the clock, the dock's frac model, and the cube sweeps flat
+   right-to-left under the moving cards, each title drawing its blue
+   squiggly underline as the cube passes: lib/solution-sweep syncs
+   canvas and ink),
    then a HIDDEN PASSAGE behind the search + proof-band grounds (those
    two sections paint at z-[6], above this canvas) until the trust
    marquee releases it, and on to the services spotlight DOCK.
@@ -70,13 +71,16 @@ import {
   PANEL_BAR_VH,
   PANEL_HANDOFF,
   SLAB_VH,
+  WORK_SPIN,
+  WORK_TURNS,
+  stepEase,
   workMorph,
 } from "@/lib/work-panel";
 import {
   SWEEP_ENTER,
   SWEEP_EXIT,
   SWEEP_UNDER,
-  sweepPin,
+  sweepFrac,
 } from "@/lib/solution-sweep";
 import {
   DOCK_ENGAGE,
@@ -218,31 +222,35 @@ const BLACK = new THREE.Color("#000000");
    bevel scales with the mesh, and the wide bar turned its ends into
    pill curves (Brad round 10: "morphs into a pill shape"). The whole
    ladder runs backwards off the grid's far edge. */
-/* Round 11 choreography (Brad): the pin engages AT the release
-   composition (FeaturedWork sticky top 30svh, zero dead travel), and
-   the clock is the section's PIN RUNWAY (~240svh, FeaturedWork
-   spacer), scrubbed 1:1 like the hero film. The cube arrives at the
-   pin ALREADY at the float spot (the reform's R_ASCEND delivers it)
-   and HOLDS STILL while the headline + support exit up and out
-   (TEXT_EXIT, DOM-side); then it TRAVELS to center stage above cards
-   01/02 and turntables WORK_TURNS slow full rotation; then the
-   committed morph starts at the dive (== MORPH_REST, where the main
-   checkpoint band begins): everything before it parks freely, dive
+/* Round 11 choreography, retuned 2026-08-30 (Brad: the title
+   scrolled away and the box spun alone too long with no words): the
+   pin engages AT the release composition (FeaturedWork sticky top
+   30svh, zero dead travel), and the clock is the section's PIN
+   RUNWAY (160svh, FeaturedWork spacer; was 240svh), scrubbed 1:1
+   like the hero film. The headline + support now STAY on screen for
+   the whole choreography (TEXT_EXIT retired). The cube arrives at
+   the pin ALREADY at the float spot (the reform's R_ASCEND delivers
+   it), holds briefly, TRAVELS down into the paper band between the
+   retained headline and the card row, and turntables WORK_TURNS full
+   rotation in STEP_COUNT eased half-turn steps (stepEase, shared in
+   lib/work-panel) while the DOM caption rail beside it swaps one
+   FEATURED_WORK entry per step; then the committed morph starts at
+   the dive (== MORPH_REST, where the main checkpoint band begins):
+   the hold/travel parks freely, the spin parks on step edges, dive
    on completes. */
 const WORK_FLOAT: [number, number] = [0.14, 0.24];
-/* center stage: x centered over the grid, high enough to clear the
-   card row in the release-frozen composition */
-const WORK_CENTER: [number, number] = [0, 0.18];
-const WORK_HOLD: [number, number] = [0.02, 0.1];
-const WORK_TRAVEL: [number, number] = [0.1, 0.22]; /* float -> center */
-const WORK_SPIN: [number, number] = [0.18, 0.56]; /* the turntable */
-const WORK_TURNS = 3; /* full rotations across WORK_SPIN. Round 12
-   (Brad: at 4 the turntable read as "extremely fast, like dozens of
-   times") cut this to 1; round 13 (Brad: "it turns too little now...
-   go for three turns") settled on 3. Rate matters more than count
-   here: WORK_SPIN is only ~0.38 of the ~2100px runway, so each turn
-   costs ~1.1 turns per viewport height of scroll. Widen the runway,
-   not the count, if this ever needs to read slower again. */
+/* the turntable spot (retune: was [0, 0.18], center stage, sized for
+   a header that had exited). With the header retained the cube drops
+   just below the headline's baseline and stays in the headline/
+   support gap column, clear of the display text above, the caption
+   rail to its right, and (with the frac-0.5 waypoint scale cut to
+   0.44) the card row below. */
+const WORK_CENTER: [number, number] = [0.12, 0.13];
+const WORK_HOLD: [number, number] = [0.02, 0.06];
+const WORK_TRAVEL: [number, number] = [0.06, 0.16]; /* float -> turntable spot */
+/* WORK_SPIN + WORK_TURNS + STEP_COUNT live in lib/work-panel now:
+   the DOM caption rail indexes the same window, so both actors must
+   read one source. Rate math lives on WORK_SPIN's comment there. */
 const WORK_DIVE: [number, number] = [MORPH_REST, 0.66];
 const WORK_FLATTEN: [number, number] = [0.62, 0.72];
 const WORK_FLOOD: [number, number] = [0.63, 0.72];
@@ -305,7 +313,12 @@ const WAYPOINTS: Waypoint[] = [
      takes over. frac 0.16 sits just short of the pin start at
      1536x864. */
   { anchor: "work", frac: 0.16, x: WORK_FLOAT[0], y: WORK_FLOAT[1], scale: 0.6, spin: 0.35, fade: 1 },
-  { anchor: "work", frac: 0.5, x: 0, y: 0, scale: 0.55, spin: 0.5, fade: 1 },
+  /* scale 0.44 (was 0.55, spin-caption retune): with the header
+     retained, the turntable plays in the ~14svh paper band between
+     headline and card row, and the mid-turn diagonal at 0.55 could
+     not fit it. x/y here are inert during the pin (the hold blend
+     saturates by then); only scale passes through. */
+  { anchor: "work", frac: 0.5, x: 0, y: 0, scale: 0.44, spin: 0.5, fade: 1 },
   { anchor: "work", frac: 0.92, x: 0, y: -0.08, scale: 0.52, spin: 0.8, fade: 1 },
   /* The open region (region pivot 2026-08-24; card sweep session same
      day): document order problem, solution, search, proof, trust,
@@ -316,28 +329,32 @@ const WAYPOINTS: Waypoint[] = [
      filters missing anchors, so listing unbuilt sections is safe. */
   { anchor: "problem", frac: 0.35, x: 0.3, y: 0.04, scale: 0.55, spin: 1.0, fade: 1 },
   { anchor: "problem", frac: 0.85, x: 0.26, y: -0.02, scale: 0.5, spin: 1.35, fade: 1 },
-  /* the solution CARD SWEEP (5.solution.md v3.2, Brad's card sweep
-     session round 4: PINNED). The waypoints only stage the approach
+  /* the solution CARD SWEEP (unpinned rebuild 2026-08-30: Brad
+     killed the scroll lock). The waypoints only stage the approach
      and the aftermath: the cube dives below the frame on the right
-     as the section arrives, and parks below frame on the left after
-     the pin releases. The sweep itself (rise from below right, flat
-     pass under the three frozen cards, dive out at the left) is the
-     PIN OVERRIDE: SolutionStage pins the section over a 130svh
-     runway, and the Tracker scrubs the cube along a px path built
-     from the frozen grid's column centers (lib/solution-sweep).
-     During the pin, these anchors' rects freeze, so the waypoint
-     walk holds a below-frame blend the override owns; both handoffs
-     happen off-screen. */
-  { anchor: "solution", frac: 0.3, x: 0.42, y: 0, scale: 0.48, spin: 1.8, fade: 1 },
-  { anchor: "solutionCards", frac: 0.12, x: 0.44, y: -0.55, scale: 0.42, spin: 2.1, fade: 1 },
-  { anchor: "solutionCards", frac: 0.35, x: 0.36, y: -0.52, scale: 0.4, spin: 2.3, fade: 1 },
-  /* post-release park, below frame left: search and the proof band
+     as the cards arrive, and parks below frame on the left after the
+     sweep window closes. The sweep itself (rise from below right,
+     flat pass under the three moving cards, dive out at the left) is
+     the FRAC OVERRIDE: the Tracker scrubs the cube along a px path
+     built from the live grid's column centers off the grid's own
+     passage clock (lib/solution-sweep sweepFrac). All four hang on
+     the solutionCards anchor, the SAME rect the override measures,
+     so the dive-complete -> SWEEP_ENTER[0] and SWEEP_EXIT[1] -> park
+     brackets hold at any viewport height and both handoffs happen
+     off-screen. Known squeeze: at vh >~1000 the problem 0.85
+     waypoint lands after frac 0.24 and the walk compresses the
+     approach dive (graceful: the segment shortens, order never
+     inverts past the dive-complete beat). */
+  { anchor: "solutionCards", frac: 0.24, x: 0.42, y: 0, scale: 0.48, spin: 1.8, fade: 1 },
+  { anchor: "solutionCards", frac: 0.36, x: 0.44, y: -0.55, scale: 0.42, spin: 2.1, fade: 1 },
+  { anchor: "solutionCards", frac: 0.6, x: 0.05, y: -0.55, scale: 0.4, spin: 2.6, fade: 1 },
+  /* post-sweep park, below frame left: search and the proof band
      paint their grounds at z-[6], ABOVE this canvas (the two
      full-viewport occluders), so the cube stays out of sight from
      here until the proof band's bottom edge releases it over the
      trust marquee. The proof waypoint only steers the hidden drift
      so the reveal happens on the right. */
-  { anchor: "solutionCards", frac: 0.85, x: -0.34, y: -0.55, scale: 0.4, spin: 3.1, fade: 1 },
+  { anchor: "solutionCards", frac: 0.88, x: -0.34, y: -0.55, scale: 0.4, spin: 3.1, fade: 1 },
   { anchor: "proof", frac: 0.6, x: 0.3, y: -0.12, scale: 0.44, spin: 3.5, fade: 1 },
   { anchor: "trust", frac: 0.5, x: 0.3, y: 0.06, scale: 0.44, spin: 3.7, fade: 1 },
   /* the spotlight DOCK (6.services.md v4): the journey's destination.
@@ -400,9 +417,10 @@ type StageState = {
   /* work panel morph: shared clock + the bar's center and dims (px) */
   panel: { m: number; exiting: boolean; ax: number; ay: number; wPx: number; barPx: number };
   /* the services cube dock (lib/services-dock): blend + bay center/px */
-  dock: { b: number; ax: number; ay: number; hPx: number };
-  /* the solution card sweep pin (lib/solution-sweep): runway progress
-     + the cube's px target along the under-card path */
+  dock: { b: number; ax: number; ay: number; wPx: number; hPx: number };
+  /* the solution card sweep (lib/solution-sweep): progress across the
+     sweep window (0..1, for the roll) + the cube's px target along
+     the under-card path */
   sweep: { on: boolean; p: number; ax: number; ay: number };
   /* the portal window morph (lib/portal-window): runway progress plus
      the seed square's px centre and edge, measured off the window's
@@ -415,8 +433,6 @@ type StageState = {
       | "workPanel"
       | "workStage"
       | "workPin"
-      | "solutionStage"
-      | "solutionPin"
       | "servicesDock"
       | "portalStage"
       | "portalPin"
@@ -432,7 +448,7 @@ const createStage = (): StageState => ({
   companion: false,
   wp: { x: CARD_CENTER[0], y: CARD_CENTER[1], scale: 1, spin: 0, fade: 1 },
   panel: { m: 0, exiting: false, ax: 0, ay: 0, wPx: 1, barPx: 1 },
-  dock: { b: 0, ax: 0, ay: 0, hPx: 1 },
+  dock: { b: 0, ax: 0, ay: 0, wPx: 1, hPx: 1 },
   sweep: { on: false, p: 0, ax: 0, ay: 0 },
   portal: { on: false, p: 0, ax: 0, ay: 0, slabPx: 1 },
   els: {},
@@ -511,27 +527,23 @@ function Tracker({ stage }: { stage: StageState }) {
 
     const mobile = state.size.width < 768;
 
-    /* the solution card sweep pin (lib/solution-sweep): while the
-       runway scrubs, the cube's target is computed in PX off the
-       FROZEN card grid's live rect (column centers + a lane below
-       the row), so the under-card alignment is exact at any width.
-       The path starts and ends BELOW THE FRAME, so the blend
-       handoffs to the waypoint journey on both sides happen
-       off-screen and can never show a seam. */
-    if (!els.solutionStage)
-      els.solutionStage = document.querySelector<HTMLElement>("[data-solution-stage]");
-    if (!els.solutionPin)
-      els.solutionPin = document.querySelector<HTMLElement>("[data-solution-pin]");
+    /* the solution card sweep (lib/solution-sweep, unpinned
+       2026-08-30): the clock is the card grid's own passage
+       (sweepFrac, the dock's frac model; nothing pins), and the
+       cube's target is computed in PX off the grid's LIVE rect
+       (column centers + a lane below the row), so the under-card
+       alignment is exact at any width and the lane rides up with the
+       section as it scrolls (the laneY clamp keeps it on screen).
+       The path starts and ends BELOW THE FRAME, and the on-window
+       (SWEEP_ENTER[0]..SWEEP_EXIT[1]) is bracketed by the below-frame
+       waypoints on the same anchor, so the blend handoffs to the
+       waypoint journey on both sides happen off-screen and can never
+       show a seam. */
     stage.sweep.on = false;
-    if (!mobile && els.solutionStage && els.solutionPin && els.solutionCards) {
-      const pin = sweepPin(
-        els.solutionStage.getBoundingClientRect(),
-        els.solutionPin.getBoundingClientRect(),
-      );
-      const p = pin.p;
-      stage.sweep.p = p;
-      if (pin.room > 1 && p > 0 && p < 1) {
-        const gr = els.solutionCards.getBoundingClientRect();
+    if (!mobile && els.solutionCards) {
+      const gr = els.solutionCards.getBoundingClientRect();
+      const p = sweepFrac(gr, vh);
+      if (p > SWEEP_ENTER[0] && p < SWEEP_EXIT[1]) {
         const colX = (i: number) => gr.left + gr.width * ((i + 0.5) / 3);
         const laneY = Math.min(gr.bottom + 0.11 * vh, vh * 0.92);
         const xEnter = gr.right - gr.width * 0.03;
@@ -554,6 +566,9 @@ function Tracker({ stage }: { stage: StageState }) {
           ay = lerp(smooth(e), laneY, yOff);
         }
         stage.sweep.on = true;
+        /* roll clock, normalized over the on-window so the entry adds
+           zero roll (no rotation step at the engage handoff) */
+        stage.sweep.p = seg(p, [SWEEP_ENTER[0], SWEEP_EXIT[1]]);
         stage.sweep.ax = ax;
         stage.sweep.ay = ay;
       }
@@ -582,6 +597,7 @@ function Tracker({ stage }: { stage: StageState }) {
           stage.dock.b = b;
           stage.dock.ax = br.left + br.width / 2;
           stage.dock.ay = br.top + br.height / 2;
+          stage.dock.wPx = Math.max(1, br.width);
           stage.dock.hPx = Math.max(1, br.height);
         }
       }
@@ -1018,30 +1034,36 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       /* the pin choreography, all scrubbed over the runway:
          HOLD: the cube arrived at the float spot via the reform's
          ascent; this blend pins it there against mid-pin waypoint
-         drift while the headline exits overhead (round 11: "without
-         this square moving").
-         TRAVEL: float spot -> center stage above cards 01/02, where
-         the TURNTABLE plays WORK_TURNS slow full rotation under the
-         visitor's scroll.
-         DIVE: from center stage down to the bar's center, unwinding
-         to the nearest HALF turn (a quarter-turn landing shows the
-         cube's side, which the z-flatten squashes to a sliver).
+         drift (round 11: "without this square moving").
+         TRAVEL: float spot -> the turntable spot under the retained
+         headline, where the TURNTABLE plays WORK_TURNS full rotation
+         in STEP_COUNT eased half-turn steps (stepEase, shared with
+         the DOM caption rail so face landings and caption swaps read
+         locked together; eased, never snapped: the damped follower
+         below would rubber-band on a hard step).
+         DIVE: from the turntable spot down to the bar's center,
+         unwinding to the nearest HALF turn (a quarter-turn landing
+         shows the cube's side, which the z-flatten squashes to a
+         sliver; stepEase ends ON a face, so at the dive there is
+         nothing left to unwind).
          Enter side only, so the exit's reform hands straight back to
          the waypoints instead. */
       if (!stage.panel.exiting) {
         const hold = smooth(seg(pm, WORK_HOLD));
         const travel = smooth(seg(pm, WORK_TRAVEL));
-        try_ += smooth(seg(pm, WORK_SPIN)) * WORK_TURNS * Math.PI * 2;
+        try_ += stepEase(seg(pm, WORK_SPIN)) * WORK_TURNS * Math.PI * 2;
         tx = lerp(hold, tx, lerp(travel, WORK_FLOAT[0], WORK_CENTER[0]) * w);
         ty = lerp(hold, ty, lerp(travel, WORK_FLOAT[1], WORK_CENTER[1]) * h);
       }
 
-      /* the solution card sweep: while the pin runway scrubs, the
-         cube rides the px path the Tracker computed off the frozen
-         card grid (lib/solution-sweep). The path enters and exits
-         BELOW THE FRAME, so this hard override and the waypoint
-         journey only ever swap while the cube is off-screen. A slow
-         roll accumulates across the pass. */
+      /* the solution card sweep: across the cards' passage window the
+         cube rides the px path the Tracker computed off the live
+         card grid (lib/solution-sweep, unpinned frac clock). The
+         path enters and exits BELOW THE FRAME, so this hard override
+         and the waypoint journey only ever swap while the cube is
+         off-screen. A slow roll accumulates across the pass (p is
+         already normalized over the window, so the engage side adds
+         zero roll). */
       if (stage.sweep.on) {
         tx = (stage.sweep.ax / state.size.width - 0.5) * w;
         ty =
@@ -1061,9 +1083,11 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       try_ += dockFlick.a;
       let wpScale = stage.wp.scale;
       const db = stage.dock.b;
+      /* bay center in world units, hoisted: the clamp below the
+         follower needs it too */
+      const bayX = (stage.dock.ax / state.size.width - 0.5) * w;
+      const bayY = (0.5 - stage.dock.ay / state.size.height) * h;
       if (db > 0.001) {
-        const bayX = (stage.dock.ax / state.size.width - 0.5) * w;
-        const bayY = (0.5 - stage.dock.ay / state.size.height) * h;
         tx = lerp(db, tx, bayX + Math.sin(t * 0.4) * 0.004 * w);
         ty = lerp(db, ty, bayY + Math.sin(t * 0.55 + 1.1) * 0.006 * h);
         const fit = (stage.dock.hPx * DOCK_FIT * (h / state.size.height)) / s;
@@ -1124,10 +1148,16 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
 
       /* damping ramps to near-exact tracking approaching either
          handoff (WORK_LOCK / PORTAL_LOCK), so the slab cannot lag the
-         DOM square at the swap */
+         DOM square at the swap. The dock blend rides the same ramp:
+         the bay is measured per frame and moves at full scroll
+         velocity, so a docked cube must track ~1:1 or a fast scroll
+         drags it out through the hairline; the engage/release still
+         read as travel because the TARGET blends over
+         DOCK_ENGAGE/DOCK_RELEASE. */
       const lock = Math.max(
         smooth(seg(pm, WORK_LOCK)),
         stage.portal.on ? smooth(seg(po, PORTAL_LOCK)) : 0,
+        db,
       );
       const kd = 1 - Math.exp(-(4 + 24 * lock) * Math.min(delta, 0.1));
       f.x += (tx - f.x) * kd;
@@ -1137,6 +1167,28 @@ function GlassCube({ stage, active }: { stage: StageState; active: boolean }) {
       f.ry += (try_ - f.ry) * kd;
       f.rz += (trz - f.rz) * kd;
       f.s += (tScale - f.s) * kd;
+
+      /* dock containment: no exponential rate guarantees a bound, so
+         while docked the FOLLOWER itself is clamped to the bay rect
+         (world units) with a half-cube margin; 0.87 ~ the rotating
+         cube's bounding-sphere radius, so no corner can cross the
+         hairline. The (1-db) viewport slack makes the clamp a no-op
+         at engage start and exact at full dock: the traveling
+         entrance/exit never feels a wall. */
+      if (db > 0.001) {
+        const halfC = s * f.s * 0.87;
+        const slack = (1 - db) * (w + h);
+        const limX = Math.max(
+          0,
+          (stage.dock.wPx / 2) * (w / state.size.width) - halfC,
+        ) + slack;
+        const limY = Math.max(
+          0,
+          (stage.dock.hPx / 2) * (h / state.size.height) - halfC,
+        ) + slack;
+        f.x = Math.min(bayX + limX, Math.max(bayX - limX, f.x));
+        f.y = Math.min(bayY + limY, Math.max(bayY - limY, f.y));
+      }
 
       g.visible =
         active && fade > 0.002 && vanish < 0.999 && portalVanish < 0.999;
