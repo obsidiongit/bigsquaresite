@@ -3,7 +3,7 @@
    section, a lot more robust and a lot more fun", MySpace/Tumblr-era
    profile energy). /team/ renders straight from this array.
 
-   Names and roles are REAL: the 6 registered members from
+   Names and roles are REAL: registered members from
    lib/blog-authors.ts (Brad, 2026-08-30), sharing the same headshot
    slots so one photo drop lights the blog byline AND the team card.
    Everything personal (about, likes, photos, the rotation line) is a
@@ -11,10 +11,10 @@
    project-sections/company/team.md; the profile window renders a
    designed empty state meanwhile, never fake personality.
 
-   Open slots (Brad's pick, 2026-08-31: "6 members + extra open
-   slots"): unnamed cards signalling the fuller team; replace each with
+   Open slots (Brad's pick, 2026-08-31: members plus extra open
+   slots): unnamed cards signalling the fuller team; replace each with
    a real entry as Brad sends people. The hiring card at the grid's end
-   is built into the page, not data. */
+   is built into the page, not data. Sadie Pursell was removed 2026-09-04. */
 
 export type TeamPhoto = {
   /** MediaSlot id (public/media/ via lib/asset-files.ts) */
@@ -64,6 +64,9 @@ function member(
   photoSlot: string,
   signature: string,
   photoKey: string,
+  profile?: Partial<
+    Pick<TeamMember, "about" | "likes" | "rotation" | "linkedin">
+  >,
 ): TeamMember {
   return {
     kind: "member",
@@ -71,32 +74,36 @@ function member(
     role,
     photoSlot,
     signature,
-    about: PLACEHOLDER_ABOUT,
-    likes: [],
+    about: profile?.about ?? PLACEHOLDER_ABOUT,
+    likes: profile?.likes ?? [],
     photos: [1, 2, 3].map((n) => ({
       slot: `team-${photoKey}-${n}`,
       note: `Personal photo ${n} of 3. Their pick, not stock.`,
       alt: `[PLACEHOLDER: what the photo shows, from ${signature}]`,
     })),
-    rotation: PLACEHOLDER_ROTATION,
-    linkedin: null,
+    rotation: profile?.rotation ?? PLACEHOLDER_ROTATION,
+    linkedin: profile?.linkedin ?? null,
   };
 }
 
 export const TEAM: TeamCard[] = [
   member("Brad Brown", "CEO", "blog-author-brad", "Brad", "brad"),
-  member("Mike Soden", "CTO", "blog-author-mike", "Mike", "mike"),
+  member("Mike Soden", "CTO", "blog-author-mike", "Mike", "mike", {
+    about:
+      "I run the technical side of BigSquare. I own the sites, the tracking, and the dashboards that turn spend into a report you can check. If the numbers are wrong, nothing else we do matters. The rest of my time goes to games, long drives, hiking, and the animals I keep at home.",
+    likes: ["Video games", "Driving", "Hiking", "Animals"],
+    rotation: "The Tim Dillon Show",
+  }),
   member("Chaley Selsor", "Team Lead", "blog-author-chaley", "Chaley", "chaley"),
   member("Levi Holley", "VP of Sales", "blog-author-levi", "Levi", "levi"),
   member("Russel Spence", "Creative Director", "blog-author-russel", "Russel", "russel"),
-  member("Sadie Pursell", "Brand Ambassador", "blog-author-sadie", "Sadie", "sadie"),
   /* The rest of the team joins as Brad sends names; each open slot
-     becomes one member(...) call. */
+     becomes one member(...) call. Five members + 5 open + the
+     double-wide careers card = 12 grid cells, so the wall closes
+     flush at 2, 3, and 4 columns. */
   { kind: "open", id: "open-1" },
   { kind: "open", id: "open-2" },
   { kind: "open", id: "open-3" },
-  /* 4 open slots + the double-wide careers card = 12 grid cells, so
-     the wall closes flush at 2, 3, and 4 columns with the careers card
-     as the last occupied cell. */
   { kind: "open", id: "open-4" },
+  { kind: "open", id: "open-5" },
 ];

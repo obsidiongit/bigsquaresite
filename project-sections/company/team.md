@@ -32,6 +32,6 @@ Send this to each person; their answers drop into their `lib/team.ts` entry verb
 
 ## Content owed
 
-- `[PLACEHOLDER]` questionnaire answers for: Brad, Mike, Chaley, Levi, Russel, Sadie
+- `[PLACEHOLDER]` questionnaire answers for: Brad, Chaley, Levi, Russel. Mike DONE 2026-09-04 (about, into, rotation; personal photos still owed). Sadie Pursell left the team (removed 2026-09-04).
 - Headshots (the same `assets/team/` drop the blog authors need)
 - Names + roles for the open slots (the rest of the team)

@@ -20,8 +20,9 @@ import { cn } from "@/lib/utils";
      width; they lift and square up on hover, grayscale-to-color once
      real photos land, the marquee rule). Open slots wear a designed
      "joining soon" face, never build-note brackets. The careers card
-     is double-wide and always the wall's last occupied cell (4 open
-     slots + the 2-cell card = 12 cells: flush at 2, 3, and 4 columns).
+     is double-wide and always the wall's last occupied cell (open
+     slots plus the 2-cell card fill to 12 cells: flush at 2, 3, and 4
+     columns).
    - The window: clicking a card grows THE CARD'S RECT into a token-
      native profile window (the 6.5 slab move on the 6.12 exhibit
      window: measured rect to measured rect, one paper actor, content
@@ -205,14 +206,25 @@ function ProfileWindow({
   const [to, setTo] = useState<Rect | null>(null);
   const [landed, setLanded] = useState(reduced);
 
+  /* Measure the frame, not the copy. Prev/next used to shrink the
+     body while the paper actor stayed at the first profile's height,
+     which left a white gap above the chrome. The panel is a fixed
+     viewport frame; ResizeObserver keeps the actor locked to it. */
   useLayoutEffect(() => {
+    const el = panelRef.current;
+    if (!el) return;
     const measure = () => {
-      const p = panelRef.current?.getBoundingClientRect();
-      if (p) setTo({ left: p.left, top: p.top, width: p.width, height: p.height });
+      const p = el.getBoundingClientRect();
+      setTo({ left: p.left, top: p.top, width: p.width, height: p.height });
     };
     measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
   const ready = Boolean(to);
@@ -252,15 +264,15 @@ function ProfileWindow({
         />
       )}
 
-      {/* the window, laid out at final size from the first frame */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-3 sm:p-6">
+      {/* the window: a fixed viewport frame so every profile is the
+          same size. Chrome stays pinned; the body scrolls. */}
+      <div className="pointer-events-none absolute inset-0 flex justify-center p-3 sm:p-6">
         <div
           ref={panelRef}
-          className="pointer-events-auto relative flex max-h-full w-full max-w-[880px]"
+          className="pointer-events-auto relative flex h-full max-h-full w-full max-w-[880px] flex-col"
         >
           <motion.div
-            data-lenis-prevent
-            className="relative w-full overflow-y-auto overscroll-contain rounded-[24px]"
+            className="relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-[24px]"
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: landed ? 1 : 0 }}
             exit={reduced ? undefined : { opacity: 0, transition: CONTENT_OUT }}
@@ -268,7 +280,7 @@ function ProfileWindow({
           >
             {/* chrome bar (6.12): the brand square, the counter earned
                 by prev/next, close */}
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-sec-line bg-paper px-5 py-3 md:px-7">
+            <div className="flex shrink-0 items-center justify-between gap-4 border-b border-sec-line bg-paper px-5 py-3 md:px-7">
               <div className="flex items-center gap-3">
                 <span aria-hidden className="size-2.5 bg-acc" />
                 <span className={cn(MONO_LABEL, "tabular-nums")}>
@@ -308,27 +320,32 @@ function ProfileWindow({
             </div>
 
             {/* the flip: prev/next slide the body through in place */}
-            <AnimatePresence mode="wait" initial={false} custom={dir}>
-              <motion.div
-                key={member.name}
-                custom={dir}
-                variants={
-                  reduced
-                    ? undefined
-                    : {
-                        enter: (d: number) => ({ opacity: 0, x: 24 * d }),
-                        center: { opacity: 1, x: 0 },
-                        exit: (d: number) => ({ opacity: 0, x: -18 * d }),
-                      }
-                }
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: reduced ? 0 : 0.22, ease: EASE.house }}
-              >
-                <ProfileBody member={member} />
-              </motion.div>
-            </AnimatePresence>
+            <div
+              data-lenis-prevent
+              className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+            >
+              <AnimatePresence mode="wait" initial={false} custom={dir}>
+                <motion.div
+                  key={member.name}
+                  custom={dir}
+                  variants={
+                    reduced
+                      ? undefined
+                      : {
+                          enter: (d: number) => ({ opacity: 0, x: 24 * d }),
+                          center: { opacity: 1, x: 0 },
+                          exit: (d: number) => ({ opacity: 0, x: -18 * d }),
+                        }
+                  }
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: reduced ? 0 : 0.22, ease: EASE.house }}
+                >
+                  <ProfileBody member={member} />
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </motion.div>
         </div>
       </div>

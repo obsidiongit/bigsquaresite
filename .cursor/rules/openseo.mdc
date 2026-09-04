@@ -1,0 +1,6 @@
+---
+description: Use OpenSEO skills for keyword, audit, competitor, local, and link work.
+globs: 
+alwaysApply: false
+---
+For SEO work (titles, keywords, audits, clustering, competitors, Denver/Tampa local, backlinks), read `project-guidelines/openseo.md` and follow the matching skill in `.agents/skills/`. Connect OpenSEO MCP before spending credits. `copy-rules.md` still wins: no invented numbers, clients, or badges.

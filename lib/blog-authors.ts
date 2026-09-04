@@ -59,9 +59,4 @@ export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
     slot: "blog-author-russel",
     line: "Leads brand, design, and film at BigSquare.",
   },
-  "Sadie Pursell": {
-    role: "Brand Ambassador",
-    slot: "blog-author-sadie",
-    line: "Represents BigSquare out in the world.",
-  },
 };

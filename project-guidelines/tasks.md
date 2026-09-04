@@ -32,7 +32,7 @@ Brad is finishing his section of the work and handing the site to the developer 
 - [ ] `/team/` index flip when its content lands: `robots` to index in `app/(marketing)/team/page.tsx` + add the route in `app/sitemap.ts` (one commented line each)
 
 **4. Blocked on Brad's content, not on code (full list: "Brad-owed content" below):**
-- [ ] `/team/`: the 6 questionnaires (`project-sections/company/team.md`), 18 personal photos (`team-<first>-1..3` slots), names + roles for the 4 open slots. Headshots DONE: all 6 wired via `npm run blog:assets` (Levi landed 2026-08-31)
+- [ ] `/team/`: the 5 questionnaires (`project-sections/company/team.md`), 15 personal photos (`team-<first>-1..3` slots), names + roles for the 5 open slots. Headshots DONE for the current roster. Sadie Pursell removed 2026-09-04.
 - [ ] Legal: lawyer review of the full drafts in `content/legal/*.mdx` (counsel edits the MDX only; ask counsel about restoring the footer "Do not sell or share" link Brad cut 2026-08-30)
 - [ ] Real case studies into `lib/featured-work.ts` (the `caseStudy` shape: one filled entry lights /results/[slug]/, flips it to index, no code)
 - [ ] The sitewide copy pass and "everything bigger" pass (under "Finalization" below); Brad may run these with an agent before handoff
@@ -82,7 +82,7 @@ First 90 days (`lib/ninety-days.ts`; every day number is invented, the section s
 - [ ] Launch: day 14 tracking fixed, day 18 first campaigns live, day 21 weekly check-in, day 28 creative round one
 - [ ] Scale: day 35 first tests, day 45 cut and reallocate, day 60 add channels, day 90 location review
 
-Team (`lib/team.ts`; questionnaire in `project-sections/company/team.md`), one set per person: Brad, Mike, Chaley, Levi, Russel, Sadie:
+Team (`lib/team.ts`; questionnaire in `project-sections/company/team.md`), one set per person: Brad, Mike, Chaley, Levi, Russel:
 - [ ] 2 to 4 sentences about themselves, in their own words
 - [ ] 3 to 6 things they are into (chips)
 - [ ] One "on rotation" line: a song, show, or podcast
@@ -118,7 +118,7 @@ Blog (`app/(marketing)/blog/page.tsx`): the "no published posts yet" marker only
 - [ ] /industries/ hub cards, 4 images at 3:2 (`components/sections/industries/IndustriesHub.tsx`; shared with the service pages, in the manifest)
 - [ ] Industry page heroes (4:3) + method bands (16:9) for franchise, home services, legal, healthcare (`lib/industry-pages/*.ts`; in the manifest)
 - [ ] Founders + team photos for /about/ and /careers/, Denver + Tampa office photos (manifest, REAL-ONLY)
-- [ ] 18 personal photos for /team/ (3 per person, square, their own pick; `team-<first>-1..3`)
+- [ ] 15 personal photos for /team/ (3 per person, square, their own pick; `team-<first>-1..3`)
 - [ ] Live Obsidion portal embed for the homepage exhibit
 - [ ] Music loop, optional (`MUSIC_SRC` in `lib/sfx.ts` + file in `public/audio/`)
 
@@ -240,7 +240,7 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 
 ## Brad-owed content (blocks marked pages, nothing else)
 
-- [ ] **Team** (`lib/team.ts`; questionnaire in `project-sections/company/team.md`): 6 sets of answers (about, into, on rotation, optional LinkedIn), 18 personal photos (`team-<first>-1..3`, square crops), names + roles for the 4 open slots. Then the /team/ index flip (bucket 3). Headshots are DONE
+- [ ] **Team** (`lib/team.ts`; questionnaire in `project-sections/company/team.md`): 5 sets of answers (about, into, on rotation, optional LinkedIn), 15 personal photos (`team-<first>-1..3`, square crops), names + roles for the 5 open slots. Then the /team/ index flip (bucket 3). Headshots are DONE. Sadie Pursell removed 2026-09-04.
 - [ ] **Lead magnets**: the 5 real picks (whiteboard; v1 rejected, v2 research is "fine info" but not it yet; dedicated iteration session, MUST precede launch), then 5 `lib/resources.ts` rows + specs + assets
 - [ ] **Case studies**: real clients, 3 metrics each with time window + source, situation/steps/result copy, optional real-name quote (`lib/featured-work.ts`); testimonials for interior pages when real ones exist
 - [ ] **Films**: the 4K hero film (one-line swap), the /schedule/ VSL + poster (`lib/schedule-media.ts`), the funnel video URL + poster

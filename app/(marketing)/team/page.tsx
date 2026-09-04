@@ -24,7 +24,7 @@ export const metadata: Metadata = {
    Brad 2026-08-31: "make it a team section, a lot more robust and a
    lot more fun... early MySpace vibe, Tumblr-era... people will land
    there"). The roster wall + the profile window live in TeamGrid;
-   names and roles are the 6 real registered members, every personal
+   names and roles are the real registered members, every personal
    field a designed [PLACEHOLDER] until the person fills the
    questionnaire in the spec file. Annotation budget: 1 of 3 (the H1
    underline). No registration marks. */

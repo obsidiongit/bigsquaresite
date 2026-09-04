@@ -9,6 +9,7 @@ These rules apply to every agent session in this repo (Claude, Composer, or any 
 4. `project-guidelines/tasks.md` (what is left) and `project-guidelines/sitemap.md` (the single endpoint status tracker)
 5. `project-guidelines/decisions.md` (locked decisions D1 to D6 and amendments)
 6. The spec file for whatever you are building in `project-sections/` (specs exist for unbuilt pages only)
+7. For any SEO work (keywords, titles, audits, clustering, competitors, local, links): `project-guidelines/openseo.md` and the matching skill in `.agents/skills/` (seo-project-setup, seo-coach, seo-audit, keyword-research, keyword-clustering, competitive-landscape, competitor-analysis, local-seo, link-prospecting). Live data needs OpenSEO MCP. Copy-rules.md still wins; do not invent numbers or clients.
 
 History, old handoffs, the build log, and briefs of already-built pages live in `project-guidelines/archive/`. Move things there when they go stale; never delete from it.
 

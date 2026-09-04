@@ -74,7 +74,7 @@ OWNER is a tracking device, not a prohibition. Candidates land in `assets/genera
 | `blog-author-chaley` | posts bylined by Chaley Selsor (Team Lead) | Author card | Same | 1:1 | REAL-ONLY | FILLED 2026-08-30 |
 | `blog-author-levi` | posts bylined by Levi Holley (VP of Sales) | Author card | Same | 1:1 | REAL-ONLY | FILLED 2026-08-30 |
 | `blog-author-russel` | posts bylined by Russel Spence (Creative Director) | Author card | Same | 1:1 | REAL-ONLY | FILLED 2026-08-30 |
-| `blog-author-sadie` | posts bylined by Sadie Pursell (Brand Ambassador) | Author card | Same | 1:1 | REAL-ONLY | FILLED 2026-08-30 |
+| `blog-author-sadie` | retired 2026-09-04 (Sadie Pursell left the team; unused byline slot) | Author card | Same | 1:1 | REAL-ONLY | RETIRED |
 | `team-brad-1` | /team/ | Brad's profile, personal photo 1 of 3 | A personal photo (his own pick; not a headshot) | 1:1 | REAL-ONLY | EMPTY |
 | `team-brad-2` | /team/ | Brad's profile, personal photo 2 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
 | `team-brad-3` | /team/ | Brad's profile, personal photo 3 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
@@ -90,10 +90,10 @@ OWNER is a tracking device, not a prohibition. Candidates land in `assets/genera
 | `team-russel-1` | /team/ | Russel's profile, personal photo 1 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
 | `team-russel-2` | /team/ | Russel's profile, personal photo 2 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
 | `team-russel-3` | /team/ | Russel's profile, personal photo 3 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
-| `team-sadie-1` | /team/ | Sadie's profile, personal photo 1 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
-| `team-sadie-2` | /team/ | Sadie's profile, personal photo 2 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
-| `team-sadie-3` | /team/ | Sadie's profile, personal photo 3 of 3 | Same | 1:1 | REAL-ONLY | EMPTY |
-Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards). The /team/ profile wall reuses the `blog-author-*` headshots and adds the 18 `team-<first>-1..3` personal slots (Pane C handoff, 2026-08-31); the old `leadership-01..03` slot ids are dead, never add them.
+| `team-sadie-1` | retired 2026-09-04 | Sadie's profile, personal photo 1 of 3 | Same | 1:1 | REAL-ONLY | RETIRED |
+| `team-sadie-2` | retired 2026-09-04 | Sadie's profile, personal photo 2 of 3 | Same | 1:1 | REAL-ONLY | RETIRED |
+| `team-sadie-3` | retired 2026-09-04 | Sadie's profile, personal photo 3 of 3 | Same | 1:1 | REAL-ONLY | RETIRED |
+Shared industry-card assets are deliberate: one file serves every page that links that industry (service pages and, since 2026-08-26, the /industries/ hub's four cards). The /team/ profile wall reuses the `blog-author-*` headshots and adds the 15 `team-<first>-1..3` personal slots (Sadie's three slots retired 2026-09-04); the old `leadership-01..03` slot ids are dead, never add them.
 
 ## Homepage media (triage 2026-08-31; not MediaSlot ids — each fills via its own lib module, listed per row)
 
