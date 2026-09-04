@@ -6,7 +6,8 @@ import { CtaBand } from "@/components/shared/CtaBand";
 import { Eyebrow } from "@/components/shared/mono";
 import { Section } from "@/components/shared/Section";
 import { getAllPosts } from "@/lib/blog";
-import { breadcrumbJsonLd } from "@/lib/jsonld";
+import { blogJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { SITE_URL } from "@/lib/site";
 import { EDGE } from "@/lib/layout";
 import { PostRow } from "./PostRow";
 
@@ -14,7 +15,12 @@ export const metadata: Metadata = {
   title: "Marketing Blog",
   description:
     "Plain notes on search, ads, websites, and creative from the BigSquare team. Written so you can use them on your own accounts.",
-  alternates: { canonical: "/blog/" },
+  alternates: {
+    canonical: "/blog/",
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`,
+    },
+  },
 };
 
 /* /blog/ (Pane A, 2026-08-30): the index. A hero with a statement
@@ -28,16 +34,21 @@ export const metadata: Metadata = {
 
 export default function BlogIndexPage() {
   const posts = getAllPosts();
-  const jsonLd = breadcrumbJsonLd([
+  const crumbs = breadcrumbJsonLd([
     { name: "Home", path: "/" },
     { name: "Blog", path: "/blog/" },
   ]);
+  const blog = blogJsonLd(posts);
 
   return (
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blog) }}
       />
 
       {/* 1. Hero */}
@@ -63,6 +74,14 @@ export default function BlogIndexPage() {
               <p className="max-w-[40ch] text-body text-sec-mid">
                 What we learn running search, ads, sites, and creative for
                 real brands. Short, plain, and useful on your own accounts.
+              </p>
+              <p className="mt-4 max-w-[40ch] text-body text-sec-mid">
+                <a
+                  href="/feed.xml"
+                  className="font-medium text-sec-ink underline underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:text-sec-acc"
+                >
+                  RSS feed of new posts
+                </a>
               </p>
             </Reveal>
           </div>

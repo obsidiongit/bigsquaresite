@@ -25,6 +25,7 @@ const ROUTES = [
   "/resources/",
   "/privacy-policy/",
   "/terms/",
+  "/services/",
   "/industries/",
   "/locations/",
   ...Object.keys(SERVICE_PAGES).map((slug) => `/services/${slug}/`),

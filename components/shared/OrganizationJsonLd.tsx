@@ -18,10 +18,26 @@ export function OrganizationJsonLd() {
       "BigSquare is a full-service marketing agency based in Denver and Tampa. One team runs search, ads, websites, and creative for brands of every size, with reporting clients can check any day.",
   };
 
+  const website = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+    inLanguage: "en-US",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
+      />
+    </>
   );
 }

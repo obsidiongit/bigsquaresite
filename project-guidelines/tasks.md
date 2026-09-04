@@ -24,9 +24,9 @@ Brad is finishing his section of the work and handing the site to the developer 
 **3. Wiring and launch plumbing (no design work):**
 - [ ] `FORM_WEBHOOK_URL` env: every form posts through one `submitForm` path (`lib/form-action.ts`) and logs a server warning until this is set
 - [ ] GHL API capture for `/schedule/` + `/apply/` (server-side only, `GHL_*` env vars; see "Backend / integrations" below)
-- [ ] Tracking IDs: `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_GTAG_ID`, `NEXT_PUBLIC_GA4_ID` (components built, values empty; `lib/track.ts` is a no-op until then). When wiring: the shipped privacy policy states we honor Global Privacy Control, so the tag loader must skip ad tags when `navigator.globalPrivacyControl` is true (legal-pages-plan.md build step 4)
+- [x] GA4 wired 2026-09-04: `NEXT_PUBLIC_GA4_ID=G-6HLE1X2VVL`. GPC gate is in the tag loaders: Google Ads (`NEXT_PUBLIC_GTAG_ID`) and Meta Pixel skip when `navigator.globalPrivacyControl` is true; GA4 still loads with ad signals off. STILL OPEN: Meta Pixel ID and Google Ads tag ID
 - [x] 2J DONE 2026-08-31 (Pane B): favicon + app icons from the logo mark (`app/icon.svg`, `app/favicon.ico`, `app/apple-icon.png`, no console 404), OG card on Lenia Mono 700 with the wide-positioning tagline, metadata sweep over 42 routes clean (title/description/canonical on every indexable route; funnels noindex with registry-sourced descriptions), Lighthouse mobile: interiors perf 76-88 with CLS 0 and best-practices 100. STILL OPEN: home perf ~40 (TBT from the three.js bundle, Brad's overage call in the homepage punch list); interior LCP ~4.5s under mobile throttling is framework JS, revisit only if Brad wants deeper surgery
-- [ ] Blog SEO plumbing: RSS feed route, Google Search Console + sitemap submit at launch (blog-plan.md "SEO plumbing")
+- [x] RSS feed at `/feed.xml` (2026-09-04): built from `getAllPosts()`, so a new `.mdx` in `content/blog/` shows up on the next Vercel build. Linked from `/blog/` and advertised sitewide as `rel=alternate`. STILL OPEN: Google Search Console + sitemap submit at launch (blog-plan.md "SEO plumbing")
 - [ ] CI guard rails before the writer runs unattended: branch protection on main + Vercel build check, and the copy lint (blog-plan.md section 3 "guard rails")
 - [ ] Launch config sweep: `[PLACEHOLDER]` grep across the repo must return zero hits (the full list is the "Placeholder fill list" section below), redirects/domains on Vercel
 - [ ] `/team/` index flip when its content lands: `robots` to index in `app/(marketing)/team/page.tsx` + add the route in `app/sitemap.ts` (one commented line each)
@@ -123,7 +123,7 @@ Blog (`app/(marketing)/blog/page.tsx`): the "no published posts yet" marker only
 - [ ] Music loop, optional (`MUSIC_SRC` in `lib/sfx.ts` + file in `public/audio/`)
 
 **D. Environment (developer, no content needed from Brad beyond the values)**
-- [ ] `FORM_WEBHOOK_URL`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_GTAG_ID`, `NEXT_PUBLIC_GA4_ID`, `GHL_*` (see `.env.example`; forms post nowhere until the webhook is set)
+- [ ] `FORM_WEBHOOK_URL`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_GTAG_ID`, `GHL_*` (see `.env.example`; forms post nowhere until the webhook is set). `NEXT_PUBLIC_GA4_ID` DONE 2026-09-04
 
 ## Brad's home review, 2026-08-30 (round 2: verdicts + what to iterate)
 
@@ -236,7 +236,7 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 ## Backend / integrations
 
 - [ ] GHL API lead capture for the /schedule/ + /apply/ forms (Mike; server-side behind GHL_* env vars; calendar component is RETIRED per decisions.md)
-- [ ] Tracking IDs (Meta Pixel, Google tag, GA4 env values) + the Global Privacy Control gate (bucket 3 above)
+- [ ] Tracking IDs still empty: Meta Pixel and Google Ads (`NEXT_PUBLIC_GTAG_ID`). GA4 + GPC gate DONE 2026-09-04
 
 ## Brad-owed content (blocks marked pages, nothing else)
 
@@ -248,7 +248,7 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 - [ ] **Assets**: ~37 slots in `asset-manifest.md` (Brad's designer is producing them; drop files in `public/media/`, one `lib/asset-files.ts` row each, sweep as they land)
 - [ ] **Facts**: office phones + addresses, socials, the logo file, the Ahrefs keyword pass, ProofBand metrics, 90-day milestones, newsletter cadence + photos
 - [ ] **Music**: the ~60-90s seamless quiet loop (Suno is fine); drops into `public/audio/` + one-line `MUSIC_SRC` change in lib/sfx.ts
-- [ ] **Env**: `FORM_WEBHOOK_URL`, the 3 tracking IDs, `GHL_*`
+- [ ] **Env**: `FORM_WEBHOOK_URL`, Meta Pixel, Google Ads tag (`NEXT_PUBLIC_GTAG_ID`), `GHL_*`. GA4 DONE 2026-09-04
 - [ ] **Legal**: the lawyer review (both drafts are complete; legal facts locked 2026-08-30). A mailing address is required in marketing EMAIL footers before campaigns send (CAN-SPAM); the site stays address-free per Brad
 
 ## Standing rules that bite

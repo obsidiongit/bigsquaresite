@@ -78,9 +78,9 @@ export default function ContactPage() {
               </div>
             </Reveal>
             <div className="lg:col-span-5">
-              <p className="font-mono text-eyebrow uppercase text-sec-mid">
+              <h2 className="font-mono text-eyebrow uppercase text-sec-mid">
                 The offices
-              </p>
+              </h2>
               <OfficeCards layout="stack" className="mt-4" />
               <div className="mt-6">
                 <p className="font-mono text-eyebrow uppercase text-sec-mid">

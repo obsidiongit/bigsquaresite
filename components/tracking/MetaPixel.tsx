@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { useGpc } from "./useGpc";
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
@@ -13,24 +14,24 @@ declare global {
 }
 
 /**
- * Meta Pixel. Renders nothing until NEXT_PUBLIC_META_PIXEL_ID has a value
- * (a teammate fills it in on a separate pass). Loads after hydration.
+ * Meta Pixel. Renders nothing until NEXT_PUBLIC_META_PIXEL_ID has a value.
+ * Loads after hydration. Skipped entirely when Global Privacy Control is on.
  */
 export function MetaPixel() {
   const pathname = usePathname();
+  const gpc = useGpc();
   const isFirstRender = useRef(true);
 
-  // The init snippet fires the first PageView; track client-side navigations.
   useEffect(() => {
-    if (!PIXEL_ID) return;
+    if (!PIXEL_ID || gpc !== false) return;
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
     window.fbq?.("track", "PageView");
-  }, [pathname]);
+  }, [pathname, gpc]);
 
-  if (!PIXEL_ID) return null;
+  if (!PIXEL_ID || gpc !== false) return null;
 
   return (
     <Script id="meta-pixel" strategy="afterInteractive">

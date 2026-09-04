@@ -63,7 +63,7 @@ function WorkCard({ work, index }: { work: WorkEntry; index: number }) {
         </div>
         <div className="mt-5 flex items-baseline justify-between gap-4 border-b border-sec-line pb-4 transition-colors duration-[250ms] ease-house group-hover:border-sec-ink">
           <div>
-            <h3 className="text-h3 font-bold text-sec-ink">{work.title}</h3>
+            <p className="text-h3 font-bold text-sec-ink">{work.title}</p>
             <p className="mt-2 font-mono text-mono-sm uppercase text-sec-mid">
               {work.tags.join(" · ")}
             </p>

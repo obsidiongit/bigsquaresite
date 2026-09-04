@@ -3,13 +3,14 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { useGpc } from "./useGpc";
 
 const GTAG_ID = process.env.NEXT_PUBLIC_GTAG_ID;
 const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID;
 
-const TAG_IDS = [GTAG_ID, GA4_ID].filter(
-  (id): id is string => typeof id === "string" && id.length > 0,
-);
+function present(id: string | undefined): id is string {
+  return typeof id === "string" && id.length > 0;
+}
 
 declare global {
   interface Window {
@@ -21,38 +22,66 @@ declare global {
 /**
  * Google tag (Ads) and GA4. One gtag.js library, one config call per ID.
  * Renders nothing until NEXT_PUBLIC_GTAG_ID or NEXT_PUBLIC_GA4_ID has a
- * value (a teammate fills them in on a separate pass). Loads after hydration.
+ * value. Loads after hydration. Google Ads is skipped when the browser
+ * sends Global Privacy Control; GA4 still loads, with ad signals off.
  */
 export function GoogleTag() {
   const pathname = usePathname();
+  const gpc = useGpc();
   const isFirstRender = useRef(true);
 
-  // The inline config fires the first page_view; track client-side navigations.
+  const gaId = present(GA4_ID) ? GA4_ID : undefined;
+  const adsId = gpc === false && present(GTAG_ID) ? GTAG_ID : undefined;
+  const primaryId = gaId ?? adsId;
+
   useEffect(() => {
-    if (TAG_IDS.length === 0) return;
+    if (gpc === null || !primaryId) return;
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    for (const id of TAG_IDS) {
-      window.gtag?.("config", id, { page_path: pathname });
+    if (gaId) {
+      window.gtag?.("config", gaId, {
+        page_path: pathname,
+        ...(gpc
+          ? {
+              allow_google_signals: false,
+              allow_ad_personalization_signals: false,
+            }
+          : {}),
+      });
     }
-  }, [pathname]);
+    if (adsId) {
+      window.gtag?.("config", adsId, { page_path: pathname });
+    }
+  }, [pathname, primaryId, gaId, adsId, gpc]);
 
-  if (TAG_IDS.length === 0) return null;
+  if (gpc === null || !primaryId) return null;
+
+  const consent = gpc
+    ? `gtag('consent', 'default', {ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});`
+    : "";
+  const gaConfig = gaId
+    ? gpc
+      ? `gtag('config', '${gaId}', {allow_google_signals:false,allow_ad_personalization_signals:false});`
+      : `gtag('config', '${gaId}');`
+    : "";
+  const adsConfig = adsId ? `gtag('config', '${adsId}');` : "";
 
   return (
     <>
       <Script
         id="gtag-lib"
         strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${TAG_IDS[0]}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${primaryId}`}
       />
       <Script id="gtag-init" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-${TAG_IDS.map((id) => `gtag('config', '${id}');`).join("\n")}`}
+${consent}
+${gaConfig}
+${adsConfig}`}
       </Script>
     </>
   );

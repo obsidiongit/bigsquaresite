@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   },
   description:
     "BigSquare is a full-service marketing agency. One team runs your search, your ads, your site, and your creative, with numbers you can check any day.",
+  alternates: {
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`,
+    },
+  },
 };
 
 // Above-the-fold faces preloaded per STYLE_GUIDE.md section 3.

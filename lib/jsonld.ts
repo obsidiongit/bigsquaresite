@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/site";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 /* JSON-LD builders for interior pages (seo-requirements.md).
    Organization renders sitewide from the root layout; these cover the
@@ -102,6 +102,28 @@ export function faqJsonLd(items: { q: string; a: string }[]) {
       "@type": "Question",
       name: item.q,
       acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}
+
+/** Blog index: one Blog node with the live post list as blogPost. */
+export function blogJsonLd(
+  posts: { title: string; slug: string; date: string; description: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `${SITE_NAME} Blog`,
+    url: `${SITE_URL}/blog/`,
+    description:
+      "Plain notes on search, ads, websites, and creative from the BigSquare team. Written so you can use them on your own accounts.",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: `${SITE_URL}/blog/${post.slug}/`,
+      datePublished: post.date,
+      description: post.description,
     })),
   };
 }

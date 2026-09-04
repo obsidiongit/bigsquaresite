@@ -34,7 +34,7 @@ export const LOCATION_PAGES: Record<Office["slug"], LocationPageContent> = {
     slug: "denver",
     title: "Denver Marketing Agency",
     description:
-      "BigSquare is a Denver marketing agency for brands of every size. Search, ads, websites, and creative, run from our Denver office for clients across Colorado and the country.",
+      "BigSquare is a Denver marketing agency. Search, ads, websites, and creative for brands across Colorado and the country.",
     answer:
       "BigSquare is a Denver marketing agency for brands that want more customers in every location. We run search, ads, websites, and creative from our office in Denver, for brands across Colorado and the country.",
     answerSupport:
@@ -65,7 +65,7 @@ export const LOCATION_PAGES: Record<Office["slug"], LocationPageContent> = {
     slug: "tampa",
     title: "Tampa Marketing Agency",
     description:
-      "BigSquare is a Tampa marketing agency for brands of every size. Search, ads, websites, and creative, run from our Tampa office for clients across Florida and the country.",
+      "BigSquare is a Tampa marketing agency. Search, ads, websites, and creative for brands across Florida and the country.",
     answer:
       "BigSquare is a Tampa marketing agency for brands that want more customers in every location. We run search, ads, websites, and creative from our office in Tampa, for brands across Florida and the country.",
     answerSupport:
