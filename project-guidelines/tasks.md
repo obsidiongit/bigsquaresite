@@ -28,7 +28,7 @@ Brad is finishing his section of the work and handing the site to the developer 
 - [x] 2J DONE 2026-08-31 (Pane B): favicon + app icons from the logo mark (`app/icon.svg`, `app/favicon.ico`, `app/apple-icon.png`, no console 404), OG card on Lenia Mono 700 with the wide-positioning tagline, metadata sweep over 42 routes clean (title/description/canonical on every indexable route; funnels noindex with registry-sourced descriptions), Lighthouse mobile: interiors perf 76-88 with CLS 0 and best-practices 100. STILL OPEN: home perf ~40 (TBT from the three.js bundle, Brad's overage call in the homepage punch list); interior LCP ~4.5s under mobile throttling is framework JS, revisit only if Brad wants deeper surgery
 - [ ] Blog SEO plumbing: RSS feed route, Google Search Console + sitemap submit at launch (blog-plan.md "SEO plumbing")
 - [ ] CI guard rails before the writer runs unattended: branch protection on main + Vercel build check, and the copy lint (blog-plan.md section 3 "guard rails")
-- [ ] Launch config sweep: `[PLACEHOLDER]` grep across the repo (office phones, socials), redirects/domains on Vercel
+- [ ] Launch config sweep: `[PLACEHOLDER]` grep across the repo must return zero hits (the full list is the "Placeholder fill list" section below), redirects/domains on Vercel
 - [ ] `/team/` index flip when its content lands: `robots` to index in `app/(marketing)/team/page.tsx` + add the route in `app/sitemap.ts` (one commented line each)
 
 **4. Blocked on Brad's content, not on code (full list: "Brad-owed content" below):**
@@ -42,6 +42,88 @@ Brad is finishing his section of the work and handing the site to the developer 
 - [ ] Decide per lane WITH Brad before producing anything: refine (the plan's three directions: figures not mocks, world-bible seeds then image-to-image, or hand stills to the designer too). No candidate ships without his yes on `/dev/assets`; real photos and portal exports beat both in-house methods wherever they exist
 
 Reviews still open (Brad may approve verbally; confirm and check off): Batch 2, Batch 3, blog v2, nav/menu/footer rebuilds, `/team/` round 2. (The 2026-08-30 home polish round WAS reviewed same day; verdicts + follow-ups in the next section.)
+
+## Placeholder fill list (full-site sweep, 2026-09-03)
+
+Every `[PLACEHOLDER: ...]` marker and empty media frame on the live site, grouped by the kind of answer it needs. Brad answers; the developer drops the value into the file named and deletes the marker. When a line is filled, check it here and re-run the grep (`grep -rn "\[PLACEHOLDER" app components lib content`) before launch: the site must ship with zero hits. Interior service and industry image slots are NOT repeated here; they live in `asset-manifest.md` (bucket 5 above).
+
+**A. Facts (Brad types the answer)**
+
+Offices and contact (footer, /contact/, /about/, /locations/, both city pages; all read `lib/offices.ts` except the footer, which has its own markers in `components/shared/Footer.tsx`):
+- [ ] Denver street address
+- [ ] Tampa street address
+- [ ] Denver office phone
+- [ ] Tampa office phone
+- [ ] Footer social links: which networks, which URLs (or "none", then delete the marker)
+
+Homepage proof numbers (`lib/metrics.ts`, reused on /about/; the shipped 75 / 400 / 47 / 12 are visual stand-ins, launch-gated):
+- [ ] Ad spend managed: real dollar figure + the period it covers
+- [ ] Locations supported: real count
+- [ ] Average growth: real figure + how it is measured
+- [ ] Years running paid media: real number
+- [ ] Newsletter "Join the 600+ clients" line (`components/sections/home/Newsletter.tsx`): confirm 600+ or give the real count
+
+Funnels and forms:
+- [ ] Apply budget ranges (`components/sections/funnels/ApplyForm.tsx`): keep "Nothing yet / Under $5,000 / $5,000 to $15,000 / $15,000 to $50,000 / $50,000+" or change
+- [ ] Apply qualifying floor: the minimum monthly budget that counts as qualified (same file)
+- [ ] Audit turnaround: "Expect a call within ___" (`lib/funnels/registry.ts`, THANKS_PAGES.audit)
+- [ ] Application turnaround: "We review your answers within ___" (same file, THANKS_PAGES["growth-partner"])
+- [ ] Offer terms for the funnel fine print (same file, FINE_PRINT), or "none" and delete the marker
+- [ ] VSL length for the /go/audit/ sub line (same file, VSL_PAGES.audit.sub)
+- [ ] One sourced result or a case study card for /go/audit/ (same file, proofNote)
+- [ ] Steps on the audit call: confirm "look at your accounts together / tell you what we would do first / you decide" or give the real steps. Used on /schedule/ (`app/(marketing)/schedule/page.tsx` CALL_STEPS) and /go/audit/ (registry steps + stepsNote)
+
+Careers (`app/(marketing)/careers/page.tsx`, `lib/careers.ts`):
+- [ ] Remote policy, one sentence for the hero
+- [ ] Open roles, if any: title, Denver / Tampa / Remote, full time or contract (empty array = designed empty state, fine to leave)
+
+First 90 days (`lib/ninety-days.ts`; every day number is invented, the section shows a flag until confirmed):
+- [ ] Get set up: day 1 kickoff, day 2 audit, day 5 portal login, day 10 goals locked
+- [ ] Launch: day 14 tracking fixed, day 18 first campaigns live, day 21 weekly check-in, day 28 creative round one
+- [ ] Scale: day 35 first tests, day 45 cut and reallocate, day 60 add channels, day 90 location review
+
+Team (`lib/team.ts`; questionnaire in `project-sections/company/team.md`), one set per person: Brad, Mike, Chaley, Levi, Russel, Sadie:
+- [ ] 2 to 4 sentences about themselves, in their own words
+- [ ] 3 to 6 things they are into (chips)
+- [ ] One "on rotation" line: a song, show, or podcast
+- [ ] LinkedIn URL, or none
+- [ ] Names + roles for the 4 open slots (or leave them open)
+
+Case studies (`lib/featured-work.ts`; 6 tiles on the homepage and /results/, each `[PLACEHOLDER: Client 0N]` until real). Per case study Brad can share:
+- [ ] Client name, or "industry, N locations" if unnamed
+- [ ] Industry slug + brand type (franchisor / franchisee-group / regional-brand / single-location / ecommerce)
+- [ ] 3 metrics, each with time window + source
+- [ ] Situation (2 to 3 short paragraphs), 3 to 5 steps naming the service used, result paragraph
+- [ ] Quote with a real name and role, or no quote
+- [ ] Card media into `public/media/work/`
+
+Lead magnets (`lib/resources.ts`; the 5 shipped titles are working titles, Brad's real list is on the whiteboard):
+- [ ] The final 5: title, one line, format (Guide / Checklist / Calculator / Template), audience
+- [ ] The 5 files (then `/resources/[slug]/` pages, bucket 1 above)
+
+Blog (`app/(marketing)/blog/page.tsx`): the "no published posts yet" marker only shows when `content/blog/` has zero non-draft posts. Two posts are live, so it never renders; leave it.
+
+**B. Copy to confirm (already written, flagged draft until Brad says yes)**
+- [ ] Homepage hero headline "Proof before promises." + the side text beside the film card + the "How We Work" link label (`components/sections/home/Hero.tsx`, three markers in code comments)
+- [ ] The rest of the homepage sections carry DRAFT notes in code comments only (Services, Solution, ProblemStrip, Portal, Newsletter, FirstNinetyDays). One read-through clears them; part of the sitewide copy pass under "Finalization"
+- [ ] Legal: lawyer pass on `content/legal/privacy-policy.mdx` and `content/legal/terms.mdx` (arbitration clause especially)
+
+**C. Media to send (files, not text; homepage media rows in `asset-manifest.md` say where each lands)**
+- [ ] Hero brand film (`HERO_VIDEO` in `components/sections/home/media.ts`; a temporary loop plays now)
+- [ ] /schedule/ VSL + poster frame (`lib/schedule-media.ts`)
+- [ ] /go/audit/ funnel video URL + poster (`lib/funnels/registry.ts`)
+- [ ] ProofBand trust film or photo (`components/sections/home/ProofBand.tsx`, replace `<MediaPlaceholder>`)
+- [ ] Homepage featured work: 6 case films or stills (`lib/featured-work.ts` media, blocked on the case studies)
+- [ ] Newsletter: 5 client headshots + 4 cycling photos (`lib/newsletter-frames.ts`: leadership team, Denver strategy session, client location shoot, Tampa creative team)
+- [ ] /industries/ hub cards, 4 images at 3:2 (`components/sections/industries/IndustriesHub.tsx`; shared with the service pages, in the manifest)
+- [ ] Industry page heroes (4:3) + method bands (16:9) for franchise, home services, legal, healthcare (`lib/industry-pages/*.ts`; in the manifest)
+- [ ] Founders + team photos for /about/ and /careers/, Denver + Tampa office photos (manifest, REAL-ONLY)
+- [ ] 18 personal photos for /team/ (3 per person, square, their own pick; `team-<first>-1..3`)
+- [ ] Live Obsidion portal embed for the homepage exhibit
+- [ ] Music loop, optional (`MUSIC_SRC` in `lib/sfx.ts` + file in `public/audio/`)
+
+**D. Environment (developer, no content needed from Brad beyond the values)**
+- [ ] `FORM_WEBHOOK_URL`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_GTAG_ID`, `NEXT_PUBLIC_GA4_ID`, `GHL_*` (see `.env.example`; forms post nowhere until the webhook is set)
 
 ## Brad's home review, 2026-08-30 (round 2: verdicts + what to iterate)
 
