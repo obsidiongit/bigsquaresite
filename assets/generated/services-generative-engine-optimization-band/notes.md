@@ -13,3 +13,7 @@ All values are structural skeletons per STYLE_GUIDE 6.12: no names, no digits, n
 - code-v2: rendered 2026-08-31 from scripts/asset-studio/slots/services-generative-engine-optimization-band.html at 3360x1440 (LANE-1-CODE)
 - code-v3: rendered 2026-08-31 from scripts/asset-studio/slots/services-generative-engine-optimization-band.html at 3360x1440 (LANE-1-CODE)
 - code-v4: rendered 2026-08-31 from scripts/asset-studio/slots/services-generative-engine-optimization-band.html at 3360x1440 (LANE-1-CODE)
+
+## Brad's verdict (2026-08-31)
+
+REJECTED AS-IS, all four: 5 out of 10. The skeleton-bar mock reads as a placeholder, not a premium asset. Slot stays EMPTY. Next attempt, if any: a figure in the blog-figure language or a real portal export, not a UI mock (asset-fill-plan.md, Developer handoff).

@@ -11,3 +11,7 @@ Variants to run in the same batch (same base, swap the subject clause): the stor
 ## Candidates
 
 - gen-v1: Codex still 2026-08-31, THE HOOKUP PROOF (session 1 flagship). Prompt above, ref `_world-refs/bigsquare-mark.png`, via `codex exec` stdin pipe, workspace-write sandbox. The Codex agent self-corrected mid-run: first render had red/orange vehicle-light details breaking the one-blue rule, it fixed them before saving. Full frame 1774x887 (`gen-v1-full.png`), center 21:9 crop 1773x760 (`gen-v1.webp`). Review note: composition and palette on-brief (van, one blue square, overcast, air right); reads slightly cut-out/clinical vs the world bible's "printed, not rendered" bar, and 1774px source is under the 2x display target. Next runs: push film grain + ground shadow in the prompt, ask for the largest landscape size.
+
+## Brad's verdict (2026-08-31)
+
+REJECTED AS-IS: 5 out of 10. Reads as a cutout composited on a wall (no grounding shadow, flat light, no grain, under-res). Slot stays EMPTY. Next attempt, if any: approve world-bible seeds with Brad first, then image-to-image, grain + shadows + largest size, generate wide and cull (asset-fill-plan.md, Developer handoff).

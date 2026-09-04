@@ -56,7 +56,7 @@ Brad's designer is covering the video sections plus a handful of statics. Add an
 
 Later sessions: Codex volume production in batches (free, so generate wide and cull hard), Brad reviewing on the contact sheet; team composites after consent; Higgsfield video as its own careful project; figure videos; sweeps as designer files land.
 
-## Session 1 log (2026-08-31, DONE; awaiting Brad's review of both flagships + the triage)
+## Session 1 log (2026-08-31, DONE; reviewed by Brad the same day, verdict below)
 
 1. **Triage DONE**: OWNER column added to every manifest row + a new homepage-media table. Counts across the 61 empty slots: 16 LANE-1-CODE, 23 LANE-2-AI, 22 REAL-ONLY; homepage media: 3 DESIGNER (hero film, VSL, funnel video), 4 REAL-ONLY, 1 LANE-2-AI (newsletter cycle photos). In-house can cover 39 of 61 slots (64%), above the 30-50% target, so the designer's project stays small.
 2. **Skeleton DONE**: `assets/generated/` (+ README with the promotion contract) and the `/dev/assets` contact sheet (dev-only, walks the manifest + candidate folders on refresh; verified live). `npm run assets:studio` renders Lane-1 slot HTMLs from `scripts/asset-studio/slots/` into candidate folders.
@@ -64,6 +64,36 @@ Later sessions: Codex volume production in batches (free, so generate wide and c
 4. **Lane-1 flagship DONE**: `services-generative-engine-optimization-band`, 4 candidates (code-v1..v4) from a 4-angle design workflow with a contract gate; session pick code-v1 (the answer card). All on `/dev/assets`.
 5. **Codex hookup PROVEN + Lane-2 flagship DONE**: CLI 0.151.0 signed in on Brad's plan; `scripts/asset-studio/codex-still.mjs` is the runner (prompt via stdin ALWAYS: the npm ps1 shim mangles multi-line args; refs via `-i`; workspace-write; `~/.codex/generated_images/` fallback scan; auto 21:9 crop + notes stamp). `services-branding-band/gen-v1` is the proof (the van still; agent self-corrected an off-palette detail unprompted).
 6. Nothing wired into `public/media/`; manifest still all-EMPTY on the in-house lanes.
+
+## Brad's review of session 1 (2026-08-31): 5 out of 10, not shippable as-is
+
+Brad's words: "not super thrilled with how anything's coming out... a good idea, but definitely needs a lot of refinement... if I was grading this, I'd say it's like a 5 out of 10... Our brand needs to be not AI slop at all. We put a lot of effort into making the brand presence extremely premium and unique, and then we can really kill the vibe with low-quality assets like we produced using both methods... cool idea on paper, but in practice it's gonna take quite a bit more work."
+
+Verdicts:
+- `services-generative-engine-optimization-band` code-v1..v4: REJECTED AS-IS. Not promoted; the slot stays EMPTY.
+- `services-branding-band` gen-v1 (the Codex van): REJECTED AS-IS. Not promoted; the slot stays EMPTY.
+- The triage, the contact sheet, the candidate archive, the renderer, and the Codex hookup stand; they are plumbing, and the plumbing works. The OUTPUT of both lanes is below the bar. The workstream stays open and passes to the developer with the rest of the handoff.
+
+## Developer handoff: where to pick this up
+
+**What exists and works (do not rebuild):**
+- `project-guidelines/asset-manifest.md`: OWNER column = the triage (16 LANE-1-CODE / 23 LANE-2-AI / 22 REAL-ONLY, plus the homepage-media table). Every slot's aspect and brief is there.
+- `/dev/assets` (dev server only): the review surface. Reads the manifest and `assets/generated/<slot-id>/` on every refresh. Every candidate ever made shows here with its notes.md.
+- `npm run assets:studio`: renders `scripts/asset-studio/slots/<slot-id>.html` at 2x into `assets/generated/<slot-id>/code-v<N>.webp` (`--new` keeps the old version). Playwright is deliberately not in package.json: `npm i --no-save playwright` or point `ASSET_STUDIO_PW` at an install, `PW_CHANNEL=chrome` uses installed Chrome.
+- `node scripts/asset-studio/codex-still.mjs <slot-id> <prompt-file> [--aspect W:H] [--ref img]`: Codex CLI stills. Prompt goes via STDIN ALWAYS (the npm `codex.ps1` shim destroys multi-line arguments; the `.cmd` shim + stdin works). Codex must be signed in (`codex login status`). Output: `gen-v<N>-full.png` + aspect-cropped `gen-v<N>.webp`, notes stamped.
+- `project-sections/assets/world-bible.md`: the Lane-2 art direction draft. Brad has not approved it; treat it as a starting point.
+- Promotion contract (unchanged): a winner is copied to `public/media/`, gets one `lib/asset-files.ts` row, and its manifest row flips to FILLED + date + lane. Only after Brad says yes on `/dev/assets`.
+
+**Why both flagships scored a 5 (the honest diagnosis, so the next attempt does not repeat it):**
+- Lane 1 (code-built UI): the skeleton-bar language (grey pills standing in for text) is the generic wireframe look every AI mock uses. It was chosen to satisfy the no-invented-text rule, but skeleton + mock = placeholder, and a placeholder can never read premium. Contrast: the blog FIGURES (approved 2026-08-30) are geometric figures in the brand language, not product mocks. Lesson: figures beat mocks; real product beats both. For the "on a screen" slots, real Obsidion portal exports (Brad owes them) are the only thing that will read as real.
+- Lane 2 (Codex stills): the van reads as a product cutout composited onto a wall: no grounding shadow, flat lighting, no grain, 1774px source (under the 2x target). Technically on-brief, emotionally stock. One free generation is a sketch, not an asset.
+
+**Refinement directions if Brad wants another round (pick with him, do not run all):**
+1. Lane 1: drop skeleton mocks. Build the code-built slots as FIGURES (the blog-figure language: squares, hairlines, one blue, mono labels, sample-labeled numbers where numbers appear), or as real-type compositions using sanctioned sample copy with the SAMPLE label. Start from `scripts/blog-figures/figures/` as the skeleton, not from `slots/`.
+2. Lane 2: iterate the world bible with Brad before generating again (2 to 3 seed images he approves, then image-to-image from those); demand grain, real shadows, and the largest landscape size in every prompt; generate 6 to 10 per slot and cull to 1. Or hand stills to the designer too, and use Codex only to sketch briefs for the designer.
+3. Everywhere: real beats generated. Office photos, team photos, portal exports, real client work. The REAL-ONLY rows plus Brad's owed content fill more of the site's credibility than any generated candidate.
+
+**The bar (Brad, 2026-08-31):** the brand is premium and unique; a single low-quality asset kills the vibe. If a candidate would not survive next to the homepage, it does not go on `/dev/assets` as a serious option.
 
 ## What Brad owes this workstream
 
