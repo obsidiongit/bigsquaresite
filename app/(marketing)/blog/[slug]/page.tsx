@@ -133,7 +133,6 @@ function AuthorCard({ post }: { post: Post }) {
         alt={post.author}
         aspect="1 / 1"
         compact
-        marks={false}
         sizes="72px"
         className="w-[72px] shrink-0"
       />
@@ -229,7 +228,6 @@ export default async function BlogPostPage({ params }: Params) {
                 aspectClassName="aspect-[16/9] md:aspect-[2/1]"
                 sizes="100vw"
                 priority
-                marks={false}
                 className="mt-12"
               />
             </Reveal>

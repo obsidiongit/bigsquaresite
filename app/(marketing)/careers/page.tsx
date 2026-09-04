@@ -166,7 +166,6 @@ export default function CareersPage() {
             note="The whole team, one frame. Real photos only, no stock."
             alt="The BigSquare team"
             aspectClassName="aspect-video md:aspect-[21/9]"
-            marks={false}
             className="mt-6"
           />
         </div>

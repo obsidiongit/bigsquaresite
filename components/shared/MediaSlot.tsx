@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 
    The placeholder is aria-hidden decoration; the filled image is real
    content with real alt. Framed-media grammar per STYLE_GUIDE 4.3 /
-   6.14: radius 24, 1px line, marks on lg+. */
+   6.14: radius 24, 1px line. */
 
 export function MediaSlot({
   id,
@@ -29,7 +29,6 @@ export function MediaSlot({
   sizes = "(min-width: 1024px) 40vw, 100vw",
   priority = false,
   href,
-  marks = true,
   compact = false,
   className,
 }: {
@@ -51,10 +50,6 @@ export function MediaSlot({
       the 6.4 hover scale. Do NOT set when a parent element is already
       a link (no nested anchors). */
   href?: string;
-  /** DEAD 2026-08-30: registration marks retired sitewide; accepted so
-      the two dozen marks={false} call sites keep compiling, rendered
-      never. Strip the prop + call sites in a quiet window. */
-  marks?: boolean;
   /** compact placeholder (ghost square + chip, no note) for slots too
       short to hold the note column, e.g. small 3:2 cards */
   compact?: boolean;

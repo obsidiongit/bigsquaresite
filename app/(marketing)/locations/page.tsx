@@ -90,7 +90,6 @@ export default function LocationsPage() {
                       note={media.note}
                       alt=""
                       aspect="3 / 2"
-                      marks={false}
                     />
                     <div className="mt-5 flex items-baseline justify-between gap-4">
                       <h2 className="font-display text-h2 text-sec-ink">

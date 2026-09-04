@@ -79,7 +79,6 @@ function Figure({
         alt={alt}
         aspect={aspect}
         aspectClassName={aspect ? undefined : "aspect-[4/3] md:aspect-video"}
-        marks={false}
         sizes="(min-width: 1024px) 720px, 100vw"
       />
       {caption ? (

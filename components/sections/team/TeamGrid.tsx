@@ -85,7 +85,6 @@ function ProfileBody({ member }: { member: TeamMember }) {
           note="Square headshot. Real person, no stock."
           alt={member.name}
           aspect="1 / 1"
-          marks={false}
           sizes="(min-width: 768px) 340px, 100vw"
         />
         {/* the signature: their name in the handwriting accent, the
@@ -162,7 +161,6 @@ function ProfileBody({ member }: { member: TeamMember }) {
               note={photo.note}
               alt={photo.alt}
               aspect="1 / 1"
-              marks={false}
               compact
               sizes="(min-width: 768px) 270px, 33vw"
             />
@@ -388,7 +386,6 @@ function MemberCard({
           note="Square headshot. Real person, no stock."
           alt={member.name}
           aspect="1 / 1"
-          marks={false}
           compact
           sizes="(min-width: 1024px) 24vw, (min-width: 640px) 32vw, 46vw"
         />

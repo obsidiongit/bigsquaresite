@@ -125,7 +125,6 @@ export function IndustriesHub() {
                     note={card.note}
                     alt={card.alt}
                     aspect="3 / 2"
-                    marks={false}
                     sizes="(min-width: 768px) 50vw, 100vw"
                   />
                   {/* card names are the page's H2s, at the flat --text-h2

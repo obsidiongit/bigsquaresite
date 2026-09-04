@@ -178,7 +178,7 @@ The sitewide passes, each its own session:
 - [ ] "Everything feels bigger" pass: portfolio-style scale (type, media, spacing) while still reading as an agency that serves brands. Blend of both
 - [ ] Asset fill workstream (Brad, 2026-08-31; multi-session): fill the ~61 empty slots + homepage media 30-50% in-house alongside the designer's video/statics project. Plan, lanes, rules: `project-sections/assets/asset-fill-plan.md` (code-built UI assets; Codex stills on a world bible, free so generate wide; Higgsfield for video only; nothing wired without Brad's OK). SESSION 1 DONE 2026-08-31 (log in the plan file): OWNER triage in asset-manifest.md (16 code / 23 AI / 22 real-only), `/dev/assets` contact sheet, world bible draft, GEO-band flagship (4 candidates) + Codex van still (hookup proven). REVIEWED by Brad 2026-08-31: 5 out of 10, both flagships REJECTED as-is ("cool on paper, needs a lot of refinement", "our brand needs to be not AI slop at all"). Plumbing stands, outputs do not; nothing promoted. Passed to the developer: bucket 5 of the DEVELOPER HANDOFF + the plan file's "Developer handoff" section
 - [ ] Fonts polish: tracking on the display scale, where ss01 salt earns a place, kill the Bluu/Apfel @font-face fallback blocks in `app/globals.css`
-- [ ] Strip the dead `marks` prop from MediaSlot call sites in a quiet window (registration marks retired sitewide 2026-08-30; the prop is a no-op)
+- [x] Strip the dead `marks` prop from MediaSlot call sites DONE 2026-09-04: prop and its type removed from `components/shared/MediaSlot.tsx`, 17 `marks={false}` call sites deleted across 8 files
 - [ ] Premium cube: Brad is building an award-show-grade WebGL version in a separate project; it drops into `HomeCanvas.tsx` when ready. No cube sessions here until then (the 2K choreography/waypoint retune list waits on it)
 
 ## Batch plan (review state)
@@ -215,7 +215,7 @@ Needs Brad (facts and assets, none of which can be invented):
 Build items (small, any session):
 - [ ] Newsletter polish set: panel presence at 1536, frame cadence vs real photos, remove the headshot note when assets land, confirmation copy, optional cube anchor
 - [ ] Migrate NewsletterForm onto the shared `Field` primitive so the form anatomy lives once (it also owes its `<ConsentLine />` under the submit button, see handoffs-2026-08-31 cross-pane requests)
-- [ ] FAQ accordion open/close height animation (keyframes never defined); one-file fix in a quiet window
+- [x] FAQ accordion open/close height animation: NOT A BUG (verified 2026-09-04). The note said "keyframes never defined", but `tw-animate-css` (imported at the top of `app/globals.css`) supplies both the `--animate-accordion-down/up` tokens and the `accordion-down/up` keyframes off `--radix-accordion-content-height`. Confirmed in the compiled CSS: the utility resolves and the keyframes ship. Nothing to fix
 
 ## Sound v2 (Brad focus point, est. 1-2 sessions; V1 approved 2026-08-27)
 
@@ -253,7 +253,7 @@ All in the lib/sfx.ts system; keep the 7.11 rules (round-robin variants, ramps n
 
 ## Standing rules that bite
 
-- Open layout sitewide (D1); registration-mark plus signs retired SITEWIDE 2026-08-30 (component deleted; MediaSlot's `marks` prop is a dead no-op, strip it in a quiet window)
+- Open layout sitewide (D1); registration-mark plus signs retired SITEWIDE 2026-08-30 (component deleted; MediaSlot's dead `marks` prop stripped 2026-09-04)
 - Audience rule: conversion surfaces never read franchise-only (ecommerce + single-location clients too)
 - copy-rules.md governs all copy; flagged drafts, never silent placeholders; the big copy pass is the one large sweep
 - Forms: single submitForm path, in-place confirmation, shared `Field` primitive

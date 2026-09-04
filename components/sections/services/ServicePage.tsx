@@ -324,7 +324,6 @@ export function ServicePage({ content }: { content: ServicePageContent }) {
           href={content.workBand.href}
           aspectClassName="aspect-video md:aspect-[21/9]"
           sizes="100vw"
-          marks={false}
         />
       </div>
     </Section>
@@ -360,7 +359,6 @@ export function ServicePage({ content }: { content: ServicePageContent }) {
                     alt={content.heroAsset.alt}
                     aspectClassName="aspect-video md:aspect-[2.4/1]"
                     sizes="100vw"
-                    marks={false}
                   />
                 </div>
               )}
@@ -386,7 +384,6 @@ export function ServicePage({ content }: { content: ServicePageContent }) {
                     alt={content.heroAsset.alt}
                     aspectClassName="aspect-square"
                     sizes="(min-width: 1024px) 40vw, 26rem"
-                    marks={false}
                   />
                   {content.heroVignette && (
                     <div className="absolute -bottom-8 -left-7 hidden xl:block">
@@ -434,7 +431,6 @@ export function ServicePage({ content }: { content: ServicePageContent }) {
               alt={content.exhibit.alt}
               aspectClassName="aspect-video md:aspect-[16/10] lg:aspect-[2/1]"
               sizes="100vw"
-              marks={false}
             />
           </div>
         </Section>
@@ -560,7 +556,6 @@ export function ServicePage({ content }: { content: ServicePageContent }) {
                       alt={ind.asset.alt}
                       aspectClassName="aspect-[3/2]"
                       sizes="(min-width: 640px) 25vw, 100vw"
-                      marks={false}
                       compact
                     />
                     <span className="mt-3 flex items-center justify-between text-body font-bold text-sec-ink transition-colors duration-[250ms] group-hover/ind:text-sec-acc">

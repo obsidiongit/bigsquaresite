@@ -173,7 +173,6 @@ export default async function LocationPage({ params }: Params) {
             note={content.media.note}
             alt={content.media.alt}
             aspectClassName="aspect-video md:aspect-[21/9]"
-            marks={false}
           />
         </div>
       </Section>

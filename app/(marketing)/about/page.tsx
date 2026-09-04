@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
    Annotation budget: 3 of 3 (hero circle on "growth", underline on
    the what-we-are-not payoff, CtaBand bracket). No registration
-   marks: every MediaSlot takes marks={false} (new-page rule). */
+   marks: they were retired sitewide 2026-08-30. */
 
 const HOW_WE_WORK = [
   {
@@ -153,7 +153,6 @@ export default function AboutPage() {
                 note="The founders, or the first office. Real photo only."
                 alt="The BigSquare founders"
                 aspect="4 / 3"
-                marks={false}
               />
             </div>
           </div>
@@ -252,7 +251,6 @@ export default function AboutPage() {
             note="The whole team, one frame. Real photos only, no stock."
             alt="The BigSquare team"
             aspectClassName="aspect-video md:aspect-[21/9]"
-            marks={false}
             className="mt-6"
           />
         </div>
