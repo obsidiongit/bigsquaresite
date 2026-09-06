@@ -179,7 +179,14 @@ The sitewide passes, each its own session:
 - [ ] Asset fill workstream (Brad, 2026-08-31; multi-session): fill the ~61 empty slots + homepage media 30-50% in-house alongside the designer's video/statics project. Plan, lanes, rules: `project-sections/assets/asset-fill-plan.md` (code-built UI assets; Codex stills on a world bible, free so generate wide; Higgsfield for video only; nothing wired without Brad's OK). SESSION 1 DONE 2026-08-31 (log in the plan file): OWNER triage in asset-manifest.md (16 code / 23 AI / 22 real-only), `/dev/assets` contact sheet, world bible draft, GEO-band flagship (4 candidates) + Codex van still (hookup proven). REVIEWED by Brad 2026-08-31: 5 out of 10, both flagships REJECTED as-is ("cool on paper, needs a lot of refinement", "our brand needs to be not AI slop at all"). Plumbing stands, outputs do not; nothing promoted. Passed to the developer: bucket 5 of the DEVELOPER HANDOFF + the plan file's "Developer handoff" section
 - [ ] Fonts polish: tracking on the display scale, where ss01 salt earns a place, kill the Bluu/Apfel @font-face fallback blocks in `app/globals.css`
 - [x] Strip the dead `marks` prop from MediaSlot call sites DONE 2026-09-04: prop and its type removed from `components/shared/MediaSlot.tsx`, 17 `marks={false}` call sites deleted across 8 files
-- [ ] Premium cube: Brad is building an award-show-grade WebGL version in a separate project; it drops into `HomeCanvas.tsx` when ready. No cube sessions here until then (the 2K choreography/waypoint retune list waits on it)
+- [ ] Premium cube: Brad is building it in Codex (GPT-6 Astro) with Claude steering, in THIS repo, scoped to `components/sections/home/cube/`, `app/dev/cube/`, `lib/cube/`, and `HomeCanvas.tsx`. Working file: `project-guidelines/cube-v2/brief.md` (illoca.com teardown, direction options A/B/C, ready-to-paste Codex prompts 0 to 3, reference frames). Started 2026-09-05. No other cube sessions until then (the 2K choreography/waypoint retune list waits on it)
+  - [x] Prompt 1 look-dev sandbox at `/dev/cube` DONE 2026-09-05 (Codex + Claude verify). Brad: two-tone ink
+  - [x] Concept locked 2026-09-05: C, "the roll" (brief.md 9.3 storyboard + 10.1 cast). Options A (drafting table) and B (square becomes everything) stay documented in brief.md 9.2 in case C does not land
+  - [x] Round 1: the town at rest on `/dev/cube-world/` (brief.md 10.3, prompt in 10.4). First cut with blocks built 2026-09-05, reviewed: blocks out, faces plain, tiles fixed. REBUILT as the town 2026-09-05 night (road + START, 3 storefronts, 4 trees, van, 2 sheets; frames `cube-v2/sandbox-captures/world-r1-town-*`; status in brief.md 7b), awaiting Brad's review
+  - [ ] Round 2: hero camera path + roll + film face
+  - [ ] Round 3: swap into HomeCanvas, delete glass/smoke/FilmPane/R_*, mobile, reduced motion, bundle delta
+  - [ ] Round 4: the journey, featured work through First 90 Days on the existing clocks
+  - [ ] Round 5: polish (ink trail, roll sfx, scroll-up, Lighthouse)
 
 ## Batch plan (review state)
 

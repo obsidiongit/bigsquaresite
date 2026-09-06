@@ -1,0 +1,39 @@
+.sandbox { min-height: 100svh; padding: 28px 48px 24px; background: #F5F6F8; color: #0B0F17; font-family: var(--m); position: relative; isolation: isolate; display: flex; flex-direction: column; }
+.sandbox ::selection { background: #0657F9; color: #F5F6F8; }
+.header, .intro, .gallery, .controls, .reduced { position: relative; z-index: 2; }
+.header { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.brand { font-size: 21px; font-weight: 700; display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+.brandSquare { width: 12px; height: 12px; background: #0657F9; }
+.actions { display: flex; gap: 18px; align-items: center; font-size: 12px; }
+.actions button, .presets button { min-height: 38px; cursor: pointer; padding: 5px 8px; border-bottom: 1px solid rgba(11,15,23,.24); }
+.actions button:hover, .presets button:hover { color: #0657F9; border-color: #0657F9; }
+.sandbox button:disabled { opacity: .45; cursor: default; }
+.sandbox button:focus-visible, .sandbox a:focus-visible, .sandbox select:focus-visible, .sandbox input:focus-visible { outline: 2px solid #0657F9; outline-offset: 5px; }
+.viewLabel { display: flex; gap: 10px; align-items: center; }
+.viewLabel select { cursor: pointer; background: #F5F6F8; border: 1px solid rgba(11,15,23,.24); padding: 9px 26px 9px 10px; border-radius: 0; }
+.intro { margin-top: 46px; }
+.intro h1 { font-size: clamp(30px,3.3vw,48px); line-height: 1.15; font-weight: 700; letter-spacing: -.035em; margin: 0; }
+.intro p { font-size: 14px; margin-top: 14px; line-height: 1.6; }
+.gallery { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px; margin-top: 36px; flex: 1; align-content: center; }
+.study { min-width: 0; }
+.study h2 { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.5; }
+.description { margin-top: 7px; min-height: 36px; font-size: 12px; line-height: 1.5; }
+.canvas { height: clamp(300px,43svh,480px); position: relative; }
+.metrics { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid rgba(11,15,23,.16); padding-top: 12px; font-size: 11px; font-variant-numeric: tabular-nums; }
+.step { font-size: 10px; margin-top: 5px; color: #0A2A73; }
+.fallback { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; font-size: 13px; padding: 20px; }
+.solo { grid-template-columns: minmax(0,560px); justify-content: center; }
+.solo .canvas { height: clamp(300px,43svh,480px); }
+.controls { width: min(840px,100%); align-self: center; margin-top: 35px; }
+.sliderLabel { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; }
+.sliderLabel output { color: #0657F9; font-variant-numeric: tabular-nums; }
+.sliderRow { display: flex; align-items: center; gap: 20px; font-size: 12px; white-space: nowrap; margin-top: 10px; }
+.sliderRow input { flex: 1; width: 100%; min-width: 40px; accent-color: #0657F9; cursor: ew-resize; height: 24px; }
+.footerMeta { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 10px; }
+.footerMeta p { font-size: 10px; line-height: 1.5; }
+.presets { display: flex; gap: 16px; font-size: 11px; }
+.presets button[aria-pressed="true"] { color: #0657F9; border-color: #0657F9; }
+.reduced { margin: auto; max-width: 52ch; padding: 70px 0; line-height: 1.8; }
+@media (min-height: 1000px) { .intro { margin-top: 70px; } }
+@media (max-width: 900px) { .sandbox { padding: 24px; } .header { align-items: flex-start; } .actions { justify-content: flex-end; flex-wrap: wrap; gap: 8px 12px; } .viewLabel { width: 100%; justify-content: flex-end; } .gallery { gap: 16px; } .study h2 { font-size: 15px; } .description { min-height: 52px; } .metrics { flex-wrap: wrap; } }
+@media (max-width: 650px) { .sandbox { padding: 20px; } .header { gap: 12px; } .brand { font-size: 16px; } .actions { font-size: 10px; } .viewLabel { gap: 5px; } .viewLabel select { max-width: 145px; } .intro { margin-top: 36px; } .intro h1 { max-width: 12ch; } .gallery { grid-template-columns: 1fr; gap: 40px; margin-top: 36px; } .study h2 { font-size: 18px; } .description { min-height: 0; } .canvas, .solo .canvas { height: 340px; } .controls { margin-top: 40px; } .sliderRow { gap: 10px; font-size: 10px; } .footerMeta { align-items: flex-start; } .footerMeta p { max-width: 24ch; } .presets { gap: 10px; } }
