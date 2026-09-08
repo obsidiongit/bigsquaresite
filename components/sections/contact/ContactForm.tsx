@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
@@ -39,7 +39,13 @@ const TEXT_FIELDS = [
 
 type Status = "idle" | "sending" | "done";
 
-function Confirmation({ reduced }: { reduced: boolean }) {
+function Confirmation({
+  reduced,
+  followup,
+}: {
+  reduced: boolean;
+  followup: ReactNode;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   /* Focus the confirmation as it arrives: the submit button that had
@@ -74,14 +80,26 @@ function Confirmation({ reduced }: { reduced: boolean }) {
       <p className="text-h3 font-bold text-sec-ink">
         Got it. We will get back to you.
       </p>
-      <p className="text-small text-sec-mid">
-        Want to talk sooner? <a href="/schedule/" className="underline">Schedule a Call</a>.
-      </p>
+      {followup}
     </motion.div>
   );
 }
 
-export function ContactForm() {
+const DEFAULT_FOLLOWUP = (
+  <p className="text-small text-sec-mid">
+    Want to talk sooner?{" "}
+    <a href="/schedule/" className="underline">
+      Schedule a Call
+    </a>
+    .
+  </p>
+);
+
+export function ContactForm({
+  confirmationFollowup = DEFAULT_FOLLOWUP,
+}: {
+  confirmationFollowup?: ReactNode;
+} = {}) {
   const fieldId = useId();
   const reduced = useReducedMotionSafe();
   const [status, setStatus] = useState<Status>("idle");
@@ -130,7 +148,11 @@ export function ContactForm() {
           still be in the tab order (6.13) */}
       <AnimatePresence mode="wait" initial={false}>
         {status === "done" ? (
-          <Confirmation key="done" reduced={reduced} />
+          <Confirmation
+            key="done"
+            reduced={reduced}
+            followup={confirmationFollowup}
+          />
         ) : (
           <motion.form
             key="form"

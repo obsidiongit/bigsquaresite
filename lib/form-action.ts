@@ -3,10 +3,9 @@
 import { z } from "zod";
 import type { UtmParams } from "@/lib/utm";
 
-// The single submit path for every form on the site: contact, audit, popup,
-// application funnel, and lead magnets (decisions.md). Posts one JSON payload
-// to FORM_WEBHOOK_URL. Destination (GHL or the Obsidion dashboard) is decided
-// later; only the env var changes.
+// The single submit path for every form on the site: contact, audit,
+// application funnel, lead magnets, newsletter. Posts one JSON payload
+// to FORM_WEBHOOK_URL, which is a GoHighLevel inbound webhook.
 
 const utmSchema = z.object({
   utm_source: z.string().optional(),

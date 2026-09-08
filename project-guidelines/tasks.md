@@ -1,5 +1,7 @@
 # Build Tasks
 
+**HOLDING (2026-09-07):** Production is the `holding` branch: one capture page at `/`, legal pages, 302s everywhere else. Full site stays on `main` (snapshot `full-site`). Spec: `project-sections/holding.md`. Flip Vercel Production back to `main` to restore the site.
+
 Only what is left to do. Endpoint status lives in `sitemap.md` (the single tracker). History, old handoffs, and built-page briefs live in `archive/` (never delete from it); this file's completed narrative moved to `archive/build-log.md` on 2026-08-31.
 
 Working rules: batch builds (Brad, 2026-08-27); one review round with Brad per batch, not per page. New template types still get one green-lit flagship, reviewed inside the batch. Per page before checkoff: screenshot 375 / 768 / 1280 / 1536 + reduced motion, no overflow, JSON-LD probe, typecheck; stop any dev server before `npm run build`. End every session with a simple list of what was built.

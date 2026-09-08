@@ -1,5 +1,7 @@
 # BigSquare Marketing Sitemap
 
+**HOLDING (2026-09-07):** The `holding` branch is what production should serve. `/` is the coming-soon capture. `/privacy-policy/` and `/terms/` stay. All other URLs 302 to `/`. Restore by pointing Vercel Production at `main`. Spec: `project-sections/holding.md`.
+
 **This is the single endpoint tracker.** Every URL the site will have at launch, with its current status. Update the STATUS column whenever a page changes state; session detail goes nowhere else (history is archived in `archive/build-log.md`).
 
 STATUS values:
@@ -54,7 +56,7 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 ### Core
 | URL | STATUS | Title tag (draft) | Purpose |
 |---|---|---|---|
-| `/` | built | Marketing Agency That Shows Its Work \| BigSquare | Homepage, ~85%; punch list in tasks.md |
+| `/` | holding 2026-09-07 (temporary capture; full homepage on `main`) | Site Coming Soon \| BigSquare | 3D mark + contact form + newsletter |
 | `/about/` | built (Batch 1 reviewed 2026-08-27) | About BigSquare Marketing | Owed: founding story, team + founders photos, sourced metrics |
 | `/team/` | built 2026-08-31 (Pane C; replaces /leadership/ on Brad's review: bigger, fun, profile popups); noindex + out of sitemap.xml until profiles are real in `lib/team.ts` | Meet the Team \| BigSquare | Roster wall + profile windows. 5 real members + 5 open slots (Sadie Pursell removed 2026-09-04). Owed: questionnaire answers, personal photos, more names (spec: `project-sections/company/team.md`) |
 | `/careers/` | built (Batch 2, 2026-08-27, awaiting batch review) | Careers at BigSquare | Owed: remote policy, open roles, application destination |
