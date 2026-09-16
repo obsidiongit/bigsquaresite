@@ -1,28 +1,47 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { BLUE, INK, PAPER, createInkMaterial, createOutlineMaterial } from "./ink";
-import { createPropKit } from "./props";
-import { composeTown, type Placed } from "./town";
+import { coverScale, createFilmDecalMaterial, createFilmUniforms } from "./film";
+import { createPropKit, type Drawn } from "./props";
+import { composeTown, type Town } from "./town";
+import {
+  FILM_CENTER,
+  GROUND_Y,
+  NARROW,
+  ROAD_HEADING,
+  cubePose,
+  filmState,
+  type FilmState,
+  type Layout,
+} from "./path";
 
-/* The hero world (cube-v2/brief.md sections 6, 9 and 10; round 1: the
-   town at rest). One paper ground with the hairline grid, one raking
-   key light with long hard shadows, the protagonist cube at the origin
-   with plain faces, and the town from lib/cube/town.ts: the ink road,
-   storefronts, trees, the van and two sheets, all procedural, all in
-   the cube's own two-tone ink material. Never a second cube. */
+export { GROUND_Y, NARROW };
+
+/* The hero world (cube-v2/brief.md sections 6, 9 and 10). One paper
+   ground with the hairline grid, one raking key light with long hard
+   shadows, the protagonist cube with plain faces, and the town from
+   lib/cube/town.ts: the ink road, storefronts, trees, the mark, two
+   sheets, all procedural, all in the cube's own two-tone ink material.
+   Never a second cube.
+
+   Round 2: the world takes the two clocks (p, c) each frame and
+   applies lib/cube/path.ts: the cube rolls two quarter turns down the
+   road onto the film station; the station's frame draws itself ahead
+   of it; the top face lights up with the brand film, which spreads to
+   the frame and develops; the mid-build storefront tops out. The
+   camera is the canvas's; the world only needs its elevation to know
+   when the protagonist's silhouette is all film. */
 
 /* Key light direction (from the scene toward the light): front-right
    and low (about 30 degrees elevation). The faces that face the camera
    split lit/shadow (paper right, blue left), and the shadow runs long
-   to the back-left, under the headline. Round 1a had it back-left,
-   which put every visible face in shadow: an all-blue cube. Shared by
-   the shadow-casting light and the ink terminator so both agree. */
+   to the back-left, under the headline. Shared by the shadow-casting
+   light and the ink terminator so both agree. */
 export const KEY_DIR = new THREE.Vector3(0.78, 0.52, 0.42).normalize();
 
-export const GROUND_Y = -0.5;
 export const GRID_CELL = 0.25;
 /** viewports narrower than this hide the foreground props (town.ts) */
-export const NARROW = 768;
+export const FOREGROUND_MIN = 1024;
 
 const grain = /* glsl */ `
   float hash(vec2 p) {
@@ -72,8 +91,9 @@ const groundFragment = /* glsl */ `
   }
 `;
 
-/* A hand-drawn ink ring on the paper around the protagonist, in the
-   RoughAnnotation circle's character: two wobbly passes, open ends. */
+/* A hand-drawn ink ring on the paper around the protagonist's rest
+   spot, in the RoughAnnotation circle's character: two wobbly passes,
+   open ends. It stays behind when the cube rolls: the start mark. */
 function createRing(): THREE.CanvasTexture {
   const size = 1024;
   const canvas = document.createElement("canvas");
@@ -116,12 +136,42 @@ function createNoMarks(): THREE.DataTexture {
   return texture;
 }
 
+/** the brand film, poster first (HomeCanvas useFilmMedia contract) */
+export type WorldMedia = {
+  tex: THREE.Texture | null;
+  poster: THREE.Texture | null;
+  mix: number;
+  dims: { w: number; h: number };
+};
+
+export type WorldFrame = {
+  time: number;
+  dpr: number;
+  width: number;
+  height: number;
+  camera: THREE.Camera;
+  /** the hero clock, damped */
+  p: number;
+  /** the reform clock, damped */
+  c: number;
+  /** the camera's elevation, radians */
+  el: number;
+  layout: Layout;
+  media: WorldMedia;
+};
+
 export type World = {
   group: THREE.Group;
   protagonist: THREE.Group;
   light: THREE.DirectionalLight;
-  update(frame: { time: number; dpr: number; width: number; height: number; camera: THREE.Camera }): void;
+  update(frame: WorldFrame): void;
   dispose(): void;
+};
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const smoothstep = (a: number, b: number, v: number) => {
+  const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+  return t * t * (3 - 2 * t);
 };
 
 export function createWorld(): World {
@@ -132,25 +182,52 @@ export function createWorld(): World {
   const outline = createOutlineMaterial();
   const kit = createPropKit(ink, outline, GROUND_Y);
 
-  /* the protagonist: 1 unit at the origin, resting on the paper, turned
-     off-axis so two faces and the top read at once; its -z face points
-     down the road (town.ts ROAD_HEADING) */
+  /* the film: uniforms shared by the paper decal and the protagonist's
+     own ink material (the only material in the world with the film
+     branch), so the face and the frame are one picture */
+  const filmU = createFilmUniforms(GROUND_Y);
+  const cubeInk = createInkMaterial(marks, filmU);
+  const cubeHull = createOutlineMaterial();
+
+  /* the protagonist: 1 unit, resting on the paper at the origin with
+     its -z face down the road (path.ts BASE_Q); cubePose moves it */
   const protagonist = new THREE.Group();
-  const cube = new THREE.Mesh(geometry, ink);
+  const cube = new THREE.Mesh(geometry, cubeInk);
   cube.castShadow = true;
   cube.renderOrder = 1;
-  const hull = new THREE.Mesh(geometry, outline);
+  const hull = new THREE.Mesh(geometry, cubeHull);
   protagonist.add(cube, hull);
-  protagonist.position.set(0, GROUND_Y + 0.5, 0);
-  protagonist.rotation.y = 0.62;
   group.add(protagonist);
   const cubeShade = kit.contactShade(1, 1);
-  cubeShade.position.y = GROUND_Y + 0.003;
+  const cubeShadeMaterial = (cubeShade.material as THREE.MeshBasicMaterial).clone();
+  cubeShade.material = cubeShadeMaterial;
+  cubeShade.renderOrder = 2;
   group.add(cubeShade);
 
+  /* the film station: the drawn frame (rebuilt per layout, since its
+     aspect follows the viewport's panel) and the decal that carries
+     the film on the paper, both centred FILM_S down the road */
+  const station = new THREE.Group();
+  station.position.set(FILM_CENTER.x, 0, FILM_CENTER.z);
+  station.rotation.y = ROAD_HEADING;
+  group.add(station);
+  const decalMaterial = createFilmDecalMaterial(filmU);
+  const decalGeometry = new THREE.PlaneGeometry(1, 1);
+  const decal = new THREE.Mesh(decalGeometry, decalMaterial);
+  decal.rotation.x = -Math.PI / 2;
+  decal.position.y = GROUND_Y + 0.006;
+  decal.renderOrder = 1;
+  decal.visible = false;
+  station.add(decal);
+  let frameStroke: Drawn | null = null;
+  let layoutSeen: Layout | null = null;
+  const decalMask = decalMaterial.uniforms.uFilmMaskHalf.value as THREE.Vector2;
+  const cubeMask = cubeInk.uniforms.uFilmMaskHalf.value as THREE.Vector2;
+  filmU.uFilmFrame.value.set(FILM_CENTER.x, FILM_CENTER.z, Math.cos(ROAD_HEADING), Math.sin(ROAD_HEADING));
+
   /* the town */
-  const town: Placed[] = composeTown(kit);
-  for (const p of town) group.add(p.object);
+  const town: Town = composeTown(kit);
+  for (const p of town.placed) group.add(p.object);
   let narrow: boolean | null = null;
 
   /* ground: paper + grid (opaque), then the blue shadow plane over it */
@@ -232,6 +309,25 @@ export function createWorld(): World {
   group.add(light, light.target);
 
   const lightView = new THREE.Vector3();
+  const state: FilmState = { alpha: 0, spread: 0, ink: 1, mediaScale: 1.12, draw: 0, build: 0.6 };
+
+  function applyLayout(L: Layout) {
+    if (frameStroke) {
+      station.remove(frameStroke);
+      frameStroke.traverse((o) => {
+        if (o instanceof THREE.Mesh) {
+          o.geometry.dispose();
+          (o.material as THREE.Material).dispose();
+        }
+      });
+    }
+    frameStroke = kit.frame(L.frameHalf.x, L.frameHalf.y, L.radius + 0.03);
+    station.add(frameStroke);
+    decal.scale.set(L.frameHalf.x * 2, L.frameHalf.y * 2, 1);
+    filmU.uFilmHalf.value.copy(L.frameHalf);
+    filmU.uFilmRadius.value = L.radius;
+    layoutSeen = L;
+  }
 
   return {
     group,
@@ -239,25 +335,75 @@ export function createWorld(): World {
     light,
     update(frame) {
       const tick = Math.floor(frame.time * 12);
-      ink.uniforms.uGrainFrame.value = tick;
-      ink.uniforms.uDpr.value = frame.dpr;
+      for (const m of [ink, cubeInk]) {
+        m.uniforms.uGrainFrame.value = tick;
+        m.uniforms.uDpr.value = frame.dpr;
+      }
       groundMaterial.uniforms.uGrainFrame.value = tick;
       groundMaterial.uniforms.uDpr.value = frame.dpr;
+      decalMaterial.uniforms.uGrainFrame.value = tick;
+      decalMaterial.uniforms.uDpr.value = frame.dpr;
       outline.uniforms.uResolution.value.set(frame.width, frame.height);
+      cubeHull.uniforms.uResolution.value.set(frame.width, frame.height);
       lightView.copy(KEY_DIR).transformDirection(frame.camera.matrixWorldInverse);
       ink.uniforms.uLight.value.copy(lightView);
-      const isNarrow = frame.width < NARROW;
+      cubeInk.uniforms.uLight.value.copy(lightView);
+      /* the foreground sheets need the desktop fold's bottom-left
+         corner; below 1024 the headline runs down into it */
+      const isNarrow = frame.width < FOREGROUND_MIN;
       if (isNarrow !== narrow) {
         narrow = isNarrow;
-        for (const p of town) if (p.foreground) p.object.visible = !isNarrow;
+        for (const p of town.placed) if (p.foreground) p.object.visible = !isNarrow;
       }
+      if (frame.layout !== layoutSeen) applyLayout(frame.layout);
+
+      /* the protagonist rolls; its contact shade follows its foot and
+         thins while it is up on an edge (the cast shadow does the work) */
+      const phase = cubePose(frame.p, protagonist.position, protagonist.quaternion);
+      cubeShade.position.set(protagonist.position.x, GROUND_Y + 0.003, protagonist.position.z);
+      cubeShadeMaterial.opacity = 0.18 * (1 - phase);
+
+      /* the film station */
+      filmState(frame.p, frame.c, state);
+      const L = frame.layout;
+      const hx = L.frameHalf.x - 0.03;
+      const hy = L.frameHalf.y - 0.03;
+      decalMask.set(lerp(0.5, hx, state.spread), lerp(0.5, hy, state.spread));
+      /* the cube's own mask always covers its footprint: the face is
+         film from the first light, the paper joins as it spreads */
+      cubeMask.set(Math.max(decalMask.x, 1.2), Math.max(decalMask.y, 1.2));
+      filmU.uFilmAlpha.value = state.alpha;
+      filmU.uFilmInk.value = state.ink;
+      filmU.uFilmMediaScale.value = state.mediaScale;
+      filmU.uFilmTex.value = frame.media.tex;
+      filmU.uFilmPoster.value = frame.media.poster;
+      filmU.uFilmTexMix.value = frame.media.mix;
+      coverScale(filmU.uFilmCover.value, frame.media.dims.w, frame.media.dims.h, L.frameHalf.x / L.frameHalf.y);
+      decal.visible = state.alpha > 0.001;
+      frameStroke?.setDraw(state.draw);
+      /* the lit screen kills the cast shadow beside it (a two-unit
+         blue wedge would otherwise poke past the panel at the hold);
+         nothing else is in frame while the film is up, and it returns
+         as the film dies on the reform */
+      shadowMaterial.uniforms.opacity.value = 1 - state.alpha;
+      cubeShadeMaterial.opacity *= 1 - state.alpha;
+      /* the hull would draw a square inside the film once the camera is
+         over the top and the silhouette is all face: fade it there */
+      cubeHull.uniforms.uWidth.value = 1 - state.alpha * smoothstep(1.1, 1.5, frame.el);
+
+      town.rising.setBuild(state.build);
     },
     dispose() {
       geometry.dispose();
       marks.dispose();
       ink.dispose();
+      cubeInk.dispose();
       outline.dispose();
+      cubeHull.dispose();
+      cubeShadeMaterial.dispose();
       kit.dispose();
+      decalMaterial.dispose();
+      decalGeometry.dispose();
       groundMaterial.dispose();
       groundGeometry.dispose();
       shadowMaterial.dispose();

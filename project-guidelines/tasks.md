@@ -183,10 +183,10 @@ The sitewide passes, each its own session:
   - [x] Prompt 1 look-dev sandbox at `/dev/cube` DONE 2026-09-05 (Codex + Claude verify). Brad: two-tone ink
   - [x] Concept locked 2026-09-05: C, "the roll" (brief.md 9.3 storyboard + 10.1 cast). Options A (drafting table) and B (square becomes everything) stay documented in brief.md 9.2 in case C does not land
   - [x] Round 1: the town at rest on `/dev/cube-world/` (brief.md 10.3, prompt in 10.4). First cut with blocks built 2026-09-05, reviewed: blocks out, faces plain, tiles fixed. REBUILT as the town 2026-09-05 night (road + START, 3 storefronts, 4 trees, van, 2 sheets; frames `cube-v2/sandbox-captures/world-r1-town-*`; status in brief.md 7b), awaiting Brad's review
-  - [ ] Round 2: hero camera path + roll + film face
-  - [ ] Round 3: swap into HomeCanvas, delete glass/smoke/FilmPane/R_*, mobile, reduced motion, bundle delta
-  - [ ] Round 4: the journey, featured work through First 90 Days on the existing clocks
-  - [ ] Round 5: polish (ink trail, roll sfx, scroll-up, Lighthouse)
+  - [x] Round 2: hero camera path + roll + film face. BUILT 2026-09-06 on `/dev/cube-world/` (560vh runway, two quarter turns onto a self-drawing frame, film on the face spreading to the frame, push to panel, reform to the follow shot; van out of the rest frame, START gone, logo sign in; frames `cube-v2/sandbox-captures/world-r2-*`; status in brief.md 7b), awaiting Brad's review
+  - [ ] Round 3: THE JOURNEY on `/dev/cube-world/` (stand-in stations below the hero, featured work through First 90 Days per brief.md 9.3 and 10.2; handoff prompt in brief.md 10.6). The 2026-09-06 attempt that ported the world to the homepage was REJECTED by Brad and reverted the same day (record + swap notes in brief.md 7b); the homepage is off limits until the whole world is signed off on the dev route
+  - [ ] Round 4: polish on the dev route (ink trail, roll sfx, scroll-up, frame time per station, Lighthouse)
+  - [ ] Round 5: the homepage swap, LAST, only after Brad's sign-off of the whole world (the 7b notes: nav floor, phone rest, stage clip, bundle)
 
 ## Batch plan (review state)
 

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { filmGlsl, type FilmUniforms } from "./film";
 import type { CubeLook, LookFrame } from "./types";
 
 const raw = (hex: number) => new THREE.Color().setHex(hex, THREE.NoColorSpace);
@@ -25,10 +26,19 @@ const inkVertex = /* glsl */ `
   varying vec3 vPosition;
   varying vec3 vObjectNormal;
   varying vec3 vViewNormal;
+  #ifdef FILM
+  varying vec3 vWorld;
+  varying vec3 vWorldNormal;
+  #endif
   void main() {
     vPosition = position;
     vObjectNormal = normal;
     vViewNormal = normalize(normalMatrix * normal);
+    #ifdef FILM
+    vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
+    // rigid transforms only (the protagonist rolls, never scales)
+    vWorldNormal = normalize(mat3(modelMatrix) * normal);
+    #endif
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
@@ -44,6 +54,11 @@ const inkFragment = /* glsl */ `
   varying vec3 vPosition;
   varying vec3 vObjectNormal;
   varying vec3 vViewNormal;
+  #ifdef FILM
+  varying vec3 vWorld;
+  varying vec3 vWorldNormal;
+  ${filmGlsl}
+  #endif
   ${grain}
 
   // One independent mark in each of the six cells of a 512px atlas.
@@ -71,6 +86,14 @@ const inkFragment = /* glsl */ `
     vec3 color = mix(uBlue, uLit, lit);
     float mark = texture2D(uMarks, markUv()).a;
     color = mix(color, uNavy, mark);
+    #ifdef FILM
+    // The film lives on the upper hemisphere of normals (the top face
+    // and the rounded rim above the equator), reprojected onto the
+    // paper so it is one picture with the decal around the cube. The
+    // vertical sides keep their ink.
+    vec4 film = filmSample(vWorld);
+    color = mix(color, film.rgb, film.a * smoothstep(0.02, 0.14, vWorldNormal.y));
+    #endif
     color = mix(color, uNavy, paperGrain(gl_FragCoord.xy / uDpr, uGrainFrame) * 0.04);
     gl_FragColor = vec4(color, 1.0);
   }
@@ -78,6 +101,7 @@ const inkFragment = /* glsl */ `
 
 const outlineVertex = /* glsl */ `
   uniform vec2 uResolution;
+  uniform float uWidth;
   void main() {
     vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
     vec4 clip = projectionMatrix * viewPosition;
@@ -90,7 +114,7 @@ const outlineVertex = /* glsl */ `
     // Hull geometries may carry a normal length above 1 to widen the
     // offset (box corners push along a diagonal, which thins the edge).
     float boost = max(length(normal), 1.0);
-    clip.xy += pixelDirection * (3.0 * boost / uResolution) * clip.w;
+    clip.xy += pixelDirection * (3.0 * boost * uWidth / uResolution) * clip.w;
     gl_Position = clip;
   }
 `;
@@ -186,12 +210,15 @@ export function createMarks(): THREE.CanvasTexture {
 
 /** The two-tone ink surface. uLight is a VIEW-space direction: callers
     update it per frame from their world light. Shared by the sandbox
-    look and by every solid in the hero world. */
-export function createInkMaterial(marks: THREE.Texture): THREE.ShaderMaterial {
+    look and by every solid in the hero world. Pass `film` (the shared
+    film uniforms from lib/cube/film.ts) for the protagonist only: its
+    upper faces then carry the brand film at the hero's film station. */
+export function createInkMaterial(marks: THREE.Texture, film?: FilmUniforms): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     vertexShader: inkVertex,
     fragmentShader: inkFragment,
     toneMapped: false,
+    ...(film ? { defines: { FILM: "" } } : {}),
     uniforms: {
       uLit: { value: LIT.clone() },
       uBlue: { value: BLUE.clone() },
@@ -200,16 +227,25 @@ export function createInkMaterial(marks: THREE.Texture): THREE.ShaderMaterial {
       uMarks: { value: marks },
       uGrainFrame: { value: 0 },
       uDpr: { value: 1 },
+      ...(film
+        ? { ...film, uFilmMaskHalf: { value: new THREE.Vector2(0.9, 0.9) } }
+        : {}),
     },
   });
 }
 
-/** The 1.5px screen-constant navy hull. uResolution is CSS pixels. */
+/** The 1.5px screen-constant navy hull. uResolution is CSS pixels;
+    uWidth scales the offset (1 = 1.5px; 0 hides the hull without a
+    draw-call toggle, used when the protagonist's silhouette is film). */
 export function createOutlineMaterial(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     vertexShader: outlineVertex,
     fragmentShader: "uniform vec3 uColor; void main() { gl_FragColor = vec4(uColor, 1.0); }",
-    uniforms: { uResolution: { value: new THREE.Vector2(1, 1) }, uColor: { value: NAVY.clone() } },
+    uniforms: {
+      uResolution: { value: new THREE.Vector2(1, 1) },
+      uWidth: { value: 1 },
+      uColor: { value: NAVY.clone() },
+    },
     side: THREE.BackSide,
     toneMapped: false,
   });

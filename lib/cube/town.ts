@@ -1,27 +1,39 @@
 import * as THREE from "three";
-import type { PropKit } from "./props";
+import type { PropKit, Storefront } from "./props";
+import { GROUND_Y, ROAD_DIR, ROAD_HEADING } from "./path";
 
-/* The town at rest (cube-v2/brief.md 10.3 round 1, prompt 10.4). One
-   seeded layout in world units; the protagonist is 1 unit at the
-   origin and the camera looks from +z. Placement is projected against
-   the fold's DOM at 1440x900: the headline's first line runs to 86
-   percent of the width and the cube sits at 87, so the only ground
-   that is clear of the text at rest is the band above the headline
-   (z of -9 and beyond), the strip right of the statement, and the
-   bottom left corner. The road leaves under the cube along its face
-   direction (rotation.y 0.62, so round 2's quarter turns run on it),
-   disappears behind the cube and its shadow, and comes back into view
-   above the cube's shoulder on its way to the town. Foreground pieces
-   (the START tick, the sheets) are hidden below 768px, where the
-   headline owns everything under the cube. */
+export { ROAD_HEADING };
 
-/** the road's centerline, xz waypoints, from the START tick to the horizon */
+/* The town (cube-v2/brief.md 10.3 rounds 1 and 2). One seeded layout
+   in world units; the protagonist is 1 unit at the origin and the
+   camera looks from +z. Placement is projected against the fold's DOM
+   at 1440x900: the headline's first line runs to 86 percent of the
+   width and the cube sits at 87, so the only ground clear of the text
+   at rest is the band above the headline (z of -9 and beyond), the
+   strip right of the statement, and the bottom left corner. The road
+   leaves under the cube along ROAD_DIR (its first straight passes
+   through the origin, so round 2's two quarter turns run on it and
+   land on the film station at FILM_S), disappears behind the cube and
+   its shadow, and comes back into view above the cube's shoulder on
+   its way to the town. Foreground pieces (the sheets) are hidden below
+   768px, where the headline owns everything under the cube.
+
+   Round 2 (Brad's round 1 review): the START lettering is gone (the
+   road is drawn at rest, so it has no first stroke to be); the van is
+   out of the rest frame and staged on the road's problem stretch,
+   beyond the town, for round 4's beat; the BigSquare mark stands as a
+   roadside sign where the road bends into the town. */
+
+const along = (s: number): [number, number] => [ROAD_DIR.x * s, ROAD_DIR.z * s];
+
+/** the road's centerline, xz waypoints, from behind the cube to the horizon */
 export const ROAD: [number, number][] = [
-  [0.35, 0.6],
-  [-0.35, -0.4],
-  [-0.85, -1.25],
-  [-0.6, -2.8],
-  [0.05, -4.8],
+  along(-0.8),
+  along(1.0),
+  along(2.0),
+  along(2.8),
+  [-1.05, -3.7],
+  [-0.05, -4.9],
   [0.3, -7.2],
   [0.0, -9.4],
   [-1.8, -10.9],
@@ -33,10 +45,6 @@ export const ROAD: [number, number][] = [
   [-13.6, -40.0],
 ];
 
-
-/** heading of the road's first straight, radians from -z (left is positive) */
-export const ROAD_HEADING = Math.atan2(0.58, 0.81);
-
 export type Placed = {
   object: THREE.Object3D;
   /** foreground pieces are hidden on narrow viewports, where the DOM
@@ -44,9 +52,15 @@ export type Placed = {
   foreground?: boolean;
 };
 
-export function composeTown(kit: PropKit): Placed[] {
+export type Town = {
+  placed: Placed[];
+  /** the storefront still going up at rest; it tops out on the approach */
+  rising: Storefront;
+};
+
+export function composeTown(kit: PropKit): Town {
   const placed: Placed[] = [];
-  const put = (object: THREE.Object3D, x: number, z: number, rot = 0, foreground = false) => {
+  const put = <T extends THREE.Object3D>(object: T, x: number, z: number, rot = 0, foreground = false): T => {
     object.position.x = x;
     object.position.z = z;
     object.rotation.y = rot;
@@ -54,13 +68,12 @@ export function composeTown(kit: PropKit): Placed[] {
     return object;
   };
 
-  /* the road and the START tick where the cube rests */
+  /* the road */
   placed.push({ object: kit.road(ROAD) });
-  placed.push({ object: kit.startTick(0.35, 0.6, ROAD_HEADING), foreground: true });
 
   /* three storefronts on the far side of the road's leftward sweep,
      fronts turned toward the road; the nearest is still going up */
-  put(kit.storefront({ w: 2.0, h: 1.7, d: 1.7, awning: 0.34, build: 0.6, seed: 1 }), -1.3, -12.3, 0.16);
+  const rising = put(kit.storefront({ w: 2.0, h: 1.7, d: 1.7, awning: 0.34, build: 0.6, seed: 1 }), -1.3, -12.3, 0.16);
   put(kit.storefront({ w: 2.4, h: 1.2, d: 1.9, awning: 0.4, seed: 2 }), -4.9, -14.4, -0.08);
   put(kit.storefront({ w: 2.7, h: 1.25, d: 2.0, awning: 0.36, seed: 3 }), -8.4, -16.6, 0.22);
 
@@ -70,16 +83,25 @@ export function composeTown(kit: PropKit): Placed[] {
   put(kit.tree({ h: 0.85 }), -6.6, -12.5, 2.4);
   put(kit.tree({ h: 1.1 }), 0.6, -14.5, 0.8);
 
-  /* the van, parked at the roadside where the road reaches the town,
-     nose toward the camera, cropped by the right edge of the frame.
-     (10.4 asks for the foreground right; at this framing the cube
-     leaves 13 percent of the width to its right, so a van there hides
-     the cube's corner and its shadow buries the START line.) */
-  put(kit.van(), 0.05, -9.95, 0.74);
+  /* the mark: a small pavement sign on the left verge, four units in
+     front of the first storefront so parallax keeps it off the shop's
+     wall, turned a little toward the key so its face is lit and the
+     "b" shades on its own walls. At rest it stands in the band above
+     the headline, just right of "customers." (projected: 88%, 13 to
+     29% of the frame at 1440) */
+  put(kit.logoSign(0.5), -0.85, -7.0, 0.35);
+
+  /* the van, staged on the problem stretch beyond the town (10.1: it
+     drives the road ahead of the cube through problem and solution),
+     nose down the road; out of every hero frame on purpose */
+  put(kit.van(), -12.4, -23.5, Math.atan2(-1, -7));
 
   /* two sheets in the bottom left corner, one a chart, one a plan */
   put(kit.sheet({ w: 0.8, h: 1.05, draw: "chart", seed: 7 }), -3.05, 1.85, 0.28, true);
   put(kit.sheet({ w: 0.72, h: 0.95, draw: "plan", seed: 19 }), -1.7, 2.45, -0.18, true);
 
-  return placed;
+  return { placed, rising };
 }
+
+/** y of the paper, for callers that place their own ink */
+export const PAPER_Y = GROUND_Y;

@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import rough from "roughjs/bin/rough";
+import { BLUE } from "./ink";
+import { logoGeometries } from "./logo";
 
 /* Procedural props for the hero town (cube-v2/brief.md sections 9
-   and 10, round 1). Every builder returns a THREE.Group whose solids
+   and 10, rounds 1 and 2). Every builder returns a THREE.Group whose solids
    share ONE two-tone ink material and ONE outline material (the cube's
    own, from lib/cube/ink.ts), so a box, a cone and a cylinder all read
    as the same illustration once the shader is flat. Nothing here is
@@ -19,6 +21,11 @@ type Disposable = { dispose(): void };
 
 export type PropKit = ReturnType<typeof createPropKit>;
 
+/** a storefront whose height scrubs (the massing move) */
+export type Storefront = THREE.Group & { setBuild: (t: number) => void };
+/** ink on the paper that draws itself */
+export type Drawn = THREE.Group & { setDraw: (t: number) => void };
+
 /* Seeded value noise (sum of sines) so a wobble is stable across loads. */
 function wobble(t: number, seed: number, amp: number) {
   return (
@@ -29,12 +36,18 @@ function wobble(t: number, seed: number, amp: number) {
   );
 }
 
+/* Ribbon accumulator. `prog`, when present, records each point's
+   position along its stroke (0..1 over all passes) as a vertex
+   attribute, so a stroke can draw itself on scroll. */
+type Ribbon = { pos: number[]; idx: number[]; prog?: number[] };
+
 /* A flat ribbon on the ground from an xz polyline: the ink stroke
    primitive. Appends into shared arrays so a road is one draw call. */
 function appendRibbon(
-  out: { pos: number[]; idx: number[] },
+  out: Ribbon,
   pts: THREE.Vector2[],
   width: number | number[],
+  prog?: number[],
 ) {
   const base = out.pos.length / 3;
   const n = pts.length;
@@ -48,6 +61,10 @@ function appendRibbon(
     const nx = -dir.y * w * 0.5;
     const nz = dir.x * w * 0.5;
     out.pos.push(pts[i].x + nx, 0, pts[i].y + nz, pts[i].x - nx, 0, pts[i].y - nz);
+    if (out.prog) {
+      const t = prog ? prog[i] : 0;
+      out.prog.push(t, t);
+    }
     if (i < n - 1) {
       const k = base + i * 2;
       out.idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2);
@@ -55,9 +72,10 @@ function appendRibbon(
   }
 }
 
-function ribbonGeometry(out: { pos: number[]; idx: number[] }) {
+function ribbonGeometry(out: Ribbon) {
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(out.pos, 3));
+  if (out.prog) g.setAttribute("prog", new THREE.Float32BufferAttribute(out.prog, 1));
   g.setIndex(out.idx);
   return g;
 }
@@ -74,7 +92,7 @@ type StrokeOpts = {
 
 /* One hand-drawn stroke along a curve. */
 function strokeCurve(
-  out: { pos: number[]; idx: number[] },
+  out: Ribbon,
   curve: THREE.Curve<THREE.Vector3>,
   width: number,
   seed: number,
@@ -88,6 +106,7 @@ function strokeCurve(
   for (let pass = 0; pass < passes; pass++) {
     const pts: THREE.Vector2[] = [];
     const widths: number[] = [];
+    const prog: number[] = [];
     for (let i = 0; i <= steps; i++) {
       const u = from + ((to - from) * i) / steps;
       const p = curve.getPointAt(u);
@@ -96,8 +115,52 @@ function strokeCurve(
       const w = wobble(u * length, seed + pass * 7.3, amp) + (pass === 1 ? width * 0.9 : 0);
       pts.push(new THREE.Vector2(p.x + normal.x * w, p.z + normal.y * w));
       widths.push((pass === 0 ? width : width * 0.6) * (1 + taper * Math.max(0, -p.z)));
+      /* the second pass draws after the first, like a pen going round again */
+      prog.push((pass + i / steps) / passes);
     }
-    appendRibbon(out, pts, widths);
+    appendRibbon(out, pts, widths, prog);
+  }
+}
+
+/* A closed rounded-rectangle path on the ground (local xz, centred),
+   for strokes that draw themselves: the film station's frame. */
+class RoundedLoop extends THREE.Curve<THREE.Vector3> {
+  private pts: THREE.Vector3[] = [];
+  constructor(hx: number, hz: number, r: number) {
+    super();
+    const rr = Math.min(r, hx, hz);
+    const corner = (cx: number, cz: number, a0: number) => {
+      for (let i = 0; i <= 8; i++) {
+        const a = a0 + (i / 8) * (Math.PI / 2);
+        this.pts.push(new THREE.Vector3(cx + Math.cos(a) * rr, 0, cz + Math.sin(a) * rr));
+      }
+    };
+    /* start mid-way along the near edge (toward +z), go clockwise seen from above */
+    this.pts.push(new THREE.Vector3(0, 0, hz));
+    corner(-hx + rr, hz - rr, Math.PI / 2);
+    corner(-hx + rr, -hz + rr, Math.PI);
+    corner(hx - rr, -hz + rr, Math.PI * 1.5);
+    corner(hx - rr, hz - rr, 0);
+    this.pts.push(new THREE.Vector3(0, 0, hz));
+    /* cumulative lengths for an arc-length parameter */
+    let acc = 0;
+    this.cum = [0];
+    for (let i = 1; i < this.pts.length; i++) {
+      acc += this.pts[i].distanceTo(this.pts[i - 1]);
+      this.cum.push(acc);
+    }
+    this.total = acc;
+  }
+  private cum: number[] = [];
+  private total = 1;
+  getPoint(t: number, target = new THREE.Vector3()) {
+    const s = THREE.MathUtils.clamp(t, 0, 1) * this.total;
+    let i = 1;
+    while (i < this.cum.length - 1 && this.cum[i] < s) i++;
+    const a = this.pts[i - 1];
+    const b = this.pts[i];
+    const span = Math.max(1e-6, this.cum[i] - this.cum[i - 1]);
+    return target.lerpVectors(a, b, (s - this.cum[i - 1]) / span);
   }
 }
 
@@ -215,6 +278,36 @@ export function createPropKit(
     }),
   );
   const unitPlane = keep(new THREE.PlaneGeometry(1, 1));
+
+  /* ink that draws itself: raw pipeline (NoColorSpace blue), a per-
+     vertex stroke position against uDraw */
+  const drawnMaterial = keep(
+    new THREE.ShaderMaterial({
+      vertexShader: /* glsl */ `
+        attribute float prog;
+        varying float vProg;
+        void main() {
+          vProg = prog;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform vec3 uColor;
+        uniform float uDraw;
+        varying float vProg;
+        void main() {
+          if (vProg > uDraw) discard;
+          gl_FragColor = vec4(uColor, 1.0);
+        }
+      `,
+      uniforms: { uColor: { value: BLUE.clone() }, uDraw: { value: 0 } },
+      side: THREE.DoubleSide,
+      toneMapped: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -3,
+      polygonOffsetUnits: -3,
+    }),
+  );
 
   function contactShade(w: number, d: number, x = 0, z = 0) {
     const m = new THREE.Mesh(unitPlane, shadeMaterial);
@@ -356,6 +449,28 @@ export function createPropKit(
     return g;
   }
 
+  /** The film station's frame: a hand-drawn rounded rectangle on the
+      paper (RoughAnnotation's double pass), centred at the origin,
+      `hx` across the road and `hz` along it, that draws itself with
+      setDraw(0..1) and un-draws on the way back. */
+  function frame(hx: number, hz: number, r: number): Drawn {
+    const out: Ribbon = { pos: [], idx: [], prog: [] };
+    strokeCurve(out, new RoundedLoop(hx, hz, r), 0.012, 29, 0.006, { passes: 2 });
+    const material = keep(drawnMaterial.clone());
+    const mesh = new THREE.Mesh(keep(ribbonGeometry(out)), material);
+    mesh.position.y = 0.0045;
+    mesh.renderOrder = 0;
+    const g = new THREE.Group() as Drawn;
+    g.add(mesh);
+    g.position.y = groundY;
+    g.setDraw = (t: number) => {
+      material.uniforms.uDraw.value = t;
+      g.visible = t > 0.001;
+    };
+    g.setDraw(0);
+    return g;
+  }
+
   /* ---- the cast ------------------------------------------------- */
 
   type StorefrontOpts = {
@@ -368,75 +483,120 @@ export function createPropKit(
     seed?: number;
   };
 
-  /** A box with a step, a door recess, a display window, a sign board
-      and an awning on struts, rising from its drawn plan. */
-  function storefront({ w, h, d, awning, build = 1, seed = 1 }: StorefrontOpts) {
-    const g = new THREE.Group();
-    const H = h * build;
+  /** A shell of walls with a step, a door recess, a display window, an
+      awning on struts, and, once topped out, a roof, a parapet and a
+      sign board: illoca's massing move. `build` is the height fraction
+      at rest; setBuild(t) scrubs it (the walls rise from the plan, the
+      awning and the top pop in with a small overshoot). */
+  function storefront({ w, h, d, awning, build = 1, seed = 1 }: StorefrontOpts): Storefront {
+    const g = new THREE.Group() as Storefront;
     const rd = Math.min(0.14, d * 0.3);
     const doorW = THREE.MathUtils.clamp(w * 0.22, 0.3, 0.44);
     const doorH = Math.min(0.66, h * 0.5);
     const dx = -w * 0.2;
     const frontZ = d / 2 - rd / 2;
+    const t = 0.07;
 
-    if (build >= 1) {
-      g.add(at(box(w, H, d - rd), 0, H / 2, -rd / 2));
-    } else {
-      /* mid-build: walls up, nothing on top */
-      const t = 0.07;
-      g.add(at(box(w, H, t), 0, H / 2, -d / 2 + t / 2));
-      g.add(at(box(t, H, d - rd - t), -w / 2 + t / 2, H / 2, (t - rd) / 2));
-      g.add(at(box(t, H, d - rd - t), w / 2 - t / 2, H / 2, (t - rd) / 2));
-    }
+    /* the shell: back and side walls plus the two front piers, full
+       height, scaled about the plan as the building rises */
+    const shell = new THREE.Group();
+    shell.add(at(box(w, h, t), 0, h / 2, -d / 2 + t / 2));
+    shell.add(at(box(t, h, d - rd - t), -w / 2 + t / 2, h / 2, (t - rd) / 2));
+    shell.add(at(box(t, h, d - rd - t), w / 2 - t / 2, h / 2, (t - rd) / 2));
     const wl = dx - doorW / 2 + w / 2;
     const wr = w / 2 - (dx + doorW / 2);
-    g.add(at(box(wl, H, rd), -w / 2 + wl / 2, H / 2, frontZ));
-    g.add(at(box(wr, H, rd), w / 2 - wr / 2, H / 2, frontZ));
-    if (H > doorH + 0.02) {
-      g.add(at(box(doorW, H - doorH, rd), dx, doorH + (H - doorH) / 2, frontZ));
-    }
+    shell.add(at(box(wl, h, rd), -w / 2 + wl / 2, h / 2, frontZ));
+    shell.add(at(box(wr, h, rd), w / 2 - wr / 2, h / 2, frontZ));
+    g.add(shell);
+    /* the door header rises with the walls once they clear the door */
+    const header = at(box(doorW, h - doorH, rd), dx, doorH + (h - doorH) / 2, frontZ);
+    g.add(header);
     /* door slab, proud of the recess so its hull draws the door */
-    const dh = Math.min(doorH, H) * 0.94;
+    const dh = doorH * 0.94;
     g.add(at(box(doorW * 0.84, dh, 0.02), dx, dh / 2, d / 2 - rd + 0.014));
     /* display window on the wide pier */
     const wh = Math.min(0.5, h * 0.36);
     const wy = 0.16 + wh / 2;
-    if (H > wy + wh / 2 + 0.04) {
-      g.add(at(box(wr * 0.68, wh, 0.012), w / 2 - wr / 2, wy, d / 2 + 0.008));
-    }
+    const window_ = at(box(wr * 0.68, wh, 0.012), w / 2 - wr / 2, wy, d / 2 + 0.008);
+    g.add(window_);
     /* step */
     g.add(at(box(doorW * 1.5, 0.05, 0.16), dx, 0.025, d / 2 + 0.08));
     /* awning on two struts, hinged above the door */
     const aY = doorH + 0.1;
-    if (H > aY + 0.06) {
+    const awningGroup = new THREE.Group();
+    {
       const aw = Math.min(w * 0.72, doorW * 2.1);
       const tilt = 0.4;
       const hinge = new THREE.Vector3(dx, aY, d / 2);
       const slab = box(aw, 0.02, awning);
       slab.position.copy(hinge).add(new THREE.Vector3(0, -Math.sin(tilt) * awning * 0.5, Math.cos(tilt) * awning * 0.5));
       slab.rotation.x = tilt;
-      g.add(slab);
+      awningGroup.add(slab);
       for (const s of [-1, 1]) {
         const front = new THREE.Vector3(dx + s * aw * 0.46, aY - Math.sin(tilt) * awning, d / 2 + Math.cos(tilt) * awning);
         const wall = new THREE.Vector3(dx + s * aw * 0.46, aY - 0.26, d / 2);
         const strut = box(0.014, 0.014, front.distanceTo(wall));
         strut.position.copy(front).add(wall).multiplyScalar(0.5);
         strut.lookAt(front);
-        g.add(strut);
+        awningGroup.add(strut);
       }
+      /* pops about the hinge */
+      awningGroup.position.copy(hinge);
+      awningGroup.children.forEach((c) => c.position.sub(hinge));
     }
-    /* sign board and parapet only once the building is topped out */
-    if (build >= 1) {
-      g.add(at(box(w * 0.62, h * 0.11, 0.03), 0, h * 0.84, d / 2 + 0.02));
-      g.add(at(box(w + 0.06, 0.035, d + 0.06), 0, H + 0.0175, 0));
-    }
+    g.add(awningGroup);
+    /* topping out: roof slab, parapet and the sign board, popping in
+       about the roof line */
+    const top = new THREE.Group();
+    top.add(at(box(w - 0.02, 0.04, d - rd - 0.02), 0, h - 0.02, -rd / 2));
+    top.add(at(box(w + 0.06, 0.035, d + 0.06), 0, h + 0.0175, 0));
+    top.add(at(box(w * 0.62, h * 0.11, 0.03), 0, h * 0.84, d / 2 + 0.02));
+    top.position.y = h;
+    top.children.forEach((c) => (c.position.y -= h));
+    g.add(top);
     /* the plan it rose from */
-    const out = { pos: [] as number[], idx: [] as number[] };
+    const out: Ribbon = { pos: [], idx: [] };
     strokeRect(out, 0, 0, w + 0.22, d + 0.22, 0.014, seed * 13);
     const plan = new THREE.Mesh(keep(ribbonGeometry(out)), inkFlat);
     plan.position.y = 0.0045;
     g.add(plan);
     g.add(contactShade(w, d));
+    g.position.y = groundY;
+
+    const pop = (u: number) => (u <= 0 ? 0 : u >= 1 ? 1 : u + 0.14 * Math.sin(Math.PI * u));
+    const ramp = (v: number, a: number, b: number) => THREE.MathUtils.clamp((v - a) / (b - a), 0, 1);
+    g.setBuild = (b: number) => {
+      const H = h * THREE.MathUtils.clamp(b, 0.02, 1);
+      shell.scale.y = H / h;
+      const hd = Math.max(0, H - doorH);
+      header.visible = hd > 0.02;
+      header.scale.y = Math.max(0.001, hd / (h - doorH));
+      header.position.y = doorH + hd / 2;
+      window_.visible = H > wy + wh / 2 + 0.04;
+      const a = pop(ramp(H, aY + 0.06, aY + 0.24));
+      awningGroup.visible = a > 0.001;
+      awningGroup.scale.setScalar(Math.max(0.001, a));
+      const tt = pop(ramp(b, 0.94, 1));
+      top.visible = tt > 0.001;
+      top.scale.setScalar(Math.max(0.001, tt));
+    };
+    g.setBuild(build);
+    return g;
+  }
+
+  /** The BigSquare mark as a roadside sign: a post and the rounded
+      square with the "b" standing proud of it, both extruded from
+      assets/logo.svg (lib/cube/logo.ts) into the same ink. Faces +z. */
+  function logoSign(width = 0.72) {
+    const g = new THREE.Group();
+    const { plaque, mark } = logoGeometries(width, 0.05, 0.028);
+    const postH = 0.42;
+    g.add(at(box(0.05, postH + width * 0.5, 0.05), 0, (postH + width * 0.5) / 2, -0.035));
+    const face = new THREE.Group();
+    face.add(solid(plaque, false), solid(mark, false));
+    face.position.set(0, postH + width / 2, 0);
+    g.add(face);
+    g.add(contactShade(0.16, 0.16));
     g.position.y = groundY;
     return g;
   }
@@ -563,7 +723,9 @@ export function createPropKit(
   return {
     road,
     startTick,
+    frame,
     storefront,
+    logoSign,
     tree,
     van,
     sheet,
