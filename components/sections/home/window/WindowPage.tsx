@@ -1,14 +1,18 @@
 "use client";
 
-/* The window (prototype, 2026-09-23, round 2). A native-scrolling
-   editorial page with one continuity device: the square from the logo,
-   always playing real work. A fixed WebGL layer draws up to four panes
-   of video that glide between anchor boxes ([data-station]) placed in
-   ordinary sections and dock on each. The panes are liquid: they bend
-   with scroll speed, split colour slightly at speed and zoom under the
-   cursor. Around them the page moves too: velocity marquees, drifting
-   headlines, a cursor that names what it is over, and a closing wall
-   of work the panes fly into. */
+/* The window (prototype, 2026-09-23, round 3). One continuity device:
+   the square from the logo, always playing real work. It starts as the
+   full stop of the headline, opens into the full-screen reel, rides a
+   sideways film strip of the three service groups, follows the cursor
+   through an index of the work, and lands in a closing wall of work.
+
+   A fixed WebGL layer draws up to four panes of video. Sections place
+   anchor boxes ([data-station]); every frame the panes glide between
+   the two stations either side of the middle of the screen and dock on
+   each. Stations inside the sideways strip (data-axis="x") are ordered
+   by their horizontal position, so the window rides the strip. Panes
+   bend with scroll speed, split colour slightly at speed and push in
+   under the cursor. */
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -27,15 +31,16 @@ const CLIPS: Record<string, { src: string; poster: string }> = {
   ),
 };
 
+/* working titles describe what each clip shows; client names are placeholders */
 const WORK = [
-  { clip: "w1", tag: "Brand · Motion" },
-  { clip: "w2", tag: "Product teaser" },
-  { clip: "w3", tag: "VFX · Social" },
-  { clip: "w4", tag: "Product animation" },
-  { clip: "w5", tag: "Concept film" },
-  { clip: "w6", tag: "Concept · 3D" },
-  { clip: "w7", tag: "Concept film" },
-  { clip: "w8", tag: "Brand animation" },
+  { clip: "w1", title: "Brand launch film", tag: "Motion" },
+  { clip: "w2", title: "Soft drink teaser", tag: "Product" },
+  { clip: "w3", title: "Candy VFX spot", tag: "VFX" },
+  { clip: "w4", title: "Coffee can animation", tag: "3D" },
+  { clip: "w5", title: "Food concept film", tag: "Film" },
+  { clip: "w6", title: "Furniture concept", tag: "3D" },
+  { clip: "w7", title: "Vinyl lifestyle spot", tag: "Film" },
+  { clip: "w8", title: "BigSquare Tetris", tag: "Brand" },
 ];
 
 const SERVICES = [
@@ -47,7 +52,7 @@ const SERVICES = [
     items: ["Paid search", "Paid social", "Amazon ads", "Local Services ads"],
     clip: "paid",
     caption: "BigSquare launch spot",
-    flip: false,
+    dark: false,
   },
   {
     n: "02",
@@ -57,7 +62,7 @@ const SERVICES = [
     items: ["Content creation", "Social media", "Email and text", "Search engine optimization"],
     clip: "organic",
     caption: "Story animation",
-    flip: true,
+    dark: true,
   },
   {
     n: "03",
@@ -67,7 +72,7 @@ const SERVICES = [
     items: ["Brand and creative", "Video and motion", "Websites and landing pages"],
     clip: "design",
     caption: "Signature animal",
-    flip: false,
+    dark: false,
   },
 ];
 
@@ -143,25 +148,14 @@ export function WindowPage() {
     return () => cancelAnimationFrame(id);
   }, []);
 
-  /* reveal-on-enter for type and tiles; DOM videos play only on screen */
+  /* reveal-on-enter for type and tiles */
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add(s.in)),
       { rootMargin: "0px 0px -12% 0px" },
     );
     document.querySelectorAll(`.${s.reveal}`).forEach((el) => io.observe(el));
-    const vio = new IntersectionObserver((entries) =>
-      entries.forEach((e) => {
-        const v = e.target as HTMLVideoElement;
-        if (e.isIntersecting) v.play().catch(() => {});
-        else v.pause();
-      }),
-    );
-    document.querySelectorAll(`video.${s.tileVideo}`).forEach((v) => vio.observe(v));
-    return () => {
-      io.disconnect();
-      vio.disconnect();
-    };
+    return () => io.disconnect();
   }, []);
 
   /* the reel with sound pauses the page scroll */
@@ -178,7 +172,7 @@ export function WindowPage() {
     };
   }, [reelOpen]);
 
-  /* the compositor, the cursor and the scroll-linked type */
+  /* the compositor, the cursor and everything scroll-linked */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -203,7 +197,6 @@ export function WindowPage() {
         v.loop = true;
         v.playsInline = true;
         v.preload = "auto";
-        v.crossOrigin = "anonymous";
         v.src = CLIPS[key].src;
         const img = new Image();
         img.src = CLIPS[key].poster;
@@ -215,7 +208,6 @@ export function WindowPage() {
       }
       return m;
     };
-    /* the texture to show for a clip, and its pixel size */
     const source = (key: string, now: number) => {
       const m = get(key);
       m.lastUsed = now;
@@ -256,29 +248,42 @@ export function WindowPage() {
       const mesh = new THREE.Mesh(quad, mat);
       mesh.frustumCulled = false;
       scene.add(mesh);
-      return { mesh, mat, u, hover: 0, rect: { x: 0, y: 0, w: 0, h: 0 } as Rect, clip: "" };
+      // cur/prev/fade: a soft cut when the clip changes inside one station (the work index)
+      return { mesh, mat, u, hover: 0, rect: { x: 0, y: 0, w: 0, h: 0 } as Rect, clip: "", cur: "", prev: "", fade: 1 };
     });
 
-    type Station = { els: HTMLElement[]; clips: string[]; fill: number; dim: number };
+    type Station = { el: HTMLElement; els: HTMLElement[]; multi: boolean; axisX: boolean; fill: number; dim: number };
     const stations: Station[] = [...document.querySelectorAll<HTMLElement>("[data-station]")].map((el) => {
-      const clips = (el.dataset.clips ?? "reel").split(",");
-      const els = clips.length === 4 ? [...el.querySelectorAll<HTMLElement>("[data-pane]")] : [el];
-      return { els, clips, fill: Number(el.dataset.fill ?? 0), dim: Number(el.dataset.dim ?? 0) };
+      const multi = (el.dataset.clips ?? "").split(",").length === 4;
+      return {
+        el,
+        els: multi ? [...el.querySelectorAll<HTMLElement>("[data-pane]")] : [el],
+        multi,
+        axisX: el.dataset.axis === "x",
+        fill: Number(el.dataset.fill ?? 0),
+        dim: Number(el.dataset.dim ?? 0),
+      };
     });
-    stations.forEach((st) => st.clips.forEach((c) => get(c)));
+    const clipsOf = (st: Station) => (st.el.dataset.clips ?? "reel").split(",");
+    stations.forEach((st) => clipsOf(st).forEach((c) => get(c)));
     const paneOf = (st: Station, i: number) => {
-      if (st.els.length === 4) {
+      const clips = clipsOf(st);
+      if (st.multi) {
         const r = rectOf(st.els[i]);
-        return { r, g: r, clip: st.clips[i] };
+        return { r, g: r, clip: clips[i] };
       }
-      const g = rectOf(st.els[0]);
+      const g = rectOf(st.el);
       const qx = i % 2;
       const qy = Math.floor(i / 2);
-      return { r: { x: g.x + (qx * g.w) / 2, y: g.y + (qy * g.h) / 2, w: g.w / 2, h: g.h / 2 }, g, clip: st.clips[0] };
+      return { r: { x: g.x + (qx * g.w) / 2, y: g.y + (qy * g.h) / 2, w: g.w / 2, h: g.h / 2 }, g, clip: clips[0] };
     };
-    const centerY = (st: Station) => {
+    /* where a station sits relative to the middle of the screen: below/right is positive */
+    const posOf = (st: Station, vw: number, vh: number) => {
       const rs = st.els.map(rectOf);
-      return (Math.min(...rs.map((r) => r.y)) + Math.max(...rs.map((r) => r.y + r.h))) / 2;
+      const cy = (Math.min(...rs.map((r) => r.y)) + Math.max(...rs.map((r) => r.y + r.h))) / 2 - vh / 2;
+      if (!st.axisX) return cy;
+      const cx = (Math.min(...rs.map((r) => r.x)) + Math.max(...rs.map((r) => r.x + r.w))) / 2 - vw / 2;
+      return cy + cx;
     };
 
     const resize = () => {
@@ -302,21 +307,25 @@ export function WindowPage() {
     window.addEventListener("pointermove", onMove);
     window.addEventListener("click", onClick);
 
-    /* scroll-linked type */
+    /* scroll-linked parts */
     const tracks = [...document.querySelectorAll<HTMLElement>("[data-marquee]")];
     const drifts = [...document.querySelectorAll<HTMLElement>("[data-speed]")];
     const growEls = [...document.querySelectorAll<HTMLElement>("[data-grow]")];
     const darkEls = [...document.querySelectorAll<HTMLElement>("[data-dark]")];
-    const tiles = [...document.querySelectorAll<HTMLElement>(`.${s.tileMedia}`)];
+    const strip = document.querySelector<HTMLElement>("[data-strip]");
+    const follow = document.querySelector<HTMLElement>("[data-follow]");
+    const rows = [...document.querySelectorAll<HTMLElement>("[data-row]")];
     const header = document.querySelector<HTMLElement>(`.${s.header}`);
     let headerDark = false;
     let lastY = window.scrollY;
     let vel = 0;
     let marq = 0;
+    let fx = NaN, fy = NaN, activeRow = -1;
 
     let raf = 0;
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
+      const vw = window.innerWidth;
       const vh = window.innerHeight;
       const y = window.scrollY;
       const raw = clamp(y - lastY, -90, 90);
@@ -332,7 +341,7 @@ export function WindowPage() {
         const x = -((((marq * dir) % half) + half) % half);
         el.style.transform = `translate3d(${x.toFixed(1)}px,0,0) skewX(${(-v * 0.25 * dir).toFixed(2)}deg)`;
       });
-      // headlines drift at their own pace
+      // headlines and big numbers drift at their own pace
       drifts.forEach((el) => {
         const r = el.getBoundingClientRect();
         const off = (r.top + r.height / 2 - vh / 2) * Number(el.dataset.speed);
@@ -346,14 +355,57 @@ export function WindowPage() {
         const k = 1 - ease(clamp(-r.top / Math.max(1, r.height - vh) / 0.7));
         el.style.inset = `${(k * 9).toFixed(3)}vh ${(k * 7).toFixed(3)}vw`;
       });
+      // the sideways strip: vertical scroll drives it across
+      if (strip) {
+        const sec = strip.closest("section");
+        if (sec) {
+          const r = sec.getBoundingClientRect();
+          const prog = clamp(-r.top / Math.max(1, r.height - vh));
+          strip.style.transform = `translate3d(${(-prog * (strip.scrollWidth - vw)).toFixed(1)}px,0,0)`;
+        }
+      }
+      // the work index: the window follows the cursor, or the row nearest the middle
+      if (follow && rows.length) {
+        let hovered = -1;
+        rows.forEach((row, i) => {
+          if (inside(rectOf(row), mx, my)) hovered = i;
+        });
+        let next = hovered;
+        if (next < 0) {
+          let best = Infinity;
+          rows.forEach((row, i) => {
+            const rr = row.getBoundingClientRect();
+            const d = Math.abs(rr.top + rr.height / 2 - vh / 2);
+            if (d < best) { best = d; next = i; }
+          });
+        }
+        if (next !== activeRow) {
+          rows[activeRow]?.classList.remove(s.rowOn);
+          rows[next].classList.add(s.rowOn);
+          activeRow = next;
+          follow.dataset.clips = rows[next].dataset.clip;
+        }
+        const box = (follow.offsetParent as HTMLElement | null)?.getBoundingClientRect();
+        if (box) {
+          const rr = rows[activeRow].getBoundingClientRect();
+          const fw = follow.offsetWidth;
+          const fh = follow.offsetHeight;
+          const rest = box.width - fw - vw * 0.04;
+          const tx = hovered >= 0 ? Math.min(rest, Math.max(0, mx - box.left + 36)) : rest;
+          const ty = Math.min(box.height - fh, Math.max(0, rr.top + rr.height / 2 - box.top - fh / 2));
+          if (Number.isNaN(fx)) { fx = tx; fy = ty; }
+          fx += (tx - fx) * 0.14;
+          fy += (ty - fy) * 0.14;
+          follow.style.transform = `translate3d(${fx.toFixed(1)}px, ${fy.toFixed(1)}px, 0)`;
+        }
+      }
 
-      // the window: glide between the two stations around the middle, dock on each
-      const mid = vh / 2;
-      const cys = stations.map(centerY);
+      // the window: glide between the stations either side of the middle, dock on each
+      const ps = stations.map((st) => posOf(st, vw, vh));
       let a = 0;
-      for (let i = 0; i < stations.length; i++) if (cys[i] <= mid) a = i;
-      const b = Math.min(stations.length - 1, cys[0] > mid ? 0 : a + 1);
-      const w = a === b ? 0 : clamp((mid - cys[a]) / (cys[b] - cys[a]));
+      for (let i = 0; i < stations.length; i++) if (ps[i] <= 0) a = i;
+      const b = Math.min(stations.length - 1, ps[0] > 0 ? 0 : a + 1);
+      const w = a === b ? 0 : clamp(-ps[a] / Math.max(1, ps[b] - ps[a]));
       const e = ease(clamp((w - 0.1) / 0.8));
       const A = stations[a];
       const B = stations[b];
@@ -369,15 +421,32 @@ export function WindowPage() {
         if (over) overLabel = p.clip === "reel" ? "Play" : "View";
         p.hover += ((over ? 1 : 0) - p.hover) * 0.08;
         const zoom = 1 - 0.07 * p.hover;
-        const sa = source(pa.clip, now);
+        let clipA = pa.clip;
+        let clipB = pb.clip;
+        let mixv = pa.clip !== pb.clip ? e : 0;
+        if (pa.clip === pb.clip) {
+          // same station, new clip (the index): cross-fade from the last one
+          if (p.cur !== pa.clip) {
+            p.prev = p.cur || pa.clip;
+            p.cur = pa.clip;
+            p.fade = 0;
+          }
+          p.fade = Math.min(1, p.fade + 0.07);
+          if (p.fade < 1) {
+            clipA = p.prev;
+            clipB = p.cur;
+            mixv = ease(p.fade);
+          }
+        } else p.cur = e < 0.5 ? pa.clip : pb.clip;
+        const sa = source(clipA, now);
         p.u.uA.value = sa.tex;
         crop(p.u.uCropA.value, sa.w, sa.h, r, g, zoom);
-        if (pa.clip !== pb.clip && e > 0.001) {
-          const sb = source(pb.clip, now);
+        if (mixv > 0.001) {
+          const sb = source(clipB, now);
           p.u.uB.value = sb.tex;
           crop(p.u.uCropB.value, sb.w, sb.h, r, g, zoom);
-          p.u.uMix.value = e;
-        } else p.u.uMix.value = 0;
+        }
+        p.u.uMix.value = mixv;
         p.u.uRect.value.set(r.x, r.y, r.w, r.h);
         p.u.uVel.value = v;
         p.u.uShift.value = Math.min(0.012, Math.abs(v) * 0.00022);
@@ -387,8 +456,8 @@ export function WindowPage() {
       });
       renderer.render(scene, camera);
 
-      // the cursor: a small square that opens into a label over media
-      if (!overLabel) for (const el of tiles) if (inside(rectOf(el), mx, my)) { overLabel = "View"; break; }
+      // the cursor: a small square that opens into a label over media and the index
+      if (!overLabel && rows.some((row) => inside(rectOf(row), mx, my))) overLabel = "View";
       const c = cursorRef.current;
       if (c) {
         cx += (mx - cx) * 0.2;
@@ -402,11 +471,11 @@ export function WindowPage() {
         c.style.color = cs > 0.6 ? "#fff" : "transparent";
       }
 
-      // the header turns white over the reel and the blue finale
+      // the header turns white over dark ground
       let dark = false;
       darkEls.forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.top <= 40 && r.bottom >= 40) dark = true;
+        if (r.top <= 40 && r.bottom >= 40 && r.left <= vw / 2 && r.right >= vw / 2) dark = true;
       });
       if (dark !== headerDark) {
         headerDark = dark;
@@ -459,38 +528,37 @@ export function WindowPage() {
         </nav>
       </header>
 
-      {/* 01 hero */}
+      {/* 01 hero: pure type; the full stop is the window */}
       <section className={s.hero}>
-        <div className={s.heroText}>
-          <p className={`${s.label} ${s.reveal}`}>Full-stack marketing · Denver and Tampa</p>
-          <h1 className={s.h1}>
-            <span className={s.line}><span>More customers.</span></span>
-            <span className={s.line}><span>More revenue</span></span>
-            <span className={s.line}><span>you can <em className={s.count}>count.</em></span></span>
-          </h1>
-          <div className={`${s.heroFoot} ${s.reveal}`}>
-            <p className={s.lede}>
-              BigSquare is the growth partner for brands that want proof. One team runs your ads, your search, your site and your
-              creative.
-            </p>
-            <div className={s.ctas}>
-              <Link href="/schedule/" className={s.btnPrimary}>Schedule a Call</Link>
-              <button type="button" className={s.btnGhost} onClick={() => setReelOpen(true)}>
-                <span className={s.play} aria-hidden /> Watch the reel
-              </button>
-            </div>
+        <p className={`${s.label} ${s.reveal}`}>Full-stack marketing · Denver and Tampa</p>
+        <h1 className={s.h1}>
+          <span className={s.line}><span>More customers.</span></span>
+          <span className={s.line}><span>More revenue</span></span>
+          <span className={s.line}>
+            <span>
+              you can <em className={s.count}>count</em>
+              <span className={s.period} data-station data-clips="reel" aria-hidden />
+            </span>
+          </span>
+        </h1>
+        <div className={`${s.heroFoot} ${s.reveal}`}>
+          <p className={s.lede}>
+            BigSquare is the growth partner for brands that want proof. One team runs your ads, your search, your site and your
+            creative.
+          </p>
+          <div className={s.ctas}>
+            <Link href="/schedule/" className={s.btnPrimary}>Schedule a Call</Link>
+            <button type="button" className={s.btnGhost} onClick={() => setReelOpen(true)}>
+              <span className={s.play} aria-hidden /> Watch the reel
+            </button>
           </div>
-        </div>
-        <div className={s.heroWindowWrap}>
-          <div className={s.heroWindow} data-station data-clips="reel" />
-          <p className={s.caption}>
-            <span>Showreel · click to play</span>
-            <span>00:58</span>
+          <p className={s.scrollHint}>
+            <span className={s.hintSquare} aria-hidden /> Scroll to open the reel
           </p>
         </div>
       </section>
 
-      {/* 02 the reel takes the screen */}
+      {/* 02 the full stop opens into the reel */}
       <section className={s.reel}>
         <div className={s.sticky}>
           <div className={s.full} data-station data-clips="reel" data-dim="0.34" data-dark data-grow />
@@ -524,80 +592,63 @@ export function WindowPage() {
         </div>
       </section>
 
-      {/* 03 services: the window docks beside each one */}
-      <div id="services">
-        {SERVICES.map((sv) => (
-          <section key={sv.n} className={`${s.service} ${sv.flip ? s.flip : ""}`}>
-            <div className={s.serviceText}>
-              <p className={`${s.label} ${s.reveal}`}>
-                Nº {sv.n} · {sv.group}
-              </p>
-              <h2 className={`${s.h2} ${s.reveal}`} data-speed="-0.08">
-                {sv.title}
-              </h2>
-              <p className={`${s.body} ${s.reveal}`}>{sv.body}</p>
-              <ul className={s.list}>
-                {sv.items.map((it, i) => (
-                  <li key={it} className={s.reveal} style={{ transitionDelay: `${i * 70}ms` }}>
-                    <span className={s.listN}>0{i + 1}</span>
-                    {it}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className={s.serviceWindowWrap}>
-              <span className={s.bigN} data-speed="0.18" aria-hidden>
-                {sv.n}
-              </span>
-              <div className={s.serviceWindow} data-station data-clips={sv.clip} />
-              <p className={s.caption}>
-                <span>{sv.caption}</span>
-                <span>Nº {sv.n}</span>
-              </p>
-            </div>
-          </section>
-        ))}
-      </div>
-
-      {/* 04 one square becomes four */}
-      <section className={s.split}>
+      {/* 03 services: a sideways film strip; the window rides along */}
+      <section id="services" className={s.hscroll}>
         <div className={s.sticky}>
-          <p className={`${s.label} ${s.reveal}`}>Nº 04 · Selected work</p>
-          <div className={s.row} data-station data-clips="w1,w2,w3,w4" data-fill="1">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className={s.rowSquare} data-pane />
+          <div className={s.strip} data-strip>
+            {SERVICES.map((sv) => (
+              <article key={sv.n} className={`${s.panel} ${sv.dark ? s.panelDark : ""}`} {...(sv.dark ? { "data-dark": "" } : {})}>
+                <span className={s.panelN} aria-hidden>
+                  {sv.n}
+                </span>
+                <div className={s.panelText}>
+                  <p className={`${s.label} ${sv.dark ? s.labelLight : ""}`}>
+                    Nº {sv.n} · {sv.group}
+                  </p>
+                  <h2 className={s.h2}>{sv.title}</h2>
+                  <p className={s.body}>{sv.body}</p>
+                  <ul className={s.list}>
+                    {sv.items.map((it, i) => (
+                      <li key={it}>
+                        <span className={s.listN}>0{i + 1}</span>
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className={s.panelWindowWrap}>
+                  <div className={s.panelWindow} data-station data-axis="x" data-clips={sv.clip} />
+                  <p className={s.caption}>
+                    <span>{sv.caption}</span>
+                    <span>Nº {sv.n} / 03</span>
+                  </p>
+                </div>
+              </article>
             ))}
           </div>
-          <h2 className={`${s.splitTitle} ${s.reveal}`}>Work that makes people look twice.</h2>
         </div>
       </section>
 
-      {/* 05 the work */}
+      {/* 04 the work: an index; the window follows the cursor */}
       <section id="work" className={s.work}>
         <div className={s.workHead}>
-          <h2 className={`${s.h2} ${s.reveal}`}>Selected work</h2>
-          <p className={`${s.body} ${s.reveal}`}>Ads, films and brand pieces our team made. Every one of them ran.</p>
+          <p className={`${s.label} ${s.reveal}`}>Nº 04 · Selected work</p>
+          <h2 className={`${s.workTitle} ${s.reveal}`}>Work that makes people look twice.</h2>
         </div>
-        <div className={s.grid} data-station data-clips="w1,w2,w3,w4">
+        <ol className={s.index}>
           {WORK.map((wk, i) => (
-            <figure key={wk.clip} className={`${s.tile} ${s.reveal}`} style={{ transitionDelay: `${(i % 4) * 70}ms` }}>
-              {i < 4 ? (
-                <div className={s.tileMedia} data-pane style={{ backgroundImage: `url(${CLIPS[wk.clip].poster})` }} />
-              ) : (
-                <div className={s.tileMedia}>
-                  <video className={s.tileVideo} src={CLIPS[wk.clip].src} poster={CLIPS[wk.clip].poster} muted loop playsInline preload="metadata" />
-                </div>
-              )}
-              <figcaption className={s.tileCap}>
-                <span>[PLACEHOLDER: client name]</span>
-                <span>{wk.tag}</span>
-              </figcaption>
-            </figure>
+            <li key={wk.clip} className={`${s.row} ${s.reveal}`} data-row data-clip={wk.clip} style={{ transitionDelay: `${(i % 4) * 60}ms` }}>
+              <span className={s.rowN}>{String(i + 1).padStart(2, "0")}</span>
+              <span className={s.rowTitle}>{wk.title}</span>
+              <span className={s.rowClient}>[PLACEHOLDER: client]</span>
+              <span className={s.rowTag}>{wk.tag}</span>
+            </li>
           ))}
-        </div>
+        </ol>
+        <div className={s.follow} data-follow data-station data-clips="w1" aria-hidden />
       </section>
 
-      {/* 06 who it is for */}
+      {/* 05 who it is for */}
       <section className={s.who}>
         <h2 className={`${s.whoTitle} ${s.reveal}`} data-speed="-0.06">
           Built for brands with more than one front door.
@@ -618,7 +669,7 @@ export function WindowPage() {
         </ul>
       </section>
 
-      {/* 07 the closing wall: the panes fly in among the work */}
+      {/* 06 the closing wall: the window splits into four and lands among the work */}
       <section className={s.finale} data-dark>
         <div className={s.wall} data-station data-clips="w1,w2,w3,w4">
           <div className={s.wallCol} data-speed="0.22">
