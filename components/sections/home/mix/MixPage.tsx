@@ -8,7 +8,7 @@
    01 hero: the tunnel of work, ending in the logo
    02 showreel: cut type that opens like blinds into the reel
    03 services: stacked cards, footage playing plainly
-   04 work: a staggered grid, plain (waiting on static case-study images)
+   04 work: a staggered grid; two tiles develop out of the squares, the rest play plainly
    05 who: a moving band of type
    06 finale: the field of squares with the call to action carved out */
 
@@ -17,7 +17,7 @@ import Link from "next/link";
 import { SmoothScroll, getLenis } from "@/components/motion/SmoothScroll";
 import { Tunnel } from "@/components/sections/home/directions/Directions";
 import { Cut } from "@/components/sections/home/cut/CutPage";
-import { FieldScreen } from "@/components/sections/home/field/FieldPage";
+import { FieldScreen, Resolve } from "@/components/sections/home/field/FieldPage";
 import s from "./mix.module.css";
 
 const REEL = "/media/reel/reel-loop-720.mp4";
@@ -66,6 +66,9 @@ const WORK = [
   { clip: "w7", title: "Vinyl lifestyle spot", tag: "Film" },
   { clip: "w8", title: "BigSquare Tetris", tag: "Brand" },
 ];
+
+/* which work tiles keep the develop effect: one per row, not side by side */
+const DEVELOP = new Set([1, 6]);
 
 const AUDIENCE = "Franchise systems ■ Multi-location groups ■ Ecommerce brands ■ Software companies ■ Single-location businesses ■ ";
 
@@ -233,10 +236,14 @@ export function MixPage() {
               className={`${s.tile} ${s.reveal} ${i % 4 === 1 || i % 4 === 3 ? s.tileLow : ""}`}
               style={{ transitionDelay: `${(i % 4) * 70}ms` }}
             >
-              {/* plain for now; swap in the static case-study images when they arrive */}
-              <div className={s.tileMedia}>
-                <video src={`/media/window/${wk.clip}.mp4`} poster={`/media/window/${wk.clip}.jpg`} muted loop playsInline autoPlay preload="metadata" />
-              </div>
+              {/* only a couple develop out of the squares; the rest play plainly. Static case-study images replace these later */}
+              {DEVELOP.has(i) ? (
+                <Resolve src={`/media/window/${wk.clip}.mp4`} poster={`/media/window/${wk.clip}.jpg`} ratio="4 / 5" />
+              ) : (
+                <div className={s.tileMedia}>
+                  <video src={`/media/window/${wk.clip}.mp4`} poster={`/media/window/${wk.clip}.jpg`} muted loop playsInline autoPlay preload="metadata" />
+                </div>
+              )}
               <figcaption className={s.caption}>
                 <span className={s.tileTitle}>{wk.title}</span>
                 <span>{wk.tag}</span>
