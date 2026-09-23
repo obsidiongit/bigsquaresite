@@ -8,7 +8,7 @@
    01 hero: the tunnel of work, ending in the logo
    02 showreel: cut type that opens like blinds into the reel
    03 services: stacked cards, footage playing plainly
-   04 work: tiles that develop out of blue squares
+   04 work: a staggered grid, plain (waiting on static case-study images)
    05 who: a moving band of type
    06 finale: the field of squares with the call to action carved out */
 
@@ -17,7 +17,7 @@ import Link from "next/link";
 import { SmoothScroll, getLenis } from "@/components/motion/SmoothScroll";
 import { Tunnel } from "@/components/sections/home/directions/Directions";
 import { Cut } from "@/components/sections/home/cut/CutPage";
-import { FieldScreen, Resolve } from "@/components/sections/home/field/FieldPage";
+import { FieldScreen } from "@/components/sections/home/field/FieldPage";
 import s from "./mix.module.css";
 
 const REEL = "/media/reel/reel-loop-720.mp4";
@@ -228,8 +228,15 @@ export function MixPage() {
         </div>
         <div className={s.grid}>
           {WORK.map((wk, i) => (
-            <figure key={wk.clip} className={`${s.tile} ${i % 4 === 1 || i % 4 === 3 ? s.tileLow : ""}`}>
-              <Resolve src={`/media/window/${wk.clip}.mp4`} poster={`/media/window/${wk.clip}.jpg`} ratio="4 / 5" delay={(i % 4) * 0.08} />
+            <figure
+              key={wk.clip}
+              className={`${s.tile} ${s.reveal} ${i % 4 === 1 || i % 4 === 3 ? s.tileLow : ""}`}
+              style={{ transitionDelay: `${(i % 4) * 70}ms` }}
+            >
+              {/* plain for now; swap in the static case-study images when they arrive */}
+              <div className={s.tileMedia}>
+                <video src={`/media/window/${wk.clip}.mp4`} poster={`/media/window/${wk.clip}.jpg`} muted loop playsInline autoPlay preload="metadata" />
+              </div>
               <figcaption className={s.caption}>
                 <span className={s.tileTitle}>{wk.title}</span>
                 <span>{wk.tag}</span>
