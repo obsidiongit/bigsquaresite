@@ -10,7 +10,9 @@ import Link from "next/link";
 import * as THREE from "three";
 import {
   FORMATIONS, N, clamp, ease, type Slot,
-  REEL, REEL_BEAT, WORK_BEAT, WORK_N, WORK_PLANE, workFrame,
+  WORK_BEAT, WORK_N, WORK_PLANE, workFrame,
+  CUBE_FACE, PAID_BEAT, paidCard, DESIGN_BEAT, DESIGN_N, creativeFrame,
+  ORGANIC_BEAT, FRAME_W, FRAME_H, FRAME_Y,
 } from "@/lib/blocks/formations";
 import s from "./blocks.module.css";
 
@@ -39,7 +41,6 @@ const CAM: Cam[] = [
   { t: [0, 7, 0.5], az: -0.34, el: 0.2, d: 48 },
   { t: [0, 3.6, 0], az: 0.22, el: 0.3, d: 52 },
   { t: [0, 6.2, 0], az: 0.3, el: 0.2, d: 46 },
-  { t: [0, 9, 0], az: 0.16, el: 0.1, d: 55 },
   { t: [0, 5, 5], az: 0.0, el: 0.14, d: 40 },
   { t: [0, 5, 0], az: 0.55, el: 0.32, d: 47 },
   { t: [0, 1, 0], az: 0.7, el: 0.85, d: 62 },
@@ -55,12 +56,12 @@ type Panel = {
   rows?: [string, string][];
   foot?: string;
   cta?: boolean;
-  reel?: boolean;
+  reel?: boolean; // shows "Watch the reel" (hero: beside Schedule a Call)
 };
 const WORK_PANELS: Panel[] = Array.from({ length: WORK_N }, (_, i) => ({
   beat: WORK_BEAT,
   sub: [i / WORK_N, (i + 1) / WORK_N] as [number, number],
-  eyebrow: `06 · Selected work · ${String(i + 1).padStart(2, "0")} / ${String(WORK_N).padStart(2, "0")}`,
+  eyebrow: `05 · Selected work · ${String(i + 1).padStart(2, "0")} / ${String(WORK_N).padStart(2, "0")}`,
   title: `[PLACEHOLDER: client ${i + 1} name]`,
   body: "[PLACEHOLDER: one sentence on what we made and what it did for them]",
   rows: [
@@ -76,7 +77,8 @@ const PANELS: Panel[] = [
     eyebrow: "BigSquare · Full-stack marketing",
     title: "One team. Every channel.",
     body: "Search, ads and creative, run by one team under one roof. You can check the numbers any day.",
-    foot: "Scroll. Watch the blocks go to work.",
+    cta: true,
+    reel: true,
   },
   {
     beat: 1,
@@ -109,24 +111,17 @@ const PANELS: Panel[] = [
     body: "We make the posts, run the social and keep people talking about you between the ads.",
     rows: [["Content creation", ""], ["Social media", ""], ["Email and text", ""]],
   },
-  {
-    beat: REEL_BEAT,
-    eyebrow: "05 · The work",
-    title: "Our work, in 58 seconds.",
-    body: "Commercials and social ads we made for our clients, shot and cut by our own team.",
-    reel: true,
-  },
   ...WORK_PANELS,
   {
     beat: WORK_BEAT + 1,
-    eyebrow: "07 · Proof",
+    eyebrow: "06 · Proof",
     title: "Numbers you can check.",
     body: "Every lead and every dollar lands in the Obsidion portal. Log in any day and see what each channel brought in.",
     foot: "Illustration. Not client data.",
   },
   {
     beat: WORK_BEAT + 2,
-    eyebrow: "08 · Every location",
+    eyebrow: "07 · Every location",
     title: "One playbook. Every location.",
     body: "Built for franchise systems and multi-location brands. What works at one location rolls out to the next, and the next.",
   },
@@ -236,19 +231,42 @@ export function BlocksFilm() {
       tx.colorSpace = THREE.SRGBColorSpace;
       return tx;
     };
-    const posterTex = tex("/media/reel/reel-poster.jpg");
+    /* crop a texture to fill a plane of the given aspect, like object-fit: cover */
+    const cover = (tx: THREE.Texture, planeA: number, imgA: number) => {
+      tx.wrapS = tx.wrapT = THREE.ClampToEdgeWrapping;
+      if (imgA > planeA) { tx.repeat.set(planeA / imgA, 1); tx.offset.set((1 - planeA / imgA) / 2, 0); }
+      else { tx.repeat.set(1, imgA / planeA); tx.offset.set(0, (1 - imgA / planeA) / 2); }
+      return tx;
+    };
+    const VIDEO_A = 16 / 9;
     const video = document.createElement("video");
     video.muted = true;
     video.loop = true;
     video.playsInline = true;
-    video.preload = "none";
-    const videoTex = new THREE.VideoTexture(video);
-    videoTex.colorSpace = THREE.SRGBColorSpace;
-    const reelMat = new THREE.MeshBasicMaterial({ map: posterTex, toneMapped: false });
-    const reelPlane = new THREE.Mesh(planeGeo, reelMat);
-    reelPlane.position.set(0, REEL.y - 0.5 + 0.43, -0.05);
-    reelPlane.visible = false;
-    scene.add(reelPlane);
+    video.autoplay = true;
+    video.preload = "auto";
+    video.poster = "/media/reel/reel-poster.jpg";
+    video.src = "/media/reel/reel-loop-720.mp4";
+    const vidTex = (planeA: number) => {
+      const vt = new THREE.VideoTexture(video);
+      vt.colorSpace = THREE.SRGBColorSpace;
+      return cover(vt, planeA, VIDEO_A);
+    };
+    const screenMat = (map: THREE.Texture) => new THREE.MeshBasicMaterial({ map, toneMapped: false });
+    const addScreen = (mat: THREE.MeshBasicMaterial) => {
+      const mesh = new THREE.Mesh(planeGeo, mat);
+      mesh.visible = false;
+      scene.add(mesh);
+      return mesh;
+    };
+    const faceTex = vidTex(CUBE_FACE.w / CUBE_FACE.h);
+    const face = addScreen(screenMat(faceTex));
+    const postTex = vidTex(FRAME_W / FRAME_H);
+    const post = addScreen(screenMat(postTex));
+    const cardTex = tex("/media/reel/work-3.jpg");
+    const card = addScreen(screenMat(cardTex));
+    const designTex = [2, 4, 5, 1].map((n) => cover(tex(`/media/reel/work-${n}.jpg`), 1, VIDEO_A));
+    const designs = designTex.map((tx) => addScreen(screenMat(tx)));
     const workTex = Array.from({ length: WORK_N }, (_, i) => tex(`/media/reel/work-${i + 1}.jpg`));
     const workMats = workTex.map((tx) => new THREE.MeshBasicMaterial({ map: tx, toneMapped: false }));
     const workPlanes = workMats.map((mt) => {
@@ -256,10 +274,6 @@ export function BlocksFilm() {
       mesh.visible = false;
       scene.add(mesh);
       return mesh;
-    });
-    video.addEventListener("loadeddata", () => {
-      reelMat.map = videoTex;
-      reelMat.needsUpdate = true;
     });
 
     /* formations, sorted once so each block keeps a sensible partner */
@@ -437,12 +451,36 @@ export function BlocksFilm() {
 
       /* screens switch on after their frame is built, off before it breaks up */
       const on = (pp: number) => ease(Math.min(pp / 0.1, (1 - pp) / 0.06));
-      if (t > REEL_BEAT - 1.3 && !video.src) video.src = "/media/reel/reel-loop-720.mp4";
-      const reelOn = hold && k === REEL_BEAT ? on(p) : 0;
-      reelPlane.visible = reelOn > 0.001;
-      reelPlane.scale.set(REEL.planeW, REEL.planeH * reelOn, 1);
-      if (reelPlane.visible && video.paused && video.src) video.play().catch(() => {});
-      if (!reelPlane.visible && !video.paused) video.pause();
+      const R = -0.5 + 0.43; // layer units -> render height
+      // hero and closing cube: the front face is a screen playing the reel
+      const faceOn = hold && k === 0 ? ease((1 - p) / 0.06) : hold && k === LAST ? ease(p / 0.1) : 0;
+      face.visible = faceOn > 0.001;
+      face.position.set(0, CUBE_FACE.y, CUBE_FACE.z);
+      face.scale.set(CUBE_FACE.w, CUBE_FACE.h * faceOn, 1);
+      // paid: the ad that got clicked pops out of the bullseye
+      const pc = paidCard(p);
+      const cardOn = hold && k === PAID_BEAT ? pc.s * on(p) : 0;
+      card.visible = cardOn > 0.001;
+      card.position.set(pc.x, pc.y + R, pc.z);
+      card.scale.set(7.2 * cardOn, 4.05 * cardOn, 1);
+      // design: four real versions; three topple with their frames
+      const designOn = hold && k === DESIGN_BEAT ? on(p) : 0;
+      designs.forEach((mesh, f) => {
+        mesh.visible = designOn > 0.001;
+        if (!mesh.visible) return;
+        const fr = creativeFrame(f, p);
+        mesh.position.set(fr.x, fr.y + R + 0.001, fr.z);
+        mesh.rotation.set(fr.rx, 0, 0);
+        mesh.scale.set(5.15, 5.15 * designOn, 1);
+      });
+      // organic: a real post plays behind the play button and the heart
+      const postOn = hold && k === ORGANIC_BEAT ? on(p) : 0;
+      post.visible = postOn > 0.001;
+      post.position.set(0, FRAME_Y + R, -0.45);
+      post.scale.set(FRAME_W - 1.9, (FRAME_H - 1.9) * postOn, 1);
+      const anyVideo = face.visible || post.visible;
+      if (anyVideo && video.paused) video.play().catch(() => {});
+      if (!anyVideo && !video.paused) video.pause();
       const workOn = hold && k === WORK_BEAT ? on(p) : 0;
       workPlanes.forEach((mesh, i) => {
         mesh.visible = workOn > 0.001;
@@ -501,10 +539,10 @@ export function BlocksFilm() {
       video.pause();
       video.removeAttribute("src");
       video.load();
-      videoTex.dispose();
-      posterTex.dispose();
+      [faceTex, postTex, cardTex, ...designTex].forEach((tx) => tx.dispose());
       workTex.forEach((tx) => tx.dispose());
-      [reelMat, ...workMats].forEach((mt) => mt.dispose());
+      [face, post, card, ...designs].forEach((mesh) => (mesh.material as THREE.Material).dispose());
+      workMats.forEach((mt) => mt.dispose());
       planeGeo.dispose();
       blocks.dispose();
       hull.dispose();
@@ -541,17 +579,16 @@ export function BlocksFilm() {
               ))}
             </ul>
           )}
-          {p.reel && (
-            <div className={s.ctas}>
-              <button type="button" className={s.primary} onClick={() => setReelOpen(true)}>
-                Watch with sound
-              </button>
-            </div>
-          )}
           {p.cta && (
             <div className={s.ctas}>
               <Link href="/schedule/" className={s.primary}>Schedule a Call</Link>
-              <Link href="/audit/" className={s.secondary}>Get a free audit</Link>
+              {p.reel ? (
+                <button type="button" className={s.secondary} onClick={() => setReelOpen(true)}>
+                  &#9654;&nbsp; Watch the reel
+                </button>
+              ) : (
+                <Link href="/audit/" className={s.secondary}>Get a free audit</Link>
+              )}
             </div>
           )}
           {p.foot && <p className={s.foot}>{p.foot}</p>}

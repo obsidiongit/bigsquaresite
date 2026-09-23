@@ -245,7 +245,8 @@
   }
 }
 
-button.primary {
+button.primary,
+button.secondary {
   border: 0;
   cursor: pointer;
 }
@@ -276,4 +277,7 @@ button.primary {
   font-family: "LeniaMono", ui-monospace, monospace;
   font-weight: 700;
   font-size: 14px;
+}
+button.secondary {
+  background: transparent;
 }

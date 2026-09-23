@@ -99,6 +99,10 @@ const CURSOR: [number, number][] = [
 const TARGET_Y = 7.5; // centre of the 15-block board
 const aim = (p: number) => ease((p - 0.05) / 0.45);
 const clickAt = (p: number, delay = 0) => Math.sin(Math.PI * clamp((p - 0.55 - delay) / 0.22));
+export function paidCard(p: number) {
+  const e = ease((p - 0.62) / 0.22);
+  return { x: -6.5 * e, y: TARGET_Y + 4 * e, z: 0.5 + 3.5 * e, s: e };
+}
 function target(p: number) {
   const out: Slot[] = [];
   const clicked = p > 0.6;
@@ -130,9 +134,9 @@ const HEART: [number, number][] = [];
 [".XX...XX.", "XXXX.XXXX", "XXXXXXXXX", "XXXXXXXXX", ".XXXXXXX.", "..XXXXX..", "...XXX...", "....X...."].forEach(
   (row, r) => [...row].forEach((ch, c) => ch === "X" && HEART.push([c - 4, 3.5 - r])),
 );
-const FRAME_W = 19;
-const FRAME_H = 13;
-const FRAME_Y = 0.5 + (FRAME_H - 1) / 2;
+export const FRAME_W = 19;
+export const FRAME_H = 13;
+export const FRAME_Y = 0.5 + (FRAME_H - 1) / 2;
 const morph = (p: number) => ease((p - 0.3) / 0.35);
 function content(p: number) {
   const out: Slot[] = [];
@@ -161,46 +165,37 @@ function contentMarkers(p: number): Marker[] {
 }
 
 /* 4 · Design: four versions of one ad; three fall, one wins ----------------- */
-const FRAMES: [number, number][][] = [
-  [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [1, 4], [2, 4], [3, 4], [4, 4]], // bars
-  [[2, 2], [3, 2], [4, 2], [2, 3], [3, 3], [4, 3], [2, 4], [3, 4], [4, 4]], // square (the winner)
-  [[1, 1], [5, 1], [2, 2], [4, 2], [3, 3], [2, 4], [4, 4], [1, 5], [5, 5]], // cross
-  [[1, 1], [2, 1], [3, 1], [1, 2], [2, 2], [3, 2], [1, 3], [2, 3], [3, 3]], // corner
-];
+export const DESIGN_N = 4;
 const WINNER = 1;
 const win = (p: number) => ease((p - 0.5) / 0.35);
+const topple = (f: number, p: number) => {
+  if (f === WINNER) return 0;
+  const order = f < WINNER ? f : f - 1;
+  return ease((p - 0.1 - order * 0.1) / 0.35);
+};
+/* where frame f's picture sits: centre, and its tilt back about the base */
+export function creativeFrame(f: number, p: number) {
+  const fx = (f - 1.5) * 9;
+  const e2 = f === WINNER ? win(p) : 0;
+  const d = topple(f, p);
+  const th = (d * Math.PI) / 2;
+  return { x: fx - fx * e2, y: 0.5 + 3 * Math.cos(th), z: 2.2 * e2 - 3 * Math.sin(th) - 0.6 * d, rx: -th, win: e2 };
+}
 function creative(p: number) {
   const out: Slot[] = [];
-  const e2 = win(p);
-  let order = 0;
-  FRAMES.forEach((content, f) => {
-    const fx = (f - 1.5) * 9;
-    const cells: [number, number, boolean][] = [];
-    for (let c = 0; c < 7; c++) { cells.push([c, 0, true], [c, 6, true]); }
-    for (let r = 1; r <= 5; r++) { cells.push([0, r, true], [6, r, true]); }
-    content.forEach(([c, r]) => cells.push([c, r, false]));
-    const d = f === WINNER ? 0 : ease((p - 0.1 - order * 0.1) / 0.35);
-    if (f !== WINNER) order++;
-    for (const [c, r, edge] of cells) {
-      let x = fx + c - 3;
-      const h = 6 - r; // height above the frame's base row
-      let y = 0.5 + h;
-      let z = 0;
-      let col: 0 | 1 | 2 = edge ? W : K;
-      let fl = 1;
-      if (f === WINNER) {
-        x -= fx * e2; // slide to centre
-        z += 2.2 * e2; // step forward
-        if (e2 > 0.5) col = edge ? K : B;
-      } else if (d > 0) {
-        const th = (d * Math.PI) / 2; // topple backwards about the base
-        y = 0.5 + h * Math.cos(th);
-        z = -h * Math.sin(th) - 0.6 * d;
-        fl = 1 - (1 - FLAT) * d;
+  for (let f = 0; f < DESIGN_N; f++) {
+    const fr = creativeFrame(f, p);
+    const d = topple(f, p);
+    const th = (d * Math.PI) / 2;
+    for (let c = 0; c < 7; c++)
+      for (let r = 0; r < 7; r++) {
+        if (c !== 0 && r !== 0 && c !== 6 && r !== 6) continue;
+        const h = 6 - r; // height above the frame's base row
+        const x = fr.x + c - 3;
+        const col: 0 | 1 | 2 = f === WINNER && fr.win > 0.5 ? B : W;
+        out.push(S(x, 0.5 + h * Math.cos(th), fr.z + 3 * Math.sin(th) - h * Math.sin(th), col, 1 - (1 - FLAT) * d));
       }
-      out.push(S(x, y, z, col, fl));
-    }
-  });
+  }
   return fillFloor(out, 24, 2.6);
 }
 function creativeMarkers(p: number): Marker[] {
@@ -251,23 +246,7 @@ function locations(p: number) {
   return out;
 }
 
-/* The reel: a cinema screen of blocks; the showreel plays inside -------- */
-export const REEL = { w: 28, h: 18, y: 9, planeW: 24.2, planeH: 13.6 };
-function reel() {
-  const out: Slot[] = [];
-  const ring = (w: number, h: number, col: 0 | 1 | 2) => {
-    for (let c = 0; c < w; c++)
-      for (let r = 0; r < h; r++) {
-        if (c !== 0 && r !== 0 && c !== w - 1 && r !== h - 1) continue;
-        out.push(S(c - (w - 1) / 2, REEL.y + r - (h - 1) / 2, 0, col));
-      }
-  };
-  ring(REEL.w, REEL.h, K);
-  ring(REEL.w - 2, REEL.h - 2, W);
-  return fillFloor(out, 26, 3);
-}
-
-/* The work: the screen splits into a ring of five; scroll turns the ring - */
+/* The work: a ring of five screens; scroll turns the ring ---------------- */
 export const WORK_N = 5;
 const WR = 11; // ring radius
 const FW = 11;
@@ -306,17 +285,21 @@ function work(p: number) {
   return fillFloor(out, 30, -14);
 }
 
+/* the hero cube's front face (+z), in render units */
+export const CUBE_FACE = { w: 7.6, h: 5.6, y: 2.93, z: 3.95 };
+
 export const FORMATIONS: Formation[] = [
   { id: "square", label: "The big square", build: cube(false) },
   { id: "team", label: "One team", build: slabs, markers: slabMarkers },
   { id: "paid", label: "Paid Advertising", build: target },
   { id: "design", label: "Design & Development", build: creative, markers: creativeMarkers },
   { id: "organic", label: "Organic Marketing", build: content, markers: contentMarkers },
-  { id: "reel", label: "The reel", build: reel, span: 1.3, hold: 0.65 },
   { id: "work", label: "Selected work", build: work, span: 2.6, hold: 0.82 },
   { id: "proof", label: "Proof", build: chart },
   { id: "locations", label: "Every location", build: locations },
   { id: "talk", label: "Let's talk", build: cube(true) },
 ];
-export const REEL_BEAT = FORMATIONS.findIndex((f) => f.id === "reel");
 export const WORK_BEAT = FORMATIONS.findIndex((f) => f.id === "work");
+export const DESIGN_BEAT = FORMATIONS.findIndex((f) => f.id === "design");
+export const ORGANIC_BEAT = FORMATIONS.findIndex((f) => f.id === "organic");
+export const PAID_BEAT = FORMATIONS.findIndex((f) => f.id === "paid");
