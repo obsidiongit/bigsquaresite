@@ -79,6 +79,15 @@ function Field() {
     };
     const PAD = 14;
     const FADE = 26;
+    let mask = new Float32Array(0);
+    let maskCols = 0, maskRows = 0, maskCell = 0;
+    const buildMask = (cols: number, rows: number, cell: number) => {
+      measure();
+      mask = new Float32Array(cols * rows);
+      for (let y = 0; y < rows; y++)
+        for (let x = 0; x < cols; x++) mask[y * cols + x] = clearance(x * cell + cell / 2, y * cell + cell / 2);
+      maskCols = cols; maskRows = rows; maskCell = cell;
+    };
     const clearance = (x: number, y: number) => {
       let k = 1;
       for (const h of holes) {
@@ -95,9 +104,11 @@ function Field() {
       video.play().catch(() => {});
       let raf = 0;
       let n = 0;
+      let last = performance.now();
       const frame = (t: number) => {
         raf = requestAnimationFrame(frame);
-        if (n++ % 20 === 0) measure();
+        const dt = Math.min(0.1, (t - last) / 1000);
+        last = t;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const W = canvas.clientWidth;
         const H = canvas.clientHeight;
@@ -106,6 +117,7 @@ function Field() {
         const cols = Math.ceil(W / cell);
         const rows = Math.ceil(H / cell);
         if (sample.width !== cols) { sample.width = cols; sample.height = rows; }
+        if (maskCols !== cols || maskRows !== rows || maskCell !== cell || n++ % 60 === 0) buildMask(cols, rows, cell);
         if (video.readyState < 2) return;
         // cover-crop the frame into the sample grid
         const va = video.videoWidth / video.videoHeight;
@@ -118,8 +130,10 @@ function Field() {
         ctx.fillStyle = "#F5F6F8";
         ctx.fillRect(0, 0, W, H);
         ctx.fillStyle = BLUE;
-        lx += (mx - lx) * 0.18;
-        ly += (my - ly) * 0.18;
+        const follow = 1 - Math.exp(-dt * 16);
+        if (lx < -9000 || mx < -9000) { lx = mx; ly = my; }
+        lx += (mx - lx) * follow;
+        ly += (my - ly) * follow;
         const wave = t * 0.0012;
         for (let y = 0; y < rows; y++) {
           for (let x = 0; x < cols; x++) {
@@ -138,7 +152,7 @@ function Field() {
               size *= 1 + k * 0.6;
             }
             size *= 0.85 + 0.15 * Math.sin(wave + x * 0.18 + y * 0.11);
-            size *= clearance(x * cell + cell / 2, y * cell + cell / 2);
+            size *= mask[y * cols + x] ?? 1;
             if (size < 0.6) continue;
             ctx.fillRect(ox - size / 2, oy - size / 2, size, size);
           }
@@ -292,8 +306,10 @@ function Tunnel() {
       return { mesh, mat, a: i * 2.4, z: -(i / N) * DEPTH, r: 7 + (i % 3) * 1.6 };
     });
     // the blue square at the end of the tunnel
-    const coreMat = new THREE.MeshBasicMaterial({ color: BLUE, fog: false });
-    const core = new THREE.Mesh(new THREE.PlaneGeometry(6, 6), coreMat);
+    const logoTex = loader.load("/media/brand/bigsquare-logo.png");
+    logoTex.colorSpace = THREE.SRGBColorSpace;
+    const coreMat = new THREE.MeshBasicMaterial({ map: logoTex, transparent: true, fog: false });
+    const core = new THREE.Mesh(new THREE.PlaneGeometry(6, 6 * (855 / 809)), coreMat);
     core.position.z = -DEPTH + 4;
     core.renderOrder = -1;
     scene.add(core);
@@ -335,7 +351,7 @@ function Tunnel() {
           const k = Math.min(1, Math.max(0, (c.z + DEPTH * 0.92) / (DEPTH * 0.45)));
           c.mat.opacity = k * k;
         });
-        core.rotation.z += dt * 0.25;
+        core.rotation.z = Math.sin(now * 0.0006) * 0.12;
         renderer.render(scene, camera);
       };
       raf = requestAnimationFrame(frame);
@@ -348,6 +364,7 @@ function Tunnel() {
       textures.forEach((t) => t.dispose());
       geo.dispose();
       coreMat.dispose();
+      logoTex.dispose();
       renderer.dispose();
     };
   }, []);
@@ -373,7 +390,8 @@ export function Directions() {
     <main className={s.page}>
       <header className={s.header}>
         <span className={s.logo}>
-          <span className={s.logoMark} aria-hidden />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/media/brand/bigsquare-logo.png" alt="" className={s.logoImg} />
           BigSquare
         </span>
         <span className={s.headerNote}>Three directions · scroll to compare</span>

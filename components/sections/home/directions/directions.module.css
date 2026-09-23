@@ -137,3 +137,9 @@
 .overlayBottom .note {
   margin-left: auto;
 }
+
+.logoImg {
+  width: 24px;
+  height: auto;
+  display: block;
+}
