@@ -13,6 +13,7 @@ function LogoScene({ pointer, active }: { pointer: Pointer; active: boolean }) {
   const look = useMemo(() => createLogoLook(), []);
   const tilt = useRef({ x: 0, y: 0 });
   const slow = useRef(0);
+  const intro = useRef(0);
 
   useEffect(() => {
     const pmrem = new THREE.PMREMGenerator(gl);
@@ -34,18 +35,22 @@ function LogoScene({ pointer, active }: { pointer: Pointer; active: boolean }) {
     tilt.current.y += (pointer.y * 0.1 - tilt.current.y) * damp;
 
     const t = state.clock.elapsedTime;
+    intro.current = Math.min(1, intro.current + delta / 0.95);
+    const k = intro.current * intro.current * (3 - 2 * intro.current);
+    const spinIn = (1 - k) * Math.PI * 0.9;
+    look.object.scale.setScalar(THREE.MathUtils.lerp(0.7, 1, k));
     look.object.rotation.set(
       0.18 + tilt.current.y,
-      t * 0.22 + 0.35 + tilt.current.x,
-      0,
+      t * 0.22 + 0.35 + tilt.current.x + spinIn,
+      (1 - k) * -0.16,
     );
 
     const az = THREE.MathUtils.degToRad(20);
     const el = THREE.MathUtils.degToRad(12);
     cam.position.set(
-      Math.sin(az) * Math.cos(el) * 2.05,
-      Math.sin(el) * 2.05 + 0.04,
-      Math.cos(az) * Math.cos(el) * 2.05,
+      Math.sin(az) * Math.cos(el) * 1.86,
+      Math.sin(el) * 1.86 + 0.04,
+      Math.cos(az) * Math.cos(el) * 1.86,
     );
     cam.lookAt(0, 0, 0);
     cam.updateMatrixWorld();

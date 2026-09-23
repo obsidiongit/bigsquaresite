@@ -69,7 +69,11 @@ function Confirmation({ reduced }: { reduced: boolean }) {
   );
 }
 
-export function NewsletterForm() {
+export function NewsletterForm({
+  consentClassName,
+}: {
+  consentClassName?: string;
+} = {}) {
   const fieldId = useId();
   const errorId = `${fieldId}-error`;
   const reduced = useReducedMotionSafe();
@@ -162,7 +166,7 @@ export function NewsletterForm() {
                 {error}
               </p>
             ) : null}
-            <ConsentLine className="mt-3" />
+            <ConsentLine className={cn("mt-3", consentClassName)} />
           </motion.form>
         )}
       </AnimatePresence>

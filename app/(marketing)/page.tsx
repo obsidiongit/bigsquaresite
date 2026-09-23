@@ -6,7 +6,7 @@ import { HoldingNewsletter } from "@/components/sections/holding/HoldingNewslett
 export const metadata: Metadata = {
   title: { absolute: "Site Coming Soon | BigSquare" },
   description:
-    "The new BigSquare site is coming soon. One team runs your search, ads, site, and creative. Send a note and we will get back to you.",
+    "One team for search, ads, sites, and creative. The new BigSquare site is coming soon. Send a note. We will get back to you.",
   alternates: { canonical: "/" },
 };
 

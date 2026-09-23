@@ -1,30 +1,30 @@
 import { NewsletterForm } from "@/components/sections/home/NewsletterForm";
+import { BaselineReveal } from "@/components/motion/BaselineReveal";
 import { Reveal } from "@/components/motion/Reveal";
-import { Eyebrow } from "@/components/shared/mono";
 import { Section } from "@/components/shared/Section";
 import { EDGE } from "@/lib/layout";
-import { cn } from "@/lib/utils";
 
 export function HoldingNewsletter() {
   return (
-    <Section theme="light" size="base" id="newsletter" className="scroll-mt-24">
-      <div className={cn(EDGE, "relative z-10")}>
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-x-16">
-          <div className="lg:col-span-5">
-            <Eyebrow>The list</Eyebrow>
-            <Reveal>
-              <h2 className="mt-5 font-display text-h2 text-sec-ink">
-                Get what we are seeing.
-              </h2>
-            </Reveal>
-            <Reveal delay={0.06}>
-              <p className="mt-5 max-w-[40ch] text-body text-sec-mid">
-                Notes from real accounts, in plain words.
-              </p>
-            </Reveal>
-          </div>
-          <Reveal delay={0.1} className="lg:col-span-7">
-            <NewsletterForm />
+    <Section
+      theme="accent"
+      size="lg"
+      id="newsletter"
+      className="scroll-mt-24"
+    >
+      <div className={EDGE}>
+        <div className="relative z-10 mx-auto flex max-w-[720px] flex-col items-center text-center">
+          <p className="font-mono text-mono-sm uppercase text-sec-ink/70">
+            The list
+          </p>
+          <BaselineReveal
+            as="h2"
+            className="mt-5 font-display text-h2 text-sec-ink"
+          >
+            Notes from real accounts, in plain words.
+          </BaselineReveal>
+          <Reveal delay={0.12} className="mt-10 w-full max-w-[560px]">
+            <NewsletterForm consentClassName="mt-3 text-sec-ink/80" />
           </Reveal>
         </div>
       </div>

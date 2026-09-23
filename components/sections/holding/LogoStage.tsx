@@ -54,7 +54,7 @@ export function LogoStage() {
   return (
     <div
       ref={root}
-      className="relative aspect-square w-full max-w-[560px] lg:max-w-none"
+      className="relative aspect-square w-full max-w-[640px] lg:max-w-none"
     >
       {live ? (
         <LogoCanvas

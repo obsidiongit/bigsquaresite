@@ -30,7 +30,12 @@ export function Jump({
   }
 
   return (
-    <a href={`#${to}`} onClick={onClick} className={cn(className)}>
+    <a
+      href={`#${to}`}
+      onClick={onClick}
+      data-sfx=""
+      className={cn(className)}
+    >
       {children}
     </a>
   );

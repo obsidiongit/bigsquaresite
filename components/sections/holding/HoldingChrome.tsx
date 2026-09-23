@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Jump } from "@/components/sections/holding/Jump";
 import { Logo } from "@/components/shared/Logo";
 import { Section } from "@/components/shared/Section";
 import { EDGE } from "@/lib/layout";
@@ -10,8 +14,24 @@ const LINK =
   "underline underline-offset-2 transition-colors duration-[var(--dur-fast)] hover:text-sec-ink";
 
 export function HoldingChrome() {
+  const [solid, setSolid] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setSolid(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper">
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-[var(--dur-fast)]",
+        solid
+          ? "border-b border-line bg-paper/85 backdrop-blur-[12px]"
+          : "border-b border-transparent bg-transparent",
+      )}
+    >
       <div
         className={cn(
           EDGE,
@@ -22,7 +42,12 @@ export function HoldingChrome() {
           <Logo />
           <span className="font-medium text-small">BigSquare</span>
         </Link>
-        <p className={cn(META, "hidden sm:block")}>Denver / Tampa</p>
+        <div className="flex items-center gap-4 md:gap-6">
+          <p className={cn(META, "hidden md:block")}>Denver / Tampa</p>
+          <Jump to="contact" className="pill pill-square pill-sm">
+            <span className="pill-label">Talk to Us</span>
+          </Jump>
+        </div>
       </div>
     </header>
   );
