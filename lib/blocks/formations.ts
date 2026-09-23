@@ -7,13 +7,15 @@
    resting on the ground has y = 0.5. f is the block's height factor:
    1 = full cube, FLAT = a square lying on the floor. */
 
-export type Slot = { x: number; y: number; z: number; c: 0 | 1 | 2; f: number };
+export type Slot = { x: number; y: number; z: number; c: 0 | 1 | 2; f: number; r?: number }; // r: turn about y
 export type Marker = { x: number; y: number; z: number; text: string; a: number };
 export type Formation = {
   id: string;
   label: string;
   build: (p: number) => Slot[];
   markers?: (p: number) => Marker[];
+  span?: number; // scroll length of this beat, in beats (default 1)
+  hold?: number; // share of the beat spent holding (default 0.55)
 };
 
 export const N = 384; // 8 x 8 x 6
@@ -249,13 +251,72 @@ function locations(p: number) {
   return out;
 }
 
+/* The reel: a cinema screen of blocks; the showreel plays inside -------- */
+export const REEL = { w: 28, h: 18, y: 9, planeW: 24.2, planeH: 13.6 };
+function reel() {
+  const out: Slot[] = [];
+  const ring = (w: number, h: number, col: 0 | 1 | 2) => {
+    for (let c = 0; c < w; c++)
+      for (let r = 0; r < h; r++) {
+        if (c !== 0 && r !== 0 && c !== w - 1 && r !== h - 1) continue;
+        out.push(S(c - (w - 1) / 2, REEL.y + r - (h - 1) / 2, 0, col));
+      }
+  };
+  ring(REEL.w, REEL.h, K);
+  ring(REEL.w - 2, REEL.h - 2, W);
+  return fillFloor(out, 26, 3);
+}
+
+/* The work: the screen splits into a ring of five; scroll turns the ring - */
+export const WORK_N = 5;
+const WR = 11; // ring radius
+const FW = 11;
+const FH = 7;
+const WORK_Y = 5;
+export const WORK_PLANE = { w: 9.15, h: 5.15 };
+const STEP = (Math.PI * 2) / WORK_N;
+/* which item is in front: holds on each, turns in the last quarter of its window */
+export const workIndex = (p: number) => {
+  const q = clamp(p) * WORK_N;
+  const i = Math.min(WORK_N - 1, Math.floor(q));
+  return i + (i < WORK_N - 1 ? ease((q - i - 0.75) / 0.25) : 0);
+};
+export function workFrame(i: number, p: number) {
+  let th = i * STEP - workIndex(p) * STEP;
+  th = Math.atan2(Math.sin(th), Math.cos(th));
+  const act = clamp(1 - Math.abs(th) / STEP);
+  const R = WR + 2.6 * act * act;
+  return { x: R * Math.sin(th), y: WORK_Y, z: R * Math.cos(th), r: th, act };
+}
+function work(p: number) {
+  const out: Slot[] = [];
+  for (let i = 0; i < WORK_N; i++) {
+    const f = workFrame(i, p);
+    const cx = Math.cos(f.r);
+    const sz = -Math.sin(f.r);
+    for (let c = 0; c < FW; c++)
+      for (let r = 0; r < FH; r++) {
+        if (c !== 0 && r !== 0 && c !== FW - 1 && r !== FH - 1) continue;
+        const lx = c - (FW - 1) / 2;
+        const slot = S(f.x + lx * cx, f.y + r - (FH - 1) / 2, f.z + lx * sz, f.act > 0.6 ? B : W);
+        slot.r = f.r;
+        out.push(slot);
+      }
+  }
+  return fillFloor(out, 30, -14);
+}
+
 export const FORMATIONS: Formation[] = [
   { id: "square", label: "The big square", build: cube(false) },
   { id: "team", label: "One team", build: slabs, markers: slabMarkers },
   { id: "paid", label: "Paid Advertising", build: target },
   { id: "design", label: "Design & Development", build: creative, markers: creativeMarkers },
   { id: "organic", label: "Organic Marketing", build: content, markers: contentMarkers },
+  { id: "reel", label: "The reel", build: reel, span: 1.3, hold: 0.65 },
+  { id: "work", label: "Selected work", build: work, span: 2.6, hold: 0.82 },
   { id: "proof", label: "Proof", build: chart },
   { id: "locations", label: "Every location", build: locations },
   { id: "talk", label: "Let's talk", build: cube(true) },
 ];
+export const REEL_BEAT = FORMATIONS.findIndex((f) => f.id === "reel");
+export const WORK_BEAT = FORMATIONS.findIndex((f) => f.id === "work");

@@ -5,15 +5,30 @@
    the two-tone toon method: white where the sun hits, brand blue in shade,
    navy ink outlines, grain on top. See lib/blocks/formations.ts. */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import * as THREE from "three";
-import { FORMATIONS, N, clamp, ease, type Slot } from "@/lib/blocks/formations";
+import {
+  FORMATIONS, N, clamp, ease, type Slot,
+  REEL, REEL_BEAT, WORK_BEAT, WORK_N, WORK_PLANE, workFrame,
+} from "@/lib/blocks/formations";
 import s from "./blocks.module.css";
 
-const HOLD = 0.55; // share of each beat spent holding a formation
 const LAST = FORMATIONS.length - 1;
-const END = LAST + HOLD;
+const HOLDS = FORMATIONS.map((f) => f.hold ?? 0.55); // share of each beat spent holding
+const SPAN = FORMATIONS.map((f) => f.span ?? 1); // scroll length of each beat
+const UNITS = SPAN.map((sp, k) => (k === LAST ? sp * HOLDS[k] : sp));
+const TOTAL = UNITS.reduce((a, b) => a + b, 0);
+const END = LAST + HOLDS[LAST];
+/* scroll fraction -> film time: beat k starts at t = k, longer beats get more scroll */
+const tFromFrac = (f: number) => {
+  let x = clamp(f) * TOTAL;
+  for (let k = 0; k <= LAST; k++) {
+    if (x <= UNITS[k]) return k + x / SPAN[k];
+    x -= UNITS[k];
+  }
+  return END;
+};
 const BLUE = "#0657F9";
 const INK = "#0A2A73";
 
@@ -24,20 +39,47 @@ const CAM: Cam[] = [
   { t: [0, 7, 0.5], az: -0.34, el: 0.2, d: 48 },
   { t: [0, 3.6, 0], az: 0.22, el: 0.3, d: 52 },
   { t: [0, 6.2, 0], az: 0.3, el: 0.2, d: 46 },
+  { t: [0, 9, 0], az: 0.16, el: 0.1, d: 55 },
+  { t: [0, 5, 5], az: 0.0, el: 0.14, d: 40 },
   { t: [0, 5, 0], az: 0.55, el: 0.32, d: 47 },
   { t: [0, 1, 0], az: 0.7, el: 0.85, d: 62 },
   { t: [0, 2.6, 0], az: 0.62, el: 0.46, d: 35 },
 ];
 
-type Panel = { eyebrow: string; title: string; body: string; rows?: [string, string][]; foot?: string; cta?: boolean };
+type Panel = {
+  beat: number;
+  sub?: [number, number]; // share of the beat's hold this panel owns
+  eyebrow: string;
+  title: string;
+  body: string;
+  rows?: [string, string][];
+  foot?: string;
+  cta?: boolean;
+  reel?: boolean;
+};
+const WORK_PANELS: Panel[] = Array.from({ length: WORK_N }, (_, i) => ({
+  beat: WORK_BEAT,
+  sub: [i / WORK_N, (i + 1) / WORK_N] as [number, number],
+  eyebrow: `06 · Selected work · ${String(i + 1).padStart(2, "0")} / ${String(WORK_N).padStart(2, "0")}`,
+  title: `[PLACEHOLDER: client ${i + 1} name]`,
+  body: "[PLACEHOLDER: one sentence on what we made and what it did for them]",
+  rows: [
+    ["What we did", "[PLACEHOLDER: services on this job]"],
+    ["Result", "[PLACEHOLDER: a real, published number]"],
+  ] as [string, string][],
+  foot: "Still from our showreel. Swap in the case study.",
+}));
+
 const PANELS: Panel[] = [
   {
+    beat: 0,
     eyebrow: "BigSquare · Full-stack marketing",
     title: "One team. Every channel.",
     body: "Search, ads and creative, run by one team under one roof. You can check the numbers any day.",
     foot: "Scroll. Watch the blocks go to work.",
   },
   {
+    beat: 1,
     eyebrow: "01 · One team",
     title: "Three groups. One team.",
     body: "Every block you just saw is the same team. We split it three ways, then put it back to work.",
@@ -48,34 +90,48 @@ const PANELS: Panel[] = [
     ],
   },
   {
+    beat: 2,
     eyebrow: "02 · Paid Advertising",
     title: "Ads held to what they bring in.",
     body: "Paid search, paid social and Amazon ads, aimed at the people ready to buy. We cut what only spends and push what books.",
     rows: [["Paid search", ""], ["Paid social", ""], ["Amazon ads", ""]],
   },
   {
+    beat: 3,
     eyebrow: "03 · Design & Development",
     title: "Creative, tested until one wins.",
     body: "We make the ads in house, run versions side by side, and keep the one that pulls.",
   },
   {
+    beat: 4,
     eyebrow: "04 · Organic Marketing",
     title: "Content people stop for.",
     body: "We make the posts, run the social and keep people talking about you between the ads.",
     rows: [["Content creation", ""], ["Social media", ""], ["Email and text", ""]],
   },
   {
-    eyebrow: "05 · Proof",
+    beat: REEL_BEAT,
+    eyebrow: "05 · The work",
+    title: "Our work, in 58 seconds.",
+    body: "Commercials and social ads we made for our clients, shot and cut by our own team.",
+    reel: true,
+  },
+  ...WORK_PANELS,
+  {
+    beat: WORK_BEAT + 1,
+    eyebrow: "07 · Proof",
     title: "Numbers you can check.",
     body: "Every lead and every dollar lands in the Obsidion portal. Log in any day and see what each channel brought in.",
     foot: "Illustration. Not client data.",
   },
   {
-    eyebrow: "06 · Every location",
+    beat: WORK_BEAT + 2,
+    eyebrow: "08 · Every location",
     title: "One playbook. Every location.",
     body: "Built for franchise systems and multi-location brands. What works at one location rolls out to the next, and the next.",
   },
   {
+    beat: LAST,
     eyebrow: "Let's talk",
     title: "Ready when you are.",
     body: "Book a call. We will look at what you run today and show you where the next dollar should go.",
@@ -83,12 +139,33 @@ const PANELS: Panel[] = [
   },
 ];
 
+/* panel opacity from film time */
+function panelOpacity(pn: Panel, t: number) {
+  const k = pn.beat;
+  const H = HOLDS[k];
+  const [a, b] = pn.sub ?? [0, 1];
+  const fin = k === 0 && a === 0 ? 1 : a === 0 ? clamp((t - (k - 0.25)) / 0.15) : clamp((t - (k + a * H)) / 0.04);
+  const fout = k === LAST ? 1 : b === 1 ? 1 - clamp((t - (k + H - 0.05)) / 0.12) : 1 - clamp((t - (k + b * H - 0.02)) / 0.04);
+  return Math.min(fin, fout);
+}
+
+
 export function BlocksFilm() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const panelRefs = useRef<(HTMLElement | null)[]>([]);
   const markerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const labelRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  const [reelOpen, setReelOpen] = useState(false);
+
+  useEffect(() => {
+    if (!reelOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setReelOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [reelOpen]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -151,6 +228,40 @@ export function BlocksFilm() {
     hull.frustumCulled = false;
     scene.add(blocks, hull);
 
+    /* screens: the reel plays inside the block frame; the work ring shows stills */
+    const planeGeo = new THREE.PlaneGeometry(1, 1);
+    const loader = new THREE.TextureLoader();
+    const tex = (url: string) => {
+      const tx = loader.load(url);
+      tx.colorSpace = THREE.SRGBColorSpace;
+      return tx;
+    };
+    const posterTex = tex("/media/reel/reel-poster.jpg");
+    const video = document.createElement("video");
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = "none";
+    const videoTex = new THREE.VideoTexture(video);
+    videoTex.colorSpace = THREE.SRGBColorSpace;
+    const reelMat = new THREE.MeshBasicMaterial({ map: posterTex, toneMapped: false });
+    const reelPlane = new THREE.Mesh(planeGeo, reelMat);
+    reelPlane.position.set(0, REEL.y - 0.5 + 0.43, -0.05);
+    reelPlane.visible = false;
+    scene.add(reelPlane);
+    const workTex = Array.from({ length: WORK_N }, (_, i) => tex(`/media/reel/work-${i + 1}.jpg`));
+    const workMats = workTex.map((tx) => new THREE.MeshBasicMaterial({ map: tx, toneMapped: false }));
+    const workPlanes = workMats.map((mt) => {
+      const mesh = new THREE.Mesh(planeGeo, mt);
+      mesh.visible = false;
+      scene.add(mesh);
+      return mesh;
+    });
+    video.addEventListener("loadeddata", () => {
+      reelMat.map = videoTex;
+      reelMat.needsUpdate = true;
+    });
+
     /* formations, sorted once so each block keeps a sensible partner */
     const key = (q: Slot) => q.y * 1000 + q.x * 10 + q.z * 0.1;
     const perms = FORMATIONS.map((F) => {
@@ -189,7 +300,7 @@ export function BlocksFilm() {
     let px = 0, py = 0, spx = 0, spy = 0, pointerIn = false;
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      target = max > 0 ? clamp(window.scrollY / max) * END : 0;
+      target = max > 0 ? tFromFrac(window.scrollY / max) : 0;
     };
     const onPointer = (e: PointerEvent) => {
       px = (e.clientX / window.innerWidth) * 2 - 1;
@@ -228,6 +339,7 @@ export function BlocksFilm() {
 
     const m = new THREE.Matrix4();
     const q = new THREE.Quaternion();
+    const qs = new THREE.Quaternion();
     const pos = new THREE.Vector3();
     const scl = new THREE.Vector3();
     const look = new THREE.Vector3();
@@ -251,9 +363,10 @@ export function BlocksFilm() {
 
       const k = Math.min(LAST, Math.floor(t));
       const u = t - k;
-      const hold = k === LAST || u < HOLD;
-      const p = clamp(u / HOLD);
-      const v = (u - HOLD) / (1 - HOLD);
+      const H = HOLDS[k];
+      const hold = k === LAST || u < H;
+      const p = clamp(u / H);
+      const v = (u - H) / (1 - H);
 
       /* camera */
       const c = hold ? drift(CAM[k], p) : mix(drift(CAM[k], 1), drift(CAM[k + 1], 0), ease(v));
@@ -291,7 +404,7 @@ export function BlocksFilm() {
           pos.set(a.x, a.y, a.z);
           f = a.f;
           col = a.c;
-          q.identity();
+          q.setFromAxisAngle(AXES[1], a.r ?? 0);
         } else {
           a = ends[k][i];
           const b = starts[k + 1][i];
@@ -299,7 +412,9 @@ export function BlocksFilm() {
           pos.set(a.x + (b.x - a.x) * e, a.y + (b.y - a.y) * e + Math.sin(Math.PI * e) * arc[i], a.z + (b.z - a.z) * e);
           f = a.f + (b.f - a.f) * e;
           col = e < 0.5 ? a.c : b.c;
-          q.setFromAxisAngle(axis[i], (e * turns[i] * Math.PI) / 2);
+          q.setFromAxisAngle(AXES[1], (a.r ?? 0) + ((b.r ?? 0) - (a.r ?? 0)) * e);
+          qs.setFromAxisAngle(axis[i], (e * turns[i] * Math.PI) / 2);
+          q.multiply(qs);
         }
         let want = 0;
         if (isTop[i] && hx < 1e8) {
@@ -319,6 +434,24 @@ export function BlocksFilm() {
       }
       blocks.instanceMatrix.needsUpdate = true;
       if (colorsDirty && blocks.instanceColor) blocks.instanceColor.needsUpdate = true;
+
+      /* screens switch on after their frame is built, off before it breaks up */
+      const on = (pp: number) => ease(Math.min(pp / 0.1, (1 - pp) / 0.06));
+      if (t > REEL_BEAT - 1.3 && !video.src) video.src = "/media/reel/reel-loop-720.mp4";
+      const reelOn = hold && k === REEL_BEAT ? on(p) : 0;
+      reelPlane.visible = reelOn > 0.001;
+      reelPlane.scale.set(REEL.planeW, REEL.planeH * reelOn, 1);
+      if (reelPlane.visible && video.paused && video.src) video.play().catch(() => {});
+      if (!reelPlane.visible && !video.paused) video.pause();
+      const workOn = hold && k === WORK_BEAT ? on(p) : 0;
+      workPlanes.forEach((mesh, i) => {
+        mesh.visible = workOn > 0.001;
+        if (!mesh.visible) return;
+        const wf = workFrame(i, p);
+        mesh.position.set(wf.x, wf.y - 0.5 + 0.43, wf.z);
+        mesh.rotation.set(0, wf.r, 0);
+        mesh.scale.set(WORK_PLANE.w, WORK_PLANE.h * workOn, 1);
+      });
 
       renderer.render(scene, camera);
 
@@ -341,9 +474,7 @@ export function BlocksFilm() {
       /* panels */
       panelRefs.current.forEach((el, i) => {
         if (!el) return;
-        const fin = i === 0 ? 1 : clamp((t - (i - 0.25)) / 0.15);
-        const fout = i === LAST ? 1 : 1 - clamp((t - (i + 0.5)) / 0.12);
-        const o = Math.min(fin, fout);
+        const o = panelOpacity(PANELS[i], t);
         el.style.opacity = String(o);
         el.style.visibility = o < 0.01 ? "hidden" : "visible";
         el.style.pointerEvents = o > 0.5 ? "auto" : "none";
@@ -367,6 +498,14 @@ export function BlocksFilm() {
       [boxGeo, hullGeo, groundGeo].forEach((g) => g.dispose());
       [blockMat, hullMat, groundMat].forEach((mt) => mt.dispose());
       grad.dispose();
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+      videoTex.dispose();
+      posterTex.dispose();
+      workTex.forEach((tx) => tx.dispose());
+      [reelMat, ...workMats].forEach((mt) => mt.dispose());
+      planeGeo.dispose();
       blocks.dispose();
       hull.dispose();
       renderer.dispose();
@@ -388,7 +527,7 @@ export function BlocksFilm() {
       </header>
 
       {PANELS.map((p, i) => (
-        <section key={p.title} ref={(el) => { panelRefs.current[i] = el; }} className={s.panel}>
+        <section key={`${p.beat}-${i}`} ref={(el) => { panelRefs.current[i] = el; }} className={s.panel}>
           <p className={s.eyebrow}>{p.eyebrow}</p>
           {i === 0 ? <h1 className={s.title}>{p.title}</h1> : <h2 className={s.title}>{p.title}</h2>}
           <p className={s.body}>{p.body}</p>
@@ -401,6 +540,13 @@ export function BlocksFilm() {
                 </li>
               ))}
             </ul>
+          )}
+          {p.reel && (
+            <div className={s.ctas}>
+              <button type="button" className={s.primary} onClick={() => setReelOpen(true)}>
+                Watch with sound
+              </button>
+            </div>
           )}
           {p.cta && (
             <div className={s.ctas}>
@@ -423,7 +569,24 @@ export function BlocksFilm() {
         </div>
       </div>
 
-      <div className={s.spine} style={{ height: `${Math.round(END * 115 + 100)}vh` }} aria-hidden />
+      <div className={s.spine} style={{ height: `${Math.round(TOTAL * 115 + 100)}vh` }} aria-hidden />
+
+      {reelOpen && (
+        <div className={s.reelModal} role="dialog" aria-modal="true" aria-label="BigSquare showreel" onClick={() => setReelOpen(false)}>
+          <video
+            className={s.reelVideo}
+            src="/media/reel/reel-1080.mp4"
+            poster="/media/reel/reel-poster.jpg"
+            controls
+            autoPlay
+            playsInline
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button type="button" className={s.reelClose} onClick={() => setReelOpen(false)}>
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 }
