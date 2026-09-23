@@ -21,9 +21,9 @@ type Cam = { t: [number, number, number]; az: number; el: number; d: number };
 const CAM: Cam[] = [
   { t: [0, 2.6, 0], az: 0.62, el: 0.46, d: 33 },
   { t: [0, 5.4, 0], az: 0.85, el: 0.34, d: 41 },
-  { t: [0, 7.6, 1], az: 0.3, el: 0.17, d: 57 },
-  { t: [0, 9.2, 0], az: -0.32, el: 0.15, d: 55 },
+  { t: [0, 7, 0.5], az: -0.34, el: 0.2, d: 48 },
   { t: [0, 3.6, 0], az: 0.22, el: 0.3, d: 52 },
+  { t: [0, 6.2, 0], az: 0.3, el: 0.2, d: 46 },
   { t: [0, 5, 0], az: 0.55, el: 0.32, d: 47 },
   { t: [0, 1, 0], az: 0.7, el: 0.85, d: 62 },
   { t: [0, 2.6, 0], az: 0.62, el: 0.46, d: 35 },
@@ -48,21 +48,21 @@ const PANELS: Panel[] = [
     ],
   },
   {
-    eyebrow: "02 · Organic Marketing",
-    title: "Get found first.",
-    body: "Search that keeps working after the ads are off. We move you up the page, then keep you there.",
-    rows: [["Search engine optimization", ""], ["Content marketing", ""], ["Social media", ""]],
-  },
-  {
-    eyebrow: "03 · Paid Advertising",
+    eyebrow: "02 · Paid Advertising",
     title: "Ads held to what they bring in.",
-    body: "Paid search, paid social and Amazon ads. We cut what only spends and push what books.",
+    body: "Paid search, paid social and Amazon ads, aimed at the people ready to buy. We cut what only spends and push what books.",
     rows: [["Paid search", ""], ["Paid social", ""], ["Amazon ads", ""]],
   },
   {
-    eyebrow: "04 · Design & Development",
+    eyebrow: "03 · Design & Development",
     title: "Creative, tested until one wins.",
     body: "We make the ads in house, run versions side by side, and keep the one that pulls.",
+  },
+  {
+    eyebrow: "04 · Organic Marketing",
+    title: "Content people stop for.",
+    body: "We make the posts, run the social and keep people talking about you between the ads.",
+    rows: [["Content creation", ""], ["Social media", ""], ["Email and text", ""]],
   },
   {
     eyebrow: "05 · Proof",
@@ -266,7 +266,7 @@ export function BlocksFilm() {
       camera.updateMatrixWorld();
 
       /* sun: the cursor swings it, most of all in the hero */
-      const heroW = 1 - clamp((t - 0.3) / 0.25);
+      const heroW = Math.max(1 - clamp((t - 0.3) / 0.25), clamp((t - LAST + 0.05) / 0.2));
       const sa = spx * (0.25 + 0.45 * heroW);
       sunDir.set(-0.55, 0.8, 0.45).normalize().applyAxisAngle(AXES[1], sa);
       sun.target.position.copy(look).setY(0);

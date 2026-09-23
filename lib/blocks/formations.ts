@@ -86,59 +86,76 @@ function slabMarkers(p: number): Marker[] {
   });
 }
 
-/* 2 · Organic: a search results page, and one listing climbs to the top ---- */
-const SERP_COLS = 21;
-const SERP_ROWS = 16;
-const TITLE = [11, 8, 13, 12];
-const DESC = [17, 15, 18, 16];
-const climb = (p: number) => ease((p - 0.1) / 0.6);
-function serp(p: number) {
+/* Paid: a target of square rings; a block cursor flies in and clicks -- */
+const RINGS = [15, 11, 7, 3]; // outline sizes, outermost first
+const RING_COL: (0 | 1 | 2)[] = [W, B, W, B];
+const CURSOR: [number, number][] = [
+  [0, 0], [0, 1], [1, 1], [0, 2], [1, 2], [2, 2], [0, 3], [1, 3], [2, 3], [3, 3],
+  [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5],
+  [0, 6], [1, 6], [2, 6], [2, 7], [3, 7], [3, 8], [4, 8],
+];
+const TARGET_Y = 7.5; // centre of the 15-block board
+const aim = (p: number) => ease((p - 0.05) / 0.45);
+const clickAt = (p: number, delay = 0) => Math.sin(Math.PI * clamp((p - 0.55 - delay) / 0.22));
+function target(p: number) {
   const out: Slot[] = [];
-  const px = (c: number) => c - (SERP_COLS - 1) / 2;
-  // search bar: a box three rows tall
-  for (let c = 0; c < SERP_COLS; c++) {
-    out.push(S(px(c), wallY(0, SERP_ROWS), 0));
-    out.push(S(px(c), wallY(2, SERP_ROWS), 0));
-  }
-  out.push(S(px(0), wallY(1, SERP_ROWS), 0), S(px(SERP_COLS - 1), wallY(1, SERP_ROWS), 0));
-  for (let c = 2; c <= 8; c++) out.push(S(px(c), wallY(1, SERP_ROWS), 0, K)); // the query
-  out.push(S(px(17), wallY(1, SERP_ROWS), 0, B), S(px(18), wallY(1, SERP_ROWS), 0, B)); // the button
-  // four results; ours (k = 3) climbs from last to first
-  const e = climb(p);
-  for (let k = 0; k < 4; k++) {
-    const pos = k === 3 ? 3 - 3 * e : k + e;
-    const top = 4 + pos * 3;
-    const z = k === 3 ? 1.8 * Math.sin(Math.PI * e) : 0;
-    for (let c = 0; c < TITLE[k]; c++) out.push(S(px(c), wallY(top, SERP_ROWS), z, k === 3 ? B : K));
-    for (let c = 0; c < DESC[k]; c++) out.push(S(px(c), wallY(top + 1, SERP_ROWS), z));
-  }
-  return fillFloor(out, 21);
-}
-function serpMarkers(p: number): Marker[] {
-  const e = climb(p);
-  return [{ x: TITLE[3] - 10 + 0.6, y: wallY(4, SERP_ROWS), z: 0.5, text: "Your business, first", a: clamp((e - 0.85) / 0.15) }];
+  const clicked = p > 0.6;
+  RINGS.forEach((n, ri) => {
+    const h = (n - 1) / 2;
+    const pop = 0.9 * clickAt(p, (RINGS.length - 1 - ri) * 0.05); // ripple outward from the centre
+    for (let c = 0; c < n; c++)
+      for (let r = 0; r < n; r++) {
+        if (c !== 0 && r !== 0 && c !== n - 1 && r !== n - 1) continue;
+        out.push(S(c - h, TARGET_Y + (r - h), pop, RING_COL[ri]));
+      }
+  });
+  out.push(S(0, TARGET_Y, 0.9 * clickAt(p), clicked ? B : K)); // bullseye
+  // the cursor: tip starts up and to the right, lands on the bullseye, presses in
+  const e = aim(p);
+  const tipX = 9 * (1 - e);
+  const tipY = TARGET_Y + 6.5 * (1 - e);
+  const press = 1.1 * clickAt(p, -0.02);
+  for (const [c, r] of CURSOR) out.push(S(tipX + c, tipY - r, 2.4 - press, K));
+  return fillFloor(out, 22);
 }
 
-/* 3 · Paid: a phone with an ad on screen ------------------------------------ */
-function phone(p: number) {
+/* Organic: a video frame whose play button becomes a beating heart ------- */
+const PLAY: [number, number][] = [];
+[1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1].forEach((w, r) => {
+  for (let c = 0; c < w; c++) PLAY.push([c - 2.5, 5 - r]);
+});
+const HEART: [number, number][] = [];
+[".XX...XX.", "XXXX.XXXX", "XXXXXXXXX", "XXXXXXXXX", ".XXXXXXX.", "..XXXXX..", "...XXX...", "....X...."].forEach(
+  (row, r) => [...row].forEach((ch, c) => ch === "X" && HEART.push([c - 4, 3.5 - r])),
+);
+const FRAME_W = 19;
+const FRAME_H = 13;
+const FRAME_Y = 0.5 + (FRAME_H - 1) / 2;
+const morph = (p: number) => ease((p - 0.3) / 0.35);
+function content(p: number) {
   const out: Slot[] = [];
-  const cols = 11;
-  const rows = 19;
-  const px = (c: number) => c - (cols - 1) / 2;
-  const put = (c: number, r: number, col: 0 | 1 | 2, z = 0) => out.push(S(px(c), wallY(r, rows), z, col));
-  for (let c = 1; c <= 9; c++) { put(c, 0, K); put(c, 18, K); }
-  for (let r = 1; r <= 17; r++) { put(0, r, K); put(10, r, K); }
-  for (let c = 4; c <= 6; c++) put(c, 1, K); // speaker
-  const live = Math.sin(Math.PI * p); // settles to flat at both ends of the hold
-  for (let r = 3; r <= 8; r++)
-    for (let c = 1; c <= 9; c++)
-      put(c, r, B, 0.5 * live * Math.sin(2 * Math.PI * p * 1.6 - (c + r) * 0.7)); // the ad image breathes
-  for (let c = 1; c <= 7; c++) put(c, 10, K); // headline
-  for (let c = 1; c <= 9; c++) put(c, 12, W);
-  for (let c = 1; c <= 6; c++) put(c, 13, W);
-  const tap = 0.9 * Math.sin(Math.PI * clamp((p - 0.5) / 0.35)); // the button pops
-  for (let r = 15; r <= 16; r++) for (let c = 1; c <= 5; c++) put(c, r, B, tap);
+  const hw = (FRAME_W - 1) / 2;
+  const hh = (FRAME_H - 1) / 2;
+  for (let c = 0; c < FRAME_W; c++)
+    for (let r = 0; r < FRAME_H; r++) {
+      if (c !== 0 && r !== 0 && c !== FRAME_W - 1 && r !== FRAME_H - 1) continue;
+      out.push(S(c - hw, FRAME_Y + r - hh, 0));
+    }
+  const m = morph(p);
+  const beat = m * 0.7 * Math.max(0, Math.sin(2 * Math.PI * (p * 3.2))); // the heart pulses forward
+  HEART.forEach(([hx, hy], j) => {
+    const from = PLAY[j]; // the 10 extra heart blocks rise from the floor
+    const fx = from ? from[0] : hx;
+    const fy = from ? FRAME_Y + from[1] : 0.5;
+    const fz = from ? 0 : 3;
+    out.push(
+      S(fx + (hx - fx) * m, fy + (FRAME_Y + hy - fy) * m + Math.sin(Math.PI * m) * 1.2, fz + (0 - fz) * m + Math.sin(Math.PI * m) * 1.5 + beat, B, from ? 1 : FLAT + (1 - FLAT) * m),
+    );
+  });
   return fillFloor(out, 22);
+}
+function contentMarkers(p: number): Marker[] {
+  return [{ x: 5.4, y: FRAME_Y + 3.4, z: 1, text: "Saved. Shared. Followed.", a: clamp((morph(p) - 0.85) / 0.15) }];
 }
 
 /* 4 · Design: four versions of one ad; three fall, one wins ----------------- */
@@ -235,9 +252,9 @@ function locations(p: number) {
 export const FORMATIONS: Formation[] = [
   { id: "square", label: "The big square", build: cube(false) },
   { id: "team", label: "One team", build: slabs, markers: slabMarkers },
-  { id: "organic", label: "Organic Marketing", build: serp, markers: serpMarkers },
-  { id: "paid", label: "Paid Advertising", build: phone },
+  { id: "paid", label: "Paid Advertising", build: target },
   { id: "design", label: "Design & Development", build: creative, markers: creativeMarkers },
+  { id: "organic", label: "Organic Marketing", build: content, markers: contentMarkers },
   { id: "proof", label: "Proof", build: chart },
   { id: "locations", label: "Every location", build: locations },
   { id: "talk", label: "Let's talk", build: cube(true) },
