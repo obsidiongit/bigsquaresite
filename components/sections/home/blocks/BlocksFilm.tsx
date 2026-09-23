@@ -151,6 +151,7 @@ export function BlocksFilm() {
   const markerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const labelRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLVideoElement>(null);
   const [reelOpen, setReelOpen] = useState(false);
 
   useEffect(() => {
@@ -169,10 +170,10 @@ export function BlocksFilm() {
     let mobile = window.innerWidth < 800;
 
     /* renderer + the two-tone rig */
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping; // tone mapping would grey the clipped white
-    renderer.setClearColor(0xffffff, 1);
+    renderer.setClearColor(0xffffff, 0); // the page behind is white paper, or the hero video
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.5 : 2));
@@ -204,7 +205,14 @@ export function BlocksFilm() {
     const ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = true;
+    groundMat.transparent = true;
     scene.add(ground);
+    const shadowMat = new THREE.ShadowMaterial({ color: BLUE, opacity: 1 });
+    const shadowGround = new THREE.Mesh(groundGeo, shadowMat);
+    shadowGround.rotation.x = -Math.PI / 2;
+    shadowGround.position.y = 0.002;
+    shadowGround.receiveShadow = true;
+    scene.add(shadowGround);
 
     /* the blocks: one instanced mesh, plus an inverted hull for the ink line */
     const PAL = [new THREE.Color("#ffffff"), new THREE.Color(BLUE), new THREE.Color(INK)];
@@ -239,14 +247,13 @@ export function BlocksFilm() {
       return tx;
     };
     const VIDEO_A = 16 / 9;
-    const video = document.createElement("video");
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.autoplay = true;
-    video.preload = "auto";
-    video.poster = "/media/reel/reel-poster.jpg";
-    video.src = "/media/reel/reel-loop-720.mp4";
+    const video = bgRef.current!;
+    const bgCorners = [
+      new THREE.Vector3(-CUBE_FACE.w / 2, CUBE_FACE.y + CUBE_FACE.h / 2, CUBE_FACE.z),
+      new THREE.Vector3(CUBE_FACE.w / 2, CUBE_FACE.y + CUBE_FACE.h / 2, CUBE_FACE.z),
+      new THREE.Vector3(CUBE_FACE.w / 2, CUBE_FACE.y - CUBE_FACE.h / 2, CUBE_FACE.z),
+      new THREE.Vector3(-CUBE_FACE.w / 2, CUBE_FACE.y - CUBE_FACE.h / 2, CUBE_FACE.z),
+    ];
     const vidTex = (planeA: number) => {
       const vt = new THREE.VideoTexture(video);
       vt.colorSpace = THREE.SRGBColorSpace;
@@ -452,8 +459,25 @@ export function BlocksFilm() {
       /* screens switch on after their frame is built, off before it breaks up */
       const on = (pp: number) => ease(Math.min(pp / 0.1, (1 - pp) / 0.06));
       const R = -0.5 + 0.43; // layer units -> render height
+      // hero: the reel fills the viewport behind the cube, then closes onto its front face
+      const g = reduced ? (t > 0.1 ? 1 : 0) : ease((t - 0.04) / 0.36);
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const full = [[0, 0], [vw, 0], [vw, vh], [0, vh]];
+      const pts = bgCorners.map((c3, j) => {
+        v3.copy(c3).project(camera);
+        const fx = (v3.x * 0.5 + 0.5) * vw;
+        const fy = (-v3.y * 0.5 + 0.5) * vh;
+        return `${full[j][0] + (fx - full[j][0]) * g}px ${full[j][1] + (fy - full[j][1]) * g}px`;
+      });
+      const bgOpacity = (0.32 + 0.68 * g) * (1 - clamp((g - 0.9) / 0.1));
+      video.style.clipPath = `polygon(${pts.join(",")})`;
+      video.style.opacity = String(bgOpacity);
+      video.style.visibility = bgOpacity < 0.005 ? "hidden" : "visible";
+      groundMat.opacity = g;
+      shadowMat.opacity = 1 - g;
       // hero and closing cube: the front face is a screen playing the reel
-      const faceOn = hold && k === 0 ? ease((1 - p) / 0.06) : hold && k === LAST ? ease(p / 0.1) : 0;
+      const faceOn = hold && k === 0 ? clamp((g - 0.88) / 0.12) * ease((1 - p) / 0.06) : hold && k === LAST ? ease(p / 0.1) : 0;
       face.visible = faceOn > 0.001;
       face.position.set(0, CUBE_FACE.y, CUBE_FACE.z);
       face.scale.set(CUBE_FACE.w, CUBE_FACE.h * faceOn, 1);
@@ -478,7 +502,7 @@ export function BlocksFilm() {
       post.visible = postOn > 0.001;
       post.position.set(0, FRAME_Y + R, -0.45);
       post.scale.set(FRAME_W - 1.9, (FRAME_H - 1.9) * postOn, 1);
-      const anyVideo = face.visible || post.visible;
+      const anyVideo = face.visible || post.visible || bgOpacity > 0.005;
       if (anyVideo && video.paused) video.play().catch(() => {});
       if (!anyVideo && !video.paused) video.pause();
       const workOn = hold && k === WORK_BEAT ? on(p) : 0;
@@ -536,14 +560,13 @@ export function BlocksFilm() {
       [boxGeo, hullGeo, groundGeo].forEach((g) => g.dispose());
       [blockMat, hullMat, groundMat].forEach((mt) => mt.dispose());
       grad.dispose();
-      video.pause();
-      video.removeAttribute("src");
-      video.load();
+      video.pause(); // React owns this element; leave its src alone
       [faceTex, postTex, cardTex, ...designTex].forEach((tx) => tx.dispose());
       workTex.forEach((tx) => tx.dispose());
       [face, post, card, ...designs].forEach((mesh) => (mesh.material as THREE.Material).dispose());
       workMats.forEach((mt) => mt.dispose());
       planeGeo.dispose();
+      shadowMat.dispose();
       blocks.dispose();
       hull.dispose();
       renderer.dispose();
@@ -552,6 +575,18 @@ export function BlocksFilm() {
 
   return (
     <div className={s.root}>
+      <video
+        ref={bgRef}
+        className={s.bgVideo}
+        src="/media/reel/reel-loop-720.mp4"
+        poster="/media/reel/reel-poster.jpg"
+        muted
+        loop
+        playsInline
+        autoPlay
+        preload="auto"
+        aria-hidden
+      />
       <canvas ref={canvasRef} className={s.stage} aria-hidden />
       <div className={s.grain} aria-hidden />
       <header className={s.header}>

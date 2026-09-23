@@ -15,7 +15,20 @@
   width: 100vw;
   height: 100vh;
   display: block;
+  z-index: 1;
+}
+
+/* hero: the reel behind everything, soft, until it folds into the cube */
+.bgVideo {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
   z-index: 0;
+  opacity: 0.32;
+  pointer-events: none;
+  will-change: clip-path, opacity;
 }
 
 .grain {
