@@ -227,6 +227,7 @@ export function TunnelPage() {
     };
     window.addEventListener("pointermove", onMove);
     const finale = document.querySelector<HTMLElement>('[data-stop="finale"]');
+    const copyCards = [...document.querySelectorAll<HTMLElement>(`.${s.card}`)];
     const v3 = new THREE.Vector3();
 
     let raf = 0, last = performance.now();
@@ -235,7 +236,7 @@ export function TunnelPage() {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const time = reduced ? 0 : now * 0.001;
-      const target = -window.scrollY * K;
+      const target = Math.max(-window.scrollY * K, endZ + 4.5); // stop at the blue, never fly through it
       camZ += (target - camZ) * (reduced ? 1 : 1 - Math.exp(-dt * 7));
       cx += (mx - cx) * (1 - Math.exp(-dt * 3));
       cy += (my - cy) * (1 - Math.exp(-dt * 3));
@@ -284,6 +285,25 @@ export function TunnelPage() {
       blue.scale.set(bs, bs, 1);
 
       renderer.render(scene, camera);
+
+      // the copy cards ride the flight: ease in from depth, lean with the steering, tilt away as you pass
+      const vh = window.innerHeight;
+      copyCards.forEach((el) => {
+        const host = el.closest("section") ?? el;
+        const r = el.getBoundingClientRect();
+        const hr = host.getBoundingClientRect();
+        // sticky cards (the work list) are judged by their section, the rest by themselves
+        const mid = el.classList.contains(s.pinned) ? hr.top + hr.height / 2 : r.top + r.height / 2;
+        const p = reduced ? 0 : Math.max(-1.4, Math.min(1.4, (mid - vh / 2) / vh));
+        const ap = Math.abs(p);
+        const o = 1 - clamp((ap - 0.45) / 0.5);
+        el.style.opacity = o.toFixed(3);
+        el.style.transform =
+          `perspective(1400px) translate3d(${(cx * -10).toFixed(1)}px, ${(p * -36).toFixed(1)}px, ${(-ap * 160).toFixed(1)}px) ` +
+          `rotateX(${(p * 9).toFixed(2)}deg) rotateY(${(cx * 5).toFixed(2)}deg)`;
+        if (ap < 0.38) el.classList.add(s.live);
+        else if (ap > 0.9) el.classList.remove(s.live);
+      });
 
       // a tag names the work flying past
       const tag = tagRef.current;
@@ -373,7 +393,7 @@ export function TunnelPage() {
 
       {/* 02 the reel */}
       <section className={s.stop} data-stop="reel">
-        <div className={`${s.card} ${s.reveal}`}>
+        <div className={s.card}>
           <p className={s.label}>Showreel · 00:58</p>
           <h2 className={s.h2}>Made in house. Made to be seen.</h2>
           <p className={s.body}>Commercials and social ads we made for our clients, shot and cut by our own team.</p>
@@ -389,7 +409,7 @@ export function TunnelPage() {
       <div id="services">
         {SERVICES.map((sv) => (
           <section key={sv.stop} className={s.stop} data-stop={sv.stop}>
-            <div className={`${s.card} ${s.reveal}`}>
+            <div className={s.card}>
               <p className={s.label}>
                 Nº {sv.n} · {sv.group}
               </p>
@@ -410,7 +430,7 @@ export function TunnelPage() {
 
       {/* 04 the work flies past */}
       <section id="work" className={s.work} data-stop="work">
-        <div className={`${s.card} ${s.reveal}`}>
+        <div className={`${s.card} ${s.pinned}`}>
           <p className={s.label}>Nº 04 · Selected work</p>
           <h2 className={s.h2}>Work that makes people look twice.</h2>
           <p className={s.body}>Everything on these walls is ours. Keep scrolling and watch the names go by.</p>
@@ -428,7 +448,7 @@ export function TunnelPage() {
 
       {/* 05 who it is for */}
       <section className={s.stop} data-stop="who">
-        <div className={`${s.card} ${s.cardWide} ${s.reveal}`}>
+        <div className={`${s.card} ${s.cardWide}`}>
           <h2 className={s.h2}>Built for brands with more than one front door.</h2>
           <ul className={s.whoList}>
             {[
