@@ -1,0 +1,244 @@
+/* Blocks prototype (2026-09-23): one set of N blocks that rebuilds itself
+   into each thing BigSquare makes. Pure data, no three.js.
+
+   Every formation returns exactly N slots for a hold progress p (0..1).
+   p animates the formation while it holds (a row climbs, bars rise).
+   Slot units: x/z in block spacing, y in "layer" units where a block
+   resting on the ground has y = 0.5. f is the block's height factor:
+   1 = full cube, FLAT = a square lying on the floor. */
+
+export type Slot = { x: number; y: number; z: number; c: 0 | 1 | 2; f: number };
+export type Marker = { x: number; y: number; z: number; text: string; a: number };
+export type Formation = {
+  id: string;
+  label: string;
+  build: (p: number) => Slot[];
+  markers?: (p: number) => Marker[];
+};
+
+export const N = 384; // 8 x 8 x 6
+export const FLAT = 0.18;
+
+export const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+export const ease = (x: number) => {
+  x = clamp(x);
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+};
+
+const W = 0 as const; // white (lit paper, blue in shade)
+const B = 1 as const; // brand blue
+const K = 2 as const; // navy ink
+const S = (x: number, y: number, z: number, c: 0 | 1 | 2 = W, f = 1): Slot => ({ x, y, z, c, f });
+
+/* Whatever a formation does not use lies on the floor as flat squares,
+   the site's field of outlined squares. Nothing is ever thrown away. */
+function fillFloor(out: Slot[], cols = 22, z0 = 2.4, gap = 1.15) {
+  let i = 0;
+  while (out.length < N) {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    out.push(S((col - (cols - 1) / 2) * gap, 0.5, z0 + row * gap, W, FLAT));
+    i++;
+  }
+  return out;
+}
+
+/* A block on an upright wall facing the camera (+z). r counts from the top. */
+const wallY = (r: number, rows: number) => 0.5 + (rows - 1 - r);
+
+/* 0 · The big square ----------------------------------------------------- */
+function cube(topBlue: boolean) {
+  return () => {
+    const out: Slot[] = [];
+    for (let i = 0; i < N; i++) {
+      const gx = i % 8;
+      const gz = Math.floor(i / 8) % 8;
+      const gy = Math.floor(i / 64);
+      out.push(S(gx - 3.5, 0.5 + gy, gz - 3.5, topBlue && gy === 5 ? B : W));
+    }
+    return out;
+  };
+}
+
+/* 1 · Three slabs, one per service group ------------------------------------ */
+const SLAB_NAMES = ["Organic Marketing", "Paid Advertising", "Design & Development"];
+const slabOffset = (s: number, p: number) => ({
+  x: (s - 1) * (1.6 + 0.8 * p),
+  y: s * (1.9 + 0.8 * p),
+  z: (1 - s) * 0.9,
+});
+function slabs(p: number) {
+  const out: Slot[] = [];
+  for (let i = 0; i < N; i++) {
+    const gx = i % 8;
+    const gz = Math.floor(i / 8) % 8;
+    const gy = Math.floor(i / 64);
+    const s = Math.floor(gy / 2);
+    const o = slabOffset(s, p);
+    out.push(S(gx - 3.5 + o.x, 0.5 + gy + o.y, gz - 3.5 + o.z, s === 1 ? B : W));
+  }
+  return out;
+}
+function slabMarkers(p: number): Marker[] {
+  return SLAB_NAMES.map((text, s) => {
+    const o = slabOffset(s, p);
+    return { x: 4.4 + o.x, y: 1 + 2 * s + o.y, z: o.z, text, a: 1 };
+  });
+}
+
+/* 2 · Organic: a search results page, and one listing climbs to the top ---- */
+const SERP_COLS = 21;
+const SERP_ROWS = 16;
+const TITLE = [11, 8, 13, 12];
+const DESC = [17, 15, 18, 16];
+const climb = (p: number) => ease((p - 0.1) / 0.6);
+function serp(p: number) {
+  const out: Slot[] = [];
+  const px = (c: number) => c - (SERP_COLS - 1) / 2;
+  // search bar: a box three rows tall
+  for (let c = 0; c < SERP_COLS; c++) {
+    out.push(S(px(c), wallY(0, SERP_ROWS), 0));
+    out.push(S(px(c), wallY(2, SERP_ROWS), 0));
+  }
+  out.push(S(px(0), wallY(1, SERP_ROWS), 0), S(px(SERP_COLS - 1), wallY(1, SERP_ROWS), 0));
+  for (let c = 2; c <= 8; c++) out.push(S(px(c), wallY(1, SERP_ROWS), 0, K)); // the query
+  out.push(S(px(17), wallY(1, SERP_ROWS), 0, B), S(px(18), wallY(1, SERP_ROWS), 0, B)); // the button
+  // four results; ours (k = 3) climbs from last to first
+  const e = climb(p);
+  for (let k = 0; k < 4; k++) {
+    const pos = k === 3 ? 3 - 3 * e : k + e;
+    const top = 4 + pos * 3;
+    const z = k === 3 ? 1.8 * Math.sin(Math.PI * e) : 0;
+    for (let c = 0; c < TITLE[k]; c++) out.push(S(px(c), wallY(top, SERP_ROWS), z, k === 3 ? B : K));
+    for (let c = 0; c < DESC[k]; c++) out.push(S(px(c), wallY(top + 1, SERP_ROWS), z));
+  }
+  return fillFloor(out, 21);
+}
+function serpMarkers(p: number): Marker[] {
+  const e = climb(p);
+  return [{ x: TITLE[3] - 10 + 0.6, y: wallY(4, SERP_ROWS), z: 0.5, text: "Your business, first", a: clamp((e - 0.85) / 0.15) }];
+}
+
+/* 3 · Paid: a phone with an ad on screen ------------------------------------ */
+function phone(p: number) {
+  const out: Slot[] = [];
+  const cols = 11;
+  const rows = 19;
+  const px = (c: number) => c - (cols - 1) / 2;
+  const put = (c: number, r: number, col: 0 | 1 | 2, z = 0) => out.push(S(px(c), wallY(r, rows), z, col));
+  for (let c = 1; c <= 9; c++) { put(c, 0, K); put(c, 18, K); }
+  for (let r = 1; r <= 17; r++) { put(0, r, K); put(10, r, K); }
+  for (let c = 4; c <= 6; c++) put(c, 1, K); // speaker
+  const live = Math.sin(Math.PI * p); // settles to flat at both ends of the hold
+  for (let r = 3; r <= 8; r++)
+    for (let c = 1; c <= 9; c++)
+      put(c, r, B, 0.5 * live * Math.sin(2 * Math.PI * p * 1.6 - (c + r) * 0.7)); // the ad image breathes
+  for (let c = 1; c <= 7; c++) put(c, 10, K); // headline
+  for (let c = 1; c <= 9; c++) put(c, 12, W);
+  for (let c = 1; c <= 6; c++) put(c, 13, W);
+  const tap = 0.9 * Math.sin(Math.PI * clamp((p - 0.5) / 0.35)); // the button pops
+  for (let r = 15; r <= 16; r++) for (let c = 1; c <= 5; c++) put(c, r, B, tap);
+  return fillFloor(out, 22);
+}
+
+/* 4 · Design: four versions of one ad; three fall, one wins ----------------- */
+const FRAMES: [number, number][][] = [
+  [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [1, 4], [2, 4], [3, 4], [4, 4]], // bars
+  [[2, 2], [3, 2], [4, 2], [2, 3], [3, 3], [4, 3], [2, 4], [3, 4], [4, 4]], // square (the winner)
+  [[1, 1], [5, 1], [2, 2], [4, 2], [3, 3], [2, 4], [4, 4], [1, 5], [5, 5]], // cross
+  [[1, 1], [2, 1], [3, 1], [1, 2], [2, 2], [3, 2], [1, 3], [2, 3], [3, 3]], // corner
+];
+const WINNER = 1;
+const win = (p: number) => ease((p - 0.5) / 0.35);
+function creative(p: number) {
+  const out: Slot[] = [];
+  const e2 = win(p);
+  let order = 0;
+  FRAMES.forEach((content, f) => {
+    const fx = (f - 1.5) * 9;
+    const cells: [number, number, boolean][] = [];
+    for (let c = 0; c < 7; c++) { cells.push([c, 0, true], [c, 6, true]); }
+    for (let r = 1; r <= 5; r++) { cells.push([0, r, true], [6, r, true]); }
+    content.forEach(([c, r]) => cells.push([c, r, false]));
+    const d = f === WINNER ? 0 : ease((p - 0.1 - order * 0.1) / 0.35);
+    if (f !== WINNER) order++;
+    for (const [c, r, edge] of cells) {
+      let x = fx + c - 3;
+      const h = 6 - r; // height above the frame's base row
+      let y = 0.5 + h;
+      let z = 0;
+      let col: 0 | 1 | 2 = edge ? W : K;
+      let fl = 1;
+      if (f === WINNER) {
+        x -= fx * e2; // slide to centre
+        z += 2.2 * e2; // step forward
+        if (e2 > 0.5) col = edge ? K : B;
+      } else if (d > 0) {
+        const th = (d * Math.PI) / 2; // topple backwards about the base
+        y = 0.5 + h * Math.cos(th);
+        z = -h * Math.sin(th) - 0.6 * d;
+        fl = 1 - (1 - FLAT) * d;
+      }
+      out.push(S(x, y, z, col, fl));
+    }
+  });
+  return fillFloor(out, 24, 2.6);
+}
+function creativeMarkers(p: number): Marker[] {
+  return [{ x: 0, y: 8.2, z: 2.2, text: "The one that pulls", a: clamp((win(p) - 0.8) / 0.2) }];
+}
+
+/* 5 · Proof: the blocks rise into a chart ----------------------------------- */
+const BARS = [3, 4, 5, 7, 9, 12];
+function chart(p: number) {
+  const out: Slot[] = [];
+  BARS.forEach((h, b) => {
+    const bx = (b - 2.5) * 3.4;
+    const g = ease((p * 1.35 - b * 0.07) / 0.55);
+    for (let l = 0; l < h; l++)
+      for (let dx = 0; dx < 2; dx++)
+        for (let dz = 0; dz < 2; dz++)
+          out.push(S(bx + dx - 0.5, 0.5 + l * g, dz - 0.5, b === BARS.length - 1 ? B : W));
+  });
+  return fillFloor(out, 22, 2.6);
+}
+
+/* 6 · Every location: one unit, copied across the map ---------------------- */
+const UNITS = 24; // 6 x 4, 16 blocks each = N
+const START_UNIT = 8;
+const unitPos = (u: number) => ({ x: ((u % 6) - 2.5) * 3.6, z: (Math.floor(u / 6) - 1.5) * 3.6 });
+const RANK = (() => {
+  const o = unitPos(START_UNIT);
+  const ids = Array.from({ length: UNITS }, (_, u) => u);
+  ids.sort((a, b) => {
+    const pa = unitPos(a);
+    const pb = unitPos(b);
+    return Math.hypot(pa.x - o.x, pa.z - o.z) - Math.hypot(pb.x - o.x, pb.z - o.z);
+  });
+  const rank: number[] = [];
+  ids.forEach((u, r) => (rank[u] = r));
+  return rank;
+})();
+function locations(p: number) {
+  const out: Slot[] = [];
+  for (let u = 0; u < UNITS; u++) {
+    const { x, z } = unitPos(u);
+    const g = u === START_UNIT ? 1 : ease((p * 1.5 - 0.1 - RANK[u] * 0.04) / 0.3);
+    for (let l = 0; l < 4; l++)
+      for (let dx = 0; dx < 2; dx++)
+        for (let dz = 0; dz < 2; dz++)
+          out.push(S(x + dx - 0.5, 0.5 + l * g, z + dz - 0.5, l === 3 && g > 0.9 ? B : W, FLAT + (1 - FLAT) * g));
+  }
+  return out;
+}
+
+export const FORMATIONS: Formation[] = [
+  { id: "square", label: "The big square", build: cube(false) },
+  { id: "team", label: "One team", build: slabs, markers: slabMarkers },
+  { id: "organic", label: "Organic Marketing", build: serp, markers: serpMarkers },
+  { id: "paid", label: "Paid Advertising", build: phone },
+  { id: "design", label: "Design & Development", build: creative, markers: creativeMarkers },
+  { id: "proof", label: "Proof", build: chart },
+  { id: "locations", label: "Every location", build: locations },
+  { id: "talk", label: "Let's talk", build: cube(true) },
+];
