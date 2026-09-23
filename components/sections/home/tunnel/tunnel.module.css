@@ -109,7 +109,7 @@
 .card::before {
   content: "";
   position: absolute;
-  left: 0;
+  right: 0; /* faces the screen, which sits on the other side */
   top: 0;
   width: 3px;
   height: 100%;
@@ -300,6 +300,23 @@
   display: flex;
   align-items: center;
   padding: 0 var(--gut);
+}
+/* compositions: which side, how high */
+.right {
+  justify-content: flex-end;
+}
+.top {
+  align-items: flex-start;
+  padding-top: 34vh;
+}
+.low {
+  align-items: flex-end;
+  padding-bottom: 30vh;
+}
+/* the blue edge sits on the side that faces the screen */
+.right .card::before {
+  right: auto;
+  left: 0;
 }
 .work {
   min-height: 240vh;

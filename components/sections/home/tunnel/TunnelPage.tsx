@@ -38,10 +38,19 @@ const CARDS = [
 /* the screens at each stop */
 const STOPS = [
   { stop: "reel", src: "/media/reel/reel-loop-720.mp4", w: 12.4, h: 6.975, x: 2.4 },
-  { stop: "paid", src: "/media/window/paid.mp4", w: 6.2, h: 6.2, x: 3.6 },
+  { stop: "paid", src: "/media/window/paid.mp4", w: 6.2, h: 6.2, x: -3.6 },
   { stop: "organic", src: "/media/window/organic.mp4", w: 6.2, h: 6.2, x: 3.6 },
-  { stop: "design", src: "/media/window/design.mp4", w: 6.2, h: 6.2, x: 3.6 },
+  { stop: "design", src: "/media/window/design.mp4", w: 6.2, h: 6.2, x: -3.6 },
 ];
+
+/* where each card sits: opposite its screen, at a different height every stop */
+const PLACE: Record<string, { side: "left" | "right"; v: "top" | "mid" | "low" }> = {
+  reel: { side: "left", v: "low" },
+  paid: { side: "right", v: "top" },
+  organic: { side: "left", v: "mid" },
+  design: { side: "right", v: "low" },
+  who: { side: "left", v: "mid" },
+};
 
 const SERVICES = [
   {
@@ -82,6 +91,12 @@ function cover(tx: THREE.Texture, planeA: number, imgA: number) {
     tx.repeat.set(1, imgA / planeA);
     tx.offset.set(0, (1 - imgA / planeA) / 2);
   }
+}
+
+function stopClass(stop: string) {
+  const pl = PLACE[stop];
+  if (!pl) return s.stop;
+  return `${s.stop} ${pl.side === "right" ? s.right : ""} ${pl.v === "top" ? s.top : pl.v === "low" ? s.low : ""}`;
 }
 
 export function TunnelPage() {
@@ -298,9 +313,11 @@ export function TunnelPage() {
         const ap = Math.abs(p);
         const o = 1 - clamp((ap - 0.45) / 0.5);
         el.style.opacity = o.toFixed(3);
+        const sd = (el.closest("[data-side]") as HTMLElement | null)?.dataset.side === "right" ? 1 : -1;
+        // outward toward its own edge when away from its stop; turned slightly toward the screen it belongs to
         el.style.transform =
-          `perspective(1400px) translate3d(${(cx * -10).toFixed(1)}px, ${(p * -36).toFixed(1)}px, ${(-ap * 160).toFixed(1)}px) ` +
-          `rotateX(${(p * 9).toFixed(2)}deg) rotateY(${(cx * 5).toFixed(2)}deg)`;
+          `perspective(1400px) translate3d(${(sd * ap * 90 + cx * -10).toFixed(1)}px, ${(p * -36).toFixed(1)}px, ${(-ap * 160).toFixed(1)}px) ` +
+          `rotateX(${(p * 9).toFixed(2)}deg) rotateY(${(-sd * (4 + ap * 10) + cx * 5).toFixed(2)}deg) rotateZ(${(sd * p * 1.2).toFixed(2)}deg)`;
         if (ap < 0.38) el.classList.add(s.live);
         else if (ap > 0.9) el.classList.remove(s.live);
       });
@@ -392,7 +409,7 @@ export function TunnelPage() {
       </section>
 
       {/* 02 the reel */}
-      <section className={s.stop} data-stop="reel">
+      <section className={stopClass("reel")} data-stop="reel" data-side="left">
         <div className={s.card}>
           <p className={s.label}>Showreel · 00:58</p>
           <h2 className={s.h2}>Made in house. Made to be seen.</h2>
@@ -408,7 +425,7 @@ export function TunnelPage() {
       {/* 03 services */}
       <div id="services">
         {SERVICES.map((sv) => (
-          <section key={sv.stop} className={s.stop} data-stop={sv.stop}>
+          <section key={sv.stop} className={stopClass(sv.stop)} data-stop={sv.stop} data-side={PLACE[sv.stop].side}>
             <div className={s.card}>
               <p className={s.label}>
                 Nº {sv.n} · {sv.group}
@@ -447,7 +464,7 @@ export function TunnelPage() {
       </section>
 
       {/* 05 who it is for */}
-      <section className={s.stop} data-stop="who">
+      <section className={stopClass("who")} data-stop="who" data-side="left">
         <div className={`${s.card} ${s.cardWide}`}>
           <h2 className={s.h2}>Built for brands with more than one front door.</h2>
           <ul className={s.whoList}>
