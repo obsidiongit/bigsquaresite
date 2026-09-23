@@ -244,10 +244,10 @@
 
 /* 02 reel takeover and 07 finale: tall sections with a sticky full screen */
 .reel {
-  height: 260vh;
+  height: 200vh;
 }
 .finale {
-  height: 230vh;
+  height: 160vh;
 }
 .sticky {
   position: sticky;
@@ -319,7 +319,7 @@
 
 /* 04 the split */
 .split {
-  height: 220vh;
+  height: 170vh;
   border-top: 1px solid var(--line);
 }
 .split .sticky {

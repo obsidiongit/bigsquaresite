@@ -88,6 +88,14 @@ export function WindowPage() {
     };
   }, [reelOpen]);
 
+  /* always open at the top: the page is a journey, not a place to resume */
+  useEffect(() => {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    const id = requestAnimationFrame(() => getLenis()?.scrollTo(0, { immediate: true }));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   /* the compositor */
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -152,6 +160,13 @@ export function WindowPage() {
       return (top + bot) / 2;
     };
 
+    /* device-pixel box with rounded edges, so neighbouring quarters meet exactly */
+    const snap = (r: Rect) => {
+      const x0 = Math.round(r.x * dpr);
+      const y0 = Math.round(r.y * dpr);
+      return { x: x0, y: y0, w: Math.round((r.x + r.w) * dpr) - x0, h: Math.round((r.y + r.h) * dpr) - y0 };
+    };
+
     /* draw one clip into pane r, framed (object-fit: cover) to box g */
     const draw = (key: string, r: Rect, g: Rect, alpha: number, now: number) => {
       if (alpha <= 0.002 || r.w < 1 || r.h < 1) return;
@@ -167,11 +182,13 @@ export function WindowPage() {
       if (sw0 / sh0 > ga) { sw = sh0 * ga; sx = (sw0 - sw) / 2; } else { sh = sw0 / ga; sy = (sh0 - sh) / 2; }
       const fx = (r.x - g.x) / g.w;
       const fy = (r.y - g.y) / g.h;
+      const d = snap(r);
       ctx.globalAlpha = alpha;
-      ctx.drawImage(src, sx + fx * sw, sy + fy * sh, (r.w / g.w) * sw, (r.h / g.h) * sh, r.x * dpr, r.y * dpr, r.w * dpr + 0.75, r.h * dpr + 0.75);
+      ctx.drawImage(src, sx + fx * sw, sy + fy * sh, (r.w / g.w) * sw, (r.h / g.h) * sh, d.x, d.y, d.w, d.h);
       ctx.globalAlpha = 1;
     };
 
+    const growEls = [...document.querySelectorAll<HTMLElement>("[data-grow]")];
     const darkEls = [...document.querySelectorAll<HTMLElement>("[data-dark]")];
     const header = document.querySelector<HTMLElement>(`.${s.header}`);
     let headerDark = false;
@@ -179,6 +196,14 @@ export function WindowPage() {
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
       if (!stations.length) return;
+      growEls.forEach((el) => {
+        const sec = el.closest("section");
+        if (!sec) return;
+        const r = sec.getBoundingClientRect();
+        const prog = clamp(-r.top / Math.max(1, r.height - window.innerHeight));
+        const k = 1 - ease(clamp(prog / 0.7));
+        el.style.inset = `${(k * 9).toFixed(3)}vh ${(k * 7).toFixed(3)}vw`;
+      });
       const mid = window.innerHeight / 2;
       const cys = stations.map(centerY);
       let a = 0;
@@ -202,14 +227,16 @@ export function WindowPage() {
         }
         const dim = lerp(A.dim, B.dim, e);
         if (dim > 0.002) {
+          const d = snap(r);
           ctx.fillStyle = `rgba(11,15,23,${dim})`;
-          ctx.fillRect(r.x * dpr, r.y * dpr, r.w * dpr + 0.75, r.h * dpr + 0.75);
+          ctx.fillRect(d.x, d.y, d.w, d.h);
         }
         const fill = lerp(A.fill, B.fill, e);
         if (fill > 0.002) {
           ctx.globalAlpha = fill;
+          const d = snap(r);
           ctx.fillStyle = BLUE;
-          ctx.fillRect(r.x * dpr, r.y * dpr, r.w * dpr + 0.75, r.h * dpr + 0.75);
+          ctx.fillRect(d.x, d.y, d.w, d.h);
           ctx.globalAlpha = 1;
         }
       }
@@ -292,7 +319,7 @@ export function WindowPage() {
       {/* 02 the reel takes the screen */}
       <section className={s.reel}>
         <div className={s.sticky}>
-          <div className={s.full} data-station data-clips="reel" data-dim="0.38" data-dark />
+          <div className={s.full} data-station data-clips="reel" data-dim="0.38" data-dark data-grow />
           <div className={s.reelText}>
             <p className={`${s.label} ${s.labelLight}`}>Showreel · Made in house</p>
             <h2 className={s.reelTitle}>
@@ -425,7 +452,7 @@ export function WindowPage() {
       {/* 07 everything folds back into one big square */}
       <section className={s.finale}>
         <div className={s.sticky}>
-          <div className={s.full} data-station data-clips="reel" data-fill="1" data-dark />
+          <div className={s.full} data-station data-clips="reel" data-fill="1" data-dark data-grow />
           <div className={s.finaleText}>
             <p className={`${s.label} ${s.labelLight}`}>Let&rsquo;s talk</p>
             <h2 className={s.finaleTitle}>
