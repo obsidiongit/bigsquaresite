@@ -246,9 +246,6 @@
 .reel {
   height: 200vh;
 }
-.finale {
-  height: 160vh;
-}
 .sticky {
   position: sticky;
   top: 0;
@@ -258,27 +255,20 @@
   position: absolute;
   inset: 0;
 }
-.reelText,
-.finaleText {
+.reelText {
   position: absolute;
   left: var(--gut);
   right: var(--gut);
   bottom: clamp(40px, 9vh, 96px);
   color: #fff;
 }
-.reelTitle,
-.finaleTitle {
+.reelTitle {
   margin: 20px 0 32px;
   font-family: "LeniaMono", ui-monospace, monospace;
   font-weight: 700;
   font-size: clamp(34px, 5vw, 92px);
   line-height: 0.98;
   letter-spacing: -0.04em;
-}
-.finaleText {
-  bottom: auto;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 /* 03 services */
@@ -542,4 +532,150 @@
 .nav a,
 .logoMark {
   transition: color 0.3s, background-color 0.3s;
+}
+
+/* ---------- round 2: grain, cursor, marquees, drift, the closing wall ---------- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.cursor {
+  position: fixed;
+  z-index: 40;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  background: var(--blue);
+  color: transparent;
+  pointer-events: none;
+  font-family: "LeniaMono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: translate3d(-200px, -200px, 0);
+  will-change: transform;
+}
+@media (pointer: coarse) {
+  .cursor {
+    display: none;
+  }
+}
+
+.marquees {
+  padding: 72px 0 40px;
+  overflow: hidden;
+}
+.marqueeRow {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.track {
+  display: inline-flex;
+  will-change: transform;
+}
+.track span {
+  font-family: "LeniaMono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: clamp(56px, 9vw, 168px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  padding-right: 0.3em;
+}
+.outline .track span {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ink);
+}
+
+.serviceWindowWrap {
+  position: relative;
+}
+.bigN {
+  position: absolute;
+  z-index: -1;
+  top: -0.42em;
+  right: -0.1em;
+  font-family: "LeniaMono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: clamp(140px, 19vw, 340px);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(6, 87, 249, 0.55);
+  pointer-events: none;
+}
+.flip .bigN {
+  right: auto;
+  left: -0.1em;
+}
+.list li {
+  display: flex;
+  gap: 18px;
+}
+.listN {
+  color: var(--blue);
+}
+
+.finale {
+  background: var(--blue);
+  color: #fff;
+  overflow: clip; /* clip, not hidden: hidden would break the sticky headline */
+}
+.wall {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: clamp(20px, 3vw, 56px);
+  align-items: center;
+  padding: 0 var(--gut);
+  min-height: 150vh;
+}
+.wallCol {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.6vw, 24px);
+  padding: 20vh 0;
+}
+.wallTile {
+  aspect-ratio: 4 / 5;
+  background: rgba(255, 255, 255, 0.12) center / cover no-repeat;
+}
+.finaleText {
+  position: sticky;
+  top: 30vh;
+  align-self: start;
+  margin-top: 30vh;
+  text-align: center;
+}
+.finaleText .ctas {
+  justify-content: center;
+}
+.finaleTitle {
+  margin: 20px 0 8px;
+  font-family: "LeniaMono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: clamp(34px, 4.4vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+@media (max-width: 860px) {
+  .wall {
+    grid-template-columns: 1fr 1fr;
+  }
+  .finaleText {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: static;
+    margin: 18vh 0 0;
+  }
+  .bigN {
+    display: none;
+  }
 }
