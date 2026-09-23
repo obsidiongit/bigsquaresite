@@ -811,11 +811,10 @@
   gap: 24px;
   padding: 22px 0;
   border-top: 1px solid var(--line);
-  cursor: none;
   transition: opacity 0.4s var(--ease), color 0.4s var(--ease), padding 0.5s var(--ease);
 }
-.index:hover .row:not(.rowOn) {
-  opacity: 0.32;
+.row:not(.rowOn) {
+  opacity: 0.38;
 }
 .rowOn {
   color: var(--blue);

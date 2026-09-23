@@ -3,8 +3,9 @@
 /* The window (prototype, 2026-09-23, round 3). One continuity device:
    the square from the logo, always playing real work. It starts as the
    full stop of the headline, opens into the full-screen reel, rides a
-   sideways film strip of the three service groups, follows the cursor
-   through an index of the work, and lands in a closing wall of work.
+   sideways film strip of the three service groups, stays pinned beside
+   an index of the work (scroll picks the project), and lands in a
+   closing wall of work.
 
    A fixed WebGL layer draws up to four panes of video. Sections place
    anchor boxes ([data-station]); every frame the panes glide between
@@ -320,7 +321,7 @@ export function WindowPage() {
     let lastY = window.scrollY;
     let vel = 0;
     let marq = 0;
-    let fx = NaN, fy = NaN, activeRow = -1;
+    let activeRow = -1;
 
     let raf = 0;
     const frame = (now: number) => {
@@ -364,21 +365,15 @@ export function WindowPage() {
           strip.style.transform = `translate3d(${(-prog * (strip.scrollWidth - vw)).toFixed(1)}px,0,0)`;
         }
       }
-      // the work index: the window follows the cursor, or the row nearest the middle
+      // the work index: scroll alone picks the project; the window stays pinned on the right
       if (follow && rows.length) {
-        let hovered = -1;
+        let next = 0;
+        let best = Infinity;
         rows.forEach((row, i) => {
-          if (inside(rectOf(row), mx, my)) hovered = i;
+          const rr = row.getBoundingClientRect();
+          const d = Math.abs(rr.top + rr.height / 2 - vh / 2);
+          if (d < best) { best = d; next = i; }
         });
-        let next = hovered;
-        if (next < 0) {
-          let best = Infinity;
-          rows.forEach((row, i) => {
-            const rr = row.getBoundingClientRect();
-            const d = Math.abs(rr.top + rr.height / 2 - vh / 2);
-            if (d < best) { best = d; next = i; }
-          });
-        }
         if (next !== activeRow) {
           rows[activeRow]?.classList.remove(s.rowOn);
           rows[next].classList.add(s.rowOn);
@@ -387,16 +382,10 @@ export function WindowPage() {
         }
         const box = (follow.offsetParent as HTMLElement | null)?.getBoundingClientRect();
         if (box) {
-          const rr = rows[activeRow].getBoundingClientRect();
-          const fw = follow.offsetWidth;
           const fh = follow.offsetHeight;
-          const rest = box.width - fw - vw * 0.04;
-          const tx = hovered >= 0 ? Math.min(rest, Math.max(0, mx - box.left + 36)) : rest;
-          const ty = Math.min(box.height - fh, Math.max(0, rr.top + rr.height / 2 - box.top - fh / 2));
-          if (Number.isNaN(fx)) { fx = tx; fy = ty; }
-          fx += (tx - fx) * 0.14;
-          fy += (ty - fy) * 0.14;
-          follow.style.transform = `translate3d(${fx.toFixed(1)}px, ${fy.toFixed(1)}px, 0)`;
+          const tx = box.width - follow.offsetWidth - vw * 0.04;
+          const ty = Math.min(box.height - fh, Math.max(0, vh / 2 - fh / 2 - box.top));
+          follow.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0)`;
         }
       }
 
@@ -457,7 +446,6 @@ export function WindowPage() {
       renderer.render(scene, camera);
 
       // the cursor: a small square that opens into a label over media and the index
-      if (!overLabel && rows.some((row) => inside(rectOf(row), mx, my))) overLabel = "View";
       const c = cursorRef.current;
       if (c) {
         cx += (mx - cx) * 0.2;
