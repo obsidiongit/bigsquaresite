@@ -97,6 +97,7 @@ function FieldScreen({ children, className }: { children: ReactNode; className?:
       let raf = 0, n = 0, last = performance.now();
       const frame = (t: number) => {
         raf = requestAnimationFrame(frame);
+        if (t - last < 32) return; // 30 fps is plenty: the footage itself is 25
         const dt = Math.min(0.1, (t - last) / 1000);
         last = t;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -105,7 +106,7 @@ function FieldScreen({ children, className }: { children: ReactNode; className?:
           canvas.width = Math.round(W * dpr);
           canvas.height = Math.round(H * dpr);
         }
-        const cell = W < 800 ? 9 : 13;
+        const cell = W < 800 ? 10 : 14;
         const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell);
         if (sample.width !== cols || sample.height !== rows) { sample.width = cols; sample.height = rows; }
         const k2 = `${cols}x${rows}`;
@@ -123,6 +124,7 @@ function FieldScreen({ children, className }: { children: ReactNode; className?:
         lx += (mx - lx) * follow;
         ly += (my - ly) * follow;
         const wave = t * 0.0012;
+        ctx.beginPath();
         for (let y = 0; y < rows; y++)
           for (let x = 0; x < cols; x++) {
             const i = (y * cols + x) * 4;
@@ -137,8 +139,9 @@ function FieldScreen({ children, className }: { children: ReactNode; className?:
               size *= 1 + k * 0.6;
             }
             if (size < 0.6) continue;
-            ctx.fillRect(ox - size / 2, oy - size / 2, size, size);
+            ctx.rect(ox - size / 2, oy - size / 2, size, size);
           }
+        ctx.fill();
         if (mx > -9000) {
           const L = W < 800 ? 140 : 230;
           const bx = lx - L / 2, by = ly - L / 2;
@@ -198,6 +201,7 @@ function Resolve({ src, poster, ratio, delay = 0, className }: { src: string; po
       let raf = 0, last = performance.now();
       const frame = (t: number) => {
         raf = requestAnimationFrame(frame);
+        if (t - last < 32) return;
         const dt = Math.min(0.1, (t - last) / 1000);
         last = t;
         const vh = window.innerHeight;
@@ -234,18 +238,31 @@ function Resolve({ src, poster, ratio, delay = 0, className }: { src: string; po
         ctx.fillStyle = PAPER;
         ctx.fillRect(0, 0, W, H);
         const a = clamp(cur / 0.62); // 0: blue halftone, 1: full-colour squares
-        for (let y = 0; y < rows; y++)
-          for (let x = 0; x < cols; x++) {
-            const i = (y * cols + x) * 4;
-            const lum = (px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11) / 255;
-            const size = ((1 - lum) * 0.92 * (1 - a) + 0.96 * a) * cell;
-            if (size < 0.6) continue;
-            const R = Math.round(BLUE[0] + (px[i] - BLUE[0]) * a);
-            const G = Math.round(BLUE[1] + (px[i + 1] - BLUE[1]) * a);
-            const B = Math.round(BLUE[2] + (px[i + 2] - BLUE[2]) * a);
-            ctx.fillStyle = `rgb(${R},${G},${B})`;
-            ctx.fillRect(x * cell + (cell - size) / 2, y * cell + (cell - size) / 2, size, size);
-          }
+        // colour stage: the sample itself, scaled up with hard edges
+        if (a > 0.01) {
+          ctx.globalAlpha = (1 - vA) * a;
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(sample, 0, 0, cols, rows, 0, 0, cols * cell, rows * cell);
+          // hairline gaps so it still reads as squares
+          ctx.fillStyle = PAPER;
+          for (let x = 1; x < cols; x++) ctx.fillRect(x * cell - 0.75, 0, 1.5, H);
+          for (let y = 1; y < rows; y++) ctx.fillRect(0, y * cell - 0.75, W, 1.5);
+        }
+        // halftone stage: blue squares sized by darkness, one path
+        if (a < 0.99) {
+          ctx.globalAlpha = (1 - vA) * (1 - a);
+          ctx.fillStyle = `rgb(${BLUE.join(",")})`;
+          ctx.beginPath();
+          for (let y = 0; y < rows; y++)
+            for (let x = 0; x < cols; x++) {
+              const i = (y * cols + x) * 4;
+              const lum = (px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11) / 255;
+              const size = (1 - lum) * 0.92 * cell;
+              if (size < 0.6) continue;
+              ctx.rect(x * cell + (cell - size) / 2, y * cell + (cell - size) / 2, size, size);
+            }
+          ctx.fill();
+        }
         ctx.globalAlpha = 1;
       };
       raf = requestAnimationFrame(frame);
