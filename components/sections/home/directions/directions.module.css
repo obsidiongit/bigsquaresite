@@ -91,11 +91,7 @@
   line-height: 0.92;
   letter-spacing: -0.045em;
 }
-.fieldTitle {
-  padding: 18px 22px 16px 0;
-  background: var(--paper);
-  display: inline-block;
-}
+
 
 /* B: the reel shows through the letters (paper layer + screen blend) */
 .cut {

@@ -63,11 +63,41 @@ function Field() {
     root.addEventListener("pointermove", onMove);
     root.addEventListener("pointerleave", onLeave);
 
+    /* the boxes of every line of text in the overlay, relative to the canvas */
+    let holes: { x0: number; y0: number; x1: number; y1: number }[] = [];
+    const measure = () => {
+      const c = canvas.getBoundingClientRect();
+      holes = [];
+      root.querySelectorAll("[data-clear]").forEach((el) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        for (const r of range.getClientRects()) {
+          if (r.width < 2) continue;
+          holes.push({ x0: r.left - c.left, y0: r.top - c.top, x1: r.right - c.left, y1: r.bottom - c.top });
+        }
+      });
+    };
+    const PAD = 14;
+    const FADE = 26;
+    const clearance = (x: number, y: number) => {
+      let k = 1;
+      for (const h of holes) {
+        const dx = Math.max(h.x0 - x, 0, x - h.x1);
+        const dy = Math.max(h.y0 - y, 0, y - h.y1);
+        const d = Math.hypot(dx, dy);
+        if (d < PAD) return 0;
+        if (d < PAD + FADE) k = Math.min(k, (d - PAD) / FADE);
+      }
+      return k;
+    };
+
     const stopAll = whileVisible(root, () => {
       video.play().catch(() => {});
       let raf = 0;
+      let n = 0;
       const frame = (t: number) => {
         raf = requestAnimationFrame(frame);
+        if (n++ % 20 === 0) measure();
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const W = canvas.clientWidth;
         const H = canvas.clientHeight;
@@ -108,6 +138,7 @@ function Field() {
               size *= 1 + k * 0.6;
             }
             size *= 0.85 + 0.15 * Math.sin(wave + x * 0.18 + y * 0.11);
+            size *= clearance(x * cell + cell / 2, y * cell + cell / 2);
             if (size < 0.6) continue;
             ctx.fillRect(ox - size / 2, oy - size / 2, size, size);
           }
@@ -141,13 +172,13 @@ function Field() {
       <video ref={videoRef} className={s.hidden} src={REEL} muted loop playsInline preload="auto" />
       <canvas ref={canvasRef} className={s.fill} />
       <div className={s.overlay}>
-        <p className={s.tag}>A · Field</p>
-        <h2 className={s.fieldTitle}>
+        <p className={s.tag} data-clear>A · Field</p>
+        <h2 className={s.fieldTitle} data-clear>
           Every square
           <br />
           is our work.
         </h2>
-        <p className={s.note}>The reel, rendered as a halftone of the logo square. Move the cursor: the lens shows the real footage.</p>
+        <p className={s.note} data-clear>The reel, rendered as a halftone of the logo square. Move the cursor: the lens shows the real footage.</p>
       </div>
     </section>
   );
@@ -248,7 +279,14 @@ function Tunnel() {
     const N = 44;
     const DEPTH = 88;
     const cards = Array.from({ length: N }, (_, i) => {
-      const mat = new THREE.MeshBasicMaterial({ map: textures[i % textures.length], side: THREE.DoubleSide, fog: true });
+      const mat = new THREE.MeshBasicMaterial({
+        map: textures[i % textures.length],
+        side: THREE.DoubleSide,
+        fog: true,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0,
+      });
       const mesh = new THREE.Mesh(geo, mat);
       scene.add(mesh);
       return { mesh, mat, a: i * 2.4, z: -(i / N) * DEPTH, r: 7 + (i % 3) * 1.6 };
@@ -257,6 +295,7 @@ function Tunnel() {
     const coreMat = new THREE.MeshBasicMaterial({ color: BLUE, fog: false });
     const core = new THREE.Mesh(new THREE.PlaneGeometry(6, 6), coreMat);
     core.position.z = -DEPTH + 4;
+    core.renderOrder = -1;
     scene.add(core);
 
     let mx = 0, my = 0, cx = 0, cy = 0;
@@ -292,6 +331,9 @@ function Tunnel() {
           c.mesh.position.set(Math.cos(c.a) * c.r, Math.sin(c.a) * c.r * 0.72, c.z);
           c.mesh.rotation.set(0, 0, 0);
           c.mesh.lookAt(0, 0, c.z + 12);
+          // invisible in the distance, fully there by the middle of the tunnel
+          const k = Math.min(1, Math.max(0, (c.z + DEPTH * 0.92) / (DEPTH * 0.45)));
+          c.mat.opacity = k * k;
         });
         core.rotation.z += dt * 0.25;
         renderer.render(scene, camera);
