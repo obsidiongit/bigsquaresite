@@ -44,7 +44,7 @@ function whileVisible(el: Element, start: () => () => void) {
 }
 
 /* a giant word with footage inside it; opens by scroll ("scroll"), by hover ("hover"), or never ("none") */
-function Cut({
+export function Cut({
   src,
   poster,
   lines,

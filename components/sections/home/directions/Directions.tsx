@@ -10,7 +10,7 @@
    C · Tunnel: an endless spiral of the work flying past the camera
        toward one blue square. */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import s from "./directions.module.css";
 
@@ -271,7 +271,7 @@ function CutType() {
 }
 
 /* ---------------- C · Tunnel ---------------- */
-function Tunnel() {
+export function Tunnel({ children }: { children?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -372,7 +372,7 @@ function Tunnel() {
   return (
     <section ref={ref} className={s.scene}>
       <canvas ref={canvasRef} className={s.fill} />
-      <div className={s.overlay}>
+      {children ?? <div className={s.overlay}>
         <p className={s.tag}>C · Tunnel</p>
         <h2 className={s.tunnelTitle}>
           One team.
@@ -380,7 +380,7 @@ function Tunnel() {
           Every channel.
         </h2>
         <p className={s.note}>An endless spiral of the work flying toward one blue square. Move the cursor to steer.</p>
-      </div>
+      </div>}
     </section>
   );
 }

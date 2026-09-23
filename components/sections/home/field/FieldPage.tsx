@@ -43,7 +43,7 @@ function coverRect(sw: number, sh: number, ga: number) {
 }
 
 /* ---------- a full-screen field: the reel as a halftone, text carved out, a lens ---------- */
-function FieldScreen({ children, className }: { children: ReactNode; className?: string }) {
+export function FieldScreen({ children, className }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -175,7 +175,7 @@ function FieldScreen({ children, className }: { children: ReactNode; className?:
 }
 
 /* ---------- media that develops: blue halftone, coloured squares, then the footage ---------- */
-function Resolve({ src, poster, ratio, delay = 0, className }: { src: string; poster: string; ratio: string; delay?: number; className?: string }) {
+export function Resolve({ src, poster, ratio, delay = 0, className }: { src: string; poster: string; ratio: string; delay?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
