@@ -9,7 +9,7 @@ import { Pill } from "@/components/shared/Pill";
 import { Section } from "@/components/shared/Section";
 import { EDGE } from "@/lib/layout";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
-import { SERVICE_GROUPS, SERVICES } from "@/lib/services";
+import { GROUP_INTROS, SERVICE_GROUPS, SERVICES } from "@/lib/services";
 
 /* /services/ hub (D2, sitemap.md 2026-08-25). The full catalog as an
    editorial index: statement hero, then one section per group carrying
@@ -25,14 +25,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services/" },
 };
 
-const GROUP_INTROS: Record<string, string> = {
-  "organic-marketing":
-    "The channels you own: search, answers, content, social, and your list. Slower to start, cheapest to keep winning.",
-  "paid-advertising":
-    "Leads on demand. Ads that start producing in weeks and report what every lead cost.",
-  "design-development":
-    "What every channel points at: your brand, your site, and the tools behind them.",
-};
 
 const GROUP_THEMES = ["light", "tint", "light"] as const;
 

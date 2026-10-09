@@ -107,7 +107,7 @@ Snapshot leftovers, unused and safe to delete once nobody needs them: folder "Ma
 | `schedule` | /schedule/ | name, company, locations, email, phone | | yes | GA4 `generate_lead` + Meta `Lead` |
 | `apply` | /apply/growth-partner/ | business, website, industry, locations, budget, blocker, name, email, phone, funnel, qualified, SMS consent record | `qualified` (6+ locations and $15k+), `sms-consent` | yes | + `qualified_lead` / `QualifiedLead` when qualified |
 | `audit` | /audit/ | name, email, phone, company, website, locations, running | | yes | GA4 `generate_lead` + Meta `Lead` |
-| `contact` | /contact/ | name, email, phone, company, locations, message | | yes | GA4 `generate_lead` + Meta `Lead` |
+| `contact` | /contact/ (`PencilContact.tsx`) | name, email, company, website, needs (in the note as "Looking for"), budget, message | | yes | GA4 `generate_lead` + Meta `Lead` |
 | `lead-magnet` | /resources/ | name, email, resource, resourceTitle | `res:<slug>` | no | GA4 `generate_lead` + Meta `ResourceRequest` (custom) |
 | `newsletter` | homepage | email | `newsletter` | no | GA4 `sign_up` + Meta `NewsletterSignup` (custom) |
 

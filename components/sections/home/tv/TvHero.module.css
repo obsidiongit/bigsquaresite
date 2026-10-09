@@ -1,0 +1,165 @@
+/* The TV hero (TvHero.tsx). The section sits above the next section's
+   first screen, which waits underneath to be uncovered by the push. */
+.hero {
+  position: relative;
+  z-index: 2;
+  background: var(--paper);
+  pointer-events: none;
+}
+.hero a,
+.hero button {
+  pointer-events: auto;
+}
+/* while the push's blue breaks up, the hero turns see-through onto the next section */
+.hero.see {
+  background: transparent;
+}
+.hero + * {
+  position: relative;
+  z-index: 1;
+  margin-top: -100vh;
+}
+
+/* first screen: the statement pinned to the bottom, under the TV */
+.header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100svh;
+  padding-bottom: 2.5em;
+}
+.titleBox {
+  max-width: none;
+  opacity: 0;
+  transform: translateY(0.6em);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.titleBox[data-shown] {
+  opacity: 1;
+  transform: none;
+}
+.titleBox p {
+  max-width: 44ch;
+}
+.titleBox h1 {
+  font-size: clamp(2.1rem, 0.9rem + 3.2vw, 4.2rem);
+  line-height: 1.02;
+}
+
+/* the TV rides a sticky screen that starts under the first screen */
+.stage {
+  pointer-events: none;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  margin-top: -100vh;
+  padding: 2.5em;
+  /* the TV resizes every scroll frame: keep that layout and paint inside this box
+     instead of re-laying out the whole page */
+  contain: layout paint style;
+}
+.frame {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  contain: strict;
+}
+.tv {
+  position: relative;
+  width: 100%;
+  max-width: 46vw;
+  aspect-ratio: 16 / 10;
+  margin: 0 auto;
+  overflow: visible;
+  transform-origin: center;
+  will-change: transform;
+}
+.tv :global(svg) {
+  will-change: transform; /* the boiling sketch repaints on its own layer */
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+.spacer {
+  height: 200vh;
+}
+.pushSpacer {
+  height: 130vh;
+}
+
+@media (max-width: 767px) {
+  .stage {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .tv {
+    max-width: 90vw;
+  }
+}
+
+/* the opening: the TV covers everything until it settles */
+.hero[data-intro] .stage {
+  z-index: 3;
+}
+.hero[data-intro] .titleBox {
+  visibility: hidden;
+}
+
+/* the "lower third": the statement as a caption bar on the TV */
+.caption {
+  position: absolute;
+  left: clamp(14px, 3%, 40px);
+  bottom: clamp(14px, 6%, 48px);
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: min(640px, 80%);
+  padding: 14px 18px 15px 14px;
+  border-radius: 10px;
+  background: rgba(11, 15, 23, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.caption i {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: var(--acc);
+}
+.caption p {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+.caption strong {
+  font-family: var(--t);
+  font-size: clamp(16px, 1.5vw, 26px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.caption span {
+  font-size: clamp(12px, 0.95vw, 15px);
+  color: rgba(255, 255, 255, 0.72);
+}

@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
+import { DotPortrait } from "@/components/shared/DotPortrait";
 import {
   NEWSLETTER_FRAMES,
   NEWSLETTER_FRAME_MS,
@@ -28,16 +29,24 @@ import { EASE, IN_VIEW_MARGIN } from "@/lib/motion";
    the cycle pauses offscreen, the SSR frame is always frame 1, and
    reduced motion renders frame 1 alone with nothing animating. */
 
-function FrameBody({ frame, index }: { frame: NewsletterFrame; index: number }) {
+function FrameBody({ frame, index, dots }: { frame: NewsletterFrame; index: number; dots: boolean }) {
   if (frame.src) {
     return (
-      <Image
-        src={frame.src}
-        alt={frame.alt ?? ""}
-        fill
-        sizes="(min-width: 1024px) 40vw, 90vw"
-        className="object-cover"
-      />
+      <>
+        <Image
+          src={frame.src}
+          alt={frame.alt ?? ""}
+          fill
+          sizes="(min-width: 1024px) 40vw, 90vw"
+          className="object-cover"
+        />
+        {/* formerly review toggle ("newsletterLook"): the photo redrawn
+            as blue squares, the team wall's DotPortrait, so stock
+            photography reads in the site's own voice; hover shows it */}
+        {dots && (
+          <DotPortrait cell={5} cut={0.95} fill={0.95} levels className="transition-opacity duration-500 ease-house group-hover:opacity-0" />
+        )}
+      </>
     );
   }
   return (
@@ -61,6 +70,8 @@ export function NewsletterPanel() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { margin: IN_VIEW_MARGIN });
   const reduced = useReducedMotionSafe();
+  /* stock frames wear the blue halftone (STYLE_GUIDE stock-photo rule) */
+  const dots = true;
   const [index, setIndex] = useState(0);
 
   const count = NEWSLETTER_FRAMES.length;
@@ -83,7 +94,7 @@ export function NewsletterPanel() {
   return (
     <div
       ref={ref}
-      className="relative aspect-square overflow-hidden rounded-[var(--radius-media)] border border-sec-line bg-surf"
+      className="group relative aspect-square overflow-hidden rounded-[var(--radius-media)] border border-sec-line bg-surf"
     >
       {frames.map((frame, frameIndex) => {
         const active = frameIndex === shown;
@@ -99,7 +110,7 @@ export function NewsletterPanel() {
             }}
             transition={{ duration: reduced ? 0 : 0.9, ease: EASE.soft }}
           >
-            <FrameBody frame={frame} index={frameIndex} />
+            <FrameBody frame={frame} index={frameIndex} dots={dots} />
           </motion.div>
         );
       })}

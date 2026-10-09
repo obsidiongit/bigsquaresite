@@ -6,6 +6,7 @@ import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { CtaBand } from "@/components/shared/CtaBand";
 import { BracketIndex, Chip, Eyebrow } from "@/components/shared/mono";
 import { Section } from "@/components/shared/Section";
+import { WorkMedia } from "@/components/shared/WorkMedia";
 import { FEATURED_WORK, type WorkEntry } from "@/lib/featured-work";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { EDGE } from "@/lib/layout";
@@ -52,13 +53,10 @@ function WorkCard({ work, index }: { work: WorkEntry; index: number }) {
   return (
     <Reveal delay={(index % 2) * 0.08}>
       <Link href={`/results/${work.slug}/`} className="group block">
-        <div className="relative aspect-[3/2] overflow-hidden rounded-[24px] border border-sec-line bg-surf">
-          <div
-            aria-hidden
-            className="absolute inset-0 flex flex-col items-center justify-center gap-5 p-6 text-center"
-          >
-            <span className="block size-8 shrink-0 rounded-[4px] border-[1.5px] border-sec-acc/40" />
-            <Chip className="text-sec-mid">Case Study</Chip>
+        <div className="relative aspect-[3/2] overflow-hidden rounded-[24px] bg-darkpanel">
+          <div className="absolute inset-0 transition-transform duration-[600ms] ease-house group-hover:scale-[1.03] motion-reduce:transition-none">
+            {/* a 4:5 still sits whole in the 3:2 frame (fit="frame") */}
+            <WorkMedia work={work} index={index} fit="frame" decorative sizes="(min-width: 768px) 50vw, 100vw" />
           </div>
         </div>
         <div className="mt-5 flex items-baseline justify-between gap-4 border-b border-sec-line pb-4 transition-colors duration-[250ms] ease-house group-hover:border-sec-ink">
@@ -102,34 +100,30 @@ export default function ResultsPage() {
           <div className="mt-6 flex flex-col gap-8 md:grid md:grid-cols-12 md:gap-6">
             <Reveal className="md:col-span-8">
               <h1 className="max-w-[14ch] font-display text-h1 text-sec-ink">
-                Real brands.{" "}
+                The work,{" "}
                 <RoughAnnotation
                   variant="circle"
                   delay={0.7}
                   className="whitespace-nowrap"
                 >
-                  Real numbers.
+                  in motion.
                 </RoughAnnotation>
               </h1>
             </Reveal>
             <Reveal delay={0.1} className="md:col-span-4 md:col-start-9 md:self-end">
               <p className="max-w-[40ch] text-body text-sec-mid">
-                Every number here comes from a real account. Ask us about any
-                of them on a call.
+                Posters, ads, and films from the BigSquare studio. Ask us
+                about any of them on a call, and we will walk you through the
+                numbers behind the work.
               </p>
             </Reveal>
           </div>
         </div>
       </Section>
 
-      {/* 2. The case study grid (placeholder state until real data) */}
+      {/* 2. The work grid: reel pieces until real case studies land */}
       <Section theme="light" size="none" className="pb-section-y">
         <div className={EDGE}>
-          <p className="mb-8 max-w-[64ch] font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-            [PLACEHOLDER: real case studies. The cards below hold the grid
-            until real client names, media, and metrics land in
-            lib/featured-work.ts]
-          </p>
           <div className="grid gap-x-6 gap-y-12 md:grid-cols-2">
             {FEATURED_WORK.map((work, i) => (
               <WorkCard key={work.slug} work={work} index={i} />

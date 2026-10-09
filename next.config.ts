@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
   // .mdx joins the module graph so content/blog/*.mdx can be imported
   // (app/(marketing)/blog/[slug]/page.tsx). No MDX file is a route.
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  // `npm run dev:safe` (scripts/dev-safe.mjs) sets BIGSQUARE_SAFE_DEV:
+  // trade a little compile speed for a lower memory peak. Webpack's
+  // option only applies under --webpack, Turbopack's only under --turbo.
+  ...(process.env.BIGSQUARE_SAFE_DEV && {
+    experimental: {
+      webpackMemoryOptimizations: true,
+      turbopackMemoryEviction: "full" as const,
+    },
+  }),
 };
 
 /* MDX wiring (Pane A, 2026-08-30). Plugins are named as STRINGS: the

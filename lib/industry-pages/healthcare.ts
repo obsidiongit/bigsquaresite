@@ -28,7 +28,7 @@ export const HEALTHCARE_PAGE: IndustryPageContent = {
     "BigSquare grows healthcare groups. We run search, ads, and websites for dental, med spa, urgent care, and other practice groups, with a budget and a report for every practice. Every booking shows up in Obsidion, our client portal.",
   heroMedia: {
     id: "healthcare-hero",
-    note: "[PLACEHOLDER: front desk or practice interior, 4:3 crop]",
+    note: "front desk or practice interior, 4:3 crop",
     alt: "A BigSquare healthcare client practice",
   },
   monoStrip: ["Dental", "Med Spas", "Urgent Care", "Physical Therapy"],
@@ -172,7 +172,7 @@ export const HEALTHCARE_PAGE: IndustryPageContent = {
   ],
   spineMedia: {
     id: "healthcare-method",
-    note: "[PLACEHOLDER: booking screen or care team, 16:9]",
+    note: "booking screen or care team, 16:9",
     alt: "Booking results in the Obsidion portal",
     afterBlock: 1,
   },

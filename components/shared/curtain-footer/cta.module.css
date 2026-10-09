@@ -1,0 +1,294 @@
+/* The footer's audit button options. Sits where .cta sat in SiteFooter (positioned by .ctaSlot there). */
+.cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  width: 100%;
+  height: 100%;
+  padding: 0 1.3em 0 1.5em;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.3em;
+  font: inherit;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(0.6em);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.2s,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.2s,
+    color 0.3s;
+}
+.cta[data-on] {
+  opacity: 1;
+  transform: none;
+}
+.text {
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+.arrow {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  width: 0.95em;
+  height: 0.95em;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#foot-pencil-sm);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cta:hover .arrow {
+  transform: translate(0.2em, -0.2em);
+}
+
+/* ---------- A pencil box ---------- */
+.box {
+  position: absolute;
+  inset: -0.2em;
+  width: calc(100% + 0.4em);
+  height: calc(100% + 0.4em);
+  overflow: visible;
+  fill: none;
+  filter: url(#foot-pencil);
+}
+.box path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.line {
+  stroke: rgba(240, 245, 255, 0.92);
+  stroke-width: 1.6;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  vector-effect: none;
+  transition: stroke-dashoffset 1s cubic-bezier(0.5, 0, 0.3, 1) 1.4s;
+}
+.pencil[data-on] .line {
+  stroke-dashoffset: 0;
+}
+.fill {
+  stroke: rgba(240, 245, 255, 0.95);
+  stroke-width: 12;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.4s cubic-bezier(0.55, 0, 0.45, 1);
+}
+.pencil:hover .fill,
+.pencil[data-ticked] .fill {
+  stroke-dashoffset: 0;
+  transition-duration: 0.55s;
+}
+.pencil:hover,
+.pencil[data-ticked] {
+  color: #0657f9;
+  transition-delay: 0s, 0s, 0.15s;
+}
+.tick {
+  stroke: #0657f9;
+  stroke-width: 4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.pencil[data-ticked] .tick {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.35s ease-out;
+}
+.pencil[data-ticked] .arrow {
+  opacity: 0;
+}
+
+/* ---------- B square grows ---------- */
+.grow {
+  justify-content: flex-start;
+  padding-left: 0;
+  gap: 1.1em;
+  overflow: hidden;
+}
+.sq {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  z-index: 1;
+  width: 3.8em;
+  height: 3.8em;
+  background: #fff;
+  transform: translateY(-50%);
+  clip-path: inset(0 calc(100% - 3.8em) 0 0);
+  transition:
+    width 0.55s cubic-bezier(0.7, 0, 0.2, 1),
+    clip-path 0.55s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.grow .text {
+  margin-left: 5em;
+}
+.grow .arrow {
+  margin-left: auto;
+}
+.grow:hover .sq {
+  width: 100%;
+  clip-path: inset(0 0 0 0);
+}
+.grow:hover {
+  color: #0657f9;
+  transition-delay: 0s, 0s, 0.12s;
+}
+.grow:hover .arrow {
+  animation: shoot 0.55s cubic-bezier(0.5, 0, 0.3, 1);
+}
+@keyframes shoot {
+  45% {
+    transform: translate(1.2em, -1.2em);
+    opacity: 0;
+  }
+  46% {
+    transform: translate(-0.8em, 0.8em);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0.2em, -0.2em);
+    opacity: 1;
+  }
+}
+
+/* ---------- C the form ---------- */
+.field {
+  padding: 0;
+  border-bottom: 1.5px solid rgba(240, 245, 255, 0.85);
+}
+.opener,
+.send {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  width: 100%;
+  height: 100%;
+  padding: 0 0.4em;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+/* opened, it widens to the left so both fields have room */
+.field[data-open] {
+  position: absolute;
+  right: 0;
+  width: 31em; /* stops short of the headline */
+  gap: 0.6em;
+}
+.field input {
+  flex: 1;
+  min-width: 0;
+  height: 70%;
+  padding: 0 0.4em;
+  font: inherit;
+  font-size: 0.85em;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  border-radius: 0.2em;
+  outline: none;
+  animation: grow-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.field input + input {
+  animation-delay: 0.08s;
+}
+.field input::placeholder {
+  color: rgba(240, 245, 255, 0.55);
+}
+.field input:focus {
+  background: rgba(255, 255, 255, 0.16);
+}
+.send {
+  flex: none;
+  width: auto;
+  padding: 0 0.9em;
+  height: 70%;
+  background: #fff;
+  color: #0657f9;
+  border-radius: 0.2em;
+}
+@keyframes grow-in {
+  from {
+    opacity: 0;
+    transform: translateX(-0.6em);
+  }
+}
+.done {
+  position: absolute;
+  right: 0;
+  width: 30em;
+  justify-content: flex-start;
+  gap: 0.8em;
+  letter-spacing: 0.18em;
+  border-bottom-color: transparent;
+}
+.bigTick {
+  width: 1.6em;
+  height: 1.2em;
+  overflow: visible;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#foot-pencil-sm);
+}
+.bigTick path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: tick 0.5s ease-out forwards;
+}
+@keyframes tick {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- D magnet ---------- */
+.magnet {
+  will-change: translate;
+}
+.loop {
+  position: absolute;
+  inset: -0.8em -1.2em;
+  width: calc(100% + 2.4em);
+  height: calc(100% + 1.6em);
+  overflow: visible;
+  fill: none;
+  stroke: rgba(240, 245, 255, 0.9);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  filter: url(#foot-pencil);
+}
+.loop path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.4s ease-in;
+}
+.magnet[data-near] .loop path,
+.magnet:focus-visible .loop path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.5, 0, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .line,
+  .fill,
+  .sq,
+  .loop path {
+    transition: none !important;
+  }
+}

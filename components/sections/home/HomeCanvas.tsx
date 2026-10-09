@@ -61,6 +61,8 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 type Props = {
   poster: string;
   video: string | null;
+  /** formerly review toggle ("film"): 0 plain video, 1 colour dots, 2 blue dots */
+  look?: number;
   /** page stage intersecting: drives the frameloop */
   active: boolean;
 };
@@ -1433,6 +1435,9 @@ const sheetFragment = /* glsl */ `
   uniform float uAlpha;
   uniform vec3 uInkDeep;
   uniform vec3 uInkLight;
+  uniform float uLook; /* 0 plain, 1 colour dots, 2 blue dots */
+  uniform float uCell; /* dot cell, device px */
+  uniform vec3 uBlue;
   varying vec2 vUv;
   varying float vT;
 
@@ -1443,7 +1448,25 @@ const sheetFragment = /* glsl */ `
 
   void main() {
     vec2 uv = (vUv - 0.5) / uMediaScale * uCover + 0.5;
-    vec3 col = mix(texture2D(uPoster, uv).rgb, texture2D(uTex, uv).rgb, uTexMix);
+    /* dots (ported from the studio rebuild's hero TV): the picture is
+       drawn as one rounded square per screen cell, sized by the cell's
+       brightness. Sample at the cell centre, found through the uv
+       derivatives so it works at any size the pane is morphing to. */
+    vec2 cellId = floor(gl_FragCoord.xy / uCell);
+    vec2 toCentre = (cellId + 0.5) * uCell - gl_FragCoord.xy;
+    vec2 suv = uLook > 0.5 ? uv + dFdx(uv) * toCentre.x + dFdy(uv) * toCentre.y : uv;
+    vec3 col = mix(texture2D(uPoster, suv).rgb, texture2D(uTex, suv).rgb, uTexMix);
+    if (uLook > 0.5) {
+      float l = dot(col, vec3(0.299, 0.587, 0.114));
+      float size = sqrt(clamp((l - 0.5) * 1.1 + 0.5 + 0.18, 0.0, 1.0));
+      float hs = 0.5 * uCell * mix(0.12, 0.96, size);
+      float d = sdRoundBox(toCentre, vec2(hs), hs * 0.35);
+      float dot_ = (1.0 - smoothstep(-0.6, 0.6, d)) * step(0.03, size);
+      vec3 shade = uLook > 1.5
+        ? mix(uBlue * 0.35, mix(uBlue, vec3(0.78, 0.86, 1.0), 0.35), size)
+        : col * (1.05 + 0.35 * size);
+      col = mix(vec3(0.024, 0.031, 0.047), shade, dot_);
+    }
 
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
     vec3 ink = mix(uInkDeep, uInkLight, smoothstep(0.0, 0.62, lum));
@@ -1460,7 +1483,7 @@ const sheetFragment = /* glsl */ `
   }
 `;
 
-function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
+function FilmPane({ stage, media, look = 0 }: { stage: StageState; media: FilmMedia; look?: number }) {
   const mesh = useRef<THREE.Mesh>(null);
 
   const material = useMemo(
@@ -1497,6 +1520,9 @@ function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
           uAlpha: { value: 0 },
           uInkDeep: { value: INK_DEEP },
           uInkLight: { value: INK_LIGHT },
+          uLook: { value: 0 },
+          uCell: { value: 6 },
+          uBlue: { value: new THREE.Color("#0657F9") },
         },
       }),
     [],
@@ -1562,6 +1588,8 @@ function FilmPane({ stage, media }: { stage: StageState; media: FilmMedia }) {
     u.uMediaScale.value = 1.16 + (1 - 1.16) * seg(p, MEDIA_SCALE) * (1 - sh);
     u.uInk.value = 1 - seg(p, DEVELOP) * (1 - sh);
 
+    u.uLook.value = look;
+    u.uCell.value = 7 * state.gl.getPixelRatio();
     u.uTex.value = media.tex.current;
     u.uPoster.value = media.poster.current;
     u.uTexMix.value = media.mix.current;
@@ -1600,7 +1628,7 @@ function PerfGuard() {
 
 /* ---- scene + canvas root ------------------------------------------- */
 
-function Scene({ poster, video, active, heroNear }: Props & { heroNear: boolean }) {
+function Scene({ poster, video, look, active, heroNear }: Props & { heroNear: boolean }) {
   const stage = useMemo(createStage, []);
   const media = useFilmMedia(poster, video, active && heroNear);
   return (
@@ -1610,7 +1638,7 @@ function Scene({ poster, video, active, heroNear }: Props & { heroNear: boolean 
       <StudioEnvironment />
       <PaperBackdrop stage={stage} />
       <GlassCube stage={stage} active={active} />
-      <FilmPane stage={stage} media={media} />
+      <FilmPane stage={stage} media={media} look={look} />
     </>
   );
 }

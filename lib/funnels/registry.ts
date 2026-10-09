@@ -8,7 +8,7 @@
 
    Copy is real draft copy in the wide positioning (a full-stack agency
    with strong creative; franchise is one lane). Facts we do not have
-   are flagged [PLACEHOLDER]. No invented numbers, clients, or reviews. */
+   are left out. No invented numbers, clients, or reviews. */
 
 export type FunnelPalette = "light" | "tint" | "dark" | "accent";
 
@@ -20,7 +20,7 @@ export type VslFunnel = {
   title: string;
   headline: string;
   sub: string;
-  /** [PLACEHOLDER: video URL] while src is null: poster + inert play square */
+  /** null renders the poster + an inert play square */
   video: { src: string | null; poster: string };
   cta: { label: string; href: string };
   proof: string[];
@@ -69,8 +69,9 @@ export const VSL_PAGES: Record<string, VslFunnel> = {
     headline: "Your marketing, audited. Free.",
     sub: "A short video for owners and marketing leads who want proof, not promises. Then a free audit of your accounts, on a call with us.",
     video: {
-      src: null, // [PLACEHOLDER: video URL]
-      poster: "/media/hero-poster.jpg", // [PLACEHOLDER: VSL poster frame]
+      // the BigSquare showreel until the dedicated VSL is cut
+      src: "/media/showreel-720.mp4",
+      poster: "/media/showreel-poster.jpg",
     },
     cta: { label: "Get a Free Audit", href: "/schedule/" },
     proof: PROOF,

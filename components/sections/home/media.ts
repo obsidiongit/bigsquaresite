@@ -4,6 +4,12 @@
 export const HERO_VIDEO: string | null = "/media/hero-loop.mp4";
 export const HERO_POSTER = "/media/hero-poster.jpg";
 
+/* Formerly review toggle ("reel"): BigSquare's real showreel, 720p
+   for the film, 540p for the work-card clips. */
+export const REEL_VIDEO = "/media/showreel-720.mp4";
+export const REEL_VIDEO_SMALL = "/media/showreel-540.mp4";
+export const REEL_POSTER = "/media/showreel-poster.jpg";
+
 /* The v5.1 hero choreography lives in the first K of the (now longer)
    hero wrapper; the reform beat (panel back into the cube, v6) takes
    the last 1-K. Shared by the Hero DOM scrubs and HomeCanvas so both

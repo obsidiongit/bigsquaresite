@@ -94,6 +94,7 @@ const ANSWER_LABELS: Record<string, string> = {
   budget: "Monthly ad budget",
   blocker: "What holds growth back",
   running: "Running now",
+  needs: "Looking for",
   message: "Message",
   resourceTitle: "Resource",
   qualified: "Qualified",

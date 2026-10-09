@@ -132,9 +132,46 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* 2. Story (65ch spine + the about-founders slot) is out until
-          Brad writes the founding story: it shipped as a visible
-          placeholder (launch fix, 2026-10-09). */}
+      {/* 2. Story: 65ch spine + the founders slot */}
+      <Section theme="light" size="none" className="pb-section-y">
+        <div className={EDGE}>
+          <div className="flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-6">
+            <div className="lg:col-span-6">
+              <Eyebrow>Who we are</Eyebrow>
+              {/* facts from the BigSquare brand file only; the founding
+                  story replaces this when Brad writes it */}
+              <div className="mt-6 flex max-w-[65ch] flex-col gap-5 text-body text-sec-ink">
+                <p>
+                  BigSquare is led by its founders, Brad Brown and Mike
+                  Soden, and built around one problem: when creative,
+                  media, and the website come from different vendors,
+                  information gets lost in the handoffs and nobody can say
+                  whether the marketing is working.
+                </p>
+                <p>
+                  So one team runs all of it: search, ads, sites, and
+                  creative. Clients log into Obsidion and check the numbers
+                  any day, not once a month in a deck.
+                </p>
+                <p className="text-sec-mid">
+                  We work from Denver and Tampa with multi-location and
+                  franchise businesses, ecommerce and software brands, and
+                  single-location businesses that want to grow where they
+                  are.
+                </p>
+              </div>
+            </div>
+            <div className="lg:col-span-5 lg:col-start-8">
+              <MediaSlot
+                id="about-founders"
+                note="The BigSquare team"
+                alt="The BigSquare team: Brad Brown, Mike Soden, Chaley Selsor, Levi Holley and Russel Spence"
+                aspect="4 / 3"
+              />
+            </div>
+          </div>
+        </div>
+      </Section>
 
       {/* 3. How we work: three cards on tint */}
       <Section theme="tint">
@@ -194,10 +231,6 @@ export default function AboutPage() {
           </div>
         </div>
       </Section>
-
-      {/* 5. Proof numbers (the METRICS grid on dark) is out until
-          lib/metrics.ts holds sourced figures: the current values are
-          stand-ins (launch fix, 2026-10-09). */}
 
       {/* 6. Offices */}
       <Section theme="light">

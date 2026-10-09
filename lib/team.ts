@@ -7,9 +7,9 @@
    lib/blog-authors.ts (Brad, 2026-08-30), sharing the same headshot
    slots so one photo drop lights the blog byline AND the team card.
    Everything personal (about, likes, photos, the rotation line) is
-   left out of the profile window until that person answers the
-   questionnaire in project-sections/company/team.md; never fake
-   personality.
+   hidden until that person answers the questionnaire in
+   project-sections/company/team.md; the profile window renders a
+   designed empty state meanwhile, never fake personality.
 
    Open slots (Brad's pick, 2026-08-31: members plus extra open
    slots): unnamed cards signalling the fuller team; replace each with
@@ -54,9 +54,9 @@ export type OpenSlot = {
 
 export type TeamCard = TeamMember | OpenSlot;
 
-/* Questionnaire fields (project-sections/company/team.md) are empty
-   strings until a person answers; TeamGrid leaves empty sections out
-   (launch fix, 2026-10-09: they shipped as visible placeholders). */
+/* Until a person answers the questionnaire (project-sections/company/
+   team.md), "about" is one factual line about their role (brand file
+   roles), and the empty fields simply do not render. */
 
 function member(
   name: string,
@@ -65,7 +65,7 @@ function member(
   signature: string,
   photoKey: string,
   profile?: Partial<
-    Pick<TeamMember, "about" | "likes" | "rotation" | "linkedin">
+    Pick<TeamMember, "about" | "likes" | "rotation" | "linkedin" | "photos">
   >,
 ): TeamMember {
   return {
@@ -76,34 +76,31 @@ function member(
     signature,
     about: profile?.about ?? "",
     likes: profile?.likes ?? [],
-    photos: [1, 2, 3].map((n) => ({
-      slot: `team-${photoKey}-${n}`,
-      note: `Personal photo ${n} of 3. Their pick, not stock.`,
-      alt: `[PLACEHOLDER: what the photo shows, from ${signature}]`,
-    })),
+    // personal photos join when each person sends theirs (slots team-<key>-1..3)
+    photos: profile?.photos ?? [],
     rotation: profile?.rotation ?? "",
     linkedin: profile?.linkedin ?? null,
   };
 }
 
 export const TEAM: TeamCard[] = [
-  member("Brad Brown", "CEO", "blog-author-brad", "Brad", "brad"),
+  member("Brad Brown", "CEO", "blog-author-brad", "Brad", "brad", {
+    about: "Brad is BigSquare's CEO and one of its two founders.",
+  }),
   member("Mike Soden", "CTO", "blog-author-mike", "Mike", "mike", {
     about:
       "I run the technical side of BigSquare. I own the sites, the tracking, and the dashboards that turn spend into a report you can check. If the numbers are wrong, nothing else we do matters. The rest of my time goes to games, long drives, hiking, and the animals I keep at home.",
     likes: ["Video games", "Driving", "Hiking", "Animals"],
     rotation: "The Tim Dillon Show",
   }),
-  member("Chaley Selsor", "Team Lead", "blog-author-chaley", "Chaley", "chaley"),
-  member("Levi Holley", "VP of Sales", "blog-author-levi", "Levi", "levi"),
-  member("Russel Spence", "Creative Director", "blog-author-russel", "Russel", "russel"),
-  /* The rest of the team joins as Brad sends names; each open slot
-     becomes one member(...) call. Five members + 5 open + the
-     double-wide careers card = 12 grid cells, so the wall closes
-     flush at 2, 3, and 4 columns. */
-  { kind: "open", id: "open-1" },
-  { kind: "open", id: "open-2" },
-  { kind: "open", id: "open-3" },
-  { kind: "open", id: "open-4" },
-  { kind: "open", id: "open-5" },
+  member("Chaley Selsor", "Team Lead", "blog-author-chaley", "Chaley", "chaley", {
+    about: "Chaley leads the client success team, the people clients talk to every week.",
+  }),
+  member("Levi Holley", "VP of Sales", "blog-author-levi", "Levi", "levi", {
+    about: "Levi runs sales at BigSquare and is usually the first person a new client talks to.",
+  }),
+  member("Russel Spence", "Creative Director", "blog-author-russel", "Russel", "russel", {
+    about: "Russel is BigSquare's Creative Director, leading the creative: the ads, the films, and the brands.",
+  }),
+  /* The rest of the team joins as Brad sends names: one member(...) call each. */
 ];

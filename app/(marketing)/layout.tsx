@@ -1,8 +1,11 @@
 import { PageTransitions } from "@/components/motion/PageTransitions";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { SoundProvider } from "@/components/sound/SoundProvider";
-import { Footer } from "@/components/shared/Footer";
+import { CurtainFooter } from "@/components/shared/curtain-footer/CurtainFooter";
 import { Nav } from "@/components/shared/Nav";
+import { HandFx } from "@/components/shared/HandFx";
+import { LaunchSafe } from "@/components/shared/LaunchSafe";
+import { ScrollStrike } from "@/components/shared/ScrollStrike";
 
 /* Marketing chrome: the fixed nav and the shared footer mount here, not
    in the root layout, so future /go/, /apply/, and /thanks/ funnel
@@ -22,7 +25,10 @@ export default function MarketingLayout({
       <PageTransitions />
       <Nav />
       {children}
-      <Footer />
+      <CurtainFooter />
+      <HandFx />
+      <LaunchSafe />
+      <ScrollStrike />
     </>
   );
 }

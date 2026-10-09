@@ -839,3 +839,10 @@ html.lenis .scroll-instrument {
     outline-offset: 3px;
   }
 }
+
+/* Launch-safe: placeholder markers stay off the page (components/shared/
+   LaunchSafe); ?markers on any URL shows them for a QA pass */
+[data-launch-hidden] { display: none !important; }
+html:not([data-show-markers]) [data-launch-gate] { display: none !important; }
+html:not([data-show-markers]) section:has(> * > [data-launch-gate="section"]),
+html:not([data-show-markers]) section:has([data-launch-gate="section"]) { display: none !important; }

@@ -28,7 +28,7 @@ export const LEGAL_PAGE: IndustryPageContent = {
     "BigSquare grows law firms. We run search, ads, and content for multi-office firms and growing practices, with a budget and a report for every office and every practice area. Every case inquiry shows up in Obsidion, our client portal.",
   heroMedia: {
     id: "legal-hero",
-    note: "[PLACEHOLDER: attorneys in consult or office exterior, 4:3 crop]",
+    note: "attorneys in consult or office exterior, 4:3 crop",
     alt: "A BigSquare law firm client office",
   },
   monoStrip: ["Personal Injury", "Family Law", "Criminal Defense"],
@@ -167,7 +167,7 @@ export const LEGAL_PAGE: IndustryPageContent = {
   ],
   spineMedia: {
     id: "legal-method",
-    note: "[PLACEHOLDER: intake dashboard or attorney team, 16:9]",
+    note: "intake dashboard or attorney team, 16:9",
     alt: "Intake results in the Obsidion portal",
     afterBlock: 2,
   },

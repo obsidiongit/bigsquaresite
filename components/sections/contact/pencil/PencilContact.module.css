@@ -1,0 +1,398 @@
+.page {
+  --blue: #0657f9;
+  min-height: 100vh;
+}
+.wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  grid-template-areas:
+    "head head"
+    "side form";
+  gap: 4em 6em;
+  padding: 11em 0 9em;
+}
+
+/* ---------- head ---------- */
+.head {
+  grid-area: head;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4em;
+}
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.kicker i {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 0.1em;
+  background: var(--acc);
+}
+.title {
+  margin: 0;
+  font-size: 9vw;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+.lede {
+  max-width: 30em;
+  margin: 0;
+  font-size: 1.25em;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+/* ---------- side ---------- */
+.side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  align-self: start;
+  position: sticky;
+  top: 8em;
+}
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--t);
+}
+.label {
+  margin-bottom: 0.4em;
+  font-size: 0.875em;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.city {
+  margin: 0;
+  font-size: 1.9em;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.city span {
+  color: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.portal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.4em;
+  letter-spacing: -0.02em;
+  color: var(--acc);
+  text-decoration: none;
+}
+.small {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+/* pencil bits (the footer's #foot-pencil filters) */
+.arrow {
+  flex: none;
+  width: 1.6em;
+  height: 0.6em;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#foot-pencil-sm);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+a:hover .arrow,
+.button:hover .arrow {
+  transform: translateX(0.3em);
+}
+
+/* ---------- form ---------- */
+.form {
+  grid-area: form;
+  display: flex;
+  flex-direction: column;
+  gap: 2.6em;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+}
+.field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+.field > span,
+.set legend {
+  font-size: 0.875em;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.35em 0 0.5em;
+  font: inherit;
+  font-size: 1.5em;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--t);
+  outline: none;
+  resize: vertical;
+}
+.field textarea {
+  font-size: 1.2em;
+  line-height: 1.45;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+/* the field you're in gets a blue pencil underline */
+.field > i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1em;
+  height: 0.5em;
+  background: no-repeat left center / 100% 100%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 8' preserveAspectRatio='none'%3E%3Cpath d='M1 5 C60 2 140 6 210 3 S280 4 299 3' fill='none' stroke='%230657f9' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.5s cubic-bezier(0.5, 0, 0.3, 1);
+  pointer-events: none;
+}
+.field:focus-within > i {
+  clip-path: inset(0 0 0 0);
+}
+.set {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+.set legend {
+  margin-bottom: 1em;
+  padding: 0;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 0.8em;
+}
+.chip {
+  position: relative;
+  padding: 0.55em 1.05em;
+  font-size: 1.05em;
+  letter-spacing: -0.01em;
+  border: 1px solid var(--t);
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition:
+    color 0.25s,
+    border-color 0.25s;
+  user-select: none;
+}
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.chip:hover {
+  border-color: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.chip:has(input:focus-visible) {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+.chip[data-on] {
+  color: var(--acc);
+  border-color: transparent;
+}
+/* picked: a pencil loop draws round it */
+.loop {
+  position: absolute;
+  inset: -0.45em -0.55em;
+  width: calc(100% + 1.1em);
+  height: calc(100% + 0.9em);
+  overflow: visible;
+  fill: none;
+  stroke: var(--acc);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  filter: url(#foot-pencil-sm);
+  pointer-events: none;
+}
+.loop path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.3s ease-in;
+}
+/* (hidden while undrawn: the round tip of an empty stroke shows as a dot) */
+.loop {
+  opacity: 0;
+  transition: opacity 0s 0.3s;
+}
+.chip[data-on] .loop {
+  opacity: 1;
+  transition: none;
+}
+.chip[data-on] .loop path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.55s cubic-bezier(0.5, 0, 0.3, 1);
+}
+
+/* send: a pencil box that scribbles in blue on hover */
+.send {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+}
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5em;
+  min-width: 15em;
+  height: 3.6em;
+  padding: 0 1.3em 0 1.5em;
+  font: inherit;
+  font-size: 1.1em;
+  letter-spacing: -0.01em;
+  color: var(--acc);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.25s 0.1s;
+}
+.button > span,
+.button > .arrow {
+  position: relative;
+  z-index: 1;
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.box {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  filter: url(#foot-pencil);
+}
+.boxLine {
+  stroke: var(--acc);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.boxFill {
+  stroke: var(--acc);
+  stroke-width: 14;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.4s cubic-bezier(0.55, 0, 0.45, 1);
+}
+.button:hover .boxFill,
+.button:focus-visible .boxFill {
+  stroke-dashoffset: 0;
+  transition-duration: 0.55s;
+}
+.button:hover,
+.button:focus-visible {
+  color: #fff;
+  outline: none;
+}
+.fail {
+  margin: 0;
+  color: #c62828;
+}
+
+/* ---------- sent ---------- */
+.done {
+  grid-area: form;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  align-self: start;
+}
+.done h2 {
+  margin: 0;
+  font-size: 4em;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+.done p {
+  margin: 0;
+  font-size: 1.25em;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.tick {
+  width: 4em;
+  height: 3em;
+  overflow: visible;
+  fill: none;
+  stroke: var(--acc);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#foot-pencil-sm);
+}
+.tick path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.6s ease-out forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .wrap {
+    /* minmax(0, 1fr), not 1fr: a bare 1fr track grows to its widest
+       no-wrap child and pushed the page 13px sideways at 390 */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "form"
+      "side";
+    padding-top: 8em;
+  }
+  .side {
+    position: static;
+  }
+  .title {
+    font-size: 17vw;
+  }
+}
+@media (max-width: 479px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+  /* the support address in mono runs past a phone's width: smaller, and
+     allowed to break */
+  .portal {
+    font-size: 1.15em;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .field input {
+    font-size: 1.25em;
+  }
+}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/shared/Footer";
+import { CurtainFooter } from "@/components/shared/curtain-footer/CurtainFooter";
 import { Nav } from "@/components/shared/Nav";
 import { SoundProvider } from "@/components/sound/SoundProvider";
 import { NotFoundStage } from "./NotFoundStage";
@@ -22,7 +22,7 @@ export default function NotFound() {
       <SoundProvider />
       <Nav />
       <NotFoundStage />
-      <Footer />
+      <CurtainFooter />
     </>
   );
 }

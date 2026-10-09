@@ -5,16 +5,16 @@ import { Container } from "@/components/shared/Container";
 import { Section } from "@/components/shared/Section";
 import { Eyebrow } from "@/components/shared/mono";
 import { Pill } from "@/components/shared/Pill";
-import { FEATURED_WORK, type CaseStudy } from "@/lib/featured-work";
+import { FEATURED_WORK, type CaseStudy, type WorkEntry } from "@/lib/featured-work";
+import { WorkMedia } from "@/components/shared/WorkMedia";
 import { FOOTER_COLUMNS } from "@/lib/footer-links";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 
 /* Case study pages (project-sections/results/_case-study-template.md;
    data-driven 2026-08-31, Pane C). Two states from one entry in
    lib/featured-work.ts:
-   - `caseStudy` absent: the noindex skeleton (every slug resolves from
-     day one; the homepage grid links here). Visible [PLACEHOLDER]s, no
-     JSON-LD (structured data never carries placeholders).
+   - `caseStudy` absent: the reel piece page (ReelPiece): the clip, what
+     it shows, the services behind it. noindex, no JSON-LD.
    - `caseStudy` present: the real layout in the template's section
      order, indexed, title tag "[Result] for [Client type] | BigSquare"
      from the headline, BreadcrumbList JSON-LD.
@@ -45,10 +45,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const cs = work?.caseStudy;
   return {
     // The layout template appends " | BigSquare"
-    title: cs ? cs.headline : "Case Study",
+    title: cs ? cs.headline : work ? work.title : "Work",
     description: cs
       ? cs.summary
-      : "A BigSquare case study: the situation, the work, and the numbers.",
+      : work?.blurb ?? "Work from the BigSquare reel.",
     alternates: { canonical: `/results/${slug}/` },
     // Indexed only once the entry carries real data
     robots: cs ? undefined : { index: false },
@@ -64,21 +64,6 @@ function Metrics({ cs }: { cs: CaseStudy }) {
           <p className="mt-3 text-body text-sec-ink">{metric.label}</p>
           <p className="mt-2 font-mono text-mono-sm uppercase text-sec-mid">
             {metric.window} · {metric.source}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function SkeletonMetrics() {
-  return (
-    <div className="grid gap-12 md:grid-cols-3 md:gap-6">
-      {[1, 2, 3].map((n) => (
-        <div key={n}>
-          <p className="font-display text-metric text-sec-acc">000%</p>
-          <p className="mt-3 font-mono text-mono-sm uppercase text-sec-mid">
-            [PLACEHOLDER: metric {n}, with time window and source]
           </p>
         </div>
       ))}
@@ -153,27 +138,63 @@ function CaseStudyBody({ cs }: { cs: CaseStudy }) {
   );
 }
 
-function SkeletonBody() {
+/* A piece from the BigSquare reel (entries without a caseStudy): the
+   clip big, what it shows in one line, the services behind it, and the
+   ask. No metrics: those only ship with a real, sourced case study. */
+function ReelPiece({ work }: { work: WorkEntry }) {
   return (
-    <>
-      <h2 className="font-display text-h2 text-sec-ink">The situation</h2>
-      <p className="mt-6 text-body text-sec-mid">
-        [PLACEHOLDER: 2 to 3 short paragraphs. Where they started, what was
-        broken.]
-      </p>
-
-      <h2 className="mt-16 font-display text-h2 text-sec-ink">What we did</h2>
-      <p className="mt-6 text-body text-sec-mid">
-        [PLACEHOLDER: 3 to 5 steps, plain words, each naming the service used,
-        linked.]
-      </p>
-
-      <h2 className="mt-16 font-display text-h2 text-sec-ink">The result</h2>
-      <p className="mt-6 text-body text-sec-mid">
-        [PLACEHOLDER: 1 to 2 paragraphs restating the headline number with the
-        time window.]
-      </p>
-    </>
+    <main>
+      <Section theme="light" size="lg" className="pt-40 md:pt-48">
+        <Container>
+          <Eyebrow>{work.media ? "From the BigSquare studio" : "From the BigSquare reel"}</Eyebrow>
+          <h1 className="mt-6 max-w-[16ch] font-display text-h1 text-sec-ink">{work.title}</h1>
+          {work.blurb ? <p className="mt-6 max-w-[52ch] text-lead text-sec-mid">{work.blurb}</p> : null}
+          <p className="mt-4 font-mono text-mono-sm uppercase text-sec-mid">{work.tags.join(" · ")}</p>
+          {/* a still shows whole at its own 4:5; a reel piece plays its clip */}
+          <div
+            className={
+              work.media
+                ? "relative mt-12 aspect-[4/5] w-full max-w-[640px] overflow-hidden rounded-[24px] bg-surf"
+                : "relative mt-12 aspect-video overflow-hidden rounded-[24px] bg-darkpanel"
+            }
+          >
+            <WorkMedia work={work} sizes="(min-width: 768px) 640px, 100vw" />
+          </div>
+        </Container>
+      </Section>
+      <Section theme="light">
+        <Container className="max-w-[720px]">
+          {work.services?.length ? (
+            <div>
+              <Eyebrow>Services behind it</Eyebrow>
+              <ul className="mt-4 flex flex-col gap-2">
+                {work.services.map((slug) => (
+                  <li key={slug}>
+                    <Link
+                      href={`/services/${slug}/`}
+                      className="text-body font-medium text-sec-ink underline underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:text-sec-acc"
+                    >
+                      {serviceLabel(slug)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          <div className="mt-16 border-t border-sec-line pt-8">
+            <p className="text-body text-sec-mid">
+              Want work like this for your brand? Book a call and we will show you what we would do first.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-4">
+              <Pill href="/schedule/">Schedule a Call</Pill>
+              <Pill href="/results/" variant="secondary">
+                See All Work
+              </Pill>
+            </div>
+          </div>
+        </Container>
+      </Section>
+    </main>
   );
 }
 
@@ -183,6 +204,7 @@ export default async function CaseStudyPage({ params }: Params) {
   if (!work) notFound();
 
   const cs = work.caseStudy;
+  if (!cs) return <ReelPiece work={work} />;
   // JSON-LD only with real data: placeholder titles never reach
   // structured data (OrganizationJsonLd rule).
   const jsonLd = cs
@@ -207,7 +229,7 @@ export default async function CaseStudyPage({ params }: Params) {
         <Container>
           <Eyebrow>Case Study</Eyebrow>
           <h1 className="mt-6 max-w-[16ch] font-display text-h1 text-sec-ink">
-            {cs ? cs.headline : work.title}
+            {cs.headline}
           </h1>
           {cs ? (
             <>
@@ -218,29 +240,19 @@ export default async function CaseStudyPage({ params }: Params) {
                 {work.title} · {work.tags.join(" · ")}
               </p>
             </>
-          ) : (
-            <>
-              <p className="mt-6 max-w-[52ch] text-lead text-sec-mid">
-                [PLACEHOLDER: headline result and one-line summary. Pattern: the
-                outcome with the number in it.]
-              </p>
-              <p className="mt-4 font-mono text-mono-sm uppercase text-sec-mid">
-                {work.tags.join(" · ")}
-              </p>
-            </>
-          )}
+          ) : null}
         </Container>
       </Section>
 
       {/* 2. The numbers: 3 metrics on the dark band */}
       <Section theme="dark">
-        <Container>{cs ? <Metrics cs={cs} /> : <SkeletonMetrics />}</Container>
+        <Container><Metrics cs={cs} /></Container>
       </Section>
 
       {/* 3 to 7. Situation, work, result, quote, services */}
       <Section theme="light">
         <Container className="max-w-[720px]">
-          {cs ? <CaseStudyBody cs={cs} /> : <SkeletonBody />}
+          <CaseStudyBody cs={cs} />
 
           <div className="mt-16 border-t border-sec-line pt-8">
             <p className="text-body text-sec-mid">

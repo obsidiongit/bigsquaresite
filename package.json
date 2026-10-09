@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:safe": "node scripts/dev-safe.mjs",
     "build": "next build",
     "assets:studio": "node scripts/asset-studio/render.mjs",
     "blog:assets": "node scripts/blog-assets.mjs",

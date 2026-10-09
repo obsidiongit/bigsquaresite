@@ -9,6 +9,6 @@
    The poster reuses the dark abstract placeholder loop's frame until
    the real film ships with its own poster.
 
-   [PLACEHOLDER: VSL film + its poster frame] */
-export const VSL_VIDEO: string | null = null;
-export const VSL_POSTER = "/media/hero-poster.jpg";
+   Until the dedicated film is cut, the BigSquare showreel plays here. */
+export const VSL_VIDEO: string | null = "/media/showreel-720.mp4";
+export const VSL_POSTER = "/media/showreel-poster.jpg";
