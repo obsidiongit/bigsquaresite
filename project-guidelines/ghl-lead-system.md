@@ -56,6 +56,8 @@ on "ok"
 | Sub-account | BigSquare Marketing, location id `7VBUf1asBTeGlv6V2vtf` |
 | Pipeline | **Website Leads** `FdeqZD1RbsHH8Ku4Z27i` |
 | Stages | New Lead `9a0090a5-26a3-493d-8fcd-514037609840` · Contacted `297baf5c-fd59-472e-9457-974ae37adcd1` · Call Booked `105402d7-4cd4-42d9-80ef-c470f06769ad` · Showed `0f576f8e-9fe1-469c-b7c8-be9296f58d03` · Proposal Sent `c9748afb-8260-4d3b-b8aa-866131ba2d8e` · Nurture `c718d48a-71d1-44dd-8ab7-b00075bdeef3` |
+| Calendar | **Strategy Call (website)** `K0Isp8DY5GPqcYqK1uia`, collective, widget slug `bigsquare-strategy-call`. Members: Levi Holley `QRdM3Hv1bCDtAN3M3S14` (primary, levi@bigsquaremarketing.com) and "BigSquare Support" `wuIM7XCLVHSe4vt8qnCu` (support@bigsquaremarketing.com, Brad's login in this sub-account). 30 min slots on a 30 min interval, Mon to Fri 11:00 to 21:00 Eastern (= 9 to 7 Mountain, copied from Obsidion's "Book a call with our team"), 14 days ahead, 1 per slot, no minimum notice, Google Meet, auto-confirm, reschedule/cancel allowed |
+| Users in the sub-account | Levi Holley, BigSquare Support (Brad). Location timezone America/New_York |
 | Workflow W1 | **W1 Website lead alert (team@)** `6c2c5907-395e-4ef8-8297-b9aa407bb933` (published) |
 | Fallback workflow | **Website form inbound** `a45f495f-3f42-4f1e-b75c-2a5adbca7022` (published) |
 | API access | Private Integration token "bigsquaremarketing.com website" (scopes in section 9) |
@@ -231,7 +233,7 @@ Brad's review before publish.
 | `META_TEST_EVENT_CODE` | Vercel preview only, temporary | unset |
 | `NEXT_PUBLIC_GA4_ID` | Vercel + `.env.local` | set |
 | `NEXT_PUBLIC_GTAG_ID` | Vercel | unset (no Google Ads yet) |
-| `GHL_CALENDAR_ID` | Vercel | unset until the booking calendar exists |
+| `GHL_CALENDAR_ID` | Vercel + `.env.local` | set (`K0Isp8DY5GPqcYqK1uia`), used by the pick-a-time step once built |
 
 Private Integration token scopes: contacts, calendars, calendars/events, opportunities,
 locations/customFields, locations/tags (view + edit each); locations, users (view).
@@ -301,7 +303,8 @@ old integration. (The current token was pasted in chat once on 2026-10-09; rotat
 | Website Leads pipeline + 34 custom fields | live |
 | Meta pixel (browser) | live |
 | Meta Conversions API | live in production (token set 2026-10-09); confirm server events in Events Manager after the first real lead |
-| Booking calendar + pick-a-time step | waiting on Levi (new user, levi@bigsquaremarketing.com) and Brad added to the BigSquare sub-account, each with Google Calendar connected. Plan: collective booking, Levi owner, Brad member (lead-funnel.md section 5) |
+| Booking calendar | built 2026-10-09 (collective, Levi primary + Brad); waiting on Levi and Brad to connect Google Calendar in the BigSquare sub-account (conflicts + Meet links). Switch to round robin or Levi only when volume grows |
+| Pick-a-time step on /schedule/ + "call booked" workflow (W3) | next to build; go live only after both Google connections exist |
 | Prospect confirmations and follow-ups (W2 to W10) | to build; copy goes to Brad |
 | SPF / DKIM / DMARC + GHL dedicated sending domain | waiting on Namecheap access |
 | SMS (LC phone + A2P) | not started |
