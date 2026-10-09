@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
@@ -14,6 +14,7 @@ import { EASE } from "@/lib/motion";
 import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
+import { bookedLabel, calendarLinks, TimePicker } from "./TimePicker";
 
 /* The /schedule/ STEPPED application (conversion/schedule.md v2.1;
    Brad round 2: "an application that you click through and submit the
@@ -33,7 +34,12 @@ import { cn } from "@/lib/utils";
 
    Submission and the 6.13 contract are unchanged: single submit path
    (formType "schedule", page slug, UTM), no navigation, in-place
-   confirmation, measured height lock, focus to the confirmation. */
+   confirmation, measured height lock, focus to the confirmation.
+
+   With booking on (`booking`, BOOKING_ENABLED on the server) a sixth
+   step follows the send: the submit returns a booking token and the
+   card swaps to the TimePicker (lead-funnel.md section 5). The lead is
+   saved before it, so every exit from the picker is a confirmation. */
 
 /* "Online only" first: we serve ecommerce and single-location
    businesses too (Brad, 2026-08-26: the flow must not read
@@ -149,10 +155,10 @@ function SquareMeter({ filled, reduced }: { filled: number; reduced: boolean }) 
   );
 }
 
-function StepSquares({ step }: { step: number }) {
+function StepSquares({ step, total }: { step: number; total: number }) {
   return (
     <div aria-hidden className="flex items-center gap-1.5">
-      {Array.from({ length: STEP_COUNT }, (_, i) => (
+      {Array.from({ length: total }, (_, i) => (
         <span
           key={i}
           className={cn(
@@ -167,9 +173,16 @@ function StepSquares({ step }: { step: number }) {
   );
 }
 
-type Status = "idle" | "sending" | "done";
+type Status = "idle" | "sending" | "picking" | "done";
 
-function Confirmation({ reduced }: { reduced: boolean }) {
+/** sent: booking off (unchanged copy); call: no time picked, we call to
+    set one; booked: the confirmed start */
+type Outcome = { kind: "sent" } | { kind: "call" } | { kind: "booked"; start: string };
+
+const CAL_LINK =
+  "font-mono text-mono-sm uppercase text-sec-ink underline underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:text-acc";
+
+function Confirmation({ reduced, outcome }: { reduced: boolean; outcome: Outcome }) {
   const ref = useRef<HTMLDivElement>(null);
 
   /* Focus the confirmation as it arrives: the submit button that had
@@ -201,12 +214,43 @@ function Confirmation({ reduced }: { reduced: boolean }) {
       >
         <Check strokeWidth={2.5} className="size-5" />
       </motion.span>
-      <p className="text-h3 font-bold text-sec-ink">
-        Got it. We will set up your call.
-      </p>
-      <p className="text-small text-sec-mid">
-        No long-term contracts. You own your accounts.
-      </p>
+      {outcome.kind === "booked" ? (
+        <>
+          <p className="text-h3 font-bold text-sec-ink">You are booked.</p>
+          <p className="text-body text-sec-ink">{bookedLabel(outcome.start)}</p>
+          <p className="text-small text-sec-mid">
+            The Google Meet link is in your inbox.
+          </p>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <a
+              href={calendarLinks(outcome.start).google}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={CAL_LINK}
+            >
+              Add to Google Calendar
+            </a>
+            <a
+              href={calendarLinks(outcome.start).ics}
+              download="bigsquare-strategy-call.ics"
+              className={CAL_LINK}
+            >
+              Download .ics
+            </a>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="text-h3 font-bold text-sec-ink">
+            {outcome.kind === "call"
+              ? "Got it. We will call you to set a time."
+              : "Got it. We will set up your call."}
+          </p>
+          <p className="text-small text-sec-mid">
+            No long-term contracts. You own your accounts.
+          </p>
+        </>
+      )}
     </motion.div>
   );
 }
@@ -217,7 +261,7 @@ const stepVariants = {
   exit: (dir: number) => ({ opacity: 0, x: -20 * dir }),
 };
 
-export function ScheduleForm() {
+export function ScheduleForm({ booking = false }: { booking?: boolean }) {
   const fieldId = useId();
   const reduced = useReducedMotionSafe();
   const [status, setStatus] = useState<Status>("idle");
@@ -225,6 +269,9 @@ export function ScheduleForm() {
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
   const [nav, setNav] = useState({ step: 0, dir: 1 });
   const [lockedHeight, setLockedHeight] = useState<number>();
+  const [outcome, setOutcome] = useState<Outcome>({ kind: "sent" });
+  const [token, setToken] = useState<string | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const navigatedRef = useRef(false);
   const autoRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointerRef = useRef(0);
@@ -306,6 +353,12 @@ export function ScheduleForm() {
     if (result.ok) {
       trackFormLead("schedule", meta);
       setLockedHeight(form.offsetHeight);
+      if (result.bookingToken) {
+        setToken(result.bookingToken);
+        setStatus("picking");
+        return;
+      }
+      if (booking) setOutcome({ kind: "call" });
       setStatus("done");
       return;
     }
@@ -313,12 +366,29 @@ export function ScheduleForm() {
     setError(result.error ?? "Please check the form and try again.");
   }
 
+  /* Leaving the picker: lock to its height (taller than the form) so
+     the confirmation swap cannot shift the page. */
+  const finish = useCallback((next: Outcome) => {
+    if (cardRef.current) setLockedHeight(cardRef.current.offsetHeight);
+    setOutcome(next);
+    setStatus("done");
+  }, []);
+  const onBooked = useCallback(
+    (start: string) => finish({ kind: "booked", start }),
+    [finish],
+  );
+  const onNoBooking = useCallback(() => finish({ kind: "call" }), [finish]);
+
+  /* The picker is one more step on the counter when booking is on */
+  const stepTotal = booking ? STEP_COUNT + 1 : STEP_COUNT;
+
   const meterFill =
     LOCATION_RANGES.find((r) => r.value === answers.locations)?.squares ?? 0;
   const current = STEPS[step];
 
   return (
     <div
+      ref={cardRef}
       className="relative h-full"
       style={lockedHeight ? { minHeight: lockedHeight } : undefined}
     >
@@ -326,7 +396,23 @@ export function ScheduleForm() {
           the confirmation would still be in the tab order (6.13) */}
       <AnimatePresence mode="wait" initial={false}>
         {status === "done" ? (
-          <Confirmation key="done" reduced={reduced} />
+          <Confirmation key="done" reduced={reduced} outcome={outcome} />
+        ) : status === "picking" && token ? (
+          <motion.div
+            key="picker"
+            className="h-full"
+            initial={reduced ? false : { opacity: 0, x: 28 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={reduced ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: reduced ? 0 : 0.28, ease: EASE.house }}
+          >
+            <TimePicker
+              token={token}
+              stepTotal={stepTotal}
+              onBooked={onBooked}
+              onNoBooking={onNoBooking}
+            />
+          </motion.div>
         ) : (
           <motion.form
             key="form"
@@ -348,12 +434,12 @@ export function ScheduleForm() {
                     &larr; Back
                   </button>
                 ) : (
-                  <StepSquares step={step} />
+                  <StepSquares step={step} total={stepTotal} />
                 )}
               </div>
               <div className="flex items-center gap-4">
-                {step > 0 && <StepSquares step={step} />}
-                <Counter current={step + 1} total={STEP_COUNT} />
+                {step > 0 && <StepSquares step={step} total={stepTotal} />}
+                <Counter current={step + 1} total={stepTotal} />
               </div>
             </div>
 
@@ -452,9 +538,11 @@ export function ScheduleForm() {
                 <span className="pill-label">
                   {status === "sending"
                     ? "Sending"
-                    : step === LAST_STEP
-                      ? "Schedule a Call"
-                      : "Next"}
+                    : step !== LAST_STEP
+                      ? "Next"
+                      : booking
+                        ? "Pick a time"
+                        : "Schedule a Call"}
                 </span>
               </button>
               {error ? (

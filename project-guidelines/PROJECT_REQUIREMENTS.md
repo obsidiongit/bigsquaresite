@@ -45,6 +45,7 @@ Do not install anything not listed here. To add one: list it here first with a o
 | FORM_WEBHOOK_URL | Fallback lead destination (GHL "Website form inbound" inbound webhook) when the GHL API write fails or is unset |
 | GHL_API_KEY, GHL_LOCATION_ID | submitForm writes leads straight to GHL (contact, custom fields, tags, note, opportunity); key is a Private Integration token, secret (lead-funnel.md) |
 | GHL_CALENDAR_ID | The website booking calendar for the pick-a-time step |
+| BOOKING_ENABLED, BOOKING_TOKEN_SECRET | Turns the pick-a-time step on (`1`); the secret HMAC-signs the booking token so a visitor can only book onto their own contact (lib/booking-token.ts). Read at build time by the static /schedule/ page, so flipping it needs a redeploy |
 | NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_GTAG_ID, NEXT_PUBLIC_GA4_ID | Tracking components; load after hydration; Meta and Google Ads stay off under Global Privacy Control. Pixel set 2026-10-09 |
 | META_CAPI_TOKEN (+ optional META_TEST_EVENT_CODE, META_GRAPH_VERSION) | Server-side Meta Conversions API twin of each form event, deduplicated by event_id; secret |
 

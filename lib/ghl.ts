@@ -159,3 +159,129 @@ export function upsertOpportunity(input: {
     },
   });
 }
+
+/* Opportunity lookups for the booking step: the contact's open deal in a
+   pipeline, and moving it to another stage. */
+export async function findOpportunity(
+  contactId: string,
+  pipelineId: string,
+): Promise<{ id: string } | null> {
+  const data = await call<{ opportunities?: { id: string }[] }>("GET", "/opportunities/search", {
+    query: { location_id: LOCATION_ID, contact_id: contactId, pipeline_id: pipelineId, status: "open", limit: 1 },
+  });
+  return data.opportunities?.[0] ?? null;
+}
+
+export function moveOpportunity(opportunityId: string, pipelineId: string, stageId: string) {
+  return call("PUT", `/opportunities/${opportunityId}`, {
+    body: { pipelineId, pipelineStageId: stageId },
+  });
+}
+
+export async function getContact(contactId: string): Promise<{
+  id: string;
+  email?: string;
+  phone?: string;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+}> {
+  const data = await call<{ contact: { id: string } }>("GET", `/contacts/${contactId}`);
+  return data.contact;
+}
+
+/* Calendars (the pick-a-time step, lead-funnel.md section 5). The
+   calendar is GHL_CALENDAR_ID; GHL applies its hours, notice and
+   conflicts to the free slots. */
+const V_CALENDARS = "2021-04-15";
+const CALENDAR_ID = process.env.GHL_CALENDAR_ID;
+/** Only names the date keys GHL groups by; each slot carries its own offset. */
+const CALENDAR_TZ = "America/Denver";
+
+/** Every free slot start between two instants, as ISO strings with offset. */
+export async function freeSlots(startMs: number, endMs: number): Promise<string[]> {
+  const data = await call<Record<string, unknown>>("GET", `/calendars/${CALENDAR_ID}/free-slots`, {
+    version: V_CALENDARS,
+    query: { startDate: startMs, endDate: endMs, timezone: CALENDAR_TZ },
+  });
+  const out: string[] = [];
+  for (const [date, v] of Object.entries(data)) {
+    const slots = (v as { slots?: unknown })?.slots;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date) && Array.isArray(slots)) {
+      out.push(...slots.filter((s): s is string => typeof s === "string"));
+    }
+  }
+  return out.sort((a, b) => Date.parse(a) - Date.parse(b));
+}
+
+export async function createAppointment(input: {
+  contactId: string;
+  startTime: string;
+  title: string;
+}): Promise<{ id: string; startTime?: string; endTime?: string }> {
+  return call("POST", "/calendars/events/appointments", {
+    version: V_CALENDARS,
+    body: {
+      calendarId: CALENDAR_ID,
+      locationId: LOCATION_ID,
+      contactId: input.contactId,
+      startTime: input.startTime,
+      title: input.title,
+      appointmentStatus: "confirmed",
+      toNotify: true, // false would skip GHL's own notifications and workflows
+      ignoreFreeSlotValidation: false, // GHL rejects a slot that was just taken
+    },
+  });
+}
+
+/* The contact appointments endpoint returns wall-clock times in the
+   location's timezone with no offset ("2026-10-19 20:30:00"); the
+   BigSquare location runs on America/New_York (ghl-lead-system.md). */
+const LOCATION_TZ = "America/New_York";
+
+function tzOffsetMinutes(ms: number, tz: string): number {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      hourCycle: "h23",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    })
+      .formatToParts(new Date(ms))
+      .map((p) => [p.type, Number(p.value)]),
+  );
+  const asUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  return Math.round((asUtc - ms) / 60e3);
+}
+
+/** A GHL time to ISO UTC; offset-less values are read in the location's timezone. */
+export function ghlTimeToIso(value: string, tz = LOCATION_TZ): string | null {
+  if (/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(value)) {
+    const ms = Date.parse(value);
+    return Number.isNaN(ms) ? null : new Date(ms).toISOString();
+  }
+  const m = value.trim().match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}(?::\d{2})?)$/);
+  if (!m) return null;
+  const guess = Date.parse(`${m[1]}T${m[2]}Z`);
+  // Twice, so a DST change between the guess and the real instant is corrected.
+  const first = guess - tzOffsetMinutes(guess, tz) * 60e3;
+  return new Date(guess - tzOffsetMinutes(first, tz) * 60e3).toISOString();
+}
+
+/** The contact's next confirmed appointment on the booking calendar, if any. */
+export async function upcomingAppointment(contactId: string): Promise<{ startTime: string } | null> {
+  const data = await call<{
+    events?: { calendarId?: string; startTime?: string; appointmentStatus?: string; deleted?: boolean }[];
+  }>("GET", `/contacts/${contactId}/appointments`);
+  const now = Date.now();
+  const next = (data.events ?? [])
+    .filter((e) => e.calendarId === CALENDAR_ID && !e.deleted && e.appointmentStatus !== "cancelled")
+    .map((e) => (e.startTime ? ghlTimeToIso(e.startTime) : null))
+    .filter((iso): iso is string => iso !== null && Date.parse(iso) > now)
+    .sort()[0];
+  return next ? { startTime: next } : null;
+}

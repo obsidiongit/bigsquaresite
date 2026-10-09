@@ -13,6 +13,7 @@
    (lib/lead-events.ts, lead-funnel.md section 8). */
 
 import {
+  BOOKING_EVENT,
   leadEventFor,
   MIN_FILL_MS,
   QUALIFIED_EVENT,
@@ -64,4 +65,11 @@ export function trackFormLead(
   if (event.ga4 === "sign_up") params.method = "newsletter";
   fire(event, eventId, params);
   if (extra.qualified) fire(QUALIFIED_EVENT, `${eventId}-q`, params);
+}
+
+/** A booked strategy call: GA4 book_call + Meta Schedule, deduplicated
+    against the server's Conversions API event by `eventId`. */
+export function trackBooking(eventId: string): void {
+  if (typeof window === "undefined") return;
+  fire(BOOKING_EVENT, eventId, { form_type: "schedule" });
 }

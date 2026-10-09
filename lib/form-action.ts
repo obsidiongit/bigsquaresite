@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { after } from "next/server";
 import { z } from "zod";
+import { bookingEnabled, bookingToken } from "@/lib/booking-token";
 import { deliverToGhl, type LeadPayload } from "@/lib/ghl-lead";
 import { ghlEnabled } from "@/lib/ghl";
 import { leadEventFor, MIN_FILL_MS, QUALIFIED_EVENT } from "@/lib/lead-events";
@@ -86,7 +87,14 @@ const submissionSchema = z.object({
 
 export type FormSubmission = z.input<typeof submissionSchema>;
 
-export type FormResult = { ok: boolean; error?: string };
+export type FormResult = {
+  ok: boolean;
+  error?: string;
+  /** Schedule leads written through the GHL API while booking is on:
+      opens the pick-a-time step (lib/booking-action.ts). Absent on the
+      webhook fallback, which shows "we will call you to set a time". */
+  bookingToken?: string;
+};
 
 const GENERIC_ERROR =
   "Your message did not send. Please try again, or email support@bigsquaremarketing.com.";
@@ -124,8 +132,12 @@ export async function submitForm(
     submittedAt: new Date().toISOString(),
   };
 
-  const result = await deliver(payload);
-  if (!result.ok) return result;
+  const delivered = await deliver(payload);
+  if (!delivered.ok) return { ok: false, error: delivered.error };
+  const result: FormResult = { ok: true };
+  if (data.formType === "schedule" && delivered.contactId && bookingEnabled()) {
+    result.bookingToken = bookingToken(delivered.contactId);
+  }
 
   const requestHeaders = await headers();
   const gpc = clientGpc || requestHeaders.get("sec-gpc") === "1";
@@ -154,14 +166,14 @@ export async function submitForm(
     });
   }
 
-  return { ok: true };
+  return result;
 }
 
-async function deliver(payload: LeadPayload): Promise<FormResult> {
+async function deliver(payload: LeadPayload): Promise<FormResult & { contactId?: string }> {
   if (ghlEnabled()) {
     try {
-      await deliverToGhl(payload);
-      return { ok: true };
+      const { contactId } = await deliverToGhl(payload);
+      return { ok: true, contactId };
     } catch (error) {
       console.error(
         `[form-action] GHL API write failed for ${payload.formType} on ${payload.page}; falling back to the webhook:`,

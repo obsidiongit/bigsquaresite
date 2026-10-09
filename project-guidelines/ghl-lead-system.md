@@ -79,7 +79,10 @@ Snapshot leftovers, unused and safe to delete once nobody needs them: folder "Ma
 | `lib/lead-events.ts` | Which GA4/Meta event each form fires; `MIN_FILL_MS`; event ids |
 | `lib/track.ts` | Browser tags: `trackFormLead()` plus the funnel `track()` events |
 | `lib/form-action.ts` | `submitForm`: validation, spam drop, delivery, fallback, CAPI |
-| `lib/ghl.ts` | GHL API v2 client (contacts, tags, notes, custom field ids, pipelines, opportunities) |
+| `lib/ghl.ts` | GHL API v2 client (contacts, tags, notes, custom field ids, pipelines, opportunities, calendar free slots + appointments) |
+| `lib/booking-token.ts` | `bookingEnabled()`, sign/verify the booking token (HMAC of the contact id) |
+| `lib/booking-action.ts` | Pick-a-time server actions: `getSlots(token)`, `bookCall(...)` (appointment, deal to Call Booked, tag `booked`, CAPI `Schedule`) |
+| `components/sections/schedule/TimePicker.tsx` | Step 6 of /schedule/: day + time pills in the visitor's timezone, add-to-calendar links |
 | `lib/ghl-lead.ts` | Maps a submission onto the GHL contact: field keys, tags, note, opportunity |
 | `lib/meta-capi.ts` | Meta Conversions API sender (hashing, dedupe id) |
 | `scripts/ghl-setup.mjs` | Creates missing custom fields; lists pipelines and calendars |
@@ -208,7 +211,8 @@ Brad's review before publish.
 - **Verify:** Meta Events Manager → Test events (set `META_TEST_EVENT_CODE` on a preview to route CAPI
   there), Meta Pixel Helper in a normal browser, GA4 DebugView.
 - **Not counted as conversions:** the `booked` event on /thanks/ pages is a page-view event from the
-  funnel spec, not a real booking. The real "call booked" event arrives with the booking step.
+  funnel spec, not a real booking. The real one is `book_call` (GA4) / `Schedule` (Meta, browser +
+  CAPI, same event id) from the pick-a-time step, fired once per new appointment.
 
 ---
 
@@ -233,7 +237,9 @@ Brad's review before publish.
 | `META_TEST_EVENT_CODE` | Vercel preview only, temporary | unset |
 | `NEXT_PUBLIC_GA4_ID` | Vercel + `.env.local` | set |
 | `NEXT_PUBLIC_GTAG_ID` | Vercel | unset (no Google Ads yet) |
-| `GHL_CALENDAR_ID` | Vercel + `.env.local` | set (`K0Isp8DY5GPqcYqK1uia`), used by the pick-a-time step once built |
+| `GHL_CALENDAR_ID` | Vercel + `.env.local` | set (`K0Isp8DY5GPqcYqK1uia`), used by the pick-a-time step |
+| `BOOKING_ENABLED` | Vercel + `.env.local` | `1` locally only. Leave unset in Production until Levi and Brad connect Google Calendar. Read at build time (static page): flip it with a redeploy |
+| `BOOKING_TOKEN_SECRET` | Vercel (Sensitive) + `.env.local` | set locally 2026-10-09; add to Production before turning booking on. Rotating it breaks booking links already emailed |
 
 Private Integration token scopes: contacts, calendars, calendars/events, opportunities,
 locations/customFields, locations/tags (view + edit each); locations, users (view).
@@ -295,6 +301,8 @@ old integration. (The current token was pasted in chat once on 2026-10-09; rotat
 | Lead not in GHL | Vercel runtime logs for `[form-action]` (spam drop, GHL failure, webhook status) and `[ghl-lead]` |
 | Lead in GHL but no alert | W1 execution logs. Confirm the contact got `website-lead` this time (the reset runs before the add). Check team@ spam: alerts send from GHL's shared domain and bigsquaremarketing.com has no SPF/DMARC yet |
 | A custom field stays empty | `node scripts/ghl-setup.mjs` to confirm the key exists; keys must match `lib/ghl-lead.ts` exactly |
+| Booking step shows "we will call you" instead of times | `[booking]` in Vercel logs. Check `BOOKING_ENABLED`, `BOOKING_TOKEN_SECRET`, `GHL_CALENDAR_ID` on that environment (a webhook-fallback lead never gets a token) |
+| Booked time shows wrong after a revisit | `GET /contacts/{id}/appointments` returns times with NO offset, in the location timezone (`"2026-10-19 20:30:00"`, America/New_York). `ghlTimeToIso` in `lib/ghl.ts` converts; if the location timezone changes, change `LOCATION_TZ` there |
 | No opportunity | Log line `[ghl-lead] pipeline "Website Leads" / "New Lead" not found`: a pipeline or stage was renamed |
 | Lead arrived as `website-lead-webhook` | The API write failed and the fallback took it: read the `[form-action] GHL API write failed` log |
 | Meta events missing | Pixel Helper in a normal browser; GPC on in that browser blocks it by design; `[meta-capi]` logs for server rejections |
@@ -311,7 +319,8 @@ old integration. (The current token was pasted in chat once on 2026-10-09; rotat
 | Meta pixel (browser) | live |
 | Meta Conversions API | live in production (token set 2026-10-09); confirm server events in Events Manager after the first real lead |
 | Booking calendar | built 2026-10-09 (collective, Levi primary + Brad); waiting on Levi and Brad to connect Google Calendar in the BigSquare sub-account (conflicts + Meet links). Switch to round robin or Levi only when volume grows |
-| Pick-a-time step on /schedule/ + "call booked" workflow (W3) | next to build; go live only after both Google connections exist |
+| Pick-a-time step on /schedule/ | built 2026-10-09 behind `BOOKING_ENABLED` (off in Production). Tested end to end locally: QA contact booked Oct 19 6:30 PM MT (appointment `AWA46s068mNPjuZ5DDq7`, tag `booked`, deal to Call Booked), then cancelled. Cancelling does not move the deal back or remove `booked` yet (a W3/cancel workflow job). Go live only after both Google connections exist |
+| "Call booked" workflow (W3) | next; read the calendar's own Notifications tab first so the lead doesn't get two confirmations |
 | Prospect confirmations and follow-ups (W2 to W10) | to build; copy goes to Brad |
 | SPF / DKIM / DMARC + GHL dedicated sending domain | waiting on Namecheap access |
 | SMS (LC phone + A2P) | not started |

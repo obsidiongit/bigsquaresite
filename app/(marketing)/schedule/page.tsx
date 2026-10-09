@@ -5,6 +5,7 @@ import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { SquareField } from "@/components/motion/SquareField";
 import { TrustMarquee } from "@/components/sections/home/TrustMarquee";
 import { ScheduleForm } from "@/components/sections/schedule/ScheduleForm";
+import { bookingEnabled } from "@/lib/booking-token";
 import { VslPlayer } from "@/components/sections/schedule/VslPlayer";
 import { Faq } from "@/components/shared/Faq";
 import { Eyebrow } from "@/components/shared/mono";
@@ -97,7 +98,7 @@ export default function SchedulePage() {
                 id="book"
                 className="h-full scroll-mt-28 rounded-[24px] border border-sec-line bg-surf p-6 sm:p-8"
               >
-                <ScheduleForm />
+                <ScheduleForm booking={bookingEnabled()} />
               </div>
             </Reveal>
             <div className="lg:col-span-7">

@@ -38,6 +38,15 @@ export const QUALIFIED_EVENT: LeadEvent = {
   ga4: "qualified_lead",
 };
 
+/** A strategy call booked on the pick-a-time step (lead-funnel.md
+    section 5). Meta's standard Schedule; book_call becomes a GA4 key
+    event once it has data. */
+export const BOOKING_EVENT: LeadEvent = {
+  meta: "Schedule",
+  metaCustom: false,
+  ga4: "book_call",
+};
+
 export function leadEventFor(formType: string): LeadEvent | undefined {
   return LEAD_EVENTS[formType as FormType];
 }
