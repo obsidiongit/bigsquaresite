@@ -42,11 +42,13 @@ Do not install anything not listed here. To add one: list it here first with a o
 ## Environment variables (from decisions.md)
 | Var | Use |
 |---|---|
-| FORM_WEBHOOK_URL | Single server action posts every form here (GHL or Obsidion, decided later) |
-| GHL_API_KEY, GHL_CALENDAR_ID, GHL_LOCATION_ID | Custom booking component (placeholder until integration is built) |
-| NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_GTAG_ID, NEXT_PUBLIC_GA4_ID | Tracking components built now, values empty, filled by a teammate; load after hydration |
+| FORM_WEBHOOK_URL | Fallback lead destination (GHL "Website form inbound" inbound webhook) when the GHL API write fails or is unset |
+| GHL_API_KEY, GHL_LOCATION_ID | submitForm writes leads straight to GHL (contact, custom fields, tags, note, opportunity); key is a Private Integration token, secret (lead-funnel.md) |
+| GHL_CALENDAR_ID | The website booking calendar for the pick-a-time step |
+| NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_GTAG_ID, NEXT_PUBLIC_GA4_ID | Tracking components; load after hydration; Meta and Google Ads stay off under Global Privacy Control. Pixel set 2026-10-09 |
+| META_CAPI_TOKEN (+ optional META_TEST_EVENT_CODE, META_GRAPH_VERSION) | Server-side Meta Conversions API twin of each form event, deduplicated by event_id; secret |
 
-All forms carry UTM parameters and the page slug as fields. One submit path for every form.
+All forms carry the page slug, UTMs, first/last-touch attribution with click IDs (`lib/attribution.ts`), an event id, and the spam signals (honeypot + fill time). One submit path for every form.
 
 ## Page index (routes from [sitemap.md](sitemap.md) → spec)
 | Route(s) | Spec |

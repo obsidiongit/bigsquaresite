@@ -6,9 +6,12 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
+import { Honeypot } from "@/components/shared/Honeypot";
 import { Counter } from "@/components/shared/mono";
 import { submitForm } from "@/lib/form-action";
+import { leadMeta, useFormStartedAt } from "@/lib/lead-client";
 import { EASE } from "@/lib/motion";
+import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
 
@@ -114,6 +117,8 @@ const STEPS: Step[] = [
 
 const STEP_COUNT = STEPS.length;
 const LAST_STEP = STEP_COUNT - 1;
+/** The step slide (0.28s) plus a beat */
+const STEP_SETTLE_MS = 350;
 const PICKER_STEP = STEPS.findIndex((s) => s.kind === "picker");
 
 function SquareMeter({ filled, reduced }: { filled: number; reduced: boolean }) {
@@ -223,14 +228,18 @@ export function ScheduleForm() {
   const navigatedRef = useRef(false);
   const autoRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointerRef = useRef(0);
+  const startedAt = useFormStartedAt();
 
   const { step, dir } = nav;
 
   const setAnswer = (key: keyof Answers, value: string) =>
     setAnswers((a) => ({ ...a, [key]: value }));
 
+  const lastNavRef = useRef(0);
+
   const go = (next: number, direction: number) => {
     navigatedRef.current = true;
+    lastNavRef.current = Date.now();
     setNav({ step: next, dir: direction });
   };
 
@@ -258,6 +267,10 @@ export function ScheduleForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "sending") return;
+    /* While a step slides out its input is still mounted, so a quick
+       second Enter would pass validation again and skip the next
+       question: ignore submits during the transition. */
+    if (Date.now() - lastNavRef.current < STEP_SETTLE_MS) return;
 
     /* Mid-flow submits (Enter or Next) validate only the mounted
        step's inputs; native validation already passed to get here. */
@@ -267,7 +280,18 @@ export function ScheduleForm() {
       return;
     }
 
+    /* Safety net: never send a lead with a skipped answer; go back to
+       the first empty step instead. */
+    const empty = STEPS.findIndex((s) =>
+      s.kind === "picker" ? !answers.locations : !answers[s.key].trim(),
+    );
+    if (empty !== -1) {
+      go(empty, -1);
+      return;
+    }
+
     const form = event.currentTarget;
+    const meta = leadMeta(form, startedAt.current);
     setStatus("sending");
     setError(null);
 
@@ -276,9 +300,11 @@ export function ScheduleForm() {
       page: window.location.pathname,
       utm: getUtmParams(),
       fields: { ...answers },
+      ...meta,
     });
 
     if (result.ok) {
+      trackFormLead("schedule", meta);
       setLockedHeight(form.offsetHeight);
       setStatus("done");
       return;
@@ -309,6 +335,7 @@ export function ScheduleForm() {
             transition={{ duration: reduced ? 0 : 0.25, ease: EASE.house }}
             className="flex h-full flex-col"
           >
+            <Honeypot />
             {/* Chrome: back, progress squares, counter */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex h-6 items-center">

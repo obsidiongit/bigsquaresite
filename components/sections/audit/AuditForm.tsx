@@ -6,8 +6,11 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
+import { Honeypot } from "@/components/shared/Honeypot";
 import { submitForm } from "@/lib/form-action";
+import { leadMeta, useFormStartedAt } from "@/lib/lead-client";
 import { EASE } from "@/lib/motion";
+import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
 
@@ -118,6 +121,7 @@ export function AuditForm() {
   const [locations, setLocations] = useState("");
   const [running, setRunning] = useState<string[]>([]);
   const [lockedHeight, setLockedHeight] = useState<number>();
+  const startedAt = useFormStartedAt();
 
   function toggleChannel(channel: string) {
     setRunning((prev) => {
@@ -135,6 +139,7 @@ export function AuditForm() {
 
     const form = event.currentTarget;
     const data = new FormData(form);
+    const meta = leadMeta(form, startedAt.current);
     setStatus("sending");
     setError(null);
 
@@ -151,9 +156,11 @@ export function AuditForm() {
         locations,
         running: running.join(", "),
       },
+      ...meta,
     });
 
     if (result.ok) {
+      trackFormLead("audit", meta);
       setLockedHeight(form.offsetHeight);
       setStatus("done");
       return;
@@ -180,6 +187,7 @@ export function AuditForm() {
             transition={{ duration: reduced ? 0 : 0.25, ease: EASE.house }}
             className="flex flex-col gap-5"
           >
+            <Honeypot />
             <div className="grid gap-5 sm:grid-cols-2">
               {TEXT_FIELDS.map((f) => (
                 <Field

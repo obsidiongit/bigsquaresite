@@ -8,10 +8,13 @@ import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
+import { Honeypot } from "@/components/shared/Honeypot";
 import { BracketIndex, Chip } from "@/components/shared/mono";
 import { submitForm } from "@/lib/form-action";
+import { leadMeta, useFormStartedAt } from "@/lib/lead-client";
 import { EASE } from "@/lib/motion";
 import type { Resource } from "@/lib/resources";
+import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
 
@@ -82,12 +85,14 @@ function RequestForm({
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [lockedHeight, setLockedHeight] = useState<number>();
+  const startedAt = useFormStartedAt();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "sending") return;
     const form = event.currentTarget;
     const data = new FormData(form);
+    const meta = leadMeta(form, startedAt.current);
     setStatus("sending");
     setError(null);
 
@@ -101,9 +106,11 @@ function RequestForm({
         resource: resource.slug,
         resourceTitle: resource.title,
       },
+      ...meta,
     });
 
     if (result.ok) {
+      trackFormLead("lead-magnet", meta);
       setLockedHeight(form.offsetHeight);
       setStatus("done");
       return;
@@ -128,6 +135,7 @@ function RequestForm({
             transition={{ duration: reduced ? 0 : 0.25, ease: EASE.house }}
             className="flex flex-col gap-5"
           >
+            <Honeypot />
             <p className="max-w-[52ch] font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
               Leave your email and we send the {resource.format.toLowerCase()} as soon as it is ready.
             </p>

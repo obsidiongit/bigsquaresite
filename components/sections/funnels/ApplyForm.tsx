@@ -8,12 +8,14 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
 import { Field } from "@/components/shared/Field";
+import { Honeypot } from "@/components/shared/Honeypot";
 import { Counter } from "@/components/shared/mono";
 import { submitForm } from "@/lib/form-action";
 import { withUtm } from "@/lib/funnels/href";
 import type { ApplyFunnel } from "@/lib/funnels/registry";
+import { leadMeta, useFormStartedAt } from "@/lib/lead-client";
 import { EASE } from "@/lib/motion";
-import { track, trackLead } from "@/lib/track";
+import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
 
@@ -155,6 +157,8 @@ const STEPS: Step[] = [
 
 const STEP_COUNT = STEPS.length;
 const LAST_STEP = STEP_COUNT - 1;
+/** The step slide plus a beat */
+const STEP_SETTLE_MS = 350;
 
 /* One-to-one SMS consent (TCPA/CTIA, legal-pages-plan.md): shown next
    to an UNCHECKED checkbox on the contact step. The recorded string
@@ -212,6 +216,7 @@ export function ApplyForm({
   const navigatedRef = useRef(false);
   const autoRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointerRef = useRef(0);
+  const startedAt = useFormStartedAt();
 
   const { step, dir } = nav;
   const current = STEPS[step];
@@ -219,8 +224,11 @@ export function ApplyForm({
   const setAnswer = (key: keyof Answers, value: string) =>
     setAnswers((a) => ({ ...a, [key]: value }));
 
+  const lastNavRef = useRef(0);
+
   const go = (next: number, direction: number) => {
     navigatedRef.current = true;
+    lastNavRef.current = Date.now();
     setError(null);
     setNav({ step: next, dir: direction });
   };
@@ -246,6 +254,10 @@ export function ApplyForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "sending") return;
+    /* While a step slides out its inputs are still mounted, so a quick
+       second Enter would pass validation again and skip the next
+       question: ignore submits during the transition. */
+    if (Date.now() - lastNavRef.current < STEP_SETTLE_MS) return;
 
     if (step < LAST_STEP) {
       if (autoRef.current) clearTimeout(autoRef.current);
@@ -253,6 +265,7 @@ export function ApplyForm({
       return;
     }
 
+    const meta = leadMeta(event.currentTarget, startedAt.current);
     setStatus("sending");
     setError(null);
 
@@ -271,6 +284,7 @@ export function ApplyForm({
         text: SMS_CONSENT_TEXT,
         ...(sms.checked && sms.at ? { checkedAt: sms.at } : {}),
       },
+      ...meta,
     });
 
     if (!result.ok) {
@@ -279,13 +293,13 @@ export function ApplyForm({
       return;
     }
 
-    trackLead({ funnel: slug, qualified });
-    if (qualified) track("qualified_lead", { funnel: slug });
+    trackFormLead("apply", meta, { funnel: slug, qualified });
     router.push(withUtm(`/thanks/${funnel.thanksSlug}/`, utm));
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col">
+      <Honeypot />
       {/* Chrome: back, counter, then the progress bar */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex h-6 items-center">

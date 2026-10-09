@@ -5,8 +5,11 @@ import { Check } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { ConsentLine } from "@/components/shared/ConsentLine";
+import { Honeypot } from "@/components/shared/Honeypot";
 import { submitForm } from "@/lib/form-action";
+import { leadMeta, useFormStartedAt } from "@/lib/lead-client";
 import { EASE } from "@/lib/motion";
+import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
 
@@ -76,6 +79,7 @@ export function NewsletterForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [lockedHeight, setLockedHeight] = useState<number>();
+  const startedAt = useFormStartedAt();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,6 +87,7 @@ export function NewsletterForm() {
 
     const form = event.currentTarget;
     const email = String(new FormData(form).get("email") ?? "").trim();
+    const meta = leadMeta(form, startedAt.current);
 
     setStatus("sending");
     setError(null);
@@ -92,9 +97,11 @@ export function NewsletterForm() {
       page: window.location.pathname,
       utm: getUtmParams(),
       fields: { email },
+      ...meta,
     });
 
     if (result.ok) {
+      trackFormLead("newsletter", meta);
       setLockedHeight(form.offsetHeight);
       setStatus("done");
       return;
@@ -121,6 +128,7 @@ export function NewsletterForm() {
             exit={reduced ? undefined : { opacity: 0, y: -8 }}
             transition={{ duration: reduced ? 0 : 0.25, ease: EASE.house }}
           >
+            <Honeypot />
             <label htmlFor={fieldId} className="sr-only">
               Email address
             </label>
