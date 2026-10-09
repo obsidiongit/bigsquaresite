@@ -82,7 +82,8 @@ Snapshot leftovers, unused and safe to delete once nobody needs them: folder "Ma
 | `lib/ghl.ts` | GHL API v2 client (contacts, tags, notes, custom field ids, pipelines, opportunities, calendar free slots + appointments) |
 | `lib/booking-token.ts` | `bookingEnabled()`, sign/verify the booking token (HMAC of the contact id) |
 | `lib/booking-action.ts` | Pick-a-time server actions: `getSlots(token)`, `bookCall(...)` (appointment, deal to Call Booked, tag `booked`, CAPI `Schedule`) |
-| `components/sections/schedule/TimePicker.tsx` | Step 6 of /schedule/: day + time pills in the visitor's timezone, add-to-calendar links |
+| `components/sections/schedule/TimePicker.tsx` | Step 6 of /schedule/: day + time pills in the visitor's timezone, add-to-calendar links; also the reschedule picker |
+| `app/(marketing)/schedule/book/page.tsx` + `BookingPanel.tsx` | `/schedule/book/?t=<token>`: book, or see and change the booked call (moves the same appointment) |
 | `lib/ghl-lead.ts` | Maps a submission onto the GHL contact: field keys, tags, note, opportunity |
 | `lib/meta-capi.ts` | Meta Conversions API sender (hashing, dedupe id) |
 | `scripts/ghl-setup.mjs` | Creates missing custom fields; lists pipelines and calendars |
@@ -130,6 +131,7 @@ website, source `Website: <formType>`.
 | Last touch | `contact.last_touch_source`, `_medium`, `_campaign`, `_content`, `_term` |
 | Click IDs | `contact.click_gclid`, `contact.click_gbraid`, `contact.click_wbraid`, `contact.click_fbclid`, `contact.click_msclkid`, `contact.meta_fbc`, `contact.meta_fbp`, `contact.ga_client_id` |
 | SMS consent | `contact.sms_consent_text`, `contact.sms_consent_at` (only when the box was checked) |
+| Booking link | `contact.booking_link`: the contact's own `/schedule/book/?t=<token>` link, saved after submit for schedule, apply and audit leads while booking is on. Emails use `{{contact.booking_link}}` to book or reschedule in the site's design |
 
 GHL reserves some names for standard fields (it refused a custom field called "GCLID"), which is why
 click IDs carry the `click_` prefix. Empty values are skipped, so a later lead never blanks out an

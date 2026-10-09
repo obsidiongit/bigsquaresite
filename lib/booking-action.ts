@@ -14,6 +14,7 @@ import {
   GhlError,
   moveOpportunity,
   removeTags,
+  rescheduleAppointment,
   upcomingAppointment,
   updateContact,
   upsertOpportunity,
@@ -39,7 +40,8 @@ export type SlotsResult =
 
 /** Free slot starts for the next two weeks (GHL applies the calendar's
     hours and minimum notice). `booked` is set when this contact already
-    has an upcoming call, so a revisit shows it instead of a second picker. */
+    has an upcoming call: the picker shows it instead of booking twice,
+    and the /schedule/book/ page offers to change it. */
 export async function getSlots(token: string): Promise<SlotsResult> {
   if (!bookingEnabled()) return { ok: false };
   const contactId = verifyBookingToken(token);
@@ -49,9 +51,9 @@ export async function getSlots(token: string): Promise<SlotsResult> {
       console.warn("[booking] appointment lookup failed:", error);
       return null;
     });
-    if (existing) return { ok: true, slots: [], booked: existing.startTime };
     const now = Date.now();
-    return { ok: true, slots: await freeSlots(now, now + DAYS_AHEAD * 864e5) };
+    const slots = await freeSlots(now, now + DAYS_AHEAD * 864e5);
+    return existing ? { ok: true, slots, booked: existing.startTime } : { ok: true, slots };
   } catch (error) {
     console.error("[booking] free slots failed:", error);
     return { ok: false };
@@ -69,18 +71,21 @@ const bookSchema = z.object({
   /** The visitor's IANA timezone: GHL formats {{appointment.*}} times in
       the contact's timezone, else the location's (Eastern). */
   timezone: z.string().max(64).optional(),
+  /** Move the contact's upcoming call to `start` instead of refusing a
+      second booking (the /schedule/book/ "change time" path) */
+  reschedule: z.boolean().optional(),
 });
 
 export type BookResult =
-  /** existing: this contact was already booked (no new conversion) */
-  | { ok: true; start: string; existing?: boolean }
+  /** existing: already booked; rescheduled: moved. Neither is a new conversion. */
+  | { ok: true; start: string; existing?: boolean; rescheduled?: boolean }
   /** taken: refresh the slots; failed: keep the lead, promise a call */
   | { ok: false; reason: "taken" | "failed" };
 
 export async function bookCall(input: z.input<typeof bookSchema>): Promise<BookResult> {
   const parsed = bookSchema.safeParse(input);
   if (!parsed.success || !bookingEnabled()) return { ok: false, reason: "failed" };
-  const { token, start, eventId, fbc, fbp, gpc: clientGpc, timezone } = parsed.data;
+  const { token, start, eventId, fbc, fbp, gpc: clientGpc, timezone, reschedule } = parsed.data;
   const contactId = verifyBookingToken(token);
   if (!contactId) return { ok: false, reason: "failed" };
 
@@ -94,9 +99,13 @@ export async function bookCall(input: z.input<typeof bookSchema>): Promise<BookR
 
   /* One call per lead: a double click or a revisit never books twice. */
   const existing = await upcomingAppointment(contactId).catch(() => null);
-  if (existing) return { ok: true, start: existing.startTime, existing: true };
+  if (existing && !reschedule) return { ok: true, start: existing.startTime, existing: true };
 
   try {
+    if (existing) {
+      await rescheduleAppointment(existing.id, start);
+      return { ok: true, start, rescheduled: true };
+    }
     await createAppointment({ contactId, startTime: start, title: TITLE });
   } catch (error) {
     // GHL refuses a slot that stopped being free with a 4xx.

@@ -61,7 +61,8 @@ Menu footer strip: "Ready to grow? Schedule a Call" linking to /schedule/.
 | `/results/` | built (Batch 2, 2026-08-27, awaiting batch review) | Client Results & Case Studies \| BigSquare | Real index; card grid stays flagged placeholder until real case studies land |
 | `/results/[slug]/` | data-driven 2026-08-31 (Pane C): a filled `caseStudy` in `lib/featured-work.ts` renders the real layout + indexes the page; the 6 entries stay noindex skeletons until real data | [Result] for [Client type] \| BigSquare | Owed: real case studies (metrics with window + source) |
 | `/contact/` | built (Batch 1 reviewed 2026-08-27) | Contact BigSquare Marketing | Form + offices + FAQ (D5). Owed: office addresses + phones |
-| `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Owed: VSL film, copy pass, GHL wiring |
+| `/schedule/` | built | Schedule a Call \| BigSquare | Primary conversion page, v2. Writes leads to GHL; pick-a-time step built behind `BOOKING_ENABLED` (2026-10-09). Owed: VSL film, copy pass |
+| `/schedule/book/` | built | Pick a Time \| BigSquare | Personal booking + reschedule link from emails (`?t=<token>`), noindex. Live once `BOOKING_ENABLED` is on (2026-10-09) |
 | `/audit/` | built (Batch 1 reviewed 2026-08-27) | Get a Free Marketing Audit \| BigSquare | Secondary conversion page. Owed: audit deliverables + turnaround |
 | `/privacy-policy/` | drafted in full 2026-08-31 (Pane C) from `content/legal/privacy-policy.mdx`; LAWYER REVIEW OWED before launch | Privacy Policy | Legal |
 | `/terms/` | drafted in full 2026-08-31 (Pane C) from `content/legal/terms.mdx`; LAWYER REVIEW OWED before launch | Terms of Service | Legal |

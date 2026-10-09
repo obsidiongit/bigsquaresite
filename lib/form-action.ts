@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { after } from "next/server";
 import { z } from "zod";
 import { bookingEnabled, bookingToken } from "@/lib/booking-token";
-import { deliverToGhl, type LeadPayload } from "@/lib/ghl-lead";
+import { deliverToGhl, saveBookingLink, type LeadPayload } from "@/lib/ghl-lead";
 import { ghlEnabled } from "@/lib/ghl";
 import { leadEventFor, MIN_FILL_MS, QUALIFIED_EVENT } from "@/lib/lead-events";
 import { capiEnabled, sendCapiEvent } from "@/lib/meta-capi";
@@ -99,6 +99,9 @@ export type FormResult = {
 const GENERIC_ERROR =
   "Your message did not send. Please try again, or email support@bigsquaremarketing.com.";
 
+/** Leads who get a pick-a-time link (W3/W4 emails, lead-funnel.md section 7) */
+const BOOKABLE_FORMS = new Set(["schedule", "apply", "audit"]);
+
 const str = (v: unknown) => (v === undefined || v === null ? "" : String(v).trim());
 
 export async function submitForm(
@@ -135,8 +138,17 @@ export async function submitForm(
   const delivered = await deliver(payload);
   if (!delivered.ok) return { ok: false, error: delivered.error };
   const result: FormResult = { ok: true };
-  if (data.formType === "schedule" && delivered.contactId && bookingEnabled()) {
-    result.bookingToken = bookingToken(delivered.contactId);
+  if (delivered.contactId && BOOKABLE_FORMS.has(data.formType) && bookingEnabled()) {
+    const token = bookingToken(delivered.contactId);
+    // The schedule form opens the picker in place; every bookable lead
+    // also gets its link on the contact for the follow-up emails.
+    if (data.formType === "schedule") result.bookingToken = token;
+    const contactId = delivered.contactId;
+    after(() =>
+      saveBookingLink(contactId, `${SITE_URL}/schedule/book/?t=${encodeURIComponent(token)}`).catch(
+        (error) => console.error("[form-action] booking link save failed:", error),
+      ),
+    );
   }
 
   const requestHeaders = await headers();

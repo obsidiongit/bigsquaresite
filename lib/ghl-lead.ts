@@ -6,6 +6,7 @@ import {
   findStage,
   removeTags,
   upsertContact,
+  updateContact,
   upsertOpportunity,
 } from "@/lib/ghl";
 import type { UtmParams } from "@/lib/utm";
@@ -133,6 +134,18 @@ function tagsFor(p: LeadPayload): string[] {
   if (p.formType === "lead-magnet" && str(p.fields.resource)) tags.push(`res:${str(p.fields.resource)}`);
   if (/\+test@bigsquaremarketing\.com$/i.test(p.contact.email)) tags.push("test");
   return tags;
+}
+
+/** The contact's own pick-a-time link (/schedule/book/?t=<token>), for
+    the follow-up emails: GHL cannot sign a token, so the site stores the
+    finished link in contact.booking_link and emails use the merge field. */
+export async function saveBookingLink(contactId: string, url: string): Promise<void> {
+  const id = (await customFieldIds())["contact.booking_link"];
+  if (!id) {
+    console.warn("[ghl-lead] contact.booking_link field not found (run scripts/ghl-setup.mjs --apply)");
+    return;
+  }
+  await updateContact(contactId, { customFields: [{ id, field_value: url }] });
 }
 
 export async function deliverToGhl(p: LeadPayload): Promise<{ contactId: string }> {

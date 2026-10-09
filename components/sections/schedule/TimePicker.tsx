@@ -52,11 +52,18 @@ type Load = { state: "loading" } | { state: "ready"; days: [string, string[]][] 
 export function TimePicker({
   token,
   stepTotal,
+  reschedule = false,
+  skipLabel = "None of these work? We will call you to set a time.",
   onBooked,
   onNoBooking,
 }: {
   token: string;
-  stepTotal: number;
+  /** Step 6 of the application shows the saved check and the counter;
+      the standalone /schedule/book/ page passes nothing */
+  stepTotal?: number;
+  /** Move the contact's existing call instead of booking a new one */
+  reschedule?: boolean;
+  skipLabel?: string;
   /** The booked start (ISO) */
   onBooked: (start: string) => void;
   /** Skipped, no open times, or the calendar failed: the lead stays saved */
@@ -72,7 +79,7 @@ export function TimePicker({
   const fetchSlots = useCallback(async () => {
     const result = await getSlots(token).catch(() => ({ ok: false }) as const);
     if (!result.ok) return onNoBooking();
-    if (result.booked) return onBooked(result.booked);
+    if (result.booked && !reschedule) return onBooked(result.booked);
     const byDay = new Map<string, string[]>();
     for (const s of result.slots) {
       const key = localDay(s);
@@ -84,17 +91,20 @@ export function TimePicker({
     setLoad({ state: "ready", days });
     setDay((d) => (d && byDay.has(d) ? d : days[0][0]));
     setSlot((s) => (s && result.slots.includes(s) ? s : null));
-  }, [token, onBooked, onNoBooking]);
+  }, [token, reschedule, onBooked, onNoBooking]);
 
   useEffect(() => {
     void fetchSlots();
   }, [fetchSlots]);
 
   /* The submit button that had focus unmounted with the form: land on
-     the step's heading so keyboard and screen reader users are here. */
+     the step's heading so keyboard and screen reader users are here.
+     Not on the standalone page load, where it would only jump the scroll;
+     a reschedule there follows a button press, so it focuses too. */
+  const takeFocus = Boolean(stepTotal) || reschedule;
   useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
+    if (takeFocus) headingRef.current?.focus();
+  }, [takeFocus]);
 
   const times = useMemo(
     () => (load.state === "ready" ? (load.days.find(([d]) => d === day)?.[1] ?? []) : []),
@@ -116,9 +126,10 @@ export function TimePicker({
       fbp: attribution.fbp,
       gpc: hasGlobalPrivacyControl(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      reschedule,
     }).catch(() => ({ ok: false, reason: "failed" }) as const);
     if (result.ok) {
-      if (!result.existing) trackBooking(eventId);
+      if (!result.existing && !result.rescheduled) trackBooking(eventId);
       return onBooked(result.start);
     }
     setBusy(false);
@@ -133,17 +144,19 @@ export function TimePicker({
 
   return (
     <form onSubmit={handleSubmit} className="flex h-full flex-col">
-      <div className="flex items-center justify-between gap-4">
-        <p className="flex h-6 items-center gap-2 font-mono text-mono-sm uppercase text-sec-mid">
-          <Check aria-hidden strokeWidth={2.5} className="size-3.5 text-acc" />
-          Details saved
-        </p>
-        <Counter current={stepTotal} total={stepTotal} />
-      </div>
+      {stepTotal ? (
+        <div className="mb-7 flex items-center justify-between gap-4">
+          <p className="flex h-6 items-center gap-2 font-mono text-mono-sm uppercase text-sec-mid">
+            <Check aria-hidden strokeWidth={2.5} className="size-3.5 text-acc" />
+            Details saved
+          </p>
+          <Counter current={stepTotal} total={stepTotal} />
+        </div>
+      ) : null}
 
-      <fieldset className="mt-7 flex-1" aria-busy={load.state === "loading"}>
+      <fieldset className="flex-1" aria-busy={load.state === "loading"}>
         <legend ref={headingRef} tabIndex={-1} className="text-h3 font-bold text-sec-ink outline-none">
-          Pick a time for your call
+          {reschedule ? "Pick a new time" : "Pick a time for your call"}
         </legend>
         <p className="mt-2 text-small text-sec-mid">
           30 minutes on Google Meet. Times shown in {tzLabel()}.
@@ -209,7 +222,15 @@ export function TimePicker({
           className="pill pill-primary w-full disabled:opacity-70"
         >
           <span className="pill-label">
-            {busy ? "Booking" : slot ? `Book ${timeLabel(slot)}` : "Book my call"}
+            {busy
+              ? reschedule
+                ? "Changing"
+                : "Booking"
+              : slot
+                ? `${reschedule ? "Change to" : "Book"} ${timeLabel(slot)}`
+                : reschedule
+                  ? "Change my call"
+                  : "Book my call"}
           </span>
         </button>
         {notice ? (
@@ -222,7 +243,7 @@ export function TimePicker({
           onClick={onNoBooking}
           className="self-start text-left text-small text-sec-mid underline underline-offset-2 transition-colors duration-[var(--dur-fast)] hover:text-sec-ink"
         >
-          None of these work? We will call you to set a time.
+          {skipLabel}
         </button>
       </div>
     </form>
@@ -267,4 +288,27 @@ export function bookedLabel(start: string): string {
   const d = new Date(start);
   const day = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(d);
   return `${day} at ${timeLabel(start)} ${tzLabel(start)}`;
+}
+
+const CAL_LINK =
+  "font-mono text-mono-sm uppercase text-sec-ink underline underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:text-acc";
+
+/** The booked call: time, where the Meet link is, add-to-calendar.
+    Shared by the application's confirmation and /schedule/book/. */
+export function BookedDetails({ start }: { start: string }) {
+  const links = calendarLinks(start);
+  return (
+    <>
+      <p className="text-body text-sec-ink">{bookedLabel(start)}</p>
+      <p className="text-small text-sec-mid">The Google Meet link is in your inbox.</p>
+      <div className="flex flex-wrap gap-x-6 gap-y-2">
+        <a href={links.google} target="_blank" rel="noopener noreferrer" className={CAL_LINK}>
+          Add to Google Calendar
+        </a>
+        <a href={links.ics} download="bigsquare-strategy-call.ics" className={CAL_LINK}>
+          Download .ics
+        </a>
+      </div>
+    </>
+  );
 }

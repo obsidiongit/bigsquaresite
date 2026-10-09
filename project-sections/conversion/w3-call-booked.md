@@ -31,6 +31,15 @@ confirmation is the only one they get. Leave the calendar notifications as they 
 SMS reminders come later, only for contacts tagged `sms-consent`, once A2P is approved.
 Cancels and no-shows are W5 (move the deal off Call Booked, remove `booked`, reschedule email).
 
+Links: every "book" or "change time" link is `{{contact.booking_link}}`, our own
+`/schedule/book/?t=<token>` page (Brad/Mike 2026-10-09: keep rescheduling in the site's design, not
+GHL's hosted page). The site saves it on the contact at submit. Changing a time there moves the same
+appointment (PUT), it never books a second one.
+
+**Verify while building:** whether a reschedule re-fires "Customer Booked Appointment" (or only
+"Appointment Status"), and that the 24 h / 1 h waits follow the moved time. If a reschedule does not
+re-enter W3, add an "appointment rescheduled" branch that emails team@ the new time.
+
 Times: GHL formats `{{appointment.*}}` in the contact's timezone. The booking step saves the visitor's
 browser timezone on the contact before booking (`lib/booking-action.ts`), so emails match the time
 the visitor picked. Merge field names below are GHL's standard appointment values; confirm each in
@@ -62,9 +71,8 @@ the builder's merge-field picker while building.
 > Join on Google Meet: {{appointment.meeting_location}}
 >
 > It is 30 minutes. We look at your accounts together and tell you exactly what we would do first.
-> If you can, have your ad and analytics logins handy so we can look at real numbers.
 >
-> Need a different time? {{appointment.reschedule_link}}
+> Need a different time? {{contact.booking_link}}
 >
 > Talk soon,
 > The BigSquare team
@@ -78,7 +86,7 @@ the builder's merge-field picker while building.
 >
 > Google Meet: {{appointment.meeting_location}}
 >
-> Need a different time? {{appointment.reschedule_link}}
+> Need a different time? {{contact.booking_link}}
 
 ### D. Reminder, 1 hour before
 **Subject:** In one hour: your call with BigSquare
@@ -88,11 +96,13 @@ the builder's merge-field picker while building.
 > We are on at {{appointment.only_start_time}} {{appointment.timezone}}.
 > Here is the link: {{appointment.meeting_location}}
 
-## Open questions for Brad / Mike
+## Decisions (Mike, 2026-10-09)
 
-1. Sign-off name on emails: "The BigSquare team", or Levi by name (he takes the calls)?
-2. "Have your ad and analytics logins handy": keep, soften, or drop?
-3. Reschedule link: GHL's hosted reschedule page shows GHL's design, not ours. Keep it, or send
-   people to `/schedule/book/?t=<token>` once that page exists (W4 needs it anyway)?
-4. The Meet link only exists once Levi and Brad connect Google Calendar; until then
+1. Sign-off is "The BigSquare team". Only emails Levi writes himself carry his name.
+2. The "have your logins handy" line is cut.
+3. Rescheduling stays in our design: `{{contact.booking_link}}`, never GHL's reschedule page.
+
+## Open
+
+1. The Meet link only exists once Levi and Brad connect Google Calendar; until then
    `{{appointment.meeting_location}}` is empty. Another reason booking stays off in production.

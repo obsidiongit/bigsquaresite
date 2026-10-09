@@ -14,7 +14,7 @@ import { EASE } from "@/lib/motion";
 import { trackFormLead } from "@/lib/track";
 import { getUtmParams } from "@/lib/utm";
 import { cn } from "@/lib/utils";
-import { bookedLabel, calendarLinks, TimePicker } from "./TimePicker";
+import { BookedDetails, TimePicker } from "./TimePicker";
 
 /* The /schedule/ STEPPED application (conversion/schedule.md v2.1;
    Brad round 2: "an application that you click through and submit the
@@ -179,9 +179,6 @@ type Status = "idle" | "sending" | "picking" | "done";
     set one; booked: the confirmed start */
 type Outcome = { kind: "sent" } | { kind: "call" } | { kind: "booked"; start: string };
 
-const CAL_LINK =
-  "font-mono text-mono-sm uppercase text-sec-ink underline underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:text-acc";
-
 function Confirmation({ reduced, outcome }: { reduced: boolean; outcome: Outcome }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -217,27 +214,7 @@ function Confirmation({ reduced, outcome }: { reduced: boolean; outcome: Outcome
       {outcome.kind === "booked" ? (
         <>
           <p className="text-h3 font-bold text-sec-ink">You are booked.</p>
-          <p className="text-body text-sec-ink">{bookedLabel(outcome.start)}</p>
-          <p className="text-small text-sec-mid">
-            The Google Meet link is in your inbox.
-          </p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <a
-              href={calendarLinks(outcome.start).google}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={CAL_LINK}
-            >
-              Add to Google Calendar
-            </a>
-            <a
-              href={calendarLinks(outcome.start).ics}
-              download="bigsquare-strategy-call.ics"
-              className={CAL_LINK}
-            >
-              Download .ics
-            </a>
-          </div>
+          <BookedDetails start={outcome.start} />
         </>
       ) : (
         <>

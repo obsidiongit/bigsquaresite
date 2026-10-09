@@ -279,15 +279,37 @@ export function ghlTimeToIso(value: string, tz = LOCATION_TZ): string | null {
 }
 
 /** The contact's next confirmed appointment on the booking calendar, if any. */
-export async function upcomingAppointment(contactId: string): Promise<{ startTime: string } | null> {
+export async function upcomingAppointment(
+  contactId: string,
+): Promise<{ id: string; startTime: string } | null> {
   const data = await call<{
-    events?: { calendarId?: string; startTime?: string; appointmentStatus?: string; deleted?: boolean }[];
+    events?: {
+      id: string;
+      calendarId?: string;
+      startTime?: string;
+      appointmentStatus?: string;
+      deleted?: boolean;
+    }[];
   }>("GET", `/contacts/${contactId}/appointments`);
   const now = Date.now();
   const next = (data.events ?? [])
     .filter((e) => e.calendarId === CALENDAR_ID && !e.deleted && e.appointmentStatus !== "cancelled")
-    .map((e) => (e.startTime ? ghlTimeToIso(e.startTime) : null))
-    .filter((iso): iso is string => iso !== null && Date.parse(iso) > now)
-    .sort()[0];
-  return next ? { startTime: next } : null;
+    .map((e) => ({ id: e.id, startTime: e.startTime ? ghlTimeToIso(e.startTime) : null }))
+    .filter((e): e is { id: string; startTime: string } => e.startTime !== null && Date.parse(e.startTime) > now)
+    .sort((a, b) => a.startTime.localeCompare(b.startTime))[0];
+  return next ?? null;
+}
+
+/** Moves an appointment to a new free slot (GHL rejects one that is taken). */
+export function rescheduleAppointment(appointmentId: string, startTime: string) {
+  return call("PUT", `/calendars/events/appointments/${appointmentId}`, {
+    version: V_CALENDARS,
+    body: {
+      calendarId: CALENDAR_ID,
+      startTime,
+      appointmentStatus: "confirmed",
+      toNotify: true,
+      ignoreFreeSlotValidation: false,
+    },
+  });
 }

@@ -82,6 +82,7 @@ const FIELDS = [
   ["contact.ga_client_id", "GA Client ID", "TEXT"],
   ["contact.sms_consent_text", "SMS Consent Text", "LARGE_TEXT"],
   ["contact.sms_consent_at", "SMS Consent At", "TEXT"],
+  ["contact.booking_link", "Booking Link", "TEXT"],
 ];
 
 const { customFields = [] } = await ghl("GET", `/locations/${LOCATION}/customFields`, {
