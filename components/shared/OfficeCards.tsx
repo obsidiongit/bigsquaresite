@@ -50,12 +50,12 @@ export function OfficeCards({
               {office.state}
             </p>
             <div className="mt-5 flex flex-col gap-1.5">
-              <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                {office.address ?? "[PLACEHOLDER: street address]"}
-              </p>
-              <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                {office.phone ?? "[PLACEHOLDER: phone]"}
-              </p>
+              {office.address && (
+                <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">{office.address}</p>
+              )}
+              {office.phone && (
+                <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">{office.phone}</p>
+              )}
             </div>
           </Link>
         </Reveal>

@@ -109,9 +109,6 @@ export default function SchedulePage() {
                 size="compact"
                 className="mt-4"
               />
-              <p className="mt-4 font-mono text-mono-sm uppercase text-sec-mid">
-                [PLACEHOLDER: confirm the real steps with Brad or Mike]
-              </p>
             </div>
           </div>
         </div>

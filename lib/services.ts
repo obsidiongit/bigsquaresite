@@ -15,6 +15,14 @@ export const SERVICE_GROUPS: ServiceGroup[] = [
   { slug: "design-development", name: "Design & Development" },
 ];
 
+/** One line per group: the /services/ hub and the homepage lanes read it */
+export const GROUP_INTROS: Record<ServiceGroup["slug"], string> = {
+  "organic-marketing":
+    "The channels you own: search, answers, content, social, and your list. Slower to start, cheapest to keep winning.",
+  "paid-advertising": "Leads on demand. Ads that start producing in weeks and report what every lead cost.",
+  "design-development": "What every channel points at: your brand, your site, and the tools behind them.",
+};
+
 export type ServiceMeta = {
   slug: string;
   name: string;

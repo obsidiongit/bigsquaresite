@@ -211,12 +211,17 @@ Needs Brad (facts and assets, none of which can be invented):
 - [ ] The single copy pass: hero card-beat headline + "How We Work" link, featured work support (+ ALL-CAPS support vs copy-rules), ProblemStrip/Solution/Services drafts, portal + newsletter + 90-days copy, ProofBand test-copy lock, "Let's Talk" pill vs approved labels
 - [ ] Sourced ProofBand metrics (launch gate in `lib/metrics.ts`; 3-vs-4 call) + real media for its panel
 - [ ] 6 real featured-work clients + media (`lib/featured-work.ts`)
-- [ ] Real 4K hero film (one-line HERO_VIDEO swap in Hero.tsx)
-- [ ] Real 90-day milestones (`lib/ninety-days.ts`, currently invented + placeholder-flagged)
+- [ ] Real 4K hero film (one-line REEL_VIDEO swap in components/sections/home/media.ts; the TV hero plays it)
+- [ ] Real 90-day milestones (`lib/ninety-days.ts`, currently invented + placeholder-flagged). The homepage section is retired (2026-10-09); the data still feeds the industry pages' phase cards
 - [ ] Newsletter: 5 client headshots, 4 photos (`lib/newsletter-frames.ts`), a real cadence, confirm "600+ clients" wording
 - [ ] Footer facts: socials, two office phones, BIGSQUARE vs BIGSQUARE MARKETING wordmark (paint layer question ANSWERED 2026-08-30: it returns letters-only inside the wordmark, STYLE_GUIDE 7.6)
 - [ ] Live Obsidion portal code for the window slot (chip drops with it)
 - [ ] Cube look sign-off + the 3D bundle overage call (~232KB gz vs the 200KB line)
+- [x] Pick the lower-page takes: settled 2026-10-09 when the review toggles were retired. Services = big type + cursor photo (`services/ServicesIndex.tsx`), Portal = blue stage (`portal/PortalBlueStage.tsx`); the other takes are in `project-guidelines/archive/retired-code/2026-10-09/`
+- [ ] Review the 2026-10-09 homepage restructure (STYLE_GUIDE changelog, same date): poster gallery in Featured work, the two-act problem/solution section, newsletter as the closer into the footer. Creator wall, first 90 days, and the cube hero are off the homepage
+- [ ] Review the search section rebuild (2026-10-09, STYLE_GUIDE changelog "search, ads first"): a Google results page with "Your Business" in the Sponsored slot, circled in pen; legend [01] ads, [02] map + results + ChatGPT. Copy pass on the headline, lead, legend, and the three depicted searches + ad text (`components/sections/home/Search.tsx`, `widgets/SerpWidget.tsx`, all DRAFT)
+- [ ] Confirm the six campaign posters (`lib/featured-work.ts`): titles are the poster headlines and blurbs name no clients ("a soda brand", "a pest control brand"). If Grovehaus and Okay Bye Pest Co. are real clients who agreed to be shown, name them; if they are spec work, say nothing more
+- [ ] Copy pass on the new newsletter lines ("What's working right now." + "Short notes from our team on what is working across the ads, search, and sites we run. Plain words. Leave any time."), DRAFT
 - [ ] Reviews to record: 2G1 First 90 Days round 2, 2I footer Back Cover round 2, cube reform round 14 (Brad may have approved verbally; confirm, then check off). The 2026-08-30 home polish round is REVIEWED; verdicts + follow-ups under "Brad's home review" above
 
 Build items (small, any session):

@@ -4,14 +4,12 @@ import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
 import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { CtaBand } from "@/components/shared/CtaBand";
 import { MediaSlot } from "@/components/shared/MediaSlot";
-import { MetricBlock } from "@/components/shared/MetricBlock";
 import { BracketIndex, Eyebrow } from "@/components/shared/mono";
 import { OfficeCards } from "@/components/shared/OfficeCards";
 import { Pill } from "@/components/shared/Pill";
 import { Section } from "@/components/shared/Section";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { EDGE } from "@/lib/layout";
-import { METRICS } from "@/lib/metrics";
 
 export const metadata: Metadata = {
   title: { absolute: "About BigSquare Marketing" },
@@ -138,20 +136,35 @@ export default function AboutPage() {
         <div className={EDGE}>
           <div className="flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-6">
             <div className="lg:col-span-6">
-              <Eyebrow>The story</Eyebrow>
-              <div className="mt-6 max-w-[65ch]">
-                <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                  [PLACEHOLDER: founding story, 2 to 3 short paragraphs from
-                  Brad: how BigSquare started, who it serves, and what
-                  changed along the way]
+              <Eyebrow>Who we are</Eyebrow>
+              {/* facts from the BigSquare brand file only; the founding
+                  story replaces this when Brad writes it */}
+              <div className="mt-6 flex max-w-[65ch] flex-col gap-5 text-body text-sec-ink">
+                <p>
+                  BigSquare is led by its founders, Brad Brown and Mike
+                  Soden, and built around one problem: when creative,
+                  media, and the website come from different vendors,
+                  information gets lost in the handoffs and nobody can say
+                  whether the marketing is working.
+                </p>
+                <p>
+                  So one team runs all of it: search, ads, sites, and
+                  creative. Clients log into Obsidion and check the numbers
+                  any day, not once a month in a deck.
+                </p>
+                <p className="text-sec-mid">
+                  We work from Denver and Tampa with multi-location and
+                  franchise businesses, ecommerce and software brands, and
+                  single-location businesses that want to grow where they
+                  are.
                 </p>
               </div>
             </div>
             <div className="lg:col-span-5 lg:col-start-8">
               <MediaSlot
                 id="about-founders"
-                note="The founders, or the first office. Real photo only."
-                alt="The BigSquare founders"
+                note="The BigSquare team"
+                alt="The BigSquare team: Brad Brown, Mike Soden, Chaley Selsor, Levi Holley and Russel Spence"
                 aspect="4 / 3"
               />
             </div>
@@ -218,18 +231,6 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* 5. Proof numbers: the homepage metrics array, same launch
-          gate (values are stand-ins until sourced, lib/metrics.ts) */}
-      <Section theme="dark">
-        <div className={EDGE}>
-          <Eyebrow>The numbers</Eyebrow>
-          <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {METRICS.map((metric) => (
-              <MetricBlock key={metric.caption} metric={metric} />
-            ))}
-          </div>
-        </div>
-      </Section>
 
       {/* 6. Offices */}
       <Section theme="light">

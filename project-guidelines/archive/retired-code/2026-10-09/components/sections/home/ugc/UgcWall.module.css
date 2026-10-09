@@ -1,0 +1,134 @@
+.section {
+  background: #050505;
+}
+.pin {
+  height: 360vh;
+}
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #050505;
+  color: #fff;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* the middle phone: our ad */
+.hero {
+  position: absolute;
+  overflow: hidden;
+  background: #16181e;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 1.5em 4em rgba(0, 0, 0, 0.6);
+}
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ours {
+  position: absolute;
+  left: 0.6em;
+  top: 0.6em;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.3em 0.5em;
+  border-radius: 0.3em;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 0.7em;
+}
+.ours i {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 0.1em;
+  background: #0657f9;
+}
+.label {
+  position: absolute;
+  left: var(--gutter-x, 5vw);
+  top: 5.5em;
+  margin: 0;
+  padding: 0.5em 0.9em;
+  border-radius: 2em;
+  background: rgba(5, 5, 5, 0.6);
+  -webkit-backdrop-filter: blur(1em);
+  backdrop-filter: blur(1em);
+  font-size: 1.1em;
+}
+.title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(3rem, 9vw, 11em);
+  font-family: var(--t);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  white-space: nowrap;
+  text-shadow: 0 0.1em 0.6em rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+.side {
+  position: absolute;
+  right: var(--gutter-x, 5vw);
+  bottom: 3em;
+  width: 22em;
+  color: #fff;
+  opacity: 0;
+}
+.side p {
+  margin: 1em 0 0;
+  font-size: 1.25em;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+.kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.45em 0.7em;
+  border-radius: 0.333em;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.85em;
+}
+.kind i {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 0.1em;
+  background: #0657f9;
+}
+@media (max-width: 767px) {
+  .title {
+    font-size: 14vw;
+    white-space: normal;
+    text-align: center;
+    width: 90vw;
+  }
+  .label {
+    left: 1em;
+    top: 4.5em;
+  }
+  .side {
+    left: 1em;
+    right: 1em;
+    bottom: 1.5em;
+    width: auto;
+    padding: 1em;
+    border-radius: 0.6em;
+    background: rgba(5, 5, 5, 0.7);
+    -webkit-backdrop-filter: blur(1em);
+    backdrop-filter: blur(1em);
+  }
+}

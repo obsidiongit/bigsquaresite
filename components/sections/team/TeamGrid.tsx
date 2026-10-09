@@ -11,6 +11,7 @@ import { Chip } from "@/components/shared/mono";
 import { EASE } from "@/lib/motion";
 import type { TeamCard, TeamMember } from "@/lib/team";
 import { cn } from "@/lib/utils";
+import { DotPortrait } from "@/components/shared/DotPortrait";
 
 /* <TeamGrid> (project-sections/company/team.md; Brad 2026-08-31): the
    roster wall and the profile window. Early-social-web energy in the
@@ -29,7 +30,7 @@ import { cn } from "@/lib/utils";
      fades up as it lands; close runs it back). Chrome bar with the
      brand square, the profile counter, and PREV/NEXT: profiles flip
      in place, the Tumblr-era move the counter promises. Personal
-     fields render designed [PLACEHOLDER] states until each member
+     fields stay hidden until each member
      answers the questionnaire.
 
    Reduced motion: the tilt stays (static composition, not motion);
@@ -108,27 +109,27 @@ function ProfileBody({ member }: { member: TeamMember }) {
           </p>
         </div>
 
-        <ProfileSection label="About">
-          <p className="max-w-[48ch] text-body text-sec-mid">{member.about}</p>
-        </ProfileSection>
+        {member.about ? (
+          <ProfileSection label="About">
+            <p className="max-w-[48ch] text-body text-sec-mid">{member.about}</p>
+          </ProfileSection>
+        ) : null}
 
-        <ProfileSection label="Into">
-          {member.likes.length > 0 ? (
+        {member.likes.length > 0 ? (
+          <ProfileSection label="Into">
             <div className="flex flex-wrap gap-2">
               {member.likes.map((like) => (
                 <Chip key={like}>{like}</Chip>
               ))}
             </div>
-          ) : (
-            <p className={cn(MONO_LABEL, "leading-relaxed")}>
-              [PLACEHOLDER: 3 to 6 things {member.signature} is into, as chips]
-            </p>
-          )}
-        </ProfileSection>
+          </ProfileSection>
+        ) : null}
 
-        <ProfileSection label="On rotation">
-          <p className="text-body text-sec-mid">{member.rotation}</p>
-        </ProfileSection>
+        {member.rotation ? (
+          <ProfileSection label="On rotation">
+            <p className="text-body text-sec-mid">{member.rotation}</p>
+          </ProfileSection>
+        ) : null}
 
         {member.linkedin ? (
           <ProfileSection label="Find them">
@@ -150,7 +151,8 @@ function ProfileBody({ member }: { member: TeamMember }) {
         ) : null}
       </div>
 
-      {/* the photo strip: their pictures, not ours */}
+      {/* the photo strip: their pictures, not ours (only once they send them) */}
+      {member.photos.length > 0 ? (
       <div className="md:col-span-12">
         <p className={MONO_LABEL}>Photos</p>
         <div className="mt-3 grid grid-cols-3 gap-3">
@@ -167,6 +169,7 @@ function ProfileBody({ member }: { member: TeamMember }) {
           ))}
         </div>
       </div>
+      ) : null}
     </div>
   );
 }
@@ -380,7 +383,7 @@ function MemberCard({
         DROP[index % DROP.length],
       )}
     >
-      <div className="[&_img]:grayscale [&_img]:transition-[filter] [&_img]:duration-[350ms] group-hover/card:[&_img]:grayscale-0 motion-reduce:[&_img]:transition-none">
+      <div className="relative [&_img]:grayscale [&_img]:transition-[filter] [&_img]:duration-[350ms] group-hover/card:[&_img]:grayscale-0 motion-reduce:[&_img]:transition-none">
         <MediaSlot
           id={member.photoSlot}
           note="Square headshot. Real person, no stock."
@@ -389,6 +392,12 @@ function MemberCard({
           compact
           sizes="(min-width: 1024px) 24vw, (min-width: 640px) 32vw, 46vw"
         />
+        {/* blue dot portrait at rest, the photo on hover */}
+        {(
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[24px] transition-opacity duration-[350ms] ease-house group-hover/card:opacity-0">
+            <DotPortrait />
+          </div>
+        )}
       </div>
       <div className="flex items-start justify-between gap-3 px-2 pb-2 pt-4">
         <div>
@@ -499,7 +508,9 @@ export function TeamGrid({ cards }: { cards: TeamCard[] }) {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
         {cards.map((card, i) => {
           if (card.kind === "open") {
-            return <OpenSlotCard key={card.id} index={i} />;
+            /* only real people on the wall: open slots stay off it
+               (OpenSlotCard kept for when hiring wants them back) */
+            return null;
           }
           memberIndex += 1;
           const mi = memberIndex;

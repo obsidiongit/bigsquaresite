@@ -72,6 +72,11 @@ export async function submitForm(
       "[form-action] FORM_WEBHOOK_URL is not set; submission not delivered:",
       JSON.stringify(payload),
     );
+    // On the live deployment a fake "sent" would silently drop a real lead:
+    // tell the visitor it failed so they use the support email instead.
+    if (process.env.VERCEL_ENV === "production") {
+      return { ok: false, error: GENERIC_ERROR };
+    }
     return { ok: true };
   }
 

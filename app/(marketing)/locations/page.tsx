@@ -106,12 +106,12 @@ export default function LocationsPage() {
                       {office.state}
                     </p>
                     <div className="mt-4 flex flex-col gap-1.5 border-t border-sec-line pt-4">
-                      <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                        {office.address ?? "[PLACEHOLDER: street address]"}
-                      </p>
-                      <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                        {office.phone ?? "[PLACEHOLDER: phone]"}
-                      </p>
+                      {office.address && (
+                        <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">{office.address}</p>
+                      )}
+                      {office.phone && (
+                        <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">{office.phone}</p>
+                      )}
                     </div>
                   </Link>
                 </Reveal>

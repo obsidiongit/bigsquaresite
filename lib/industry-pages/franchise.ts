@@ -26,7 +26,7 @@ export const FRANCHISE_PAGE: IndustryPageContent = {
     "BigSquare grows franchise brands. We run search, ads, and creative for franchisors, franchisee groups, and emerging brands, with a budget and a report for every location. You see every lead and every dollar in Obsidion, our client portal.",
   heroMedia: {
     id: "franchise-hero",
-    note: "[PLACEHOLDER: franchise client storefront or team on site, 4:3 crop]",
+    note: "franchise client storefront or team on site, 4:3 crop",
     alt: "A BigSquare franchise client location",
   },
   monoStrip: [
@@ -172,7 +172,7 @@ export const FRANCHISE_PAGE: IndustryPageContent = {
 
   spineMedia: {
     id: "franchise-method",
-    note: "[PLACEHOLDER: Obsidion portal in use, over the shoulder, 16:9]",
+    note: "Obsidion portal in use, over the shoulder, 16:9",
     alt: "The Obsidion portal showing location-level results",
     afterBlock: 2,
   },

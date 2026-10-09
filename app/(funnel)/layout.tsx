@@ -1,3 +1,4 @@
+import { LaunchSafe } from "@/components/shared/LaunchSafe";
 import type { Metadata } from "next";
 import { PageTransitions } from "@/components/motion/PageTransitions";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
@@ -30,6 +31,7 @@ export default function FunnelLayout({
       <SmoothScroll />
       <SoundProvider />
       <PageTransitions />
+      <LaunchSafe />
       {children}
     </>
   );

@@ -77,7 +77,6 @@ export default function CareersPage() {
             <Reveal delay={0.1} className="md:col-span-4 md:col-start-9 md:self-end">
               <p className="max-w-[40ch] text-body text-sec-mid">
                 Offices in Denver and Tampa, clients across the country.
-                [PLACEHOLDER: remote policy, from Brad]
               </p>
             </Reveal>
           </div>
@@ -134,10 +133,6 @@ export default function CareersPage() {
               <Reveal className="mt-8">
                 <div className="rounded-[24px] border border-sec-line bg-surf p-6 md:p-8">
                   <Chip className="text-sec-mid">Roles</Chip>
-                  <p className="mt-4 font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                    [PLACEHOLDER: open roles from Brad. Rows land in
-                    lib/careers.ts and render here]
-                  </p>
                   <p className="mt-6 max-w-[52ch] text-body text-sec-ink">
                     Roles get posted here as they open. Send us your work
                     anyway and tell us what you do:

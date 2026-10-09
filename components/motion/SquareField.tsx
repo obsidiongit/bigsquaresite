@@ -234,12 +234,14 @@ export function SquareField({ heroStage = false }: { heroStage?: boolean }) {
     <div
       ref={rootRef}
       aria-hidden
+      data-square-field
       style={{ opacity: 0 }}
       className="pointer-events-none fixed inset-0 z-[1] overflow-hidden"
     >
       {SQUARES.map((sq, i) => (
         <div
           key={i}
+          data-sq={i % 2 ? "odd" : "even"}
           className="absolute rounded-[2px] border-solid border-ink will-change-transform"
           style={{
             left: `${sq.x}%`,

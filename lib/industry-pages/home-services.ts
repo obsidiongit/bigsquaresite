@@ -28,7 +28,7 @@ export const HOME_SERVICES_PAGE: IndustryPageContent = {
     "BigSquare grows home service brands. We run local search, ads, and websites for HVAC, plumbing, roofing, and the other trades, with a budget and a report for every territory. Every call, lead, and dollar shows up in Obsidion, our client portal.",
   heroMedia: {
     id: "home-services-hero",
-    note: "[PLACEHOLDER: tech at the door or branded truck, 4:3 crop]",
+    note: "tech at the door or branded truck, 4:3 crop",
     alt: "A home services technician arriving at a job",
   },
   monoStrip: ["HVAC", "Plumbing", "Roofing", "Restoration"],
@@ -173,7 +173,7 @@ export const HOME_SERVICES_PAGE: IndustryPageContent = {
   ],
   spineMedia: {
     id: "home-services-method",
-    note: "[PLACEHOLDER: dispatch board or portal on an office screen, 16:9]",
+    note: "dispatch board or portal on an office screen, 16:9",
     alt: "Territory results in the Obsidion portal",
     afterBlock: 1,
   },

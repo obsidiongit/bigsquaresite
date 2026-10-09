@@ -46,7 +46,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={plexMono.variable}>
+    <html lang="en" className={plexMono.variable} suppressHydrationWarning>
       <head>
         {PRELOAD_FONTS.map((href) => (
           <link

@@ -18,11 +18,7 @@ export function MetricBlock({
 }) {
   return (
     <div className={cn("flex flex-col", className)}>
-      {metric.value === null ? (
-        <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-          [PLACEHOLDER: {metric.placeholder}]
-        </p>
-      ) : (
+      {metric.value === null ? null : (
         <p className="font-display text-metric font-bold text-sec-acc">
           <CountUp
             value={metric.value}

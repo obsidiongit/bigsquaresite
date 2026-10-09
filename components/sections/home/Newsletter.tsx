@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
    1. LIGHT ground, not the reference's dark band. Portal above is tint,
       and the page's dark budget is already spent on the proof band and
       the footer (STYLE_GUIDE 5).
-   2. The panel cycles honest PLACEHOLDER frames until real photography
+   2. The panel cycles stock frames (lib/newsletter-frames) until real photography
       lands (lib/newsletter-frames.ts owns the swap).
    3. The avatar cluster and client count stay, with Brad's real number:
       600+. The discs are placeholders until headshots are cleared.
@@ -25,34 +25,23 @@ import { cn } from "@/lib/utils";
       claimed until he picks one.
 
    Copy is DRAFT until Brad's single copy pass, like the rest of the
-   region. The one number on screen traces to 9b.newsletter.md. */
+   region. The one number on screen traces to 9b.newsletter.md.
 
-/* Five overlapping discs plus the count chip: the reference's proof
-   cluster. Decoration only, aria-hidden; the sentence beside it carries
-   every claim. The discs stay empty on purpose. Putting invented faces
-   here would be exactly the fake the copy rules ban, and the mono note
-   under the line keeps the placeholder visible instead of finished. */
-function AvatarCluster() {
-  return (
-    <div aria-hidden className="flex items-center">
-      <div className="flex -space-x-2">
-        {[0, 1, 2, 3, 4].map((disc) => (
-          <span
-            key={disc}
-            className="size-8 rounded-full border border-sec-line bg-surf ring-2 ring-sec-bg"
-          />
-        ))}
-      </div>
-      <span className="ml-2 flex h-8 items-center rounded-full bg-sec-acc px-2.5 font-mono text-mono-sm uppercase tabular-nums text-onacc">
-        600+
-      </span>
-    </div>
-  );
-}
+   2026-10-09: the newsletter CLOSES the homepage now (the first 90 days
+   section and its closing CTA are retired), and the page lifts off the
+   curtain footer from here. The section is the last sheet of paper: it
+   overlaps the footer's reveal by its bottom radius, so as you scroll
+   the rounded edge and its shadow peel up off the footer underneath.
+   New copy (the review: the old headline "sounds insane"). */
 
 export function Newsletter() {
   return (
-    <Section theme="light" size="base" id="newsletter">
+    <Section
+      theme="light"
+      size="base"
+      id="newsletter"
+      className="z-10 -mb-[var(--sheet-r)] rounded-b-[var(--sheet-r)] pb-[calc(var(--section-y)+var(--sheet-r))] shadow-[0_28px_60px_-12px_rgba(0,6,31,.45)] [--sheet-r:clamp(24px,3vw,44px)]"
+    >
       <div className={cn(EDGE, "relative z-10")}>
         <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-x-16">
           {/* ---- copy, form, proof --------------------------------- */}
@@ -62,15 +51,15 @@ export function Newsletter() {
                 as="h2"
                 className="font-display text-h2 text-sec-ink"
               >
-                Sleep soundly. You are in good company.
+                {"What's working right now."}
               </BaselineReveal>
 
               <Reveal stagger className="mt-6">
                 <RevealItem>
                   <p className="max-w-[46ch] text-body text-sec-mid">
-                    Most marketing advice is a guess. Ours is not. Subscribe
-                    to get what our team is seeing across real client
-                    accounts, in plain words.
+                    Short notes from our team on what is working across the
+                    ads, search, and sites we run. Plain words. Leave any
+                    time.
                   </p>
                 </RevealItem>
 
@@ -78,17 +67,6 @@ export function Newsletter() {
                   <NewsletterForm />
                 </RevealItem>
 
-                <RevealItem className="mt-6">
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-                    <AvatarCluster />
-                    <p className="text-small text-sec-mid">
-                      Join the 600+ clients who trust BigSquare.
-                    </p>
-                  </div>
-                  <p className="mt-3 font-mono text-mono-sm uppercase text-sec-mid">
-                    [PLACEHOLDER: client headshots]
-                  </p>
-                </RevealItem>
               </Reveal>
             </div>
           </div>

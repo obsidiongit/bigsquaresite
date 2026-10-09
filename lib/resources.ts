@@ -1,6 +1,6 @@
 /* The lead magnets on /resources/ (Pane A, 2026-08-30). FIVE slots
    per sitemap.md; the spec files in project-sections/lead-magnets/
-   are still all [PLACEHOLDER], so these are WORKING TITLES drafted to
+   are not built yet, so these are WORKING TITLES drafted to
    fit the wide positioning (ecommerce, software, and single-location
    clients read as equals). Confirm with Brad, then mirror the final
    values into the spec files. Brad, 2026-08-30: the real list is still

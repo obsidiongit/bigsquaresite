@@ -99,10 +99,10 @@ Shared industry-card assets are deliberate: one file serves every page that link
 
 | Item | Where it lands | What is needed | OWNER | Status |
 |---|---|---|---|---|
-| Hero film | `HERO_VIDEO` in `components/sections/home/Hero.tsx` | The real 4K brand film, one-line swap | DESIGNER | EMPTY |
+| Hero film | `REEL_VIDEO` in `components/sections/home/media.ts` (the TV hero plays it; the cube-era `Hero.tsx` is archived) | The real 4K brand film, one-line swap | DESIGNER | EMPTY |
 | /schedule/ VSL + poster | `lib/schedule-media.ts` | The VSL film + poster frame | DESIGNER | EMPTY |
 | Funnel video + poster | `lib/funnels/registry.ts` | The /go/ funnel video URL + poster | DESIGNER | EMPTY |
-| 6 featured-work tiles | `lib/featured-work.ts` | Real client work media; blocked on the real case studies | REAL-ONLY | EMPTY |
+| 6 featured-work tiles | `lib/featured-work.ts` | Real client work media; blocked on the real case studies | REAL-ONLY | PARTLY FILLED 2026-10-09: six BigSquare campaign posters (4:5; originals `assets/work/`, web files `public/media/work/`) fill four homepage tiles and the problem/solution section; two reel films fill the rest. Real case-study media still owed |
 | ProofBand panel media | ProofBand section (with the sourced metrics in `lib/metrics.ts`) | Real media beside real numbers, nothing staged near claims | REAL-ONLY | EMPTY |
 | Newsletter: 5 client headshots | `lib/newsletter-frames.ts` | Real client faces + the "600+ clients" wording confirm | REAL-ONLY | EMPTY |
 | Newsletter: 4 cycle photos | `lib/newsletter-frames.ts` | Brand-world photos for the cycling panel; real photos beat, world-bible candidates welcome | LANE-2-AI | EMPTY |

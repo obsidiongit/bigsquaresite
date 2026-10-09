@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Chip } from "@/components/shared/mono";
 import { ASSET_FILES } from "@/lib/asset-files";
+import { SlotFill } from "@/components/shared/SlotFill";
 import { cn } from "@/lib/utils";
 
 /* <MediaSlot> (lib/asset-files.ts contract, Brad's fill-at-the-end
@@ -95,6 +96,7 @@ export function MediaSlot({
                 {note}
               </p>
             )}
+            <SlotFill id={id} />
           </div>
         )}
       </div>

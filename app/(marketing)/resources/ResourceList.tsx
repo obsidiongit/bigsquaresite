@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
    (formType "lead-magnet", the resource slug in fields) and the
    confirmation replaces the form in place with the 6.13 height lock.
    The assets do not exist yet, so the state says so out loud: a
-   visible [PLACEHOLDER] line, never a fake download. */
+   honest "sent when ready" line, never a fake download. */
 
 type Status = "idle" | "sending" | "done";
 
@@ -65,8 +65,7 @@ function Confirmation({
         Got it. {resource.title} is on its way.
       </p>
       <p className="max-w-[52ch] font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-        [PLACEHOLDER: this file is still in production. The request is
-        logged and the file goes out by email when it is ready]
+        It goes out by email the moment it is ready.
       </p>
     </motion.div>
   );
@@ -130,8 +129,7 @@ function RequestForm({
             className="flex flex-col gap-5"
           >
             <p className="max-w-[52ch] font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-              [PLACEHOLDER: asset not built yet. Leave your email and we
-              send the {resource.format.toLowerCase()} when it is ready]
+              Leave your email and we send the {resource.format.toLowerCase()} as soon as it is ready.
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
               <Field

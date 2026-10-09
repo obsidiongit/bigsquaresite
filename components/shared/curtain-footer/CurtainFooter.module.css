@@ -1,0 +1,605 @@
+/* Laid out on the reference picture (1536 × 1024): inside .stage, 1em = the picture's 16px, so every
+   position below is the picture's px / 16. The stage is scaled (--u) to fit the screen both ways and centred.
+   Phones get a stacked version at the bottom. */
+/* the way in: the footer is pinned under the page and uncovered as the page above slides up off it. The
+   shell holds its place in the page and clips it, so it only shows where the shell is. */
+.reveal {
+  --u: min(calc(100vw / 96), calc(100svh / 64));
+  position: relative;
+}
+.reveal[data-reveal] {
+  height: max(100svh, calc(var(--u) * 64));
+  clip-path: inset(0);
+}
+.reveal[data-reveal] > .footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+/* rising out of the shade as it's uncovered */
+.reveal[data-reveal] .stage {
+  transform: translate(-50%, calc(-50% + (1 - var(--rv, 1)) * 14vh)) scale(calc(0.94 + var(--rv, 1) * 0.06));
+}
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #00061f;
+  opacity: calc((1 - var(--rv, 1)) * 0.75);
+  pointer-events: none;
+}
+.footer {
+  --u: min(calc(100vw / 96), calc(100svh / 64));
+  position: relative;
+  overflow: hidden;
+  height: 100svh;
+  min-height: calc(var(--u) * 64);
+  color: #fff;
+  background:
+    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 20, 120, 0.28)),
+    #0657f9;
+  font-family: var(--m), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  text-transform: uppercase;
+}
+.footer a {
+  color: inherit;
+  text-decoration: none;
+}
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 96em;
+  height: 64em;
+  font-size: var(--u);
+  transform: translate(-50%, -50%);
+}
+
+/* ---------- out-of-focus squares ---------- */
+.blur {
+  --d: 1.2em; /* how far it moves with the mouse */
+  --r: 0deg;
+  position: absolute;
+  z-index: 0;
+  background: #041042;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(calc(var(--px, 0) * var(--d) * -1), calc(var(--py, 0) * var(--d) * -1)) rotate(var(--r));
+  transition:
+    opacity 1.4s ease 0.3s,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.footer[data-in] .blur {
+  opacity: var(--o);
+}
+.b1 {
+  --o: 0.75;
+  left: 5.4em;
+  top: 32em;
+  width: 4.6em;
+  height: 4.6em;
+  border-radius: 35%;
+  filter: blur(0.8em);
+}
+.b2 {
+  --o: 0.85;
+  left: -1.8em;
+  top: 44.5em;
+  width: 12.5em;
+  height: 12.5em;
+  border-radius: 1.2em;
+  filter: blur(0.9em);
+  --r: 14deg;
+  --d: 3em;
+}
+.b3 {
+  --o: 0.8;
+  right: -1.2em;
+  top: 23.5em;
+  width: 3.4em;
+  height: 4.6em;
+  border-radius: 0.6em;
+  filter: blur(0.55em);
+}
+.b4 {
+  --o: 0.7;
+  right: -0.4em;
+  top: 40.5em;
+  width: 1.6em;
+  height: 2.2em;
+  border-radius: 0.4em;
+  filter: blur(0.35em);
+}
+.b5 {
+  --o: 0.8;
+  right: 2.6em;
+  top: 5.2em;
+  width: 3.2em;
+  height: 3.2em;
+  border-radius: 0.6em;
+  filter: blur(0.45em);
+}
+
+/* ---------- the wordmark ---------- */
+.markWrap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  /* the trail runs on to the screen's right edge, past the stage */
+  right: min(0px, calc((96em - 100vw) / 2));
+  z-index: 1;
+  height: 36em;
+}
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- pencil: notes write in, lines draw, all wobble ---------- */
+.note {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--a), "Comic Sans MS", cursive;
+  font-size: 1.35em;
+  line-height: 0.95;
+  letter-spacing: 0.08em;
+  color: rgba(225, 235, 255, 0.78);
+  text-transform: uppercase;
+  filter: url(#foot-pencil);
+}
+.note span {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.55s cubic-bezier(0.5, 0, 0.3, 1);
+  transition-delay: calc(1.3s + var(--i) * 0.28s);
+}
+.footer[data-in] .note span {
+  clip-path: inset(-20% -5% -20% 0);
+}
+.noteLeft {
+  left: 2.69em;
+  top: 13.4em;
+  transform: rotate(-19deg);
+  transform-origin: left top;
+}
+.noteRight {
+  left: 59.4em;
+  top: 31.4em;
+  transform: rotate(-9deg);
+  transform-origin: left top;
+}
+.pencil {
+  position: absolute;
+  z-index: 2;
+  overflow: visible;
+  fill: none;
+  stroke: rgba(225, 235, 255, 0.78);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  filter: url(#foot-pencil);
+}
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.5, 0, 0.3, 1);
+  transition-delay: calc(1.5s + var(--i) * 0.35s);
+}
+.footer[data-in] .draw {
+  stroke-dashoffset: 0;
+}
+.arrowLeft {
+  left: 10.4em;
+  top: 18.4em;
+  width: 2.3em;
+}
+.arrowRight {
+  left: 79.2em;
+  top: 46.6em;
+  width: 5.4em;
+}
+
+/* ---------- links · rule · offices / portal ---------- */
+.mid {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: 32.4em;
+  height: 9.6em;
+}
+.links {
+  position: absolute;
+  left: 15.1em;
+  top: 0.5em;
+  display: flex;
+  gap: 6.5em;
+}
+.links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15em;
+}
+.links li,
+.block {
+  opacity: 0;
+  transform: translateY(0.6em);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.1s,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.1s;
+}
+.links ul + ul li,
+.block {
+  transition-delay: 1.3s;
+}
+.block + .block {
+  transition-delay: 1.45s;
+}
+.footer[data-in] .links li,
+.footer[data-in] .block {
+  opacity: 1;
+  transform: none;
+}
+.links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(var(--u) * 13);
+  font-size: 0.92em;
+  font-weight: 300;
+  letter-spacing: 0.24em;
+  line-height: 1;
+  transition: opacity 0.25s;
+}
+/* the pencil arrows: drawn in with the footer, redrawn (and nudged) on hover */
+.parrow {
+  flex: none;
+  width: 2.1em;
+  height: 0.8em;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#foot-pencil-sm);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.parrow.up {
+  width: 0.85em;
+  height: 0.85em;
+  stroke-width: 1.4;
+}
+.parrow path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.5, 0, 0.3, 1);
+  transition-delay: calc(1.5s + var(--i) * 0.09s);
+}
+.parrow path + path {
+  transition-delay: calc(1.75s + var(--i) * 0.09s);
+}
+.footer[data-in] .parrow path {
+  stroke-dashoffset: 0;
+}
+a:hover > .parrow {
+  transform: translateX(0.3em);
+}
+a:hover > .parrow.up {
+  transform: translate(0.15em, -0.15em);
+}
+a:hover > .parrow path {
+  animation: redraw 0.45s cubic-bezier(0.5, 0, 0.3, 1);
+}
+a:hover > .parrow path + path {
+  animation: redraw 0.3s cubic-bezier(0.5, 0, 0.3, 1) 0.15s backwards;
+}
+@keyframes redraw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.links ul:has(a:hover) a:not(:hover) {
+  opacity: 0.55;
+}
+.rule {
+  position: absolute;
+  left: 52em;
+  top: 0;
+  width: 1px;
+  height: 9.4em;
+  background: rgba(255, 255, 255, 0.55);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.1s;
+}
+.footer[data-in] .rule {
+  transform: none;
+}
+.info {
+  position: absolute;
+  left: 56.1em;
+  top: 0.5em;
+  display: flex;
+  gap: 6em;
+}
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55em;
+}
+.label {
+  margin-bottom: 0.6em;
+  font-size: 0.72em;
+  letter-spacing: 0.3em;
+  opacity: 0.8;
+}
+.big {
+  font-size: 1.3em;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+a.big {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.small {
+  max-width: 17em;
+  font-size: 0.72em;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  opacity: 0.75;
+}
+
+/* ---------- the question, the button ---------- */
+.ask {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.ask a {
+  pointer-events: auto;
+}
+.q {
+  position: absolute;
+  left: calc(var(--u) * 15.1);
+  top: calc(var(--u) * 45.2);
+  margin: 0;
+  text-align: left;
+  font-size: 3em;
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: 0.11em;
+  opacity: 0;
+  transform: translateY(0.3em);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s;
+}
+.footer[data-in] .q {
+  opacity: 1;
+  transform: none;
+}
+.under {
+  left: 15.1em;
+  top: 52.3em;
+  width: 27em;
+  height: 0.8em;
+}
+/* the audit: the slot it sits in (the button itself is components/footer-marks/FooterCta) */
+.cta {
+  position: absolute;
+  left: 56.1em;
+  top: 47.4em;
+  width: 22.5em;
+  height: 3.8em;
+  font-weight: 400;
+  pointer-events: auto;
+}
+
+/* ---------- legal line ---------- */
+.legal {
+  position: absolute;
+  z-index: 2;
+  left: 2.2em;
+  right: 2.2em;
+  top: 59.9em;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.8em;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+}
+.legal span {
+  font-size: 0.72em;
+  letter-spacing: 0.26em;
+}
+
+.picker {
+  position: absolute;
+  z-index: 5;
+  right: 1.5em;
+  top: 1.5em;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 8px;
+  background: #fff;
+  color: #0657f9;
+  font: 500 12px/1 system-ui, sans-serif;
+  text-transform: none;
+  border-radius: 4px;
+}
+.picker select {
+  font: inherit;
+}
+
+/* without the wordmark (an ending draws its own), the footer is the lower half */
+.footer:not([data-wordmark]) {
+  height: auto;
+  min-height: 0;
+}
+.footer:not([data-wordmark]) .stage {
+  position: relative;
+  left: auto;
+  top: auto;
+  height: 32em;
+  margin: 0 auto;
+  transform: none;
+}
+.footer:not([data-wordmark]) .mid,
+.footer:not([data-wordmark]) .ask,
+.footer:not([data-wordmark]) .legal {
+  transform: translateY(-32em);
+}
+
+/* ---------- phones: stacked ---------- */
+@media (max-width: 767px) {
+  .reveal[data-reveal] {
+    height: auto;
+    clip-path: none;
+  }
+  .reveal[data-reveal] > .footer {
+    position: relative;
+  }
+  .reveal[data-reveal] .stage {
+    transform: none;
+  }
+  .shade {
+    display: none;
+  }
+  .footer {
+    height: auto;
+    min-height: 0;
+  }
+  .stage {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    height: auto;
+    transform: none;
+    font-size: 16px;
+    padding: 0 16px 1.5em;
+  }
+  .markWrap {
+    position: relative;
+    inset: auto;
+    height: 52.5vw;
+    margin: 1.5em -16px 0;
+  }
+  .canvas {
+    position: absolute;
+    left: -19vw;
+    top: 0;
+    width: 140vw;
+    height: 100%;
+  }
+  .note,
+  .pencil.arrowLeft,
+  .pencil.arrowRight,
+  .b3,
+  .b4,
+  .b5 {
+    display: none;
+  }
+  .mid,
+  .ask,
+  .legal {
+    position: relative;
+    inset: auto;
+    z-index: 2;
+    height: auto;
+    transform: none !important;
+  }
+  .mid {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    padding-top: 1em;
+  }
+  .links,
+  .info {
+    position: static;
+    gap: 2em;
+  }
+  .links a {
+    width: 9.5em;
+    font-size: 0.72em;
+  }
+  .rule {
+    position: static;
+    width: 100%;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .big {
+    font-size: 1.15em;
+  }
+  .ask {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 3em 0 2.5em;
+  }
+  .q {
+    position: static;
+    font-size: 1.55em;
+    letter-spacing: 0.1em;
+  }
+  .pencil.under {
+    position: static;
+    width: 70%;
+  }
+  .cta {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 19em;
+    height: 3.4em;
+    font-size: 0.78em;
+  }
+  .legal {
+    flex-direction: column;
+    gap: 0.6em;
+  }
+  .legal span {
+    font-size: 0.62em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .note span,
+  .draw,
+  .links li,
+  .block,
+  .q,
+  .rule,
+  .blur {
+    transition: none !important;
+  }
+}
+
+.legalLinks {
+  display: inline-flex;
+  gap: 1.2em;
+}
+.legalLinks a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}

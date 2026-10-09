@@ -21,10 +21,11 @@ export type NewsletterFrame = {
 };
 
 export const NEWSLETTER_FRAMES: NewsletterFrame[] = [
-  { id: "leadership", note: "[PLACEHOLDER: leadership team, square crop]" },
-  { id: "workshop", note: "[PLACEHOLDER: strategy session, Denver office]" },
-  { id: "client-site", note: "[PLACEHOLDER: client location shoot]" },
-  { id: "build", note: "[PLACEHOLDER: creative team at work, Tampa office]" },
+  // stock photography (Unsplash License) until cleared team photos replace it
+  { id: "team", note: "A team at work", src: "/media/stock/newsletter-team.webp", alt: "A marketing team talking around a table with laptops" },
+  { id: "workshop", note: "A planning session", src: "/media/stock/newsletter-workshop.webp", alt: "Sticky notes being arranged on a planning board" },
+  { id: "shoot", note: "A content shoot", src: "/media/stock/newsletter-shoot.webp", alt: "A camera operator filming a product shoot" },
+  { id: "build", note: "Design in progress", src: "/media/stock/newsletter-build.webp", alt: "A designer drawing on a tablet in a studio" },
 ];
 
 /** Milliseconds each frame holds before the crossfade (9b.newsletter.md). */

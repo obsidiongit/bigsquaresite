@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
    why the hidden-ness lives on the body and not on the shell. */
 
 /** A value. Never a number: `w` is a layout weight, 0..1. */
-function Bar({
+export function Bar({
   w,
   className,
   acc = false,
@@ -73,17 +73,20 @@ export function PortalGlyph({ lit = false }: { lit?: boolean }) {
   );
 }
 
-function Panel({
+export function Panel({
   field,
   children,
   className,
+  mark,
 }: {
   field: string;
   children: React.ReactNode;
   className?: string;
+  /** data-mark hook (the marked-up portal take points its notes here) */
+  mark?: string;
 }) {
   return (
-    <div className={cn("rounded-[12px] bg-surf p-4", className)}>
+    <div data-mark={mark} className={cn("rounded-[12px] bg-surf p-4", className)}>
       <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-sec-mid">
         {field}
       </p>

@@ -1,0 +1,151 @@
+/* The footer's wordmark options. All sit in the footer's wordmark area (.markWrap) on the picture grid:
+   1em = the picture's 16px (the stage's font-size). */
+.fill {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* the stage's own box (the wordmark area may run wider than the stage) */
+.stageBox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 96em;
+  height: 36em;
+}
+
+/* ---------- D pencil ---------- */
+.pencil text {
+  font-family: "Arial Black", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+}
+.pencil {
+  overflow: visible;
+  filter: url(#foot-pencil);
+}
+.outline {
+  fill: none;
+  stroke: rgba(235, 242, 255, 0.92);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-dasharray: 2600;
+  stroke-dashoffset: 2600;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.5, 0, 0.3, 1);
+  transition-delay: calc(var(--k) * 0.14s);
+}
+.pencil[data-on] .outline {
+  stroke-dashoffset: 0;
+}
+.hatch {
+  fill: url(#mark-hatch);
+  opacity: 0;
+  transition:
+    opacity 0.9s ease,
+    fill 0.3s;
+  transition-delay: calc(1.2s + var(--k) * 0.14s), 0s;
+}
+.pencil[data-on] .hatch {
+  opacity: 1;
+}
+.pl {
+  cursor: default;
+}
+/* pointing at a letter: a dense pencil scribble is drawn across it (clipped to the letter) */
+.fillIn {
+  fill: none;
+  stroke: rgba(240, 245, 255, 0.92);
+  stroke-width: 11;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.45s cubic-bezier(0.55, 0, 0.45, 1);
+}
+.pl[data-filled] .fillIn {
+  stroke-dashoffset: 0;
+  transition-duration: 0.6s;
+}
+
+/* ---------- E tiles ---------- */
+.tile {
+  --rx: 0deg;
+  --ry: 0deg;
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 0.9em;
+  background: #050d33;
+  color: #fff;
+  box-shadow: 0 0.6em 1.6em rgba(2, 10, 60, 0.35);
+  transform: perspective(40em) rotateX(var(--rx)) rotateY(calc(var(--ry) + 90deg));
+  opacity: 0;
+  transition:
+    transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s,
+    background 0.3s,
+    color 0.3s;
+  transition-delay: calc(var(--k) * 0.09s), calc(var(--k) * 0.09s), 0s, 0s;
+}
+.stageBox[data-on] .tile {
+  transform: perspective(40em) rotateX(var(--rx)) rotateY(var(--ry));
+  opacity: 1;
+}
+.stageBox[data-on] .tile:hover {
+  transition-delay: 0s;
+  transition-duration: 0.25s, 0.3s, 0.3s, 0.3s;
+  background: #fff;
+  color: #0657f9;
+}
+.tile span {
+  font-family: "Arial Black", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-size: 7.4em;
+  line-height: 1;
+  transform: translateY(0.02em);
+}
+
+/* ---------- F magnet ---------- */
+.mgLine {
+  position: absolute;
+  display: flex;
+  font-family: "Arial Black", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  line-height: 0.8;
+  color: #050d33;
+  letter-spacing: -0.02em;
+}
+/* positions are the stage's em divided by the line's own font-size */
+.mgBig {
+  font-size: 15.9em;
+  left: calc(13.9em / 15.9);
+  top: calc(6.9em / 15.9);
+}
+.mgSquare {
+  font-size: 14.3em;
+  left: calc(13.9em / 14.3);
+  top: calc(19.6em / 14.3);
+}
+.mg {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.04em 0.005em;
+}
+.mg > span {
+  display: inline-block;
+  transform: translateY(-110%);
+  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(var(--k) * 0.08s);
+}
+.stageBox[data-on] .mg > span {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .outline,
+  .hatch,
+  .tile,
+  .mg > span {
+    transition: none !important;
+  }
+}
