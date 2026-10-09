@@ -4,6 +4,7 @@ import {
   addTags,
   customFieldIds,
   findStage,
+  removeTags,
   upsertContact,
   upsertOpportunity,
 } from "@/lib/ghl";
@@ -194,8 +195,15 @@ export async function deliverToGhl(p: LeadPayload): Promise<{ contactId: string 
     customFields,
   });
 
-  // Tags start the workflows; the note and the deal are best effort.
-  await addTags(contact.id, tagsFor(p));
+  // Tags start the workflows. GHL only fires "tag added" for a tag the
+  // contact does not have yet, so a repeat lead's trigger tags come off
+  // first; otherwise their second request would never alert anyone.
+  const tags = tagsFor(p);
+  await removeTags(contact.id, tags.filter((t) => t === "website-lead" || t.startsWith("src:"))).catch(
+    (error) => console.warn("[ghl-lead] tag reset failed; a repeat lead may not re-trigger:", error),
+  );
+  await addTags(contact.id, tags);
+  // The note and the deal are best effort.
   const extras: Promise<unknown>[] = [addNote(contact.id, noteFor(p))];
   if (SALES_FORMS.has(p.formType)) {
     extras.push(

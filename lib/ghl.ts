@@ -109,6 +109,10 @@ export function addTags(contactId: string, tags: string[]) {
   return call("POST", `/contacts/${contactId}/tags`, { body: { tags } });
 }
 
+export function removeTags(contactId: string, tags: string[]) {
+  return call("DELETE", `/contacts/${contactId}/tags`, { body: { tags } });
+}
+
 export function addNote(contactId: string, body: string) {
   return call("POST", `/contacts/${contactId}/notes`, { body: { body } });
 }

@@ -106,8 +106,9 @@ URL), which opens the same picker for that contact.
 
 ## 6. GHL objects
 
-Pipeline "Website Leads" (replaces the snapshot "Marketing Pipeline"):
-New Lead → Contacted → Call Booked → Showed → Proposal Sent → Won · Lost · Nurture
+Pipeline "Website Leads" (created 2026-10-09; the snapshot "Marketing Pipeline" is unused):
+New Lead → Contacted → Call Booked → Showed → Proposal Sent → Nurture. Won and lost are the
+opportunity status, not stages. The site opens one opportunity per contact at New Lead (upsert).
 
 Contact custom fields (folder "Website"):
 - Lead: Lead Form, Landing Page, Referrer, Lead Event ID, Qualified
@@ -115,8 +116,11 @@ Contact custom fields (folder "Website"):
   Message, Resource Requested
 - First touch: Source, Medium, Campaign, Content, Term, Landed At
 - Last touch: Source, Medium, Campaign, Content, Term
-- Click IDs: gclid, gbraid, wbraid, fbclid, msclkid, fbc, fbp
+- Click IDs: Click GCLID / GBRAID / WBRAID / FBCLID / MSCLKID, Meta FBC, Meta FBP, GA Client ID
+  (GHL reserves the plain "gclid" name for a standard field)
 - SMS consent: Consent Text, Consent At
+
+All 34 created 2026-10-09 by `scripts/ghl-setup.mjs --apply`; keys match `FIELD` in `lib/ghl-lead.ts`.
 
 Users: the call owner(s) added to the sub-account (needed for the calendar and tasks). Team inbox for
 notifications: team@bigsquaremarketing.com.
@@ -137,8 +141,13 @@ notifications: team@bigsquaremarketing.com.
 | W10 | Long-term nurture | tag `nurture` | Monthly email from the blog, stops on reply or booking |
 
 Every message gets written under copy-rules.md (no em dashes, no banned words, nothing the page did
-not promise) and goes to Brad for one review round before publish. Retire the old "Website form
-inbound" workflow once the API path is verified (keep its webhook URL as the fallback target).
+not promise) and goes to Brad for one review round before publish.
+
+Status 2026-10-09: W1 is built and published ("W1 Website lead alert (team@)", trigger: tag
+`website-lead` added; email to team@ with every custom field). GHL only fires "tag added" for a tag the
+contact does not have, so `deliverToGhl` removes `website-lead` and `src:<form>` before re-adding them:
+repeat leads alert again. The old "Website form inbound" workflow stays published as the fallback path
+(it still emails team@ itself) and now tags `website-lead-webhook`, so W1 never double-alerts.
 
 ## 8. Tracking and attribution
 
