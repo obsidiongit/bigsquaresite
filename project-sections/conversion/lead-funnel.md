@@ -86,7 +86,7 @@ Turnstile only if bots keep getting through (one already did, 2026-10-07).
 
 GHL calendar "Strategy Call (website)", settings copied from Obsidion's most recent sales calendar
 ("Book a call with our team", Aug 2026): 30 min meetings on a 30 min interval, Mon to Fri 9:00 AM to
-7:00 PM America/Denver, 14 days ahead, 1 booking per slot, no minimum notice, Google Meet.
+7:00 PM America/Denver, 14 days ahead, 1 booking per slot, Google Meet. Minimum notice 2 hours (Obsidion has none; Mike set 2 h, 2026-10-09).
 Staff (Mike, 2026-10-09): **collective booking with Levi Holley (owner, levi@bigsquaremarketing.com)
 and Brad Brown**: both join every call for now, so only times both are free show. Levi becomes the
 primary closer; when volume grows, switch the calendar to round robin or Levi only (one setting,
