@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils";
    content with real alt. Framed-media grammar per STYLE_GUIDE 4.3 /
    6.14: radius 24, 1px line. */
 
+const SHOW_ASSET_NOTES = process.env.NODE_ENV === "development";
+
 export function MediaSlot({
   id,
   note,
@@ -89,8 +91,11 @@ export function MediaSlot({
           >
             {/* the ghost mark: a quiet brand square holding the frame */}
             <span className="block size-8 shrink-0 rounded-[4px] border-[1.5px] border-sec-acc/40" />
-            <Chip className="text-sec-mid">Asset</Chip>
-            {!compact && (
+            {/* The chip and the wanted-shot note are for the team filling
+                slots; visitors on the live site only see the composed
+                panel (2026-10-09 launch fix). */}
+            {SHOW_ASSET_NOTES && <Chip className="text-sec-mid">Asset</Chip>}
+            {SHOW_ASSET_NOTES && !compact && (
               <p className="max-w-[30ch] font-mono text-mono-sm uppercase leading-[1.5] text-sec-mid">
                 {note}
               </p>

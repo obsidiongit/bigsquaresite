@@ -48,7 +48,7 @@ const INDUSTRIES = [
 
 const LOCATIONS = ["1", "2 to 5", "6 to 20", "21 to 100", "100+", "Online only"] as const;
 
-/* [PLACEHOLDER: confirm the budget ranges and the qualifying floor] */
+/* Budget ranges: Brad's draft (2026-08-27) */
 const BUDGETS = [
   "Nothing yet",
   "Under $5,000",
@@ -134,7 +134,6 @@ const STEPS: Step[] = [
     question: "What do you spend on ads each month?",
     hint: "A rough number is fine.",
     options: BUDGETS,
-    note: "[PLACEHOLDER: confirm budget ranges]",
   },
   {
     kind: "fields",

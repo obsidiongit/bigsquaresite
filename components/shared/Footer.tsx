@@ -17,7 +17,7 @@ import { PORTAL_URL, SITE_NAME, SUPPORT_EMAIL } from "@/lib/site";
       login, then the legal line on the last hairline.
    The pixel-grid paint layer is cut. Footer links stay silent on
    hover (no data-sfx). Socials and office phones are still unconfirmed:
-   they render as visible [PLACEHOLDER] tags per the 2026-08-30 handoff
+   they are left out until supplied (2026-08-30 handoff
    so nobody forgets them. Mounts in the marketing layout; funnel
    routes stay outside it. */
 
@@ -103,7 +103,6 @@ export function Footer() {
                 <OfficeTime timeZone={office.timeZone} className="text-sec-ink" />
                 local
               </p>
-              <p className={`mt-2 ${NOTE}`}>[PLACEHOLDER: office phone]</p>
             </div>
           ))}
           <div className="col-span-2 md:col-span-1">
@@ -113,7 +112,6 @@ export function Footer() {
                 {SUPPORT_EMAIL}
               </a>
             </p>
-            <p className={`mt-2 ${NOTE}`}>[PLACEHOLDER: social links]</p>
           </div>
           <div className="col-span-2 md:col-span-1">
             <p className={HEAD}>Clients</p>

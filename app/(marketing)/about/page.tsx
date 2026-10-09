@@ -4,14 +4,13 @@ import { RoughAnnotation } from "@/components/motion/RoughAnnotation";
 import { SeparatorIn } from "@/components/motion/SeparatorIn";
 import { CtaBand } from "@/components/shared/CtaBand";
 import { MediaSlot } from "@/components/shared/MediaSlot";
-import { MetricBlock } from "@/components/shared/MetricBlock";
 import { BracketIndex, Eyebrow } from "@/components/shared/mono";
 import { OfficeCards } from "@/components/shared/OfficeCards";
 import { Pill } from "@/components/shared/Pill";
 import { Section } from "@/components/shared/Section";
+import { ASSET_FILES } from "@/lib/asset-files";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { EDGE } from "@/lib/layout";
-import { METRICS } from "@/lib/metrics";
 
 export const metadata: Metadata = {
   title: { absolute: "About BigSquare Marketing" },
@@ -133,31 +132,9 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* 2. Story: 65ch spine + the founders slot */}
-      <Section theme="light" size="none" className="pb-section-y">
-        <div className={EDGE}>
-          <div className="flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-6">
-            <div className="lg:col-span-6">
-              <Eyebrow>The story</Eyebrow>
-              <div className="mt-6 max-w-[65ch]">
-                <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                  [PLACEHOLDER: founding story, 2 to 3 short paragraphs from
-                  Brad: how BigSquare started, who it serves, and what
-                  changed along the way]
-                </p>
-              </div>
-            </div>
-            <div className="lg:col-span-5 lg:col-start-8">
-              <MediaSlot
-                id="about-founders"
-                note="The founders, or the first office. Real photo only."
-                alt="The BigSquare founders"
-                aspect="4 / 3"
-              />
-            </div>
-          </div>
-        </div>
-      </Section>
+      {/* 2. Story (65ch spine + the about-founders slot) is out until
+          Brad writes the founding story: it shipped as a visible
+          placeholder (launch fix, 2026-10-09). */}
 
       {/* 3. How we work: three cards on tint */}
       <Section theme="tint">
@@ -218,18 +195,9 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* 5. Proof numbers: the homepage metrics array, same launch
-          gate (values are stand-ins until sourced, lib/metrics.ts) */}
-      <Section theme="dark">
-        <div className={EDGE}>
-          <Eyebrow>The numbers</Eyebrow>
-          <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {METRICS.map((metric) => (
-              <MetricBlock key={metric.caption} metric={metric} />
-            ))}
-          </div>
-        </div>
-      </Section>
+      {/* 5. Proof numbers (the METRICS grid on dark) is out until
+          lib/metrics.ts holds sourced figures: the current values are
+          stand-ins (launch fix, 2026-10-09). */}
 
       {/* 6. Offices */}
       <Section theme="light">
@@ -242,19 +210,22 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* 7. Team: one wide slot, real photos only */}
-      <Section theme="light" size="none" className="pb-section-y-lg">
-        <div className={EDGE}>
-          <Eyebrow>The team</Eyebrow>
-          <MediaSlot
-            id="about-team"
-            note="The whole team, one frame. Real photos only, no stock."
-            alt="The BigSquare team"
-            aspectClassName="aspect-video md:aspect-[21/9]"
-            className="mt-6"
-          />
-        </div>
-      </Section>
+      {/* 7. Team: one wide slot, real photos only; shows once the
+          photo is in ASSET_FILES */}
+      {ASSET_FILES["about-team"] && (
+        <Section theme="light" size="none" className="pb-section-y-lg">
+          <div className={EDGE}>
+            <Eyebrow>The team</Eyebrow>
+            <MediaSlot
+              id="about-team"
+              note="The whole team, one frame. Real photos only, no stock."
+              alt="The BigSquare team"
+              aspectClassName="aspect-video md:aspect-[21/9]"
+              className="mt-6"
+            />
+          </div>
+        </Section>
+      )}
 
       {/* 8. The closing ask */}
       <CtaBand />

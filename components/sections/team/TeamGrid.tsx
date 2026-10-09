@@ -8,6 +8,7 @@ import { getLenis } from "@/components/motion/SmoothScroll";
 import { useReducedMotionSafe } from "@/components/motion/useReducedMotionSafe";
 import { MediaSlot } from "@/components/shared/MediaSlot";
 import { Chip } from "@/components/shared/mono";
+import { ASSET_FILES } from "@/lib/asset-files";
 import { EASE } from "@/lib/motion";
 import type { TeamCard, TeamMember } from "@/lib/team";
 import { cn } from "@/lib/utils";
@@ -29,8 +30,8 @@ import { cn } from "@/lib/utils";
      fades up as it lands; close runs it back). Chrome bar with the
      brand square, the profile counter, and PREV/NEXT: profiles flip
      in place, the Tumblr-era move the counter promises. Personal
-     fields render designed [PLACEHOLDER] states until each member
-     answers the questionnaire.
+     fields stay out of the window until each member answers the
+     questionnaire.
 
    Reduced motion: the tilt stays (static composition, not motion);
    travel, lifts, and flip slides are cut. Annotation budget: this
@@ -76,6 +77,7 @@ function ProfileSection({
 /* One member's profile content (everything under the chrome bar);
    keyed by member so prev/next flips it in place. */
 function ProfileBody({ member }: { member: TeamMember }) {
+  const photos = member.photos.filter((photo) => ASSET_FILES[photo.slot]);
   return (
     <div className="grid gap-7 p-5 md:grid-cols-12 md:gap-8 md:p-7">
       {/* left: the headshot and the signature */}
@@ -108,27 +110,28 @@ function ProfileBody({ member }: { member: TeamMember }) {
           </p>
         </div>
 
-        <ProfileSection label="About">
-          <p className="max-w-[48ch] text-body text-sec-mid">{member.about}</p>
-        </ProfileSection>
+        {/* questionnaire sections show once answered (lib/team.ts) */}
+        {member.about ? (
+          <ProfileSection label="About">
+            <p className="max-w-[48ch] text-body text-sec-mid">{member.about}</p>
+          </ProfileSection>
+        ) : null}
 
-        <ProfileSection label="Into">
-          {member.likes.length > 0 ? (
+        {member.likes.length > 0 ? (
+          <ProfileSection label="Into">
             <div className="flex flex-wrap gap-2">
               {member.likes.map((like) => (
                 <Chip key={like}>{like}</Chip>
               ))}
             </div>
-          ) : (
-            <p className={cn(MONO_LABEL, "leading-relaxed")}>
-              [PLACEHOLDER: 3 to 6 things {member.signature} is into, as chips]
-            </p>
-          )}
-        </ProfileSection>
+          </ProfileSection>
+        ) : null}
 
-        <ProfileSection label="On rotation">
-          <p className="text-body text-sec-mid">{member.rotation}</p>
-        </ProfileSection>
+        {member.rotation ? (
+          <ProfileSection label="On rotation">
+            <p className="text-body text-sec-mid">{member.rotation}</p>
+          </ProfileSection>
+        ) : null}
 
         {member.linkedin ? (
           <ProfileSection label="Find them">
@@ -150,23 +153,26 @@ function ProfileBody({ member }: { member: TeamMember }) {
         ) : null}
       </div>
 
-      {/* the photo strip: their pictures, not ours */}
-      <div className="md:col-span-12">
-        <p className={MONO_LABEL}>Photos</p>
-        <div className="mt-3 grid grid-cols-3 gap-3">
-          {member.photos.map((photo) => (
-            <MediaSlot
-              key={photo.slot}
-              id={photo.slot}
-              note={photo.note}
-              alt={photo.alt}
-              aspect="1 / 1"
-              compact
-              sizes="(min-width: 768px) 270px, 33vw"
-            />
-          ))}
+      {/* the photo strip: their pictures, not ours; shows once any of
+          their slots has a file */}
+      {photos.length > 0 ? (
+        <div className="md:col-span-12">
+          <p className={MONO_LABEL}>Photos</p>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {photos.map((photo) => (
+              <MediaSlot
+                key={photo.slot}
+                id={photo.slot}
+                note={photo.note}
+                alt={photo.alt}
+                aspect="1 / 1"
+                compact
+                sizes="(min-width: 768px) 270px, 33vw"
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

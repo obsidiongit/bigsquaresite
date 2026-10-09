@@ -6,10 +6,10 @@
    Names and roles are REAL: registered members from
    lib/blog-authors.ts (Brad, 2026-08-30), sharing the same headshot
    slots so one photo drop lights the blog byline AND the team card.
-   Everything personal (about, likes, photos, the rotation line) is a
-   visible [PLACEHOLDER] until that person answers the questionnaire in
-   project-sections/company/team.md; the profile window renders a
-   designed empty state meanwhile, never fake personality.
+   Everything personal (about, likes, photos, the rotation line) is
+   left out of the profile window until that person answers the
+   questionnaire in project-sections/company/team.md; never fake
+   personality.
 
    Open slots (Brad's pick, 2026-08-31: members plus extra open
    slots): unnamed cards signalling the fuller team; replace each with
@@ -54,9 +54,9 @@ export type OpenSlot = {
 
 export type TeamCard = TeamMember | OpenSlot;
 
-const PLACEHOLDER_ABOUT =
-  "[PLACEHOLDER: 2 to 4 sentences in their own words, from the questionnaire in project-sections/company/team.md]";
-const PLACEHOLDER_ROTATION = "[PLACEHOLDER: song, show, or podcast]";
+/* Questionnaire fields (project-sections/company/team.md) are empty
+   strings until a person answers; TeamGrid leaves empty sections out
+   (launch fix, 2026-10-09: they shipped as visible placeholders). */
 
 function member(
   name: string,
@@ -74,14 +74,14 @@ function member(
     role,
     photoSlot,
     signature,
-    about: profile?.about ?? PLACEHOLDER_ABOUT,
+    about: profile?.about ?? "",
     likes: profile?.likes ?? [],
     photos: [1, 2, 3].map((n) => ({
       slot: `team-${photoKey}-${n}`,
       note: `Personal photo ${n} of 3. Their pick, not stock.`,
       alt: `[PLACEHOLDER: what the photo shows, from ${signature}]`,
     })),
-    rotation: profile?.rotation ?? PLACEHOLDER_ROTATION,
+    rotation: profile?.rotation ?? "",
     linkedin: profile?.linkedin ?? null,
   };
 }

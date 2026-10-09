@@ -100,8 +100,7 @@ export default function BlogIndexPage() {
             </div>
           ) : (
             <p className="font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-              [PLACEHOLDER: no published posts yet. Drop a .mdx file in
-              content/blog/ with draft: false]
+              New posts are on the way.
             </p>
           )}
         </div>

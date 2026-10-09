@@ -45,6 +45,8 @@ Reviews still open (Brad may approve verbally; confirm and check off): Batch 2, 
 
 ## Placeholder fill list (full-site sweep, 2026-09-03)
 
+**Launch fix (Mike, 2026-10-09):** the site went live with these markers visible, so every page except the homepage and `/results/` now hides unknowns instead of printing them: footer phone/socials, office address/phone, About story + numbers sections, careers/audit/schedule/blog/resources notes, funnel turnaround/offer-terms, team questionnaire fields, and empty media slots (notes show in `next dev` only). The facts below are still owed: filling one means adding the value back, not deleting a marker. Homepage and `/results/` (fake "Client 0N" cards, stand-in `lib/metrics.ts` stats) are being redone in Mike's lab copy.
+
 Every `[PLACEHOLDER: ...]` marker and empty media frame on the live site, grouped by the kind of answer it needs. Brad answers; the developer drops the value into the file named and deletes the marker. When a line is filled, check it here and re-run the grep (`grep -rn "\[PLACEHOLDER" app components lib content`) before launch: the site must ship with zero hits. Interior service and industry image slots are NOT repeated here; they live in `asset-manifest.md` (bucket 5 above).
 
 **A. Facts (Brad types the answer)**

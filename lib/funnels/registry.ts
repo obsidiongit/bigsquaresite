@@ -60,27 +60,25 @@ const PROOF = [
 ];
 
 const FINE_PRINT =
-  "No long-term contracts. We never sell your information. [PLACEHOLDER: offer terms]";
+  "No long-term contracts. We never sell your information.";
 
 export const VSL_PAGES: Record<string, VslFunnel> = {
   audit: {
     palette: "dark",
     title: "Your Marketing, Audited. Free.",
     headline: "Your marketing, audited. Free.",
-    sub: "A short video for owners and marketing leads who want proof, not promises. Then a free audit of your accounts, on a call with us. [PLACEHOLDER: video length]",
+    sub: "A short video for owners and marketing leads who want proof, not promises. Then a free audit of your accounts, on a call with us.",
     video: {
       src: null, // [PLACEHOLDER: video URL]
       poster: "/media/hero-poster.jpg", // [PLACEHOLDER: VSL poster frame]
     },
     cta: { label: "Get a Free Audit", href: "/schedule/" },
     proof: PROOF,
-    proofNote: "[PLACEHOLDER: one sourced result or a case study card]",
     steps: [
       { text: "You pick a time. The call is 30 minutes." },
       { text: "We look at your accounts together and show you where the money goes." },
       { text: "You leave with a plan for what we would do first. You decide what happens next." },
     ],
-    stepsNote: "[PLACEHOLDER: confirm the real steps with Brad or Mike]",
     finePrint: FINE_PRINT,
   },
 };
@@ -106,7 +104,7 @@ export const THANKS_PAGES: Record<string, ThanksFunnel> = {
     lead: "Check your email. Your audit is in the queue.",
     next: [
       "Look for an email from BigSquare. Check spam if it is not there.",
-      "Expect a call within [PLACEHOLDER: turnaround].",
+      "We call you to set up the audit.",
       "Have your ad accounts and site access ready. We look at them together.",
     ],
     secondary: { label: "See the Results", href: "/results/" },
@@ -117,7 +115,7 @@ export const THANKS_PAGES: Record<string, ThanksFunnel> = {
     headline: "Sent.",
     lead: "Your application is in. We read every one. Here is what happens next.",
     next: [
-      "We review your answers within [PLACEHOLDER: turnaround].",
+      "We review your answers and get back to you.",
       "If it is a fit, we call the number you gave us to set up a 30-minute call.",
       "Not a fit right now? We tell you that too, by email.",
     ],

@@ -71,11 +71,6 @@ export default function ResourcesPage() {
       {/* 2. The list */}
       <Section theme="light" size="none" className="pb-section-y-lg">
         <div className={EDGE}>
-          <p className="mb-8 max-w-[64ch] font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-            [PLACEHOLDER: working titles below, confirm with Brad. The files
-            are in production. Each form logs the request until its file
-            exists]
-          </p>
           <ResourceList resources={RESOURCES} />
         </div>
       </Section>

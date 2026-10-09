@@ -104,10 +104,6 @@ export default function AuditPage() {
                 size="compact"
                 className="mt-4"
               />
-              <p className="mt-6 font-mono text-mono-sm uppercase leading-relaxed text-sec-mid">
-                [PLACEHOLDER: confirm the real audit deliverables and
-                turnaround time]
-              </p>
             </div>
             <Reveal
               delay={0.15}

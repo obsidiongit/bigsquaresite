@@ -6,6 +6,18 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "bigsquare-dev-webpack",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--max-old-space-size=4096", "node_modules/next/dist/bin/next", "dev", "--webpack", "-p", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "bigsquare-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start", "--", "-p", "3100"],
+      "port": 3100
     }
   ]
 }
