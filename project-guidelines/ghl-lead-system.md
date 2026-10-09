@@ -272,6 +272,13 @@ merge tags from section 4. Build as Draft, test with the QA contact, then publis
 
 **Change who gets alerts:** W1 → the email action → "To Custom Email".
 
+**Change the booking calendar through the API** (`PUT /calendars/{id}`, Version `2021-04-15`):
+collective calendars reject any update that does not resend `teamMembers` with `isPrimary`
+("isPrimary key is required with collective booking calendars"), so GET the calendar first and send
+its members back with the change. `openHours` takes one entry per weekday (`daysOfTheWeek: [1]`),
+not a multi-day array. Minimum notice is `allowBookingAfter` + `allowBookingAfterUnit: "hours"`.
+Switching to round robin later: `calendarType: "round_robin"` plus an `eventType`, or do it in the UI.
+
 **Turn the API path off (kill switch):** remove `GHL_API_KEY` from Vercel Production and redeploy;
 every lead goes through the fallback workflow.
 
