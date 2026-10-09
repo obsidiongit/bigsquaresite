@@ -1,6 +1,6 @@
 # Lead funnel: capture, booking, follow-up, attribution
 
-Spec, drafted 2026-10-09 (Mike + Claude). Status: proposed, building in the order in section 9.
+Spec, drafted 2026-10-09 (Mike + Claude). Status: building in the order in section 9. How the built parts work: `project-guidelines/ghl-lead-system.md`.
 Supersedes the "GHL API capture" line in tasks.md and the retired calendar note in decisions.md: the
 booking step below is the replacement (native step, GHL calendar behind it, no iframe).
 
