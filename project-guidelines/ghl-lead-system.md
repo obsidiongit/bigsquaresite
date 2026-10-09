@@ -322,7 +322,7 @@ old integration. (The current token was pasted in chat once on 2026-10-09; rotat
 | Meta Conversions API | live in production (token set 2026-10-09); confirm server events in Events Manager after the first real lead |
 | Booking calendar | built 2026-10-09; Levi only since the same day (support@ copied on booked/moved/cancelled emails); waiting on Levi to connect Google Calendar + Google Meet in the BigSquare sub-account (conflicts + Meet links). Switch to round robin or Levi only when volume grows |
 | Pick-a-time step on /schedule/ | built 2026-10-09 behind `BOOKING_ENABLED` (off in Production). Tested end to end locally: QA contact booked Oct 19 6:30 PM MT (appointment `AWA46s068mNPjuZ5DDq7`, tag `booked`, deal to Call Booked), then cancelled. Cancelling does not move the deal back or remove `booked` yet (a W3/cancel workflow job). Go live only after Levi connects Google Calendar + Meet |
-| "Call booked" workflow (W3) | next; read the calendar's own Notifications tab first so the lead doesn't get two confirmations |
+| "Call booked" workflow (W3) | built 2026-10-09 as a Draft (`9b919378-…`): stage, tag, confirmation, 24 h + 1 h reminders gated on tag `booked`. Publish after Brad's copy review AND the cancel workflow (removes `booked` on cancel) exists. Spec + as-built: `project-sections/conversion/w3-call-booked.md` |
 | Prospect confirmations and follow-ups (W2 to W10) | to build; copy goes to Brad |
 | SPF / DKIM / DMARC + GHL dedicated sending domain | waiting on Namecheap access |
 | SMS (LC phone + A2P) | not started |

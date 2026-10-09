@@ -1,7 +1,27 @@
 # W3 Call booked: workflow spec + draft copy (for Brad's review)
 
-Status 2026-10-09: spec and draft copy written; workflow to be built in GHL as a **Draft** in folder
-"Website Funnel". Nothing prospect-facing publishes until Brad signs off on the copy below.
+Status 2026-10-09: **built in GHL as a Draft** ("W3 Call booked", workflow
+`9b919378-3306-4afc-8bcc-b17d0fa8c50c`, top level next to W1). Not published: Brad reviews the copy
+below first, and the "still booked?" checks need the cancel workflow (below) before publishing.
+
+As built: trigger Customer Booked Appointment, filter calendar Strategy Call (website), contact only →
+Create/update opportunity (Website Leads → Call Booked, status open, may move back a stage; name left
+blank so site-made deals keep their name; GHL marks this action "soon deprecated", existing workflows
+keep working) → Add tag `booked` → email B (from "BigSquare Marketing" support@, preview text "Your time,
+the Google Meet link, and how to change it.") → Wait until 1 day before the appointment (if already
+passed: skip messages until the next wait) → If tags include `booked` → email C → Wait until 1 hour
+before → If tags include `booked` → email D. Settings: re-entry on, stop on response off.
+
+**Why a tag check, not appointment status:** GHL's If/else has no appointment-status condition (only
+rescheduled / start / end). So `booked` is the "call is still on" signal, and a cancel workflow must
+remove it: trigger Appointment status = cancelled, calendar Strategy Call → remove tag `booked` (plus
+W5's later steps: deal stage, reschedule email). Not built yet: Mike to approve. A Draft named "W5 Call
+cancelled" exists with no saved trigger or actions.
+
+Merge keys confirmed in the builder: `appointment.only_start_date`, `appointment.only_start_time`,
+`appointment.meeting_location`, `appointment.add_to_google_calendar`. Used by GHL's documented names,
+to confirm in the first test send: `appointment.day_of_week`, `appointment.timezone`,
+`appointment.add_to_ical_outlook`.
 Plan of record: `lead-funnel.md` section 7. As-built details go in `ghl-lead-system.md` once built.
 
 ## What the calendar already sends (checked 2026-10-09)
@@ -77,7 +97,9 @@ the builder's merge-field picker while building.
 >
 > It is 30 minutes. We look at your accounts together and tell you exactly what we would do first.
 >
-> Need a different time? {{contact.booking_link}}
+> Add it to your calendar: Google or Apple and Outlook (GHL's add-to-calendar links)
+>
+> Need a different time? Pick a new one here ({{contact.booking_link}})
 >
 > Talk soon,
 > The BigSquare team
