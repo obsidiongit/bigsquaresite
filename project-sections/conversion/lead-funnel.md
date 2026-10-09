@@ -84,9 +84,16 @@ Turnstile only if bots keep getting through (one already did, 2026-10-07).
 
 ## 5. Booking (native step, GHL calendar behind it)
 
-GHL calendar "Strategy Call (website)": 30 minutes, owner = whoever takes the calls, their Google
-Calendar connected (conflicts + Google Meet link), 15 min buffer, 14 days ahead, minimum notice
-[DECIDE: same day with 2 h notice, or next business day].
+GHL calendar "Strategy Call (website)", settings copied from Obsidion's most recent sales calendar
+("Book a call with our team", Aug 2026): 30 min meetings on a 30 min interval, Mon to Fri 9:00 AM to
+7:00 PM America/Denver, 14 days ahead, 1 booking per slot, no minimum notice, Google Meet.
+Staff (Mike, 2026-10-09): **collective booking with Levi Holley (owner, levi@bigsquaremarketing.com)
+and Brad Brown**: both join every call for now, so only times both are free show. Levi becomes the
+primary closer; when volume grows, switch the calendar to round robin or Levi only (one setting,
+nothing on the site changes). Each of them connects their own Google Calendar in the BigSquare
+sub-account for conflicts and Meet links.
+
+The 5 snapshot calendars (all empty, one live gym-snapshot booking page) were deleted 2026-10-09.
 
 On the site (server actions in this app, no separate service):
 - `getSlots()` reads GHL free slots, returns the next 7 open days in the calendar's timezone; the UI

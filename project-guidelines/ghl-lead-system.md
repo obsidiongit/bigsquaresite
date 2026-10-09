@@ -64,8 +64,8 @@ on "ok"
 Won and lost are the opportunity **status**, not stages.
 
 Snapshot leftovers, unused and safe to delete once nobody needs them: folder "Marketing Workflows"
-(6 drafts), pipeline "Marketing Pipeline", calendars "Schedule an Appointment" and 4 inactive affiliate/
-support calendars.
+(6 drafts) and pipeline "Marketing Pipeline". The 5 snapshot calendars (all empty) were deleted
+2026-10-09; the sub-account has no calendar until the website booking calendar is built.
 
 ### Code (this repo)
 | File | Job |
@@ -301,7 +301,7 @@ old integration. (The current token was pasted in chat once on 2026-10-09; rotat
 | Website Leads pipeline + 34 custom fields | live |
 | Meta pixel (browser) | live |
 | Meta Conversions API | live in production (token set 2026-10-09); confirm server events in Events Manager after the first real lead |
-| Booking calendar + pick-a-time step | waiting on Brad and Levi as sub-account users with Google Calendar connected |
+| Booking calendar + pick-a-time step | waiting on Levi (new user, levi@bigsquaremarketing.com) and Brad added to the BigSquare sub-account, each with Google Calendar connected. Plan: collective booking, Levi owner, Brad member (lead-funnel.md section 5) |
 | Prospect confirmations and follow-ups (W2 to W10) | to build; copy goes to Brad |
 | SPF / DKIM / DMARC + GHL dedicated sending domain | waiting on Namecheap access |
 | SMS (LC phone + A2P) | not started |
