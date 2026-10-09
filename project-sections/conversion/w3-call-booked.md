@@ -19,14 +19,19 @@ confirmation is the only one they get. Leave the calendar notifications as they 
 
 | # | Action | Detail |
 |---|---|---|
-| 1 | Internal notification, Email | to team@bigsquaremarketing.com, from "BigSquare Marketing Website" support@ (copy A) |
-| 2 | Create/update opportunity | Website Leads → Call Booked (the site already does this; this covers manual bookings) |
-| 3 | Add tag | `booked` (same reason) |
-| 4 | Send email to contact | Confirmation (copy B) |
-| 5 | Wait | until 24 hours before the appointment start; skip if that time has passed |
-| 6 | If/else | appointment status is still confirmed → Send email (copy C); else end |
-| 7 | Wait | until 1 hour before the appointment start; skip if passed |
-| 8 | If/else | still confirmed → Send email (copy D); else end |
+| 1 | Create/update opportunity | Website Leads → Call Booked (the site already does this; this covers manual bookings) |
+| 2 | Add tag | `booked` (same reason) |
+| 3 | Send email to contact | Confirmation (copy B) |
+| 4 | Wait | until 24 hours before the appointment start; skip if that time has passed |
+| 5 | If/else | appointment status is still confirmed → Send email (copy C); else end |
+| 6 | Wait | until 1 hour before the appointment start; skip if passed |
+| 7 | If/else | still confirmed → Send email (copy D); else end |
+
+**Staff alerts are not in W3** (Mike, 2026-10-09: Levi owns the calendar, support@ gets the
+notifications alongside him). They are the calendar's own email notifications, created by API:
+booked, reschedule and cancellation, each to the assigned user (Levi) + support@, using copy A's
+content. GHL sends those natively on a move or a cancel, so staff always hear about a change
+whether or not W3 re-fires.
 
 SMS reminders come later, only for contacts tagged `sms-consent`, once A2P is approved.
 Cancels and no-shows are W5 (move the deal off Call Booked, remove `booked`, reschedule email).
@@ -47,7 +52,7 @@ the builder's merge-field picker while building.
 
 ## Draft copy (copy-rules.md: no em dashes, no banned words, nothing the page did not promise)
 
-### A. Team alert (internal)
+### A. Staff alert (internal; live as the calendar's booked / reschedule / cancellation emails)
 **Subject:** Call booked: {{contact.name}}, {{contact.company_name}}, {{appointment.start_time}}
 
 > Call booked from the website.
@@ -104,5 +109,5 @@ the builder's merge-field picker while building.
 
 ## Open
 
-1. The Meet link only exists once Levi and Brad connect Google Calendar; until then
+1. The Meet link only exists once Levi connects Google Calendar + Google Meet; until then
    `{{appointment.meeting_location}}` is empty. Another reason booking stays off in production.

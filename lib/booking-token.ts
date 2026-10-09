@@ -14,7 +14,7 @@ function sign(contactId: string): string {
 }
 
 /** Booking runs only with the flag on and every piece configured. Off in
-    production until Levi and Brad connect Google Calendar (handoff
+    production until Levi connects Google Calendar and Meet (handoff
     2026-10-09): without it GHL has no conflicts and makes no Meet links. */
 export function bookingEnabled(): boolean {
   return Boolean(

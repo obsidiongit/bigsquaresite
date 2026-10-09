@@ -56,7 +56,7 @@ on "ok"
 | Sub-account | BigSquare Marketing, location id `7VBUf1asBTeGlv6V2vtf` |
 | Pipeline | **Website Leads** `FdeqZD1RbsHH8Ku4Z27i` |
 | Stages | New Lead `9a0090a5-26a3-493d-8fcd-514037609840` · Contacted `297baf5c-fd59-472e-9457-974ae37adcd1` · Call Booked `105402d7-4cd4-42d9-80ef-c470f06769ad` · Showed `0f576f8e-9fe1-469c-b7c8-be9296f58d03` · Proposal Sent `c9748afb-8260-4d3b-b8aa-866131ba2d8e` · Nurture `c718d48a-71d1-44dd-8ab7-b00075bdeef3` |
-| Calendar | **Strategy Call (website)** `K0Isp8DY5GPqcYqK1uia`, collective, widget slug `bigsquare-strategy-call`. Members: Levi Holley `QRdM3Hv1bCDtAN3M3S14` (primary, levi@bigsquaremarketing.com) and "BigSquare Support" `wuIM7XCLVHSe4vt8qnCu` (support@bigsquaremarketing.com, Brad's login in this sub-account). 30 min slots on a 30 min interval, Mon to Fri 11:00 to 21:00 Eastern (= 9 to 7 Mountain, copied from Obsidion's "Book a call with our team"), 14 days ahead, 1 per slot, 2 hours minimum notice (Mike, 2026-10-09), Google Meet, auto-confirm, reschedule/cancel allowed |
+| Calendar | **Strategy Call (website)** `K0Isp8DY5GPqcYqK1uia`, type collective with ONE member since 2026-10-09 (Mike: bookings and the calendar are Levi's only), widget slug `bigsquare-strategy-call`. Member: Levi Holley `QRdM3Hv1bCDtAN3M3S14` (primary, levi@bigsquaremarketing.com); only his availability counts and he hosts every call. "BigSquare Support" `wuIM7XCLVHSe4vt8qnCu` (support@, Brad's login) is off the calendar but copied on every booking notification. Staff notifications (calendar Notifications, set by API): in-app to the assigned user (defaults), plus email to the assigned user + support@ on booked / reschedule / cancellation ("Call booked/moved/cancelled: {{contact.name}}, {{contact.company_name}}"). 30 min slots on a 30 min interval, Mon to Fri 11:00 to 21:00 Eastern (= 9 to 7 Mountain, copied from Obsidion's "Book a call with our team"), 14 days ahead, 1 per slot, 2 hours minimum notice (Mike, 2026-10-09), Google Meet, auto-confirm, reschedule/cancel allowed |
 | Users in the sub-account | Levi Holley, BigSquare Support (Brad). Location timezone America/New_York |
 | Workflow W1 | **W1 Website lead alert (team@)** `6c2c5907-395e-4ef8-8297-b9aa407bb933` (published) |
 | Fallback workflow | **Website form inbound** `a45f495f-3f42-4f1e-b75c-2a5adbca7022` (published) |
@@ -240,7 +240,7 @@ Brad's review before publish.
 | `NEXT_PUBLIC_GA4_ID` | Vercel + `.env.local` | set |
 | `NEXT_PUBLIC_GTAG_ID` | Vercel | unset (no Google Ads yet) |
 | `GHL_CALENDAR_ID` | Vercel + `.env.local` | set (`K0Isp8DY5GPqcYqK1uia`), used by the pick-a-time step |
-| `BOOKING_ENABLED` | Vercel + `.env.local` | `1` locally only. Leave unset in Production until Levi and Brad connect Google Calendar. Read at build time (static page): flip it with a redeploy |
+| `BOOKING_ENABLED` | Vercel + `.env.local` | `1` locally only. Leave unset in Production until Levi connects Google Calendar + Google Meet. Read at build time (static page): flip it with a redeploy |
 | `BOOKING_TOKEN_SECRET` | Vercel (Sensitive) + `.env.local` | set locally 2026-10-09; add to Production before turning booking on. Rotating it breaks booking links already emailed |
 
 Private Integration token scopes: contacts, calendars, calendars/events, opportunities,
@@ -320,8 +320,8 @@ old integration. (The current token was pasted in chat once on 2026-10-09; rotat
 | Website Leads pipeline + 34 custom fields | live |
 | Meta pixel (browser) | live |
 | Meta Conversions API | live in production (token set 2026-10-09); confirm server events in Events Manager after the first real lead |
-| Booking calendar | built 2026-10-09 (collective, Levi primary + Brad); waiting on Levi and Brad to connect Google Calendar in the BigSquare sub-account (conflicts + Meet links). Switch to round robin or Levi only when volume grows |
-| Pick-a-time step on /schedule/ | built 2026-10-09 behind `BOOKING_ENABLED` (off in Production). Tested end to end locally: QA contact booked Oct 19 6:30 PM MT (appointment `AWA46s068mNPjuZ5DDq7`, tag `booked`, deal to Call Booked), then cancelled. Cancelling does not move the deal back or remove `booked` yet (a W3/cancel workflow job). Go live only after both Google connections exist |
+| Booking calendar | built 2026-10-09; Levi only since the same day (support@ copied on booked/moved/cancelled emails); waiting on Levi to connect Google Calendar + Google Meet in the BigSquare sub-account (conflicts + Meet links). Switch to round robin or Levi only when volume grows |
+| Pick-a-time step on /schedule/ | built 2026-10-09 behind `BOOKING_ENABLED` (off in Production). Tested end to end locally: QA contact booked Oct 19 6:30 PM MT (appointment `AWA46s068mNPjuZ5DDq7`, tag `booked`, deal to Call Booked), then cancelled. Cancelling does not move the deal back or remove `booked` yet (a W3/cancel workflow job). Go live only after Levi connects Google Calendar + Meet |
 | "Call booked" workflow (W3) | next; read the calendar's own Notifications tab first so the lead doesn't get two confirmations |
 | Prospect confirmations and follow-ups (W2 to W10) | to build; copy goes to Brad |
 | SPF / DKIM / DMARC + GHL dedicated sending domain | waiting on Namecheap access |
