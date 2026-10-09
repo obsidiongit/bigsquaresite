@@ -15,6 +15,7 @@ import {
   moveOpportunity,
   removeTags,
   upcomingAppointment,
+  updateContact,
   upsertOpportunity,
 } from "@/lib/ghl";
 import { BOOKING_EVENT } from "@/lib/lead-events";
@@ -65,6 +66,9 @@ const bookSchema = z.object({
   fbc: z.string().max(600).optional(),
   fbp: z.string().max(200).optional(),
   gpc: z.boolean().optional(),
+  /** The visitor's IANA timezone: GHL formats {{appointment.*}} times in
+      the contact's timezone, else the location's (Eastern). */
+  timezone: z.string().max(64).optional(),
 });
 
 export type BookResult =
@@ -76,9 +80,17 @@ export type BookResult =
 export async function bookCall(input: z.input<typeof bookSchema>): Promise<BookResult> {
   const parsed = bookSchema.safeParse(input);
   if (!parsed.success || !bookingEnabled()) return { ok: false, reason: "failed" };
-  const { token, start, eventId, fbc, fbp, gpc: clientGpc } = parsed.data;
+  const { token, start, eventId, fbc, fbp, gpc: clientGpc, timezone } = parsed.data;
   const contactId = verifyBookingToken(token);
   if (!contactId) return { ok: false, reason: "failed" };
+
+  /* Before the appointment exists, so W3's confirmation email already
+     shows the visitor's own time. Best effort. */
+  if (timezone && validTimezone(timezone)) {
+    await updateContact(contactId, { timezone }).catch((error) =>
+      console.warn("[booking] contact timezone update failed:", error),
+    );
+  }
 
   /* One call per lead: a double click or a revisit never books twice. */
   const existing = await upcomingAppointment(contactId).catch(() => null);
@@ -133,6 +145,15 @@ export async function bookCall(input: z.input<typeof bookSchema>): Promise<BookR
   });
 
   return { ok: true, start };
+}
+
+function validTimezone(tz: string): boolean {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** Deal to Call Booked and the `booked` tag (reset first so GHL's

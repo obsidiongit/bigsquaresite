@@ -109,6 +109,12 @@ export function addTags(contactId: string, tags: string[]) {
   return call("POST", `/contacts/${contactId}/tags`, { body: { tags } });
 }
 
+/** Partial contact update (e.g. `timezone`, which GHL uses to format
+    {{appointment.*}} times in that contact's emails). */
+export function updateContact(contactId: string, patch: Record<string, unknown>) {
+  return call("PUT", `/contacts/${contactId}`, { body: patch });
+}
+
 export function removeTags(contactId: string, tags: string[]) {
   return call("DELETE", `/contacts/${contactId}/tags`, { body: { tags } });
 }

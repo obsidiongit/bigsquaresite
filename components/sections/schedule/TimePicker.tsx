@@ -115,6 +115,7 @@ export function TimePicker({
       fbc: attribution.fbc,
       fbp: attribution.fbp,
       gpc: hasGlobalPrivacyControl(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     }).catch(() => ({ ok: false, reason: "failed" }) as const);
     if (result.ok) {
       if (!result.existing) trackBooking(eventId);
